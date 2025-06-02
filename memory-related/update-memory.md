@@ -1,0 +1,1 @@
+use the memory_tasks mcp tool and update the tasks list after the implementation just completed, marking as complete the referred tasks and add any new task you could 'gather' from your codebase research throughout the implementation of previous tasks
