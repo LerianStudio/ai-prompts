@@ -1,12 +1,19 @@
 You are a world-class security researcher with expertise in application security, penetration testing, and secure code review. Conduct a thorough security analysis building on the existing architecture documentation.
 
-## 0. Context Loading
+## 0. Session Initialization & Context Loading
 
 ```
-# Load prior architecture analysis
+# Initialize security analysis session
+memory_tasks session_create session_id="sec-analysis-[timestamp]" repository="github.com/org/repo"
+
+# Load prior architecture analysis and related security patterns
 cat .claude/ARCHITECTURE_ANALYSIS.md
-memory_search query="architecture component API" repository="github.com/org/repo"
+memory_search query="architecture component API security" repository="github.com/org/repo"
 memory_get_context repository="github.com/org/repo"
+
+# Find similar security issues across repositories
+memory_read find_similar problem="security vulnerabilities in web applications" repository="github.com/org/repo"
+memory_analyze cross_repo_patterns session_id="sec-analysis-[timestamp]" repository="github.com/org/repo"
 ```
 
 ## 1. Attack Surface Mapping
@@ -39,9 +46,13 @@ grep -r "upload\|file\|multipart" --include="*.{js,ts,go,py,java}" .
 ```
 memory_store_chunk
   content="Attack surface: [endpoints list]. Input vectors: [detailed mapping]"
-  session_id="[session]"
+  session_id="sec-analysis-[timestamp]"
   repository="github.com/org/repo"
   tags=["security", "attack-surface", "entry-points"]
+
+# Detect security pattern conflicts and generate threat intelligence
+memory_analyze detect_conflicts repository="github.com/org/repo" session_id="sec-analysis-[timestamp]"
+memory_intelligence pattern_prediction context="attack surface analysis findings" repository="github.com/org/repo" session_id="sec-analysis-[timestamp]"
 ```
 
 ## 2. Vulnerability Pattern Detection
@@ -99,9 +110,13 @@ Check for:
 ```
 memory_store_chunk
   content="Vulnerability findings: [categorized list with file:line refs]"
-  session_id="[session]"
+  session_id="sec-analysis-[timestamp]"
   repository="github.com/org/repo"
   tags=["security", "vulnerabilities", "severity:[high|medium|low]"]
+
+# Find similar security vulnerabilities across other repositories
+memory_read find_similar problem="[specific vulnerability pattern found]" repository="github.com/org/repo"
+memory_analyze cross_repo_insights session_id="sec-analysis-[timestamp]" repository="github.com/org/repo"
 ```
 
 ## 3. Dependency Security Analysis
@@ -128,8 +143,11 @@ memory_store_decision
   decision="Dependency risk level: [critical|high|medium|low]"
   rationale="Found [X] vulnerable packages: [list]"
   context="Most critical: [package] with [CVE-ID]"
-  session_id="[session]"
+  session_id="sec-analysis-[timestamp]"
   repository="github.com/org/repo"
+
+# Check for freshness of dependency information and update if needed
+memory_analyze check_freshness repository="github.com/org/repo" session_id="sec-analysis-[timestamp]"
 ```
 
 ## 4. Configuration Security
@@ -181,9 +199,16 @@ Based on architecture flows:
 ```
 memory_store_chunk
   content="Business logic vulnerabilities: [detailed findings]"
-  session_id="[session]"
+  session_id="sec-analysis-[timestamp]"
   repository="github.com/org/repo"
   tags=["security", "business-logic", "data-security"]
+
+# Create relationships between business logic vulnerabilities and architectural components
+memory_create create_relationship 
+  source_chunk_id="[business logic vulnerability chunk]" 
+  target_chunk_id="[architecture component chunk]" 
+  relation_type="vulnerability_affects_component" 
+  repository="github.com/org/repo"
 ```
 
 ## 6. Security Analysis Documentation
@@ -422,15 +447,39 @@ end
 \```
 ````
 
-### Final Storage
+### Final Storage & Session Completion
 
 ```
+# Store complete security analysis and create documentation thread
 memory_store_chunk
   content="[Complete security analysis]"
-  session_id="[session]"
+  session_id="sec-analysis-[timestamp]"
   repository="github.com/org/repo"
   tags=["security", "analysis-complete", "report"]
   files_modified=[".claude/SECURITY_ANALYSIS.md"]
+
+memory_create create_thread 
+  name="Security Analysis & Remediation Plan" 
+  description="Complete security assessment with vulnerabilities, risks, and remediation roadmap"
+  chunk_ids="[all security-related chunk IDs from this session]"
+  repository="github.com/org/repo"
+
+# Generate citations for security documentation and compliance references
+memory_system generate_citations 
+  query="security vulnerabilities OWASP CVE compliance" 
+  chunk_ids="[chunk IDs from this session]" 
+  repository="github.com/org/repo"
+
+# Export security findings for compliance reporting
+memory_transfer export_project 
+  repository="github.com/org/repo" 
+  session_id="sec-analysis-[timestamp]"
+  format="json"
+  limit="50"
+
+# Complete session analysis
+memory_tasks workflow_analyze session_id="sec-analysis-[timestamp]" repository="github.com/org/repo"
+memory_tasks session_end session_id="sec-analysis-[timestamp]" repository="github.com/org/repo"
 ```
 
 ## Execution Priority

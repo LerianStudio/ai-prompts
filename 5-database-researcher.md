@@ -1,12 +1,18 @@
 You are a world-class database architect with expertise in schema design, query optimization, and data modeling. Conduct a thorough database analysis building on the existing architecture documentation.
 
-## 0. Context Loading
+## 0. Session & Context Initialization
 
 ```
+# Initialize database analysis session
+mcp__memory__memory_tasks operation="session_create" options='{"session_id":"database-researcher-$(date +%s)","repository":"github.com/org/repo"}'
+
 # Load prior analyses
 cat .claude/ARCHITECTURE_ANALYSIS.md
-memory_search query="database data model schema tables" repository="github.com/org/repo"
-memory_get_context repository="github.com/org/repo"
+mcp__memory__memory_read operation="search" options='{"query":"database data model schema tables","repository":"github.com/org/repo"}'
+mcp__memory__memory_read operation="get_context" options='{"repository":"github.com/org/repo"}'
+
+# Analyze data relationships and dependencies
+mcp__memory__memory_read operation="traverse_graph" options='{"start_chunk_id":"[database_chunk_id]","repository":"github.com/org/repo"}'
 ```
 
 ## 1. Database Discovery & Connection Analysis
@@ -34,11 +40,7 @@ grep -r "timeout\|idleTimeout\|connectionTimeout" --include="*.{js,ts,go,py,java
 ```
 
 ```
-memory_store_chunk
-  content="Database types: [list]. Primary DB: [type]. ORMs: [list]. Connection pools: [configured/missing]"
-  session_id="[session]"
-  repository="github.com/org/repo"
-  tags=["database", "schema", "connections"]
+mcp__memory__memory_create operation="store_chunk" options='{"content":"Database types: [list]. Primary DB: [type]. ORMs: [list]. Connection pools: [configured/missing]","session_id":"database-researcher-$(date +%s)","repository":"github.com/org/repo","tags":["database","schema","connections"]}'
 ```
 
 ## 2. Schema Extraction & Analysis
@@ -94,11 +96,7 @@ CREATE TABLE users (
 ```
 
 ```
-memory_store_chunk
-  content="Tables found: [count]. Total columns: [count]. Relationships: [count]. Missing FK constraints: [list]"
-  session_id="[session]"
-  repository="github.com/org/repo"
-  tags=["database", "schema", "structure"]
+mcp__memory__memory_create operation="store_chunk" options='{"content":"Tables found: [count]. Total columns: [count]. Relationships: [count]. Missing FK constraints: [list]","session_id":"database-researcher-$(date +%s)","repository":"github.com/org/repo","tags":["database","schema","structure"]}'
 ```
 
 ## 3. Query Performance Analysis
@@ -147,12 +145,7 @@ grep -r "SELECT \*\|select \*" --include="*.{sql,js,ts,go,py}" .
 ```
 
 ```
-memory_store_decision
-  decision="Query performance grade: [A-F]"
-  rationale="Found [X] slow queries, [Y] missing indexes, [Z] N+1 patterns"
-  context="Worst performer: [query] taking [time]"
-  session_id="[session]"
-  repository="github.com/org/repo"
+mcp__memory__memory_create operation="store_decision" options='{"decision":"Query performance grade: [A-F]","rationale":"Found [X] slow queries, [Y] missing indexes, [Z] N+1 patterns","context":"Worst performer: [query] taking [time]","session_id":"database-researcher-$(date +%s)","repository":"github.com/org/repo"}'
 ```
 
 ## 4. Data Integrity & Normalization
@@ -201,11 +194,10 @@ grep -r "trim\|lower\|upper\|replace" --include="*.{sql,js,ts,go,py}" . | grep -
 ```
 
 ```
-memory_store_chunk
-  content="Normalization issues: [list]. Missing constraints: [count]. Data quality risks: [list]"
-  session_id="[session]"
-  repository="github.com/org/repo"
-  tags=["database", "integrity", "normalization"]
+mcp__memory__memory_create operation="store_chunk" options='{"content":"Normalization issues: [list]. Missing constraints: [count]. Data quality risks: [list]","session_id":"database-researcher-$(date +%s)","repository":"github.com/org/repo","tags":["database","integrity","normalization"]}'
+
+# Mark schema validation as refreshed
+mcp__memory__memory_update operation="mark_refreshed" options='{"chunk_id":"[schema_chunk_id]","validation_notes":"Schema validated and constraints checked","repository":"github.com/org/repo"}'
 ```
 
 ## 5. Migration & Version Control
@@ -276,11 +268,7 @@ grep -r "DATE_TRUNC\|date_part\|EXTRACT.*FROM" --include="*.{sql,js,ts,go,py}" .
 ```
 
 ```
-memory_store_chunk
-  content="Scalability recommendations: [list]. Partition candidates: [tables]. Archive strategy: [needed/exists]"
-  session_id="[session]"
-  repository="github.com/org/repo"
-  tags=["database", "scalability", "partitioning"]
+mcp__memory__memory_create operation="store_chunk" options='{"content":"Scalability recommendations: [list]. Partition candidates: [tables]. Archive strategy: [needed/exists]","session_id":"database-researcher-$(date +%s)","repository":"github.com/org/repo","tags":["database","scalability","partitioning"]}'
 ```
 
 ## 7. Database Analysis Documentation
@@ -856,15 +844,26 @@ monthly: - CLUSTER orders USING idx_orders_created_at; # Physically reorder - pg
 [Provided in Monitoring section]
 ````
 
-### Final Storage
+### Final Storage & Session Completion
 
 ```
-memory_store_chunk
-  content="[Complete database analysis with schema details and optimization plan]"
-  session_id="[session]"
-  repository="github.com/org/repo"
-  tags=["database", "schema", "performance", "analysis-complete"]
-  files_modified=[".claude/DATABASE_ANALYSIS.md", "/migrations/optimization_scripts/*"]
+# Store final database analysis
+mcp__memory__memory_create operation="store_chunk" options='{"content":"[Complete database analysis with schema details and optimization plan]","session_id":"database-researcher-$(date +%s)","repository":"github.com/org/repo","tags":["database","schema","performance","analysis-complete"],"files_modified":[".claude/DATABASE_ANALYSIS.md","/migrations/optimization_scripts/*"]}'
+
+# Create database analysis thread
+mcp__memory__memory_create operation="create_thread" options='{"name":"Database Analysis & Optimization","description":"Complete database schema analysis with performance optimization recommendations","chunk_ids":["[connection_chunk_id]","[schema_chunk_id]","[performance_chunk_id]","[scalability_chunk_id]"],"repository":"github.com/org/repo"}'
+
+# Create relationships between database components
+mcp__memory__memory_create operation="create_relationship" options='{"source_chunk_id":"[schema_chunk_id]","target_chunk_id":"[performance_chunk_id]","relation_type":"affects","repository":"github.com/org/repo"}'
+
+# Generate citations for database recommendations
+mcp__memory__memory_system operation="generate_citations" options='{"query":"database optimization recommendations","chunk_ids":["[all_db_chunk_ids]"],"repository":"github.com/org/repo"}'
+
+# Analyze workflow completion
+mcp__memory__memory_tasks operation="workflow_analyze" options='{"session_id":"database-researcher-$(date +%s)","repository":"github.com/org/repo"}'
+
+# End database analysis session
+mcp__memory__memory_tasks operation="session_end" options='{"session_id":"database-researcher-$(date +%s)","repository":"github.com/org/repo"}'
 ```
 
 ## Execution Flow

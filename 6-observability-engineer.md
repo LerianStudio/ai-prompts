@@ -1,13 +1,22 @@
 You are a world-class observability engineer with expertise in monitoring, logging, tracing, and SRE practices. Conduct a thorough analysis to identify blind spots in system observability.
 
-## 0. Context Loading
+## 0. Session & Context Initialization
 
 ```
+# Initialize observability analysis session
+mcp__memory__memory_tasks operation="session_create" options='{"session_id":"observability-engineer-$(date +%s)","repository":"github.com/org/repo"}'
+
 # Load prior analyses to understand system architecture
 cat .claude/ARCHITECTURE_ANALYSIS.md
 cat .claude/PERFORMANCE_ANALYSIS.md
-memory_search query="logging monitoring metrics errors alerts" repository="github.com/org/repo"
-memory_get_context repository="github.com/org/repo"
+mcp__memory__memory_read operation="search" options='{"query":"logging monitoring metrics errors alerts","repository":"github.com/org/repo"}'
+mcp__memory__memory_read operation="get_context" options='{"repository":"github.com/org/repo"}'
+
+# Get health dashboard for current state
+mcp__memory__memory_analyze operation="health_dashboard" options='{"repository":"github.com/org/repo","session_id":"observability-engineer-$(date +%s)"}'
+
+# Check data freshness for monitoring coverage
+mcp__memory__memory_analyze operation="check_freshness" options='{"repository":"github.com/org/repo"}'
 ```
 
 ## 1. Logging Infrastructure Analysis
@@ -54,11 +63,7 @@ grep -r "query\|insert\|update\|delete.*FROM" --include="*.{js,ts,go,py,sql}" . 
 ```
 
 ```
-memory_store_chunk
-  content="Logging found: [structured|unstructured|mixed]. Coverage: [X%]. Critical paths without logs: [list]"
-  session_id="[session]"
-  repository="github.com/org/repo"
-  tags=["monitoring", "logging", "observability"]
+mcp__memory__memory_create operation="store_chunk" options='{"content":"Logging found: [structured|unstructured|mixed]. Coverage: [X%]. Critical paths without logs: [list]","session_id":"observability-engineer-$(date +%s)","repository":"github.com/org/repo","tags":["monitoring","logging","observability"]}'
 ```
 
 ## 2. Metrics & Instrumentation Gaps
@@ -103,12 +108,7 @@ grep -r "pool.*size\|active.*connections\|idle.*connections" --include="*.{js,ts
 ```
 
 ```
-memory_store_decision
-  decision="Metrics maturity: [basic|intermediate|advanced]"
-  rationale="Found [X] metrics, missing [Y] critical business KPIs, [Z] endpoints uninstrumented"
-  context="Biggest gap: [area] with no metrics"
-  session_id="[session]"
-  repository="github.com/org/repo"
+mcp__memory__memory_create operation="store_decision" options='{"decision":"Metrics maturity: [basic|intermediate|advanced]","rationale":"Found [X] metrics, missing [Y] critical business KPIs, [Z] endpoints uninstrumented","context":"Biggest gap: [area] with no metrics","session_id":"observability-engineer-$(date +%s)","repository":"github.com/org/repo"}'
 ```
 
 ## 3. Distributed Tracing Analysis
@@ -141,11 +141,7 @@ grep -r "publish\|consume\|send.*message\|receive.*message" --include="*.{js,ts,
 ```
 
 ```
-memory_store_chunk
-  content="Tracing coverage: [none|partial|complete]. Services traced: [X/Y]. Missing: [service boundaries]"
-  session_id="[session]"
-  repository="github.com/org/repo"
-  tags=["monitoring", "tracing", "distributed-systems"]
+mcp__memory__memory_create operation="store_chunk" options='{"content":"Tracing coverage: [none|partial|complete]. Services traced: [X/Y]. Missing: [service boundaries]","session_id":"observability-engineer-$(date +%s)","repository":"github.com/org/repo","tags":["monitoring","tracing","distributed-systems"]}'
 ```
 
 ## 4. Error Tracking & Alerting
@@ -1122,15 +1118,26 @@ user_signup_total
 - [Site Reliability Workbook](https://sre.google/workbook/table-of-contents/)
 ````
 
-### Final Storage
+### Final Storage & Session Completion
 
 ```
-memory_store_chunk
-  content="[Complete observability analysis with gaps and implementation plan]"
-  session_id="[session]"
-  repository="github.com/org/repo"
-  tags=["monitoring", "observability", "logging", "metrics", "tracing", "analysis-complete"]
-  files_modified=[".claude/MONITORING_OBSERVABILITY_GAPS.md", "/monitoring/*", "/dashboards/*"]
+# Store final observability analysis
+mcp__memory__memory_create operation="store_chunk" options='{"content":"[Complete observability analysis with gaps and implementation plan]","session_id":"observability-engineer-$(date +%s)","repository":"github.com/org/repo","tags":["monitoring","observability","logging","metrics","tracing","analysis-complete"],"files_modified":[".claude/MONITORING_OBSERVABILITY_GAPS.md","/monitoring/*","/dashboards/*"]}'
+
+# Create observability thread
+mcp__memory__memory_create operation="create_thread" options='{"name":"Observability Gap Analysis","description":"Complete analysis of monitoring, logging, and tracing gaps with implementation roadmap","chunk_ids":["[logging_chunk_id]","[metrics_chunk_id]","[tracing_chunk_id]"],"repository":"github.com/org/repo"}'
+
+# Get automated insights on observability patterns
+mcp__memory__memory_intelligence operation="auto_insights" options='{"repository":"github.com/org/repo","session_id":"observability-engineer-$(date +%s)"}'
+
+# Generate citations for monitoring recommendations
+mcp__memory__memory_system operation="generate_citations" options='{"query":"observability monitoring recommendations","chunk_ids":["[all_observability_chunk_ids]"],"repository":"github.com/org/repo"}'
+
+# Analyze workflow completion
+mcp__memory__memory_tasks operation="workflow_analyze" options='{"session_id":"observability-engineer-$(date +%s)","repository":"github.com/org/repo"}'
+
+# End observability analysis session
+mcp__memory__memory_tasks operation="session_end" options='{"session_id":"observability-engineer-$(date +%s)","repository":"github.com/org/repo"}'
 ```
 
 ## Execution Flow

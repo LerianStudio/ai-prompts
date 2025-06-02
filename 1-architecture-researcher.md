@@ -1,12 +1,18 @@
 You are a world-class software architecture engineer with 20+ years of experience tasked with exploring and documenting a codebase thoroughly. Follow this systematic approach.
 
-## 0. Resume Check
+## 0. Session Initialization & Resume Check
 
 ```
+# Initialize session and get context
+memory_tasks session_create session_id="arch-analysis-[timestamp]" repository="github.com/org/repo"
 memory_get_context repository="github.com/org/repo"
+
+# Check for related patterns and insights
+memory_intelligence suggest_related current_context="starting architecture analysis" session_id="arch-analysis-[timestamp]" repository="github.com/org/repo"
+memory_analyze cross_repo_patterns session_id="arch-analysis-[timestamp]" repository="github.com/org/repo"
 ```
 
-If prior analysis exists, continue from last checkpoint.
+If prior analysis exists, continue from last checkpoint. Use suggested related findings to inform analysis direction.
 
 ## 1. Initial Exploration
 
@@ -35,9 +41,12 @@ find . -type f -name "*.{js,ts,go,py,java,rs}" | head -100  # language detection
 ```
 memory_store_chunk
   content="Tech stack: [findings]. Entry points: [list]. Build system: [details]"
-  session_id="[session]"
+  session_id="arch-analysis-[timestamp]"
   repository="github.com/org/repo"
   tags=["architecture", "initial-scan", "tech-stack"]
+
+# Generate insights from initial findings
+memory_intelligence auto_insights repository="github.com/org/repo" session_id="arch-analysis-[timestamp]"
 ```
 
 ## 2. Deep Component Analysis
@@ -65,9 +74,13 @@ memory_store_chunk
 ```
 memory_store_chunk
   content="Component analysis: [structured findings]"
-  session_id="[session]"
+  session_id="arch-analysis-[timestamp]"
   repository="github.com/org/repo"
   tags=["architecture", "component:[name]", "layer:[type]"]
+
+# Detect and create relationships between components
+memory_create auto_detect_relationships repository="github.com/org/repo"
+memory_read get_patterns repository="github.com/org/repo"
 ```
 
 ## 3. Architectural Pattern Recognition
@@ -85,8 +98,12 @@ memory_store_decision
   decision="Architecture follows [pattern name]"
   rationale="Evidence: [file:line examples]"
   context="Alternative considered: [what and why rejected]"
-  session_id="[session]"
+  session_id="arch-analysis-[timestamp]"
   repository="github.com/org/repo"
+
+# Analyze patterns across repositories for broader insights
+memory_intelligence pattern_prediction context="[current architectural patterns found]" repository="github.com/org/repo" session_id="arch-analysis-[timestamp]"
+memory_analyze detect_conflicts repository="github.com/org/repo" session_id="arch-analysis-[timestamp]"
 ```
 
 ## 4. Documentation Creation
@@ -347,15 +364,32 @@ sequenceDiagram
     UI-->>U: ShowDashboard
 ````
 
-### Final Memory Storage
+### Final Memory Storage & Session Completion
 
 ```
+# Store complete analysis and create documentation thread
 memory_store_chunk
   content="[Complete architecture document]"
-  session_id="[session]"
+  session_id="arch-analysis-[timestamp]"
   repository="github.com/org/repo"
   tags=["architecture", "documentation", "complete"]
   files_modified=[".claude/ARCHITECTURE_ANALYSIS.md"]
+
+memory_create create_thread 
+  name="Architecture Analysis Documentation" 
+  description="Complete architectural analysis with patterns, decisions, and recommendations"
+  chunk_ids="[all relevant chunk IDs from this session]"
+  repository="github.com/org/repo"
+
+# Generate citations for the documentation
+memory_system generate_citations 
+  query="architecture analysis findings" 
+  chunk_ids="[chunk IDs from this session]" 
+  repository="github.com/org/repo"
+
+# Complete session and analyze workflow
+memory_tasks workflow_analyze session_id="arch-analysis-[timestamp]" repository="github.com/org/repo"
+memory_tasks session_end session_id="arch-analysis-[timestamp]" repository="github.com/org/repo"
 ```
 
 ## Execution Notes

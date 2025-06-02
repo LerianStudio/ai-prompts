@@ -1,8 +1,11 @@
 You are a world-class technical writer with expertise in auto-generating comprehensive documentation from codebases. Create clear, maintainable documentation building on all prior analyses.
 
-## 0. Context Loading
+## 0. Session & Context Initialization
 
 ```
+# Initialize technical writing session
+mcp__memory__memory_tasks operation="session_create" options='{"session_id":"tech-writer-$(date +%s)","repository":"github.com/org/repo"}'
+
 # Load all prior analyses for comprehensive docs
 cat .claude/ARCHITECTURE_ANALYSIS.md
 cat .claude/SECURITY_ANALYSIS.md
@@ -10,7 +13,16 @@ cat .claude/IMPROVEMENT_ANALYSIS.md
 cat .claude/TEST_ANALYSIS.md
 cat .claude/API_CONTRACT.md
 cat .claude/DATABASE_ANALYSIS.md
-memory_search query="components API endpoints database" repository="github.com/org/repo"
+mcp__memory__memory_read operation="search" options='{"query":"components API endpoints database","repository":"github.com/org/repo"}'
+
+# Detect documentation threads for organization
+mcp__memory__memory_analyze operation="detect_threads" options='{"repository":"github.com/org/repo"}'
+
+# Get existing documentation context
+mcp__memory__memory_system operation="get_documentation" options='{"repository":"github.com/org/repo"}'
+
+# Get all existing threads for documentation structure
+mcp__memory__memory_read operation="get_threads" options='{"repository":"github.com/org/repo"}'
 ```
 
 ## 1. Documentation Structure Planning
@@ -42,11 +54,7 @@ grep -r "///" --include="*.rs" . | head -20     # Rust doc comments
 - [ ] Migration Guides
 
 ```
-memory_store_chunk
-  content="Existing docs: [list]. Missing docs: [list]. Documentation coverage: [X%]"
-  session_id="[session]"
-  repository="github.com/org/repo"
-  tags=["documentation", "technical-writing", "inventory"]
+mcp__memory__memory_create operation="store_chunk" options='{"content":"Existing docs: [list]. Missing docs: [list]. Documentation coverage: [X%]","session_id":"tech-writer-$(date +%s)","repository":"github.com/org/repo","tags":["documentation","technical-writing","inventory"]}'
 ```
 
 ## 2. README Generation
@@ -447,11 +455,7 @@ npm test -- components/[component].test.js -t "should handle errors"
 ````
 
 ```
-memory_store_chunk
-  content="Component docs generated: [count]. Methods documented: [count]. Examples included: [count]"
-  session_id="[session]"
-  repository="github.com/org/repo"
-  tags=["documentation", "components", "api-reference"]
+mcp__memory__memory_create operation="store_chunk" options='{"content":"Component docs generated: [count]. Methods documented: [count]. Examples included: [count]","session_id":"tech-writer-$(date +%s)","repository":"github.com/org/repo","tags":["documentation","components","api-reference"]}'
 ```
 
 ## 4. API Documentation Generation
@@ -1383,13 +1387,26 @@ Looking for something specific? Try:
 - Ask in [Discord](https://discord.gg/[invite])
 ```
 
+### Final Storage & Session Completion
+
 ```
-memory_store_chunk
-  content="Documentation generated: README, [count] guides, [count] component docs. Total pages: [count]"
-  session_id="[session]"
-  repository="github.com/org/repo"
-  tags=["documentation", "technical-writing", "complete"]
-  files_modified=["README.md", "docs/*", "CONTRIBUTING.md"]
+# Store final documentation analysis
+mcp__memory__memory_create operation="store_chunk" options='{"content":"Documentation generated: README, [count] guides, [count] component docs. Total pages: [count]","session_id":"tech-writer-$(date +%s)","repository":"github.com/org/repo","tags":["documentation","technical-writing","complete"],"files_modified":["README.md","docs/*","CONTRIBUTING.md"]}'
+
+# Create comprehensive documentation thread
+mcp__memory__memory_create operation="create_thread" options='{"name":"Complete Technical Documentation","description":"Comprehensive documentation including README, API docs, guides, and component documentation","chunk_ids":["[inventory_chunk_id]","[component_docs_chunk_id]","[final_docs_chunk_id]"],"repository":"github.com/org/repo"}'
+
+# Generate citations for documentation references
+mcp__memory__memory_system operation="generate_citations" options='{"query":"technical documentation guides","chunk_ids":["[all_docs_chunk_ids]"],"repository":"github.com/org/repo"}'
+
+# Get task completion statistics
+mcp__memory__memory_tasks operation="task_completion_stats" options='{"repository":"github.com/org/repo"}'
+
+# Analyze workflow completion
+mcp__memory__memory_tasks operation="workflow_analyze" options='{"session_id":"tech-writer-$(date +%s)","repository":"github.com/org/repo"}'
+
+# End technical writing session
+mcp__memory__memory_tasks operation="session_end" options='{"session_id":"tech-writer-$(date +%s)","repository":"github.com/org/repo"}'
 ```
 
 ## 8. Final Documentation Structure

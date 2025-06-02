@@ -1,12 +1,18 @@
 You are a world-class test engineer with expertise in test-driven development, code coverage analysis, and quality assurance. Conduct a thorough test analysis building on the existing architecture documentation.
 
-## 0. Context Loading
+## 0. Session & Context Initialization
 
 ```
+# Initialize test analysis session
+mcp__memory__memory_tasks operation="session_create" options='{"session_id":"test-researcher-$(date +%s)","repository":"github.com/org/repo"}'
+
 # Load prior architecture analysis
 cat .claude/ARCHITECTURE_ANALYSIS.md
-memory_search query="architecture components endpoints" repository="github.com/org/repo"
-memory_get_context repository="github.com/org/repo"
+mcp__memory__memory_read operation="search" options='{"query":"architecture components endpoints","repository":"github.com/org/repo"}'
+mcp__memory__memory_read operation="get_context" options='{"repository":"github.com/org/repo"}'
+
+# Find similar bug patterns across repositories
+mcp__memory__memory_read operation="find_similar" options='{"problem":"test coverage gaps and quality issues","repository":"github.com/org/repo"}'
 ```
 
 ## 1. Test Discovery & Mapping
@@ -37,11 +43,7 @@ done
 ```
 
 ```
-memory_store_chunk
-  content="Test framework: [detected]. Coverage: [X%]. Test files: [count]. Untested files: [list]"
-  session_id="[session]"
-  repository="github.com/org/repo"
-  tags=["testing", "coverage", "test-discovery"]
+mcp__memory__memory_create operation="store_chunk" options='{"content":"Test framework: [detected]. Coverage: [X%]. Test files: [count]. Untested files: [list]","session_id":"test-researcher-$(date +%s)","repository":"github.com/org/repo","tags":["testing","coverage","test-discovery"]}'
 ```
 
 ## 2. Coverage Analysis
@@ -75,11 +77,7 @@ grep -r "class\|function\|const.*=" --include="*.{js,ts,go,py}" . | grep -v test
 ```
 
 ```
-memory_store_chunk
-  content="Critical paths without tests: [list]. Coverage by component: [breakdown]"
-  session_id="[session]"
-  repository="github.com/org/repo"
-  tags=["testing", "coverage-gaps", "critical-paths"]
+mcp__memory__memory_create operation="store_chunk" options='{"content":"Critical paths without tests: [list]. Coverage by component: [breakdown]","session_id":"test-researcher-$(date +%s)","repository":"github.com/org/repo","tags":["testing","coverage-gaps","critical-paths"]}'
 ```
 
 ## 3. Test Quality Assessment
@@ -113,12 +111,7 @@ grep -r "beforeEach\|beforeAll\|setup" --include="*.{test,spec}.*" . | sort | un
 ```
 
 ```
-memory_store_decision
-  decision="Test quality grade: [A-F]"
-  rationale="Found [X] test smells, [Y]% duplicate setup code, [Z] flaky tests"
-  context="Most problematic: [test file] with [issues]"
-  session_id="[session]"
-  repository="github.com/org/repo"
+mcp__memory__memory_create operation="store_decision" options='{"decision":"Test quality grade: [A-F]","rationale":"Found [X] test smells, [Y]% duplicate setup code, [Z] flaky tests","context":"Most problematic: [test file] with [issues]","session_id":"test-researcher-$(date +%s)","repository":"github.com/org/repo"}'
 ```
 
 ## 4. Test Execution Analysis
@@ -213,11 +206,7 @@ describe("POST /api/users", () => {
 ```
 
 ```
-memory_store_chunk
-  content="Test generation targets: [prioritized list]. Templates generated: [count]"
-  session_id="[session]"
-  repository="github.com/org/repo"
-  tags=["testing", "test-generation", "templates"]
+mcp__memory__memory_create operation="store_chunk" options='{"content":"Test generation targets: [prioritized list]. Templates generated: [count]","session_id":"test-researcher-$(date +%s)","repository":"github.com/org/repo","tags":["testing","test-generation","templates"]}'
 ```
 
 ## 6. Test Strategy Recommendations
@@ -699,16 +688,28 @@ npm test -- --coverage --coverageReporters=html
 
 ```
 
-### Final Storage
+### Final Storage & Session Completion
 ```
+# Store final test analysis
+mcp__memory__memory_create operation="store_chunk" options='{"content":"[Complete test analysis with coverage data and quality metrics]","session_id":"test-researcher-$(date +%s)","repository":"github.com/org/repo","tags":["testing","analysis-complete","coverage","quality"],"files_modified":[".claude/TEST_ANALYSIS.md","/tests/generated/*"]}'
 
-memory_store_chunk
-content="[Complete test analysis with coverage data and quality metrics]"
-session_id="[session]"
-repository="github.com/org/repo"
-tags=["testing", "analysis-complete", "coverage", "quality"]
-files_modified=[".claude/TEST_ANALYSIS.md", "/tests/generated/*"]
+# Create testing analysis thread
+mcp__memory__memory_create operation="create_thread" options='{"name":"Test Coverage & Quality Analysis","description":"Complete testing analysis with coverage gaps, quality metrics, and generation plan","chunk_ids":["[test_discovery_chunk_id]","[coverage_chunk_id]","[quality_chunk_id]","[generation_chunk_id]"],"repository":"github.com/org/repo"}'
 
+# Find similar bug patterns for test improvement
+mcp__memory__memory_read operation="find_similar" options='{"problem":"test flakiness and coverage gaps","repository":"github.com/org/repo"}'
+
+# Get task completion statistics for testing
+mcp__memory__memory_tasks operation="task_completion_stats" options='{"repository":"github.com/org/repo"}'
+
+# Generate citations for testing best practices
+mcp__memory__memory_system operation="generate_citations" options='{"query":"test coverage quality recommendations","chunk_ids":["[all_test_chunk_ids]"],"repository":"github.com/org/repo"}'
+
+# Analyze workflow completion
+mcp__memory__memory_tasks operation="workflow_analyze" options='{"session_id":"test-researcher-$(date +%s)","repository":"github.com/org/repo"}'
+
+# End test analysis session
+mcp__memory__memory_tasks operation="session_end" options='{"session_id":"test-researcher-$(date +%s)","repository":"github.com/org/repo"}'
 ```
 
 ## Execution Notes

@@ -1,14 +1,20 @@
 You are a world-class privacy engineer and data protection officer with expertise in GDPR, CCPA, and data governance. Conduct a thorough privacy audit building on the existing architecture documentation.
 
-## 0. Context Loading
+## 0. Session & Context Initialization
 
 ```
+# Initialize privacy analysis session
+mcp__memory__memory_tasks operation="session_create" options='{"session_id":"privacy-gdpr-$(date +%s)","repository":"github.com/org/repo"}'
+
 # Load prior analyses to understand data flow
 cat .claude/ARCHITECTURE_ANALYSIS.md
 cat .claude/DATABASE_ANALYSIS.md
 cat .claude/API_CONTRACT.md
-memory_search query="data model user information PII" repository="github.com/org/repo"
-memory_get_context repository="github.com/org/repo"
+mcp__memory__memory_read operation="search" options='{"query":"data model user information PII","repository":"github.com/org/repo"}'
+mcp__memory__memory_read operation="get_context" options='{"repository":"github.com/org/repo"}'
+
+# Detect potential conflicts with privacy regulations
+mcp__memory__memory_analyze operation="detect_conflicts" options='{"repository":"github.com/org/repo"}'
 ```
 
 ## 1. PII Discovery & Classification
@@ -39,11 +45,7 @@ grep -r "@Column\|@Field\|property\|field" --include="*.{ts,js,java,py}" . | gre
 ```
 
 ```
-memory_store_chunk
-  content="PII fields found: [list]. Data categories: [personal|sensitive|health|financial]. Risk level: [high|medium|low]"
-  session_id="[session]"
-  repository="github.com/org/repo"
-  tags=["privacy", "pii", "data-classification"]
+mcp__memory__memory_create operation="store_chunk" options='{"content":"PII fields found: [list]. Data categories: [personal|sensitive|health|financial]. Risk level: [high|medium|low]","session_id":"privacy-gdpr-$(date +%s)","repository":"github.com/org/repo","tags":["privacy","pii","data-classification"]}'
 ```
 
 ## 2. Data Flow Mapping
@@ -82,11 +84,7 @@ grep -r "SELECT \*.*FROM.*users\|customers" --include="*.{sql,js,ts,go,py}" .
 ```
 
 ```
-memory_store_chunk
-  content="Data flows: [entry points] → [storage] → [processing] → [export]. Third parties: [list]. Tracking: [analytics tools]"
-  session_id="[session]"
-  repository="github.com/org/repo"
-  tags=["privacy", "data-flow", "third-party"]
+mcp__memory__memory_create operation="store_chunk" options='{"content":"Data flows: [entry points] → [storage] → [processing] → [export]. Third parties: [list]. Tracking: [analytics tools]","session_id":"privacy-gdpr-$(date +%s)","repository":"github.com/org/repo","tags":["privacy","data-flow","third-party"]}'
 ```
 
 ## 3. Consent & Legal Basis Analysis
@@ -113,12 +111,7 @@ grep -r "marketing\|promotional\|newsletter\|subscribe" --include="*.{js,ts,py,g
 ```
 
 ```
-memory_store_decision
-  decision="Consent compliance: [compliant|partial|non-compliant]"
-  rationale="Found [X] data collection points, [Y] have consent, [Z] missing legal basis"
-  context="Critical gaps: [list of unconsented data collection]"
-  session_id="[session]"
-  repository="github.com/org/repo"
+mcp__memory__memory_create operation="store_decision" options='{"decision":"Consent compliance: [compliant|partial|non-compliant]","rationale":"Found [X] data collection points, [Y] have consent, [Z] missing legal basis","context":"Critical gaps: [list of unconsented data collection]","session_id":"privacy-gdpr-$(date +%s)","repository":"github.com/org/repo"}'
 ```
 
 ## 4. Data Retention & Deletion
@@ -149,11 +142,7 @@ grep -r "references\|foreign.*key\|belongsTo\|hasMany" --include="*.{js,ts,go,py
 ```
 
 ```
-memory_store_chunk
-  content="Retention policies: [found/missing]. Deletion coverage: [X%]. RTBF implementation: [complete/partial/missing]"
-  session_id="[session]"
-  repository="github.com/org/repo"
-  tags=["privacy", "retention", "deletion", "rtbf"]
+mcp__memory__memory_create operation="store_chunk" options='{"content":"Retention policies: [found/missing]. Deletion coverage: [X%]. RTBF implementation: [complete/partial/missing]","session_id":"privacy-gdpr-$(date +%s)","repository":"github.com/org/repo","tags":["privacy","retention","deletion","rtbf"]}'
 ```
 
 ## 5. Security & Encryption Analysis
@@ -948,15 +937,26 @@ FROM users;
 [Include detailed checklist for ongoing compliance]
 ````
 
-### Final Storage
+### Final Storage & Session Completion
 
 ```
-memory_store_chunk
-  content="[Complete privacy audit with PII inventory and compliance gaps]"
-  session_id="[session]"
-  repository="github.com/org/repo"
-  tags=["privacy", "gdpr", "ccpa", "pii", "compliance", "audit-complete"]
-  files_modified=[".claude/DATA_PRIVACY_AUDIT.md", "/privacy/*"]
+# Store final privacy audit
+mcp__memory__memory_create operation="store_chunk" options='{"content":"[Complete privacy audit with PII inventory and compliance gaps]","session_id":"privacy-gdpr-$(date +%s)","repository":"github.com/org/repo","tags":["privacy","gdpr","ccpa","pii","compliance","audit-complete"],"files_modified":[".claude/DATA_PRIVACY_AUDIT.md","/privacy/*"]}'
+
+# Create privacy compliance thread
+mcp__memory__memory_create operation="create_thread" options='{"name":"Privacy & GDPR Compliance Audit","description":"Complete privacy audit with PII classification, data flow analysis, and compliance gap assessment","chunk_ids":["[pii_chunk_id]","[data_flow_chunk_id]","[consent_chunk_id]","[retention_chunk_id]"],"repository":"github.com/org/repo"}'
+
+# Detect regulation conflicts
+mcp__memory__memory_analyze operation="detect_conflicts" options='{"repository":"github.com/org/repo"}'
+
+# Generate citations for legal references
+mcp__memory__memory_system operation="generate_citations" options='{"query":"GDPR CCPA privacy regulations","chunk_ids":["[all_privacy_chunk_ids]"],"repository":"github.com/org/repo"}'
+
+# Analyze workflow completion
+mcp__memory__memory_tasks operation="workflow_analyze" options='{"session_id":"privacy-gdpr-$(date +%s)","repository":"github.com/org/repo"}'
+
+# End privacy analysis session
+mcp__memory__memory_tasks operation="session_end" options='{"session_id":"privacy-gdpr-$(date +%s)","repository":"github.com/org/repo"}'
 ```
 
 ## Execution Flow

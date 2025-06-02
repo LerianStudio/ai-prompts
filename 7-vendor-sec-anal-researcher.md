@@ -1,13 +1,22 @@
 You are a world-class software supply chain security expert with expertise in dependency management, vulnerability assessment, and technical debt quantification. Conduct a thorough dependency health analysis.
 
-## 0. Context Loading
+## 0. Session & Context Initialization
 
 ```
+# Initialize vendor security analysis session
+mcp__memory__memory_tasks operation="session_create" options='{"session_id":"vendor-sec-anal-$(date +%s)","repository":"github.com/org/repo"}'
+
 # Load prior analyses
 cat .claude/ARCHITECTURE_ANALYSIS.md
 cat .claude/SECURITY_ANALYSIS.md
-memory_search query="dependencies packages libraries frameworks" repository="github.com/org/repo"
-memory_get_context repository="github.com/org/repo"
+mcp__memory__memory_read operation="search" options='{"query":"dependencies packages libraries frameworks","repository":"github.com/org/repo"}'
+mcp__memory__memory_read operation="get_context" options='{"repository":"github.com/org/repo"}'
+
+# Analyze cross-repo insights for vendor patterns
+mcp__memory__memory_analyze operation="cross_repo_insights" options='{"repository":"github.com/org/repo"}'
+
+# Export project data for compliance reporting
+mcp__memory__memory_transfer operation="export_project" options='{"repository":"github.com/org/repo","session_id":"vendor-sec-anal-$(date +%s)","format":"json","include_vectors":false}'
 ```
 
 ## 1. Dependency Discovery & Inventory
@@ -40,11 +49,7 @@ npm list | wc -l  # Total including transitive
 ```
 
 ```
-memory_store_chunk
-  content="Package managers: [list]. Total deps: [count]. Direct: [X], Transitive: [Y]. Languages: [list]"
-  session_id="[session]"
-  repository="github.com/org/repo"
-  tags=["dependencies", "inventory", "package-managers"]
+mcp__memory__memory_create operation="store_chunk" options='{"content":"Package managers: [list]. Total deps: [count]. Direct: [X], Transitive: [Y]. Languages: [list]","session_id":"vendor-sec-anal-$(date +%s)","repository":"github.com/org/repo","tags":["dependencies","inventory","package-managers"]}'
 ```
 
 ## 2. Security Vulnerability Scanning
@@ -98,11 +103,7 @@ const criticalVulns = auditData.vulnerabilities
 ```
 
 ```
-memory_store_chunk
-  content="Vulnerabilities found: [count]. Critical: [X], High: [Y]. Direct deps affected: [list]"
-  session_id="[session]"
-  repository="github.com/org/repo"
-  tags=["dependencies", "security", "vulnerabilities", "cve"]
+mcp__memory__memory_create operation="store_chunk" options='{"content":"Vulnerabilities found: [count]. Critical: [X], High: [Y]. Direct deps affected: [list]","session_id":"vendor-sec-anal-$(date +%s)","repository":"github.com/org/repo","tags":["dependencies","security","vulnerabilities","cve"]}'
 ```
 
 ## 3. Maintenance & Abandonment Detection
@@ -164,12 +165,7 @@ npm list --depth=0 | grep -i "deprecated"
 ```
 
 ```
-memory_store_decision
-  decision="Dependency health: [healthy|at-risk|critical]"
-  rationale="Found [X] abandoned packages, [Y] with single maintainer, [Z] deprecated"
-  context="Most critical: [package] with [issue]"
-  session_id="[session]"
-  repository="github.com/org/repo"
+mcp__memory__memory_create operation="store_decision" options='{"decision":"Dependency health: [healthy|at-risk|critical]","rationale":"Found [X] abandoned packages, [Y] with single maintainer, [Z] deprecated","context":"Most critical: [package] with [issue]","session_id":"vendor-sec-anal-$(date +%s)","repository":"github.com/org/repo"}'
 ```
 
 ## 4. License Compliance Analysis
@@ -202,11 +198,7 @@ jq '. | to_entries | .[] | select(.value.licenses | contains("GPL"))' licenses.j
 ```
 
 ```
-memory_store_chunk
-  content="Licenses found: [list with counts]. Incompatible: [list]. Unknown: [count]"
-  session_id="[session]"
-  repository="github.com/org/repo"
-  tags=["dependencies", "licenses", "compliance"]
+mcp__memory__memory_create operation="store_chunk" options='{"content":"Licenses found: [list with counts]. Incompatible: [list]. Unknown: [count]","session_id":"vendor-sec-anal-$(date +%s)","repository":"github.com/org/repo","tags":["dependencies","licenses","compliance"]}'
 ```
 
 ## 5. Update Strategy Analysis
@@ -996,15 +988,29 @@ npm run deps:alternatives -- lodash
 - [License Compatibility](https://opensource.guide/legal/)
 ````
 
-### Final Storage
+### Final Storage & Session Completion
 
 ```
-memory_store_chunk
-  content="[Complete dependency analysis with vulnerabilities and update strategy]"
-  session_id="[session]"
-  repository="github.com/org/repo"
-  tags=["dependencies", "security", "licenses", "technical-debt", "analysis-complete"]
-  files_modified=[".claude/DEPENDENCY_HEALTH.md", "scripts/dependency-monitor.js"]
+# Store final dependency analysis
+mcp__memory__memory_create operation="store_chunk" options='{"content":"[Complete dependency analysis with vulnerabilities and update strategy]","session_id":"vendor-sec-anal-$(date +%s)","repository":"github.com/org/repo","tags":["dependencies","security","licenses","technical-debt","analysis-complete"],"files_modified":[".claude/DEPENDENCY_HEALTH.md","scripts/dependency-monitor.js"]}'
+
+# Create vendor security thread
+mcp__memory__memory_create operation="create_thread" options='{"name":"Vendor Security & Dependency Analysis","description":"Complete supply chain security analysis with vulnerability assessment and compliance review","chunk_ids":["[inventory_chunk_id]","[vulnerabilities_chunk_id]","[licenses_chunk_id]"],"repository":"github.com/org/repo"}'
+
+# Analyze cross-repo patterns for vendor security
+mcp__memory__memory_analyze operation="cross_repo_patterns" options='{"session_id":"vendor-sec-anal-$(date +%s)","repository":"github.com/org/repo"}'
+
+# Generate citations for compliance documentation
+mcp__memory__memory_system operation="generate_citations" options='{"query":"dependency security vulnerabilities","chunk_ids":["[all_vendor_chunk_ids]"],"repository":"github.com/org/repo"}'
+
+# Get task completion statistics
+mcp__memory__memory_tasks operation="task_completion_stats" options='{"repository":"github.com/org/repo"}'
+
+# Analyze workflow completion
+mcp__memory__memory_tasks operation="workflow_analyze" options='{"session_id":"vendor-sec-anal-$(date +%s)","repository":"github.com/org/repo"}'
+
+# End vendor security analysis session
+mcp__memory__memory_tasks operation="session_end" options='{"session_id":"vendor-sec-anal-$(date +%s)","repository":"github.com/org/repo"}'
 ```
 
 ## Execution Flow

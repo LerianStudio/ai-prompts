@@ -1,12 +1,18 @@
 You are a world-class API architect with expertise in API design, contract testing, and backwards compatibility. Conduct a thorough API contract analysis building on the existing architecture documentation.
 
-## 0. Context Loading
+## 0. Session & Context Initialization
 
 ```
+# Initialize API analysis session
+mcp__memory__memory_tasks operation="session_create" options='{"session_id":"api-architect-$(date +%s)","repository":"github.com/org/repo"}'
+
 # Load prior analyses
 cat .claude/ARCHITECTURE_ANALYSIS.md
-memory_search query="API endpoints routes REST GraphQL" repository="github.com/org/repo"
-memory_get_context repository="github.com/org/repo"
+mcp__memory__memory_read operation="search" options='{"query":"API endpoints routes REST GraphQL","repository":"github.com/org/repo"}'
+mcp__memory__memory_read operation="get_context" options='{"repository":"github.com/org/repo"}'
+
+# Analyze API dependencies and relationships
+mcp__memory__memory_read operation="get_relationships" options='{"chunk_id":"[api_chunk_id]","repository":"github.com/org/repo"}'
 ```
 
 ## 1. API Discovery & Inventory
@@ -36,11 +42,7 @@ find . -name "swagger.*" -o -name "openapi.*" -o -name "*.yaml" -o -name "*.yml"
 ```
 
 ```
-memory_store_chunk
-  content="API types found: [REST|GraphQL|WebSocket|gRPC]. Total endpoints: [count]. Documented: [X%]"
-  session_id="[session]"
-  repository="github.com/org/repo"
-  tags=["api", "contract", "inventory"]
+mcp__memory__memory_create operation="store_chunk" options='{"content":"API types found: [REST|GraphQL|WebSocket|gRPC]. Total endpoints: [count]. Documented: [X%]","session_id":"api-architect-$(date +%s)","repository":"github.com/org/repo","tags":["api","contract","inventory"]}'
 ```
 
 ## 2. Schema & Contract Extraction
@@ -98,11 +100,7 @@ app.post('/api/v1/users',
 ```
 
 ```
-memory_store_chunk
-  content="Endpoints with schemas: [count]. Missing schemas: [list]. Schema formats: [types]"
-  session_id="[session]"
-  repository="github.com/org/repo"
-  tags=["api", "schemas", "contracts"]
+mcp__memory__memory_create operation="store_chunk" options='{"content":"Endpoints with schemas: [count]. Missing schemas: [list]. Schema formats: [types]","session_id":"api-architect-$(date +%s)","repository":"github.com/org/repo","tags":["api","schemas","contracts"]}'
 ```
 
 ## 3. Breaking Change Detection
@@ -148,12 +146,7 @@ interface UserResponse {
 ```
 
 ```
-memory_store_decision
-  decision="API stability: [stable|unstable|breaking]"
-  rationale="Found [X] breaking changes in last [Y] commits"
-  context="Most impacted: [endpoint] with [change type]"
-  session_id="[session]"
-  repository="github.com/org/repo"
+mcp__memory__memory_create operation="store_decision" options='{"decision":"API stability: [stable|unstable|breaking]","rationale":"Found [X] breaking changes in last [Y] commits","context":"Most impacted: [endpoint] with [change type]","session_id":"api-architect-$(date +%s)","repository":"github.com/org/repo"}'
 ```
 
 ## 4. Documentation Validation
@@ -241,11 +234,7 @@ Issues to find:
 ```
 
 ```
-memory_store_chunk
-  content="Naming inconsistencies: [list]. Response patterns: [count]. Standardization needed: [areas]"
-  session_id="[session]"
-  repository="github.com/org/repo"
-  tags=["api", "consistency", "standards"]
+mcp__memory__memory_create operation="store_chunk" options='{"content":"Naming inconsistencies: [list]. Response patterns: [count]. Standardization needed: [areas]","session_id":"api-architect-$(date +%s)","repository":"github.com/org/repo","tags":["api","consistency","standards"]}'
 ```
 
 ## 6. Backwards Compatibility Analysis
@@ -909,16 +898,25 @@ steps: - uses: actions/checkout@v2
 
 ```
 
-### Final Storage
+### Final Storage & Session Completion
 ```
+# Store final API analysis
+mcp__memory__memory_create operation="store_chunk" options='{"content":"[Complete API contract analysis with schemas and compatibility report]","session_id":"api-architect-$(date +%s)","repository":"github.com/org/repo","tags":["api","contracts","analysis-complete","openapi"],"files_modified":[".claude/API_CONTRACT.md","openapi.yaml","/tests/contracts/*"]}'
 
-memory_store_chunk
-content="[Complete API contract analysis with schemas and compatibility report]"
-session_id="[session]"
-repository="github.com/org/repo"
-tags=["api", "contracts", "analysis-complete", "openapi"]
-files_modified=[".claude/API_CONTRACT.md", "openapi.yaml", "/tests/contracts/*"]
+# Create API documentation thread
+mcp__memory__memory_create operation="create_thread" options='{"name":"API Contract Analysis","description":"Complete API contract analysis with schemas, breaking changes, and documentation","chunk_ids":["[api_inventory_chunk_id]","[schema_chunk_id]","[breaking_changes_chunk_id]"],"repository":"github.com/org/repo"}'
 
+# Generate citations for API documentation
+mcp__memory__memory_system operation="generate_citations" options='{"query":"API contracts and schemas","chunk_ids":["[all_api_chunk_ids]"],"repository":"github.com/org/repo"}'
+
+# Create auto-detected relationships between API components
+mcp__memory__memory_create operation="auto_detect_relationships" options='{"repository":"github.com/org/repo"}'
+
+# Analyze session workflow
+mcp__memory__memory_tasks operation="workflow_analyze" options='{"session_id":"api-architect-$(date +%s)","repository":"github.com/org/repo"}'
+
+# End API analysis session
+mcp__memory__memory_tasks operation="session_end" options='{"session_id":"api-architect-$(date +%s)","repository":"github.com/org/repo"}'
 ```
 
 ## Execution Priority

@@ -1,12 +1,21 @@
 You are a world-class product engineer and business analyst with expertise in identifying optimization opportunities, technical debt, and product improvements. Conduct a thorough analysis building on the existing architecture documentation.
 
-## 0. Context Loading
+## 0. Session & Context Initialization
 
 ```
+# Initialize analysis session
+mcp__memory__memory_tasks operation="session_create" options='{"session_id":"biz-analysis-$(date +%s)","repository":"github.com/org/repo"}'
+
 # Load prior architecture analysis
 cat .claude/ARCHITECTURE_ANALYSIS.md
-memory_search query="architecture patterns decisions" repository="github.com/org/repo"
-memory_get_context repository="github.com/org/repo"
+mcp__memory__memory_read operation="search" options='{"query":"architecture patterns decisions","repository":"github.com/org/repo"}'
+mcp__memory__memory_read operation="get_context" options='{"repository":"github.com/org/repo"}'
+
+# Find similar repos for competitive analysis
+mcp__memory__memory_analyze operation="find_similar_repositories" options='{"repository":"github.com/org/repo","session_id":"biz-analysis-$(date +%s)"}'
+
+# Import market data context if available
+# mcp__memory__memory_transfer operation="import_context" options='{"data":"[market analysis data]","repository":"github.com/org/repo","session_id":"biz-analysis-$(date +%s)"}'
 ```
 
 ## 1. Performance Analysis
@@ -41,11 +50,7 @@ grep -r "setTimeout\|setInterval" --include="*.{js,ts}" .
 ```
 
 ```
-memory_store_chunk
-  content="Performance bottlenecks: [findings]. Optimization opportunities: [list with impact]"
-  session_id="[session]"
-  repository="github.com/org/repo"
-  tags=["improvements", "performance", "impact:[high|medium|low]"]
+mcp__memory__memory_create operation="store_chunk" options='{"content":"Performance bottlenecks: [findings]. Optimization opportunities: [list with impact]","session_id":"biz-analysis-$(date +%s)","repository":"github.com/org/repo","tags":["improvements","performance","impact:[high|medium|low]"]}'
 ```
 
 ## 2. Code Quality & Technical Debt
@@ -86,12 +91,7 @@ Issues to identify:
 - [ ] Circular dependencies
 
 ```
-memory_store_decision
-  decision="Tech debt priority: [component]"
-  rationale="High duplication ([X] instances), complexity score [Y]"
-  context="Refactoring would save [Z] hours/month"
-  session_id="[session]"
-  repository="github.com/org/repo"
+mcp__memory__memory_create operation="store_decision" options='{"decision":"Tech debt priority: [component]","rationale":"High duplication ([X] instances), complexity score [Y]","context":"Refactoring would save [Z] hours/month","session_id":"biz-analysis-$(date +%s)","repository":"github.com/org/repo"}'
 ```
 
 ## 3. Business Logic Improvements
@@ -143,11 +143,7 @@ Check for:
 - [ ] Orphaned records possibilities
 
 ```
-memory_store_chunk
-  content="Business logic gaps: [detailed list]. UX improvements: [prioritized list]"
-  session_id="[session]"
-  repository="github.com/org/repo"
-  tags=["improvements", "business-logic", "ux", "data-integrity"]
+mcp__memory__memory_create operation="store_chunk" options='{"content":"Business logic gaps: [detailed list]. UX improvements: [prioritized list]","session_id":"biz-analysis-$(date +%s)","repository":"github.com/org/repo","tags":["improvements","business-logic","ux","data-integrity"]}'
 ```
 
 ## 4. Scalability Analysis
@@ -206,11 +202,7 @@ Check for:
 - [ ] Missing code formatting rules
 
 ```
-memory_store_chunk
-  content="DX improvements: [list]. Estimated productivity gain: [hours/week]"
-  session_id="[session]"
-  repository="github.com/org/repo"
-  tags=["improvements", "developer-experience", "productivity"]
+mcp__memory__memory_create operation="store_chunk" options='{"content":"DX improvements: [list]. Estimated productivity gain: [hours/week]","session_id":"biz-analysis-$(date +%s)","repository":"github.com/org/repo","tags":["improvements","developer-experience","productivity"]}'
 ```
 
 ## 6. Monitoring & Observability
@@ -673,16 +665,22 @@ limit?: number;
 
 ```
 
-### Final Storage
+### Final Storage & Session Completion
 ```
+# Store final analysis
+mcp__memory__memory_create operation="store_chunk" options='{"content":"[Complete improvement analysis with ROI metrics and roadmap]","session_id":"biz-analysis-$(date +%s)","repository":"github.com/org/repo","tags":["improvements","analysis-complete","roadmap"],"files_modified":[".claude/IMPROVEMENT_ANALYSIS.md"]}'
 
-memory_store_chunk
-content="[Complete improvement analysis]"
-session_id="[session]"
-repository="github.com/org/repo"
-tags=["improvements", "analysis-complete", "roadmap"]
-files_modified=[".claude/IMPROVEMENT_ANALYSIS.md"]
+# Create organized thread
+mcp__memory__memory_create operation="create_thread" options='{"name":"Business Improvement Analysis","description":"Complete analysis of optimization opportunities and product improvements","chunk_ids":["[performance_chunk_id]","[tech_debt_chunk_id]","[business_logic_chunk_id]"],"repository":"github.com/org/repo"}'
 
+# Generate citations for recommendations
+mcp__memory__memory_system operation="generate_citations" options='{"query":"improvement recommendations","chunk_ids":["[all_chunk_ids]"],"repository":"github.com/org/repo"}'
+
+# Analyze workflow completion
+mcp__memory__memory_tasks operation="workflow_analyze" options='{"session_id":"biz-analysis-$(date +%s)","repository":"github.com/org/repo"}'
+
+# End session
+mcp__memory__memory_tasks operation="session_end" options='{"session_id":"biz-analysis-$(date +%s)","repository":"github.com/org/repo"}'
 ```
 
 ## Execution Guidelines
