@@ -2,7 +2,7 @@
 
 Complete index of all AI prompts in the LerianStudio ecosystem, organized for systematic codebase analysis.
 
-## 🔗 Main Analysis Chain (00-15)
+## 🔗 Main Analysis Chain (00-16)
 
 Sequential prompts that build upon each other with comprehensive chaining dependencies:
 
@@ -24,6 +24,7 @@ Sequential prompts that build upon each other with comprehensive chaining depend
 | 13 | `13-pre-commit-quality-checks.md` | Quality validation pipeline | Depends on #00-12 |
 | 14 | `14-deployment-preparation.md` | Production cleanup | Depends on #00-13 |
 | 15 | `15-sequence-diagram-visualization.md` | System flow visualization | Depends on #00-14 |
+| 16 | `16-business-workflow-consistency.md` | Business process validation | Depends on #00-15 |
 
 ## 🧠 Memory Management Prompts (m1-m5)
 
@@ -40,7 +41,7 @@ Memory Context Protocol (MCP) integration for session continuity:
 ## 🎯 Usage Patterns
 
 ### Complete System Analysis
-Run prompts **00-15** in sequence for comprehensive codebase analysis:
+Run prompts **00-16** in sequence for comprehensive codebase analysis:
 ```bash
 # Foundation
 claude 00-codebase-overview.md
@@ -49,7 +50,7 @@ claude 00-codebase-overview.md
 claude 01-architecture-analysis.md
 claude 02-security-vulnerability-analysis.md
 claude 03-business-analysis.md
-# ... continue through 15
+# ... continue through 16
 ```
 
 ### Focused Analysis
@@ -91,7 +92,7 @@ All prompts have been optimized for token efficiency:
 
 ## 🔄 Chaining System
 
-Each prompt #1-15 includes:
+Each prompt #1-16 includes:
 - **Dependency checking** on all previous prompt outputs
 - **Output review** capabilities for existing analysis
 - **Cross-reference validation** with comprehensive findings
@@ -107,6 +108,7 @@ Standard output locations for all prompts:
 ├── 2-SECURITY_ANALYSIS.md
 ├── ...
 ├── 15-SEQUENCE_DIAGRAMS.md
+├── 16-BUSINESS_WORKFLOW_CONSISTENCY.md
 ├── components/
 ├── api/
 └── monitoring/
@@ -121,7 +123,7 @@ diagrams/
 ## 🚀 Quick Start
 
 1. **Initialize**: Run `00-codebase-overview.md` for baseline understanding
-2. **Analyze**: Execute sequential prompts 01-15 based on needs
+2. **Analyze**: Execute sequential prompts 01-16 based on needs
 3. **Track**: Use memory prompts m1-m5 for session continuity
 4. **Document**: Outputs organized in `.claude/` directory structure
 5. **Visualize**: Final sequence diagrams in `diagrams/` directory
