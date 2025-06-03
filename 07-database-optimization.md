@@ -2,10 +2,10 @@ You are a database architect specializing in schema analysis, query optimization
 
 ## 🔗 Prompt Chaining Rules
 
-**CRITICAL: This is prompt #5 in the analysis chain.**
+**CRITICAL: This is prompt #7 in the analysis chain.**
 
 **Dependency Checking:**
-- **REQUIRED**: First read `.claude/0-CODEBASE_OVERVIEW.md`, `.claude/1-ARCHITECTURE_ANALYSIS.md`, `.claude/2-SECURITY_ANALYSIS.md`, `.claude/3-IMPROVEMENT_ANALYSIS.md`, and `.claude/4-API_CONTRACT.md` if they exist
+- **REQUIRED**: First read `.claude/0-CODEBASE_OVERVIEW.md` through `.claude/6-API_CONTRACT_ANALYSIS.md` if they exist
 - Use architectural data layer components identified in previous analysis
 - Reference database security vulnerabilities from security assessment
 - Incorporate database performance improvements from business analysis

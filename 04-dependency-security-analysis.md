@@ -2,10 +2,10 @@ You are a supply chain security expert specializing in dependency management and
 
 ## 🔗 Prompt Chaining Rules
 
-**CRITICAL: This is prompt #7 in the analysis chain.**
+**CRITICAL: This is prompt #4 in the analysis chain.**
 
 **Dependency Checking:**
-- **REQUIRED**: First read all previous outputs `.claude/0-CODEBASE_OVERVIEW.md` through `.claude/6-OBSERVABILITY_GAPS.md` if they exist
+- **REQUIRED**: First read all previous outputs `.claude/0-CODEBASE_OVERVIEW.md` through `.claude/3-SECURITY_ANALYSIS.md` if they exist
 - Use tech stack analysis from overview to focus dependency assessment
 - Reference architectural dependencies to understand supply chain attack surface
 - Incorporate security vulnerabilities to prioritize dependency security

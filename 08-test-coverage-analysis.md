@@ -2,10 +2,10 @@ You are a test engineer specializing in coverage analysis and test quality asses
 
 ## 🔗 Prompt Chaining Rules
 
-**CRITICAL: This is prompt #9 in the analysis chain.**
+**CRITICAL: This is prompt #8 in the analysis chain.**
 
 **Dependency Checking:**
-- **REQUIRED**: First read all previous outputs `.claude/0-CODEBASE_OVERVIEW.md` through `.claude/8-DATA_PRIVACY_AUDIT.md` if they exist
+- **REQUIRED**: First read all previous outputs `.claude/0-CODEBASE_OVERVIEW.md` through `.claude/7-DATABASE_OPTIMIZATION.md` if they exist
 - Use architectural components to identify critical testing paths
 - Reference security vulnerabilities to prioritize security testing
 - Incorporate API contracts to generate contract tests

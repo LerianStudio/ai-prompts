@@ -4,18 +4,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-This is a token-optimized AI prompts repository for the LerianStudio ecosystem, containing a complete **16-prompt analysis chain** with comprehensive dependency tracking. The repository provides systematic codebase analysis across multiple engineering disciplines with 50-75% token reduction while maintaining full functionality.
+This is a token-optimized AI prompts repository for the LerianStudio ecosystem, containing a complete **18-prompt analysis chain** with comprehensive dependency tracking. The repository provides systematic codebase analysis across multiple engineering disciplines with 50-75% token reduction while maintaining full functionality.
 
 ## Repository Structure
 
-### Complete Analysis Chain (00-15)
-- **Foundation (00)**: `00-codebase-overview.md` - Initial codebase exploration
-- **Architecture & API (01, 04)**: `01-architecture-analysis.md`, `04-api-contract-analysis.md`
-- **Security & Privacy (02, 07, 08)**: `02-security-vulnerability-analysis.md`, `07-dependency-security-analysis.md`, `08-privacy-compliance-analysis.md`
-- **Business & Testing (03, 09)**: `03-business-analysis.md`, `09-test-coverage-analysis.md`
-- **Infrastructure (05, 06)**: `05-database-optimization.md`, `06-observability-monitoring.md`
-- **Documentation & Quality (10, 11, 12, 13)**: `10-documentation-generation.md`, `11-production-readiness-audit.md`, `12-api-documentation-generator.md`, `13-pre-commit-quality-checks.md`
-- **Deployment & Visualization (14, 15)**: `14-deployment-preparation.md`, `15-sequence-diagram-visualization.md`
+### Complete Analysis Chain (00-17)
+- **Foundation (00-02)**: `00-codebase-overview.md`, `01-architecture-analysis.md`, `02-business-analysis.md`
+- **Security Foundation (03-05)**: `03-security-vulnerability-analysis.md`, `04-dependency-security-analysis.md`, `05-privacy-compliance-analysis.md`
+- **Technical Foundation (06-08)**: `06-api-contract-analysis.md`, `07-database-optimization.md`, `08-test-coverage-analysis.md`
+- **Infrastructure & Quality (09-10)**: `09-observability-monitoring.md`, `10-pre-commit-quality-checks.md`
+- **Documentation & Communication (11-12)**: `11-documentation-generation.md`, `12-api-documentation-generator.md`
+- **Production & Deployment (13-15)**: `13-production-readiness-audit.md`, `14-deployment-preparation.md`, `15-sequence-diagram-visualization.md`
+- **Integration & Planning (16-17)**: `16-business-workflow-consistency.md`, `17-comprehensive-todo-generation.md`
 
 ### Memory Management (m1-m5)
 - **memory-related/**: Memory Context Protocol (MCP) integration prompts for session continuity and task tracking
@@ -49,7 +49,7 @@ Use the full 16-prompt chain for comprehensive codebase analysis:
 ```bash
 claude 00-codebase-overview.md                    # Foundation
 claude 01-architecture-analysis.md                # System design (uses #00)
-claude 02-security-vulnerability-analysis.md      # Security (uses #00-01)
+claude 03-security-vulnerability-analysis.md      # Security (uses #00-01)
 # ... continue through all 16 prompts
 claude 15-sequence-diagram-visualization.md       # Final visualization (uses #00-14)
 ```
@@ -59,15 +59,15 @@ For targeted analysis, use foundation + specific domain prompts:
 ```bash
 # Security Assessment
 claude 00-codebase-overview.md
-claude 02-security-vulnerability-analysis.md
-claude 07-dependency-security-analysis.md
-claude 08-privacy-compliance-analysis.md
+claude 03-security-vulnerability-analysis.md
+claude 04-dependency-security-analysis.md
+claude 05-privacy-compliance-analysis.md
 
 # Architecture Review  
 claude 00-codebase-overview.md
 claude 01-architecture-analysis.md
-claude 04-api-contract-analysis.md
-claude 05-database-optimization.md
+claude 06-api-contract-analysis.md
+claude 07-database-optimization.md
 ```
 
 ### Memory Workflow Management
@@ -95,9 +95,10 @@ Standard file organization for all analysis outputs:
 .claude/
 ├── 0-CODEBASE_OVERVIEW.md
 ├── 1-ARCHITECTURE_ANALYSIS.md  
-├── 2-SECURITY_ANALYSIS.md
+├── 2-BUSINESS_ANALYSIS.md
+├── 3-SECURITY_ANALYSIS.md
 ├── ...
-├── 15-SEQUENCE_DIAGRAMS.md
+├── 17-COMPREHENSIVE_TODO_LIST.md
 └── components/, api/, monitoring/
 
 diagrams/
@@ -112,25 +113,27 @@ diagrams/
 ### Analysis Commands
 
 #### `/analyze-full`
-Run the complete 16-prompt analysis chain:
+Run the complete 18-prompt analysis chain:
 ```bash
 # Execute complete system analysis
 claude 00-codebase-overview.md
 claude 01-architecture-analysis.md  
-claude 02-security-vulnerability-analysis.md
-claude 03-business-analysis.md
-claude 04-api-contract-analysis.md
-claude 05-database-optimization.md
-claude 06-observability-monitoring.md
-claude 07-dependency-security-analysis.md
-claude 08-privacy-compliance-analysis.md
-claude 09-test-coverage-analysis.md
-claude 10-documentation-generation.md
-claude 11-production-readiness-audit.md
+claude 02-business-analysis.md
+claude 03-security-vulnerability-analysis.md
+claude 04-dependency-security-analysis.md
+claude 05-privacy-compliance-analysis.md
+claude 06-api-contract-analysis.md
+claude 07-database-optimization.md
+claude 08-test-coverage-analysis.md
+claude 09-observability-monitoring.md
+claude 10-pre-commit-quality-checks.md
+claude 11-documentation-generation.md
 claude 12-api-documentation-generator.md
-claude 13-pre-commit-quality-checks.md
+claude 13-production-readiness-audit.md
 claude 14-deployment-preparation.md
 claude 15-sequence-diagram-visualization.md
+claude 16-business-workflow-consistency.md
+claude 17-comprehensive-todo-generation.md
 ```
 
 #### `/analyze-security`
@@ -138,10 +141,10 @@ Run security-focused analysis:
 ```bash
 # Security assessment workflow
 claude 00-codebase-overview.md
-claude 02-security-vulnerability-analysis.md
-claude 07-dependency-security-analysis.md
-claude 08-privacy-compliance-analysis.md
-claude 11-production-readiness-audit.md
+claude 03-security-vulnerability-analysis.md
+claude 04-dependency-security-analysis.md
+claude 05-privacy-compliance-analysis.md
+claude 13-production-readiness-audit.md
 ```
 
 #### `/analyze-architecture`
@@ -150,8 +153,8 @@ Run architecture-focused analysis:
 # Architecture review workflow
 claude 00-codebase-overview.md
 claude 01-architecture-analysis.md
-claude 04-api-contract-analysis.md
-claude 05-database-optimization.md
+claude 06-api-contract-analysis.md
+claude 07-database-optimization.md
 claude 15-sequence-diagram-visualization.md
 ```
 
@@ -160,9 +163,9 @@ Run quality and testing analysis:
 ```bash
 # Quality assurance workflow
 claude 00-codebase-overview.md
-claude 09-test-coverage-analysis.md
-claude 11-production-readiness-audit.md
-claude 13-pre-commit-quality-checks.md
+claude 08-test-coverage-analysis.md
+claude 10-pre-commit-quality-checks.md
+claude 13-production-readiness-audit.md
 claude 14-deployment-preparation.md
 ```
 
@@ -200,13 +203,13 @@ claude 00-codebase-overview.md
 #### `/security-scan`
 Quick security vulnerability scan:
 ```bash
-claude 02-security-vulnerability-analysis.md
+claude 03-security-vulnerability-analysis.md
 ```
 
 #### `/docs-gen`
 Generate documentation:
 ```bash
-claude 10-documentation-generation.md
+claude 11-documentation-generation.md
 ```
 
 #### `/diagrams`

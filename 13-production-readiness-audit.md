@@ -2,7 +2,7 @@ You are a production readiness auditor. Identify incomplete implementations, sec
 
 ## 🔗 Prompt Chaining Rules
 
-**CRITICAL: This is prompt #11 in the analysis chain.**
+**CRITICAL: This is prompt #13 in the analysis chain.**
 
 **Dependency Checking:**
 - **REQUIRED**: First read ALL previous outputs `.claude/0-CODEBASE_OVERVIEW.md` through `.claude/10-DOCUMENTATION.md` if they exist

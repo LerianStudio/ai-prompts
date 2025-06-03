@@ -2,7 +2,7 @@ You are an observability engineer specializing in monitoring, logging, tracing, 
 
 ## 🔗 Prompt Chaining Rules
 
-**CRITICAL: This is prompt #6 in the analysis chain.**
+**CRITICAL: This is prompt #9 in the analysis chain.**
 
 **Dependency Checking:**
 - **REQUIRED**: First read all previous outputs `.claude/0-CODEBASE_OVERVIEW.md` through `.claude/5-DATABASE_ANALYSIS.md` if they exist

@@ -4,30 +4,57 @@ A comprehensive collection of token-optimized AI prompts designed for systematic
 
 ## 🎯 Purpose
 
-This repository provides a complete **16-prompt analysis chain** that enables comprehensive, AI-assisted codebase analysis across multiple engineering disciplines. All prompts are optimized for token efficiency (50-75% reduction) while maintaining full functionality and chaining dependencies.
+This repository provides a complete **18-prompt analysis chain** that enables comprehensive, AI-assisted codebase analysis across multiple engineering disciplines. All prompts are optimized for token efficiency (50-75% reduction) while maintaining full functionality and chaining dependencies.
 
-## 🔗 Complete Analysis Chain (00-15)
+## 🔗 Complete Analysis Chain (00-17)
 
-Sequential prompts that build upon each other with comprehensive dependency tracking:
+Sequential prompts that build upon each other with comprehensive dependency tracking, organized into logical development phases:
 
+### **Phase 1: Foundation & Understanding (00-02)**
 | # | Prompt | Role | Focus Area |
 |---|--------|------|------------|
 | 00 | `00-codebase-overview.md` | Foundation | Initial codebase exploration |
 | 01 | `01-architecture-analysis.md` | Architecture Engineer | System design, component analysis |
-| 02 | `02-security-vulnerability-analysis.md` | Security Researcher | Vulnerability analysis, threat modeling |
-| 03 | `03-business-analysis.md` | Business Analyst | Requirements, competitive analysis |
-| 04 | `04-api-contract-analysis.md` | API Architect | API design, documentation, contracts |
-| 05 | `05-database-optimization.md` | Database Architect | Schema design, optimization, modeling |
-| 06 | `06-observability-monitoring.md` | Observability Engineer | Monitoring, logging, tracing, metrics |
-| 07 | `07-dependency-security-analysis.md` | Vendor Security Analyst | Third-party risk, supply chain security |
-| 08 | `08-privacy-compliance-analysis.md` | Privacy Analyst | GDPR compliance, data protection |
-| 09 | `09-test-coverage-analysis.md` | Test Engineer | Test strategy, quality assurance |
-| 10 | `10-documentation-generation.md` | Technical Writer | Documentation synthesis |
-| 11 | `11-production-readiness-audit.md` | Production Auditor | Deployment readiness assessment |
+| 02 | `02-business-analysis.md` | Business Analyst | Requirements, ROI analysis |
+
+### **Phase 2: Security Foundation (03-05)**
+| # | Prompt | Role | Focus Area |
+|---|--------|------|------------|
+| 03 | `03-security-vulnerability-analysis.md` | Security Researcher | Vulnerability analysis, threat modeling |
+| 04 | `04-dependency-security-analysis.md` | Vendor Security Analyst | Third-party risk, supply chain security |
+| 05 | `05-privacy-compliance-analysis.md` | Privacy Analyst | GDPR compliance, data protection |
+
+### **Phase 3: Technical Foundation (06-08)**
+| # | Prompt | Role | Focus Area |
+|---|--------|------|------------|
+| 06 | `06-api-contract-analysis.md` | API Architect | API design, documentation, contracts |
+| 07 | `07-database-optimization.md` | Database Architect | Schema design, optimization, modeling |
+| 08 | `08-test-coverage-analysis.md` | Test Engineer | Test strategy, quality assurance |
+
+### **Phase 4: Infrastructure & Quality (09-10)**
+| # | Prompt | Role | Focus Area |
+|---|--------|------|------------|
+| 09 | `09-observability-monitoring.md` | Observability Engineer | Monitoring, logging, tracing, metrics |
+| 10 | `10-pre-commit-quality-checks.md` | Quality Engineer | Pre-commit validation pipeline |
+
+### **Phase 5: Documentation & Communication (11-12)**
+| # | Prompt | Role | Focus Area |
+|---|--------|------|------------|
+| 11 | `11-documentation-generation.md` | Technical Writer | Documentation synthesis |
 | 12 | `12-api-documentation-generator.md` | API Docs Generator | OpenAPI/Postman generation |
-| 13 | `13-pre-commit-quality-checks.md` | Quality Engineer | Pre-commit validation pipeline |
+
+### **Phase 6: Production Readiness (13-15)**
+| # | Prompt | Role | Focus Area |
+|---|--------|------|------------|
+| 13 | `13-production-readiness-audit.md` | Production Auditor | Deployment readiness assessment |
 | 14 | `14-deployment-preparation.md` | Deployment Engineer | Production cleanup & preparation |
 | 15 | `15-sequence-diagram-visualization.md` | System Visualizer | Mermaid sequence diagrams |
+
+### **Phase 7: Integration & Planning (16-17)**
+| # | Prompt | Role | Focus Area |
+|---|--------|------|------------|
+| 16 | `16-business-workflow-consistency.md` | Business Process Analyst | End-to-end workflow validation |
+| 17 | `17-comprehensive-todo-generation.md` | Project Coordinator | Action planning with developer comment integration |
 
 ## 🧠 Memory Management Prompts (m1-m5)
 
@@ -44,10 +71,11 @@ Memory Context Protocol (MCP) integration for session continuity:
 ## 🎯 Key Features
 
 ### 🔗 Chaining System
-- **Sequential Dependencies**: Each prompt #1-15 references all previous outputs
+- **Sequential Dependencies**: Each prompt #1-17 references all previous outputs
 - **Comprehensive Integration**: Architectural, security, and business findings cross-referenced
 - **Output Review**: Existing analysis automatically updated with new findings
 - **Memory MCP Integration**: Full session continuity and pattern learning
+- **Developer Comment Integration**: Prompt #17 includes `///AUTHOR` inline todo extraction
 
 ### ⚡ Token Optimization
 - **50-75% Token Reduction** from original versions
@@ -88,17 +116,39 @@ memory_tasks session_end session_id="[session]" repository="github.com/org/repo"
 ## 🚀 Quick Start
 
 ### 1. Complete System Analysis
-Run the full **16-prompt chain** for comprehensive codebase analysis:
+Run the full **18-prompt chain** for comprehensive codebase analysis:
 ```bash
-# Foundation analysis
+# Foundation analysis (Phase 1)
 claude 00-codebase-overview.md
+claude 01-architecture-analysis.md
+claude 02-business-analysis.md
 
-# Core engineering analysis (with chaining dependencies)
-claude 01-architecture-analysis.md      # Uses output from #00
-claude 02-security-vulnerability-analysis.md  # Uses outputs from #00-01
-claude 03-business-analysis.md          # Uses outputs from #00-02
-# ... continue through all 16 prompts
-claude 15-sequence-diagram-visualization.md   # Uses all previous outputs
+# Security foundation (Phase 2)
+claude 03-security-vulnerability-analysis.md
+claude 04-dependency-security-analysis.md
+claude 05-privacy-compliance-analysis.md
+
+# Technical foundation (Phase 3)
+claude 06-api-contract-analysis.md
+claude 07-database-optimization.md
+claude 08-test-coverage-analysis.md
+
+# Infrastructure & quality (Phase 4)
+claude 09-observability-monitoring.md
+claude 10-pre-commit-quality-checks.md
+
+# Documentation & communication (Phase 5)
+claude 11-documentation-generation.md
+claude 12-api-documentation-generator.md
+
+# Production readiness (Phase 6)
+claude 13-production-readiness-audit.md
+claude 14-deployment-preparation.md
+claude 15-sequence-diagram-visualization.md
+
+# Integration & planning (Phase 7)
+claude 16-business-workflow-consistency.md
+claude 17-comprehensive-todo-generation.md    # Includes ///AUTHOR comment extraction
 ```
 
 ### 2. Focused Analysis
@@ -106,15 +156,19 @@ For specific concerns, run foundation + targeted prompts:
 ```bash
 # Security-focused analysis
 claude 00-codebase-overview.md
-claude 02-security-vulnerability-analysis.md
-claude 07-dependency-security-analysis.md
-claude 08-privacy-compliance-analysis.md
+claude 03-security-vulnerability-analysis.md
+claude 04-dependency-security-analysis.md
+claude 05-privacy-compliance-analysis.md
 
 # Architecture-focused analysis
 claude 00-codebase-overview.md
 claude 01-architecture-analysis.md
-claude 04-api-contract-analysis.md
-claude 05-database-optimization.md
+claude 06-api-contract-analysis.md
+claude 07-database-optimization.md
+
+# Todo generation (includes developer comments)
+claude 00-codebase-overview.md
+claude 17-comprehensive-todo-generation.md
 ```
 
 ### 3. Memory Integration
@@ -136,9 +190,11 @@ Analysis outputs are systematically organized:
 .claude/
 ├── 0-CODEBASE_OVERVIEW.md
 ├── 1-ARCHITECTURE_ANALYSIS.md
-├── 2-SECURITY_ANALYSIS.md
+├── 2-BUSINESS_ANALYSIS.md
+├── 3-SECURITY_ANALYSIS.md
 ├── ...
-├── 15-SEQUENCE_DIAGRAMS.md
+├── 16-BUSINESS_WORKFLOW_CONSISTENCY.md
+├── 17-COMPREHENSIVE_TODO_LIST.md
 └── components/, api/, monitoring/
 
 diagrams/
@@ -179,20 +235,25 @@ All prompts follow a systematic approach with cross-referencing:
    - Entry point mapping  
    - Build configuration analysis
 
-2. **Specialist Analysis (Prompts #01-10)**
-   - Architecture, security, business, API, database analysis
-   - Each prompt references all previous findings
-   - Cross-domain pattern recognition
+2. **Security Foundation (Prompts #03-05)**
+   - Vulnerability analysis, dependency security, privacy compliance
+   - Comprehensive security-first approach
+   - Critical security issues addressed early
 
-3. **Production Readiness (Prompts #11-14)**
-   - Readiness auditing, documentation generation
-   - Quality validation, deployment preparation
-   - Integration of all previous findings
+3. **Technical Foundation (Prompts #06-08)**
+   - API contracts, database optimization, test coverage
+   - Core technical infrastructure analysis
+   - Quality assurance and performance optimization
 
-4. **Visualization Synthesis (Prompt #15)**
-   - Mermaid sequence diagrams
-   - Complete system interaction flows
-   - Final visual documentation
+4. **Infrastructure & Documentation (Prompts #09-12)**
+   - Monitoring, quality checks, documentation generation
+   - Operational readiness and knowledge capture
+   - Team communication and API documentation
+
+5. **Production & Integration (Prompts #13-17)**
+   - Production readiness, deployment, workflow validation
+   - Comprehensive todo generation with developer comment integration
+   - Final system documentation and action planning
 
 ### Documentation Standards
 - **File References**: All claims include `file:line` references

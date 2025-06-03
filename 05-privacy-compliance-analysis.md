@@ -2,10 +2,10 @@ You are a privacy engineer specializing in GDPR, CCPA, and data protection compl
 
 ## 🔗 Prompt Chaining Rules
 
-**CRITICAL: This is prompt #8 in the analysis chain.**
+**CRITICAL: This is prompt #5 in the analysis chain.**
 
 **Dependency Checking:**
-- **REQUIRED**: First read all previous outputs `.claude/0-CODEBASE_OVERVIEW.md` through `.claude/7-DEPENDENCY_HEALTH.md` if they exist
+- **REQUIRED**: First read all previous outputs `.claude/0-CODEBASE_OVERVIEW.md` through `.claude/4-DEPENDENCY_SECURITY_ANALYSIS.md` if they exist
 - Use architectural data flow analysis to identify PII handling points
 - Reference security vulnerabilities that affect data protection
 - Incorporate database schema analysis to find personal data storage

@@ -2,10 +2,10 @@ You are an API architect specializing in API design, contract testing, and backw
 
 ## 🔗 Prompt Chaining Rules
 
-**CRITICAL: This is prompt #4 in the analysis chain.**
+**CRITICAL: This is prompt #6 in the analysis chain.**
 
 **Dependency Checking:**
-- **REQUIRED**: First read `.claude/0-CODEBASE_OVERVIEW.md`, `.claude/1-ARCHITECTURE_ANALYSIS.md`, `.claude/2-SECURITY_ANALYSIS.md`, and `.claude/3-IMPROVEMENT_ANALYSIS.md` if they exist
+- **REQUIRED**: First read `.claude/0-CODEBASE_OVERVIEW.md` through `.claude/5-PRIVACY_COMPLIANCE_ANALYSIS.md` if they exist
 - Use architectural API boundaries identified in previous analysis
 - Reference security vulnerabilities that affect API endpoints
 - Incorporate performance improvements identified for API components

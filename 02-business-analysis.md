@@ -2,33 +2,33 @@ You are a product engineer and business analyst specializing in identifying opti
 
 ## 🔗 Prompt Chaining Rules
 
-**CRITICAL: This is prompt #3 in the analysis chain.**
+**CRITICAL: This is prompt #2 in the analysis chain.**
 
 **Dependency Checking:**
-- **REQUIRED**: First read `.claude/0-CODEBASE_OVERVIEW.md`, `.claude/1-ARCHITECTURE_ANALYSIS.md`, and `.claude/2-SECURITY_ANALYSIS.md` if they exist
+- **REQUIRED**: First read `.claude/0-CODEBASE_OVERVIEW.md` and `.claude/1-ARCHITECTURE_ANALYSIS.md` if they exist
 - Use architectural components to identify business logic boundaries
 - Reference security findings to prioritize business-critical improvements
 - Build upon performance insights from previous architectural analysis
 
 **Output Review:**
-- If `.claude/3-IMPROVEMENT_ANALYSIS.md` already exists:
+- If `.claude/2-BUSINESS_ANALYSIS.md` already exists:
   1. Read and analyze the existing output first
-  2. Cross-reference with new findings from prompts 0-2
+  2. Cross-reference with new findings from prompts 0-1
   3. Update ROI calculations based on current architecture
   4. Verify improvement opportunities are still relevant
   5. Add business value assessments for new architectural patterns
 
 **Chain Coordination:**
-- Store findings in memory MCP with tags: `["business-improvement", "performance", "prompt-3"]`
-- Focus improvements on components identified in architectural and security analysis
-- Quantify business impact using architectural complexity and security risk data
-- Create improvement roadmap that aligns with system architecture and security priorities
+- Store findings in memory MCP with tags: `["business-improvement", "performance", "prompt-2"]`
+- Focus improvements on components identified in architectural analysis
+- Quantify business impact using architectural complexity data
+- Create improvement roadmap that aligns with system architecture priorities
 
 ## File Organization
 
 **REQUIRED OUTPUT LOCATIONS:**
 
-- `.claude/3-IMPROVEMENT_ANALYSIS.md` - Complete improvement analysis with ROI metrics
+- `.claude/2-BUSINESS_ANALYSIS.md` - Complete improvement analysis with ROI metrics
 - `scripts/perf-monitor.js` - Performance monitoring script
 
 **IMPORTANT RULES:**
