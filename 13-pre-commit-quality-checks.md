@@ -1,5 +1,33 @@
 You are a world-class software quality engineer responsible for ensuring code quality before commits. Execute a comprehensive pre-push quality pipeline that detects language, runs appropriate checks, fixes issues, and validates the build.
 
+## 🔗 Prompt Chaining Rules
+
+**CRITICAL: This is prompt #13 in the analysis chain.**
+
+**Dependency Checking:**
+- **REQUIRED**: First read ALL previous outputs `.claude/0-CODEBASE_OVERVIEW.md` through `.claude/12-API_DOCUMENTATION.md` if they exist
+- Use tech stack analysis from prompt #0 to configure language-specific pipelines
+- Reference security vulnerabilities from prompt #2 to add security-focused quality checks
+- Use test coverage gaps from prompt #9 to ensure critical paths have tests
+- Reference production readiness blockers from prompt #11 to prevent committing incomplete code
+- Use architectural patterns from prompt #1 to validate code follows established patterns
+- Reference database schema from prompt #5 to validate data access patterns
+- Use API contracts from prompt #4 to ensure endpoint implementations match specifications
+
+**Output Review:**
+- If `.claude/QUALITY_REPORT.md` already exists:
+  1. Read and analyze the existing quality report first
+  2. Cross-reference with security, architectural, and readiness findings
+  3. Update quality checks based on identified vulnerabilities and gaps
+  4. Verify build pipeline addresses production blockers
+  5. Add quality gates for critical issues identified across the analysis chain
+
+**Chain Coordination:**
+- Store findings in memory MCP with tags: `["quality-checks", "pre-commit", "build-validation", "prompt-13"]`
+- Create quality pipeline that validates against all known issues from the analysis chain
+- Ensure quality gates prevent committing code with critical security or readiness issues
+- Focus quality checks on components and patterns identified as high-risk
+
 ## 0. Session Initialization & Language Detection
 
 ```
@@ -16,7 +44,7 @@ memory_search query="quality issues code standards build failures" repository="g
 ```bash
 # Detect primary languages in the repository
 find . -name "*.go" | head -1 && echo "Go detected"
-find . -name "package.json" | head -1 && echo "Node.js/TypeScript detected" 
+find . -name "package.json" | head -1 && echo "Node.js/TypeScript detected"
 find . -name "requirements.txt" -o -name "pyproject.toml" | head -1 && echo "Python detected"
 find . -name "pom.xml" -o -name "build.gradle" | head -1 && echo "Java detected"
 find . -name "Cargo.toml" | head -1 && echo "Rust detected"
@@ -85,33 +113,33 @@ fi
 ```bash
 if [ -f "go.mod" ]; then
   echo "🔍 Running Go quality checks..."
-  
+
   # Format code
   echo "  📝 Formatting code..."
   go fmt ./...
-  
+
   # Vet analysis
   echo "  🔍 Running go vet..."
   go vet ./... || { echo "❌ go vet failed"; exit 1; }
-  
+
   # Security scan
   echo "  🔒 Security scan..."
   if command -v gosec &> /dev/null; then
     gosec ./... || echo "⚠️  gosec found potential issues"
   fi
-  
+
   # Vulnerability check
   echo "  🛡️  Vulnerability check..."
   if command -v govulncheck &> /dev/null; then
     govulncheck ./... || echo "⚠️  Vulnerabilities found"
   fi
-  
+
   # Performance anti-patterns
   echo "  ⚡ Performance check..."
   if command -v perfsprint &> /dev/null; then
     perfsprint ./... || echo "⚠️  Performance issues detected"
   fi
-  
+
   # Linting
   echo "  📋 Linting..."
   if command -v golangci-lint &> /dev/null; then
@@ -119,11 +147,11 @@ if [ -f "go.mod" ]; then
   elif command -v staticcheck &> /dev/null; then
     staticcheck ./...
   fi
-  
+
   # Tests
   echo "  🧪 Running tests..."
   go test -race -coverprofile=coverage.out ./... || { echo "❌ Tests failed"; exit 1; }
-  
+
   # Build verification
   echo "  🔨 Build verification..."
   go build ./... || { echo "❌ Build failed"; exit 1; }
@@ -135,35 +163,35 @@ fi
 ```bash
 if [ -f "package.json" ]; then
   echo "🔍 Running Node.js/TypeScript quality checks..."
-  
+
   # Type checking
   if grep -q "typescript" package.json; then
     echo "  📝 Type checking..."
     npx tsc --noEmit || { echo "❌ Type check failed"; exit 1; }
   fi
-  
+
   # Linting
   echo "  📋 Linting..."
   if [ -f ".eslintrc.js" ] || [ -f ".eslintrc.json" ] || grep -q "eslint" package.json; then
     npx eslint . --fix --max-warnings 0 || { echo "❌ ESLint failed"; exit 1; }
   fi
-  
+
   # Formatting
   echo "  📝 Formatting..."
   if grep -q "prettier" package.json; then
     npx prettier --write . --ignore-unknown
   fi
-  
+
   # Security audit
   echo "  🔒 Security audit..."
   npm audit --audit-level high || echo "⚠️  Security vulnerabilities found"
-  
+
   # Tests
   echo "  🧪 Running tests..."
   if grep -q "\"test\":" package.json; then
     npm test || { echo "❌ Tests failed"; exit 1; }
   fi
-  
+
   # Build verification
   echo "  🔨 Build verification..."
   if grep -q "\"build\":" package.json; then
@@ -177,17 +205,17 @@ fi
 ```bash
 if [ -f "requirements.txt" ] || [ -f "pyproject.toml" ] || [ -f "setup.py" ]; then
   echo "🔍 Running Python quality checks..."
-  
+
   # Code formatting
   echo "  📝 Formatting..."
   if command -v black &> /dev/null; then
     black . --check || black .
   fi
-  
+
   if command -v isort &> /dev/null; then
     isort . --check-only || isort .
   fi
-  
+
   # Linting
   echo "  📋 Linting..."
   if command -v ruff &> /dev/null; then
@@ -195,23 +223,23 @@ if [ -f "requirements.txt" ] || [ -f "pyproject.toml" ] || [ -f "setup.py" ]; th
   elif command -v flake8 &> /dev/null; then
     flake8 . || { echo "❌ Flake8 failed"; exit 1; }
   fi
-  
+
   # Type checking
   echo "  📝 Type checking..."
   if command -v mypy &> /dev/null; then
     mypy . || echo "⚠️  Type check issues found"
   fi
-  
+
   # Security scan
   echo "  🔒 Security scan..."
   if command -v bandit &> /dev/null; then
     bandit -r . || echo "⚠️  Security issues found"
   fi
-  
+
   if command -v safety &> /dev/null; then
     safety check || echo "⚠️  Vulnerable dependencies found"
   fi
-  
+
   # Tests
   echo "  🧪 Running tests..."
   if command -v pytest &> /dev/null; then
@@ -227,26 +255,26 @@ fi
 ```bash
 if [ -f "pom.xml" ] || [ -f "build.gradle" ]; then
   echo "🔍 Running Java quality checks..."
-  
+
   if [ -f "pom.xml" ]; then
     # Maven pipeline
     echo "  📋 Maven compile & test..."
     mvn clean compile test || { echo "❌ Maven build/test failed"; exit 1; }
-    
+
     # Security scan
     echo "  🔒 Security scan..."
     mvn org.owasp:dependency-check-maven:check || echo "⚠️  Security vulnerabilities found"
-    
+
     # Code quality
     if mvn help:describe -Dplugin=com.github.spotbugs:spotbugs-maven-plugin &> /dev/null; then
       mvn spotbugs:check || echo "⚠️  SpotBugs found issues"
     fi
-    
+
   elif [ -f "build.gradle" ]; then
     # Gradle pipeline
     echo "  📋 Gradle build & test..."
     ./gradlew build test || { echo "❌ Gradle build/test failed"; exit 1; }
-    
+
     # Security scan
     echo "  🔒 Security scan..."
     ./gradlew dependencyCheckAnalyze || echo "⚠️  Security vulnerabilities found"
@@ -259,25 +287,25 @@ fi
 ```bash
 if [ -f "Cargo.toml" ]; then
   echo "🔍 Running Rust quality checks..."
-  
+
   # Format check
   echo "  📝 Format check..."
   cargo fmt -- --check || cargo fmt
-  
+
   # Linting
   echo "  📋 Clippy linting..."
   cargo clippy -- -D warnings || { echo "❌ Clippy failed"; exit 1; }
-  
+
   # Security audit
   echo "  🔒 Security audit..."
   if command -v cargo-audit &> /dev/null; then
     cargo audit || echo "⚠️  Security vulnerabilities found"
   fi
-  
+
   # Tests
   echo "  🧪 Running tests..."
   cargo test || { echo "❌ Tests failed"; exit 1; }
-  
+
   # Build verification
   echo "  🔨 Build verification..."
   cargo build --release || { echo "❌ Build failed"; exit 1; }
@@ -463,62 +491,11 @@ echo "✅ Pre-push quality check completed!"
 echo "📊 Summary:"
 echo "  - Languages processed: $detected_languages"
 echo "  - Quality checks: ✅"
-echo "  - Build verification: ✅" 
+echo "  - Build verification: ✅"
 echo "  - Security scan: ✅"
 echo "  - Ready for commit: ✅"
 echo ""
 echo "🚀 You can now safely push your changes!"
-```
-
-## Usage Examples
-
-### Quick Check
-```bash
-# Run quality check for current repository
-./language-agnostic-pre-push-quality-check.md
-```
-
-### CI/CD Integration
-```yaml
-# .github/workflows/quality.yml
-- name: Quality Check
-  run: |
-    bash language-agnostic-pre-push-quality-check.md
-```
-
-### Git Hook Integration
-```bash
-# .git/hooks/pre-push
-#!/bin/bash
-bash .claude/language-agnostic-pre-push-quality-check.md
-```
-
-## Customization
-
-### Environment Variables
-- `SKIP_TESTS=true` - Skip test execution
-- `SKIP_SECURITY=true` - Skip security scans
-- `SKIP_LINT=true` - Skip linting
-- `FORCE_PUSH=true` - Bypass quality gate
-- `QUALITY_LEVEL=strict|normal|quick` - Adjust check intensity
-
-### Language-Specific Overrides
-Create `.quality-config.json` in project root:
-```json
-{
-  "go": {
-    "skip_gosec": false,
-    "coverage_threshold": 80
-  },
-  "javascript": {
-    "eslint_max_warnings": 0,
-    "skip_security_audit": false
-  },
-  "python": {
-    "mypy_strict": true,
-    "black_line_length": 88
-  }
-}
 ```
 
 This comprehensive quality check ensures consistent code quality across all languages while being flexible enough to adapt to different project requirements.

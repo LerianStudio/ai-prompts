@@ -1,97 +1,72 @@
-# Memory Workflow Management
+# Memory Workflow Management (Simplified)
 
 Complete workflow for memory session lifecycle and knowledge continuity.
 
 ## Session Lifecycle
 
-### 1. Initialize Session
+### 1. Initialize
 ```
-# Start new session
 memory_tasks session_create session_id="[workflow-timestamp]" repository="github.com/org/repo"
-
-# Load existing context
 memory_get_context repository="github.com/org/repo"
 memory_intelligence suggest_related current_context="[current work]" session_id="[workflow-timestamp]" repository="github.com/org/repo"
 ```
 
-### 2. Active Work Phase
+### 2. Active Work
 ```
-# Store findings during work
+# Store findings
 memory_store_chunk content="[findings]" session_id="[workflow-timestamp]" repository="github.com/org/repo" tags="[relevant-tags]"
 
-# Store key decisions
+# Store decisions
 memory_store_decision decision="[decision]" rationale="[rationale]" context="[context]" session_id="[workflow-timestamp]" repository="github.com/org/repo"
 
-# Track task progress
+# Track tasks
 memory_tasks todo_write todos="[tasks_array]" session_id="[workflow-timestamp]" repository="github.com/org/repo"
 ```
 
-### 3. Session Completion
+### 3. Completion
 ```
-# Create documentation threads
+# Create threads
 memory_create create_thread name="[thread-name]" description="[description]" chunk_ids="[chunk_ids]" repository="github.com/org/repo"
 
-# Analyze workflow performance
+# Analyze workflow
 memory_tasks workflow_analyze session_id="[workflow-timestamp]" repository="github.com/org/repo"
 
 # End session
 memory_tasks session_end session_id="[workflow-timestamp]" repository="github.com/org/repo"
 ```
 
-## Knowledge Continuity
+## Knowledge Transfer
 
-### Export for Handoff
+### Export
 ```
-# Export project knowledge
 memory_transfer export_project repository="github.com/org/repo" session_id="[workflow-timestamp]" format="json" limit="100"
-
-# Generate citations for documentation
 memory_system generate_citations query="[relevant-query]" chunk_ids="[chunk_ids]" repository="github.com/org/repo"
 ```
 
-### Import Context
+### Import
 ```
-# Import external context
 memory_transfer import_context data="[external_data]" repository="github.com/org/repo" session_id="[workflow-timestamp]"
-
-# Resume incomplete work
 memory_transfer continuity repository="github.com/org/repo"
 ```
 
 ## Quality Assurance
 
-### Health Monitoring
 ```
-# Check memory system health
+# Health check
 memory_system health
 memory_analyze health_dashboard repository="github.com/org/repo" session_id="[workflow-timestamp]"
 
-# Validate data freshness
-memory_analyze check_freshness repository="github.com/org/repo" session_id="[workflow-timestamp]"
-```
-
-### Pattern Analysis
-```
-# Detect emerging patterns
+# Pattern analysis
 memory_intelligence auto_insights repository="github.com/org/repo" session_id="[workflow-timestamp]"
-
-# Cross-repository learning
 memory_analyze cross_repo_patterns session_id="[workflow-timestamp]" repository="github.com/org/repo"
 ```
 
-## Standard Workflow Templates
+## Standard Workflows
 
-### Architecture Analysis Workflow
-1. Initialize ’ Load context ’ Component analysis ’ Pattern detection ’ Documentation ’ Session end
-
-### Security Review Workflow  
-1. Initialize ’ Vulnerability scan ’ Risk analysis ’ Remediation planning ’ Compliance export ’ Session end
-
-### Development Workflow
-1. Initialize ’ Feature planning ’ Implementation tracking ’ Quality checks ’ Knowledge transfer ’ Session end
-
-### Documentation Workflow
-1. Initialize ’ Content audit ’ Structure planning ’ Content creation ’ Citation generation ’ Session end
+1. **Architecture Analysis**: Initialize â†’ Load context â†’ Component analysis â†’ Pattern detection â†’ Documentation â†’ Session end
+2. **Security Review**: Initialize â†’ Vulnerability scan â†’ Risk analysis â†’ Remediation planning â†’ Compliance export â†’ Session end  
+3. **Development**: Initialize â†’ Feature planning â†’ Implementation tracking â†’ Quality checks â†’ Knowledge transfer â†’ Session end
+4. **Documentation**: Initialize â†’ Content audit â†’ Structure planning â†’ Content creation â†’ Citation generation â†’ Session end
 
 ## Best Practices
 

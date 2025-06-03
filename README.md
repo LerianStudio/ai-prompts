@@ -1,43 +1,59 @@
 # AI Prompts for LerianStudio Ecosystem
 
-A comprehensive collection of specialized AI prompts designed for engineering analysis, development workflows, and knowledge management within the LerianStudio ecosystem.
+A comprehensive collection of token-optimized AI prompts designed for systematic codebase analysis, development workflows, and knowledge management within the LerianStudio ecosystem.
 
 ## 🎯 Purpose
 
-This repository provides domain-specific prompts that enable AI-assisted analysis across multiple engineering disciplines. Each prompt is designed to work with the Memory Context Protocol (MCP) for persistent knowledge management and cross-session learning.
+This repository provides a complete **16-prompt analysis chain** that enables comprehensive, AI-assisted codebase analysis across multiple engineering disciplines. All prompts are optimized for token efficiency (50-75% reduction) while maintaining full functionality and chaining dependencies.
 
-## 📋 Core Engineering Prompts
+## 🔗 Complete Analysis Chain (00-15)
 
-### Specialized Analysis Roles (1-10)
+Sequential prompts that build upon each other with comprehensive dependency tracking:
 
-| Prompt | Role | Focus Area |
-|--------|------|------------|
-| `1-architecture-researcher.md` | Architecture Engineer | System design, component analysis, patterns |
-| `2-security-researcher.md` | Security Researcher | Vulnerability analysis, threat modeling |
-| `3-biz-product-improvement-analyst.md` | Business Analyst | Requirements, competitive analysis |
-| `4-api-architect-researcher.md` | API Architect | API design, documentation, contracts |
-| `5-database-researcher.md` | Database Architect | Schema design, optimization, modeling |
-| `6-observability-engineer.md` | Observability Engineer | Monitoring, logging, tracing, metrics |
-| `7-vendor-sec-anal-researcher.md` | Vendor Security Analyst | Third-party risk, compliance |
-| `8-privacy-gdpr-analysis.md` | Privacy Analyst | GDPR compliance, data protection |
-| `9-test-researcher.md` | Test Engineer | Test strategy, quality assurance |
-| `10-tech-writer-engineer.md` | Technical Writer | Documentation generation, standards |
+| # | Prompt | Role | Focus Area |
+|---|--------|------|------------|
+| 00 | `00-codebase-overview.md` | Foundation | Initial codebase exploration |
+| 01 | `01-architecture-analysis.md` | Architecture Engineer | System design, component analysis |
+| 02 | `02-security-vulnerability-analysis.md` | Security Researcher | Vulnerability analysis, threat modeling |
+| 03 | `03-business-analysis.md` | Business Analyst | Requirements, competitive analysis |
+| 04 | `04-api-contract-analysis.md` | API Architect | API design, documentation, contracts |
+| 05 | `05-database-optimization.md` | Database Architect | Schema design, optimization, modeling |
+| 06 | `06-observability-monitoring.md` | Observability Engineer | Monitoring, logging, tracing, metrics |
+| 07 | `07-dependency-security-analysis.md` | Vendor Security Analyst | Third-party risk, supply chain security |
+| 08 | `08-privacy-compliance-analysis.md` | Privacy Analyst | GDPR compliance, data protection |
+| 09 | `09-test-coverage-analysis.md` | Test Engineer | Test strategy, quality assurance |
+| 10 | `10-documentation-generation.md` | Technical Writer | Documentation synthesis |
+| 11 | `11-production-readiness-audit.md` | Production Auditor | Deployment readiness assessment |
+| 12 | `12-api-documentation-generator.md` | API Docs Generator | OpenAPI/Postman generation |
+| 13 | `13-pre-commit-quality-checks.md` | Quality Engineer | Pre-commit validation pipeline |
+| 14 | `14-deployment-preparation.md` | Deployment Engineer | Production cleanup & preparation |
+| 15 | `15-sequence-diagram-visualization.md` | System Visualizer | Mermaid sequence diagrams |
 
-## 🔧 Utility Workflows
+## 🧠 Memory Management Prompts (m1-m5)
 
-### Quality Assurance (`avulsos/`)
-- **`language-agnostic-pre-push-quality-check.md`**: Comprehensive pre-commit quality pipeline
-  - Multi-language support (Go, TypeScript, Python, Java, Rust, .NET, PHP)
-  - Security scanning, linting, testing, build verification
-  - CI/CD integration examples
-- **`golang-pre-push-full-check.md`**: Go-specific quality checks (legacy)
-- **`codebase-quick-overview.md`**: Rapid codebase analysis framework
+Memory Context Protocol (MCP) integration for session continuity:
 
-### Memory Management (`memory-related/`)
-- **`get-memory.md`**: Context retrieval and status checking
-- **`analyze-memory.md`**: Pattern analysis and intelligence insights
-- **`update-memory.md`**: Memory maintenance and task updates
-- **`memory-workflow.md`**: Complete session lifecycle management
+| # | Prompt | Purpose |
+|---|--------|---------|
+| m1 | `memory-related/m1-memory-analysis.md` | Memory pattern analysis & intelligence |
+| m2 | `memory-related/m2-memory-retrieval.md` | Context retrieval & task status |
+| m3 | `memory-related/m3-task-management.md` | Automated task tracking |
+| m4 | `memory-related/m4-memory-workflow.md` | Session lifecycle management |
+| m5 | `memory-related/m5-memory-maintenance.md` | Memory updates & cleanup |
+
+## 🎯 Key Features
+
+### 🔗 Chaining System
+- **Sequential Dependencies**: Each prompt #1-15 references all previous outputs
+- **Comprehensive Integration**: Architectural, security, and business findings cross-referenced
+- **Output Review**: Existing analysis automatically updated with new findings
+- **Memory MCP Integration**: Full session continuity and pattern learning
+
+### ⚡ Token Optimization
+- **50-75% Token Reduction** from original versions
+- **Preserved Functionality**: All core analysis capabilities maintained
+- **Practical Examples**: Working code snippets and monitoring scripts
+- **Language Agnostic**: Support for Go, TypeScript, Python, Java, Rust, .NET
 
 ## 🧠 Memory Integration
 
@@ -71,35 +87,66 @@ memory_tasks session_end session_id="[session]" repository="github.com/org/repo"
 
 ## 🚀 Quick Start
 
-### 1. Choose Your Analysis Type
-Select the appropriate prompt based on your needs:
-- **Architecture**: Use `1-architecture-researcher.md` for system analysis
-- **Security**: Use `2-security-researcher.md` for vulnerability assessment
-- **Quality**: Use `avulsos/language-agnostic-pre-push-quality-check.md` for code quality
-
-### 2. Initialize Memory Context
+### 1. Complete System Analysis
+Run the full **16-prompt chain** for comprehensive codebase analysis:
 ```bash
-# Get current context
-memory_get_context repository="github.com/your-org/your-repo"
+# Foundation analysis
+claude 00-codebase-overview.md
 
-# Check existing tasks
-memory_tasks todo_read session_id="current-session" repository="github.com/your-org/your-repo"
+# Core engineering analysis (with chaining dependencies)
+claude 01-architecture-analysis.md      # Uses output from #00
+claude 02-security-vulnerability-analysis.md  # Uses outputs from #00-01
+claude 03-business-analysis.md          # Uses outputs from #00-02
+# ... continue through all 16 prompts
+claude 15-sequence-diagram-visualization.md   # Uses all previous outputs
 ```
 
-### 3. Execute Analysis
-Follow the systematic approach in each prompt:
-1. **Session Initialization**: Load context and related patterns
-2. **Analysis Phase**: Execute domain-specific investigations
-3. **Pattern Recognition**: Identify architectural/security/business patterns
-4. **Documentation**: Generate structured reports with citations
-5. **Session Completion**: Store findings and complete workflow
+### 2. Focused Analysis
+For specific concerns, run foundation + targeted prompts:
+```bash
+# Security-focused analysis
+claude 00-codebase-overview.md
+claude 02-security-vulnerability-analysis.md
+claude 07-dependency-security-analysis.md
+claude 08-privacy-compliance-analysis.md
+
+# Architecture-focused analysis
+claude 00-codebase-overview.md
+claude 01-architecture-analysis.md
+claude 04-api-contract-analysis.md
+claude 05-database-optimization.md
+```
+
+### 3. Memory Integration
+Use memory prompts for session continuity:
+```bash
+# Start with memory context
+claude memory-related/m2-memory-retrieval.md
+
+# Run analysis with task tracking
+claude memory-related/m3-task-management.md + 01-architecture-analysis.md
+
+# Maintain memory state
+claude memory-related/m5-memory-maintenance.md
+```
 
 ### 4. Access Results
-Analysis outputs are stored in `.claude/` directory:
-- `ARCHITECTURE_ANALYSIS.md`
-- `SECURITY_ANALYSIS.md`
-- `QUALITY_REPORT.md`
-- etc.
+Analysis outputs are systematically organized:
+```
+.claude/
+├── 0-CODEBASE_OVERVIEW.md
+├── 1-ARCHITECTURE_ANALYSIS.md
+├── 2-SECURITY_ANALYSIS.md
+├── ...
+├── 15-SEQUENCE_DIAGRAMS.md
+└── components/, api/, monitoring/
+
+diagrams/
+├── README.md
+├── api-flows.md
+├── auth-flows.md
+└── system-interactions.md
+```
 
 ## 🏗️ Integration with LerianStudio
 
@@ -124,28 +171,28 @@ repository="github.com/lerianstudio/monorepo"
 
 ## 📊 Analysis Patterns
 
-### Systematic Analysis Framework
-All prompts follow a consistent 4-phase approach:
+### Chained Analysis Framework
+All prompts follow a systematic approach with cross-referencing:
 
-1. **Initial Exploration**
+1. **Foundation Phase (Prompt #00)**
    - Technology stack identification
-   - Entry point mapping
+   - Entry point mapping  
    - Build configuration analysis
 
-2. **Deep Component Analysis**
-   - Dependency relationship mapping
-   - API surface cataloging
-   - Data model extraction
+2. **Specialist Analysis (Prompts #01-10)**
+   - Architecture, security, business, API, database analysis
+   - Each prompt references all previous findings
+   - Cross-domain pattern recognition
 
-3. **Pattern Recognition**
-   - Design pattern identification
-   - Service boundary analysis
-   - Performance optimization detection
+3. **Production Readiness (Prompts #11-14)**
+   - Readiness auditing, documentation generation
+   - Quality validation, deployment preparation
+   - Integration of all previous findings
 
-4. **Documentation Creation**
-   - Structured markdown output
-   - Mermaid diagram generation
-   - File reference validation
+4. **Visualization Synthesis (Prompt #15)**
+   - Mermaid sequence diagrams
+   - Complete system interaction flows
+   - Final visual documentation
 
 ### Documentation Standards
 - **File References**: All claims include `file:line` references

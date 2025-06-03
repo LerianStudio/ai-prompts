@@ -1,15 +1,15 @@
-# Memory Context Retrieval
+# Memory Context Retrieval (Simplified)
 
-Retrieve and summarize memory context, tasks, and patterns for current session.
+Quick retrieval of memory context, tasks, and patterns for current session.
 
 ## Core Retrieval
 
 ```
-# Get repository context and status
+# Get repository status and context
 memory_system status repository="github.com/org/repo"
 memory_get_context repository="github.com/org/repo"
 
-# Check task status and workflow
+# Check tasks
 memory_tasks todo_read session_id="current-session" repository="github.com/org/repo"
 memory_tasks task_completion_stats repository="github.com/org/repo"
 ```
@@ -17,20 +17,20 @@ memory_tasks task_completion_stats repository="github.com/org/repo"
 ## Intelligence & Patterns
 
 ```
-# Get insights and patterns
+# Get insights
 memory_intelligence auto_insights repository="github.com/org/repo" session_id="current-session"
 memory_read get_patterns repository="github.com/org/repo"
 memory_analyze health_dashboard repository="github.com/org/repo" session_id="current-session"
 
-# Check for conflicts and freshness
+# Check data quality
 memory_analyze detect_conflicts repository="github.com/org/repo" session_id="current-session"
 memory_analyze check_freshness repository="github.com/org/repo" session_id="current-session"
 ```
 
-## Cross-Repository Insights
+## Cross-Repository Analysis
 
 ```
-# Multi-repo analysis
+# Multi-repo insights
 memory_analyze cross_repo_patterns session_id="current-session" repository="github.com/org/repo"
 memory_analyze find_similar_repositories repository="github.com/org/repo" session_id="current-session"
 ```

@@ -1,61 +1,53 @@
-# Memory Analysis & Intelligence
+# Memory Analysis & Intelligence (Simplified)
 
-Perform deep analysis of stored memory, detect patterns, and generate insights.
+Deep analysis of stored memory, pattern detection, and insight generation.
 
-## Health & Status Analysis
+## System Health Check
 
 ```
-# System health and repository status
 memory_system health
 memory_system status repository="github.com/org/repo"
 memory_analyze health_dashboard repository="github.com/org/repo" session_id="current-session"
 ```
 
-## Pattern Detection & Intelligence
+## Pattern Detection
 
 ```
-# Detect patterns and relationships
+# Core pattern analysis
 memory_read get_patterns repository="github.com/org/repo"
 memory_create auto_detect_relationships repository="github.com/org/repo"
 memory_analyze detect_threads repository="github.com/org/repo"
 
-# Generate intelligence insights
+# Generate insights
 memory_intelligence auto_insights repository="github.com/org/repo" session_id="current-session"
 memory_intelligence pattern_prediction context="[current analysis context]" repository="github.com/org/repo" session_id="current-session"
 ```
 
-## Conflict & Quality Analysis
+## Quality Validation
 
 ```
-# Detect conflicts and validate data
+# Check conflicts and data freshness
 memory_analyze detect_conflicts repository="github.com/org/repo" session_id="current-session"
 memory_analyze check_freshness repository="github.com/org/repo" session_id="current-session"
 
-# Cross-repository insights
+# Cross-repository analysis
 memory_analyze cross_repo_patterns session_id="current-session" repository="github.com/org/repo"
-memory_analyze cross_repo_insights session_id="current-session" repository="github.com/org/repo"
+memory_analyze find_similar_repositories repository="github.com/org/repo" session_id="current-session"
 ```
 
 ## Relationship Analysis
 
 ```
-# Analyze relationships and traverse connections
+# Analyze connections
 memory_read get_relationships chunk_id="[target_chunk_id]" repository="github.com/org/repo"
 memory_read traverse_graph start_chunk_id="[start_chunk_id]" repository="github.com/org/repo"
 ```
 
-## Repository Comparison
-
-```
-# Find similar repositories and patterns
-memory_analyze find_similar_repositories repository="github.com/org/repo" session_id="current-session"
-```
-
-## Output Analysis Report
+## Output Format
 
 **Memory Health:** [healthy/issues]
-**Patterns Found:** [architectural/security/business patterns]
-**Conflicts Detected:** [conflicts count and types]
-**Freshness Status:** [up-to-date/stale data percentage]
-**Cross-Repo Insights:** [related projects and shared patterns]
-**Recommendations:** [actionable insights for improvement]
+**Patterns Found:** [architectural/security/business patterns]  
+**Conflicts:** [count and types]
+**Freshness:** [up-to-date/stale percentage]
+**Cross-Repo:** [related projects and shared patterns]
+**Recommendations:** [actionable insights]
