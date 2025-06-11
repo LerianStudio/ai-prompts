@@ -1,0 +1,37 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: Standards for creating, reviewing, and managing pull requests, including templates and review processes
+globs:
+- src/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Pull Request
+
+## 🔍 Changes Made
+{{changes}}
+
+## 💡 Why This Change Was Necessary
+{{why}}
+
+## 📝 Notes for Reviewers
+{{notes}}
+
+## 🧪 Testing Done
+{{testing}}
+
+## 📚 Related Issues
+{{issues}}
+
+## 📷 Screenshots/Videos (if applicable)
+{{screenshots}}
+
+## ⚠️ Breaking Changes (if any)
+{{breaking}}
+
+## 🚀 Deployment Instructions
+{{deployment}}

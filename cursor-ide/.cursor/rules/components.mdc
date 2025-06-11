@@ -1,0 +1,395 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: Standards for building reusable React components, including component structure, props management, and styling practices
+globs:
+- src/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Component Structure Guidelines
+
+## Component Hierarchy
+
+The UI components are organized in a hierarchical structure following atomic design principles:
+
+### 1. Base UI Components ([src/components/ui](mdc:src/components/ui))
+Low-level, reusable components based on Radix UI primitives with Tailwind styling:
+
+- **Form Controls**: `input`, `textarea`, `select`, `checkbox`, `switch`, `combobox`, `autocomplete`
+- **Navigation**: `button`, `dropdown-menu`, `breadcrumb`, `tabs`
+- **Layout**: `card`, `sheet`, `dialog`, `popover`, `separator`, `collapsible`
+- **Feedback**: `alert`, `toast`, `tooltip`, `progress`, `skeleton`, `loading-button`
+- **Data Display**: `table`, `badge`, `avatar`, `stepper`
+
+### 2. Composite Components ([src/components](mdc:src/components))
+Higher-level components composed from base UI components:
+
+- **Layout Components**: `page`, `page-header`, `page-footer`, `sidebar`, `header`
+- **Data Display**: `entity-data-table`, `entity-box`, `pagination`, `empty-resource`
+- **Navigation**: `breadcrumb`, `organization-switcher`, `user-dropdown`, `settings-dropdown`
+- **Forms**: Specialized form fields in `form/` directory
+- **Content**: `not-found-content`, `confirmation-dialog`
+
+### 3. Domain-Specific Components
+Components specific to business domains:
+
+- [src/components/transactions](mdc:src/components/transactions) - Transaction-related UI components
+- Domain-specific forms and data displays for entities like accounts, assets, ledgers
+
+### 4. Page-Level Components ([src/app](mdc:src/app))
+Components specific to particular pages or routes, composed of composite and base components.
+
+## Server vs. Client Component Patterns
+
+### Server Component Patterns
+Server components are used for:
+- Data fetching directly from databases or APIs
+- Accessing backend resources directly
+- Rendering static or infrequently changing UI
+- SEO-critical content
+- Layout structures and page shells
+
+```typescript
+// Server component pattern
+// src/components/accounts/accounts-list.tsx
+import { getAccounts } from '@/core/application/use-cases/accounts';
+
+interface AccountsListProps {
+  organizationId: string;
+  status?: 'active' | 'inactive' | 'all';
+}
+
+export async function AccountsList({ organizationId, status = 'all' }: AccountsListProps) {
+  // Server-side data fetching
+  const accounts = await getAccounts({ organizationId, status });
+
+  return (
+    <div className="space-y-4">
+      {accounts.length === 0 ? (
+        <EmptyResourceState
+          title="No accounts found"
+          description="Create your first account to get started."
+        />
+      ) : (
+        <ul>
+          {accounts.map(account => (
+            <AccountCard
+              key={account.id}
+              account={account}
+              actions={<AccountActions accountId={account.id} />}
+            />
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+```
+
+### Client Component Patterns
+Client components are used for:
+- Interactive UI elements
+- Event listeners and user interactions
+- State management and effects
+- Browser APIs that are unavailable on the server
+- Custom hooks that use React state or effects
+
+```typescript
+// Client component pattern
+// src/components/accounts/account-actions.tsx
+'use client';
+
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { createAccount } from '@/actions/accounts';
+
+interface AccountActionsProps {
+  accountId: string;
+}
+
+export function AccountActions({ accountId }: AccountActionsProps) {
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    try {
+      await deleteAccount(accountId);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  return (
+    <div className="flex gap-2">
+      <Button variant="outline" asChild>
+        <Link href={`/accounts/${accountId}/edit`}>Edit</Link>
+      </Button>
+      <Button
+        variant="destructive"
+        onClick={handleDelete}
+        disabled={isDeleting}
+      >
+        {isDeleting ? 'Deleting...' : 'Delete'}
+      </Button>
+    </div>
+  );
+}
+```
+
+### Hybrid Component Patterns
+Combining server and client components effectively:
+
+```typescript
+// src/app/(routes)/accounts/page.tsx
+// Server component with client component children
+export default async function AccountsPage() {
+  // Server-side data fetching
+  const accounts = await getAccountsUseCase.execute();
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <PageHeader title="Accounts" />
+        {/* Client component for interactions */}
+        <CreateAccountButton />
+      </div>
+
+      {/* Server component with data */}
+      <AccountsList accounts={accounts} />
+    </div>
+  );
+}
+```
+
+## Streaming and Suspense Patterns
+
+### Suspense Boundaries
+Using Suspense for progressive loading:
+
+```typescript
+// src/app/(routes)/dashboard/page.tsx
+export default function DashboardPage() {
+  return (
+    <div className="grid grid-cols-12 gap-6">
+      {/* Critical UI loads first */}
+      <UserWelcome />
+
+      {/* Less critical UI streams in */}
+      <Suspense fallback={<AccountsSkeleton />}>
+        <AccountsSummary />
+      </Suspense>
+
+      <Suspense fallback={<TransactionsSkeleton />}>
+        <RecentTransactions />
+      </Suspense>
+
+      <Suspense fallback={<AssetsSkeleton />}>
+        <AssetAllocation />
+      </Suspense>
+    </div>
+  );
+}
+```
+
+### Loading UI Pattern
+Using loading.tsx for route segment loading:
+
+```typescript
+// src/app/(routes)/accounts/loading.tsx
+export default function AccountsLoading() {
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <Skeleton className="h-10 w-40" />
+        <Skeleton className="h-10 w-32" />
+      </div>
+      <div className="space-y-4">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Skeleton key={i} className="h-24 w-full" />
+        ))}
+      </div>
+    </div>
+  );
+}
+```
+
+## Form Components Structure
+
+Specialized form components in [src/components/form](mdc:src/components/form):
+
+- `input-field/` - Text input with validation
+- `select-field/` - Dropdown selection
+- `combo-box-field/` - Searchable dropdown
+- `switch-field/` - Toggle switches
+- `metadata-field/` - Key-value metadata inputs
+- `country-field/` - Country selection
+- `state-field/` - State/province selection
+- `pagination-limit-field/` - Page size selection
+
+## Component Naming Conventions
+
+- Use **PascalCase** for component names and file directories
+- Use **kebab-case** for file names (`user-dropdown.tsx`)
+- Use descriptive names that indicate the component's purpose
+- Group related components in folders with an `index.ts` export
+- Prefix client components with appropriate markers (e.g., `ClientButton`, `InteractiveForm`)
+- Suffix specialized components with their type (e.g., `AccountFormField`, `UserAvatar`)
+
+## Component Best Practices
+
+### Structure and Organization
+- Keep components focused on a single responsibility
+- Follow the composition pattern over inheritance
+- Use proper TypeScript interfaces for props
+- Export components through index files for clean imports
+- Implement colocation principle: keep related files close together
+- Progressively enhance: start with server components, add client interactivity as needed
+
+### Implementation Patterns
+- Use functional components with hooks
+- Leverage React.forwardRef for UI components that need ref access
+- Implement proper error boundaries where appropriate
+- Use React.memo for performance optimization when needed
+- Avoid prop drilling with context or composition
+- Use controlled components for form inputs
+- Leverage React 18+ features like automatic batching and concurrent rendering
+
+### Styling and Theming
+- Use Tailwind CSS for styling with consistent design tokens
+- Utilize `class-variance-authority` (CVA) for component variants
+- Follow the design system patterns established in base UI components
+- Support dark/light theme switching
+- Use CSS variables for theme customization
+- Implement responsive design with mobile-first approach
+- Use fluid typography and spacing
+
+### Optimization Techniques
+- Minimize client-side JavaScript with server components
+- Use dynamic imports for code splitting
+- Implement proper key props for list rendering
+- Memoize expensive calculations with useMemo
+- Avoid layout shifts with proper skeleton loading
+- Use image optimization with Next.js Image component
+- Implement virtualization for long lists
+
+### Accessibility
+- Ensure proper ARIA attributes for all interactive components
+- Implement keyboard navigation support
+- Use semantic HTML elements
+- Test with screen readers
+- Support dark mode and high contrast themes
+- Implement focus management for modals and dialogs
+- Ensure proper color contrast ratios (WCAG AA compliance minimum)
+- Add screen reader announcements for dynamic content
+- Implement reduced motion support
+- Use proper heading hierarchy
+
+## Reusable Pattern Examples
+
+### Data Table Pattern
+
+```typescript
+// src/components/data-table/data-table.tsx
+interface DataTableProps<T> {
+  data: T[];
+  columns: Column<T>[];
+  pagination?: {
+    pageSize: number;
+    pageIndex: number;
+    totalCount: number;
+  };
+  onPaginationChange?: (pageIndex: number, pageSize: number) => void;
+  sortable?: boolean;
+  filterable?: boolean;
+  isLoading?: boolean;
+}
+
+export function DataTable<T>({
+  data,
+  columns,
+  pagination,
+  onPaginationChange,
+  sortable = false,
+  filterable = false,
+  isLoading = false,
+}: DataTableProps<T>) {
+  // Table implementation
+  return (
+    <div className="rounded-md border">
+      {isLoading ? (
+        <TableSkeleton columns={columns.length} rows={pagination?.pageSize || 5} />
+      ) : (
+        <>
+          <Table>
+            <TableHeader>
+              {/* Header implementation */}
+            </TableHeader>
+            <TableBody>
+              {/* Body implementation */}
+            </TableBody>
+          </Table>
+          {pagination && (
+            <DataTablePagination
+              pageCount={Math.ceil(pagination.totalCount / pagination.pageSize)}
+              pageIndex={pagination.pageIndex}
+              pageSize={pagination.pageSize}
+              onPageChange={(page) => onPaginationChange?.(page, pagination.pageSize)}
+              onPageSizeChange={(size) => onPaginationChange?.(0, size)}
+            />
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+```
+
+### Form Field Pattern
+
+```typescript
+// src/components/form/form-field.tsx
+interface FormFieldProps<T extends Record<string, any>> {
+  name: Path<T>;
+  label: string;
+  description?: string;
+  required?: boolean;
+  children: React.ReactNode;
+}
+
+export function FormField<T extends Record<string, any>>({
+  name,
+  label,
+  description,
+  required = false,
+  children,
+}: FormFieldProps<T>) {
+  return (
+    <FormItem>
+      <FormLabel htmlFor={name} required={required}>
+        {label}
+      </FormLabel>
+      {description && <FormDescription>{description}</FormDescription>}
+      {children}
+      <FormMessage />
+    </FormItem>
+  );
+}
+```
+
+## Dependencies and Integration
+
+- **Radix UI**: Provides accessible, unstyled component primitives
+- **Tailwind CSS**: Utility-first CSS framework for styling
+- **Framer Motion**: Animation library for smooth transitions
+- **React Hook Form**: Form handling and validation
+- **Zod**: Schema validation for form inputs
+- **Lucide React**: Icon library for consistent iconography
+- **TanStack Query**: Data fetching, caching, and synchronization
+- **TanStack Table**: Headless table component with sorting, filtering, and pagination
+- **Next.js Server Actions**: Form submissions and data mutations
+- **React Server Components**: Progressive and streaming rendering
+- **Sonner**: Toast notifications

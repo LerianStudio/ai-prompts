@@ -1,0 +1,520 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: Standards for implementing logging, monitoring, and tracing to ensure application observability and performance tracking
+globs:
+- src/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Observability Guidelines
+
+## Overview
+
+This project implements comprehensive observability using OpenTelemetry for distributed tracing, metrics collection, and structured logging. The observability stack includes logging with Pino, monitoring with OpenTelemetry, and performance tracking.
+
+## Architecture Components
+
+### Core Observability Stack
+- **Logging**: Pino with structured JSON output
+- **Tracing**: OpenTelemetry distributed tracing
+- **Metrics**: OpenTelemetry metrics collection
+- **Performance**: Lighthouse CI for performance monitoring
+- **Error Tracking**: Integrated error reporting and monitoring
+
+### Infrastructure Components
+- [src/core/infrastructure/observability](mdc:src/core/infrastructure/observability) - Observability implementations
+- [src/core/infrastructure/logger](mdc:src/core/infrastructure/logger) - Logging infrastructure
+- [src/instrumentation.ts](mdc:src/instrumentation.ts) - OpenTelemetry instrumentation setup
+
+## Logging Standards
+
+### Structured Logging with Pino
+```typescript
+import { logger } from '@/core/infrastructure/logger';
+
+// Basic logging levels
+logger.info('User successfully authenticated', { userId: '123', method: 'OAuth' });
+logger.warn('Rate limit approaching', { userId: '123', requests: 90, limit: 100 });
+logger.error('Database connection failed', { error: error.message, retries: 3 });
+
+// Request logging
+logger.info('API request received', {
+  method: 'POST',
+  path: '/api/accounts',
+  userId: '123',
+  requestId: 'req-456',
+});
+```
+
+### Log Structure Standards
+```typescript
+interface LogEntry {
+  level: 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal';
+  time: string;           // ISO timestamp
+  msg: string;           // Human-readable message
+  requestId?: string;    // Request correlation ID
+  userId?: string;       // User identifier
+  organizationId?: string; // Organization context
+  component?: string;    // Component/module name
+  operation?: string;    // Operation being performed
+  duration?: number;     // Operation duration in ms
+  error?: {             // Error details
+    message: string;
+    stack?: string;
+    code?: string;
+  };
+  metadata?: object;    // Additional context
+}
+```
+
+### Logger Configuration
+```typescript
+// Production configuration
+const logger = pino({
+  level: process.env.LOG_LEVEL || 'info',
+  formatters: {
+    level: (label) => ({ level: label }),
+  },
+  timestamp: pino.stdTimeFunctions.isoTime,
+  redact: {
+    paths: ['password', 'token', 'authorization', 'cookie'],
+    remove: true,
+  },
+});
+
+// Development configuration with pretty printing
+if (process.env.NODE_ENV === 'development') {
+  logger = pino({
+    transport: {
+      target: 'pino-pretty',
+      options: {
+        colorize: true,
+        translateTime: 'SYS:standard',
+        ignore: 'pid,hostname',
+      },
+    },
+  });
+}
+```
+
+## Distributed Tracing
+
+### OpenTelemetry Setup
+```typescript
+// src/instrumentation.ts
+import { NodeSDK } from '@opentelemetry/sdk-node';
+import { registerInstrumentations } from '@opentelemetry/instrumentation';
+import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
+import { UndiciInstrumentation } from '@opentelemetry/instrumentation-undici';
+
+const sdk = new NodeSDK({
+  serviceName: 'midaz-console',
+  serviceVersion: process.env.npm_package_version,
+  instrumentations: [
+    new HttpInstrumentation({
+      requestHook: (span, request) => {
+        span.setAttributes({
+          'http.request.headers.user-agent': request.getHeader('user-agent'),
+          'http.request.id': request.getHeader('x-request-id'),
+        });
+      },
+    }),
+    new UndiciInstrumentation(),
+  ],
+});
+
+sdk.start();
+```
+
+### Manual Tracing
+```typescript
+import { trace } from '@opentelemetry/api';
+
+const tracer = trace.getTracer('midaz-console');
+
+export async function createAccount(accountData: AccountDto) {
+  const span = tracer.startSpan('createAccount');
+
+  try {
+    span.setAttributes({
+      'account.name': accountData.name,
+      'account.type': accountData.type,
+      'organization.id': accountData.organizationId,
+    });
+
+    const result = await accountRepository.create(accountData);
+
+    span.setStatus({ code: trace.SpanStatusCode.OK });
+    span.setAttributes({
+      'account.id': result.id,
+      'operation.success': true,
+    });
+
+    return result;
+  } catch (error) {
+    span.recordException(error);
+    span.setStatus({
+      code: trace.SpanStatusCode.ERROR,
+      message: error.message,
+    });
+    throw error;
+  } finally {
+    span.end();
+  }
+}
+```
+
+### Trace Context Propagation
+```typescript
+// API route with trace context
+export async function POST(request: NextRequest) {
+  const traceId = request.headers.get('x-trace-id') || generateTraceId();
+
+  return await trace.getActiveSpan()?.setAttributes({
+    'http.method': 'POST',
+    'http.url': request.url,
+    'trace.id': traceId,
+  });
+}
+```
+
+## Metrics Collection
+
+### Custom Metrics
+```typescript
+import { metrics } from '@opentelemetry/api';
+
+const meter = metrics.getMeter('midaz-console');
+
+// Counter for API requests
+const requestCounter = meter.createCounter('http_requests_total', {
+  description: 'Total number of HTTP requests',
+});
+
+// Histogram for request duration
+const requestDuration = meter.createHistogram('http_request_duration_ms', {
+  description: 'Duration of HTTP requests in milliseconds',
+});
+
+// Gauge for active connections
+const activeConnections = meter.createUpDownCounter('http_active_connections', {
+  description: 'Number of active HTTP connections',
+});
+
+// Usage in middleware
+export function metricsMiddleware(req: NextRequest) {
+  const startTime = Date.now();
+
+  requestCounter.add(1, {
+    method: req.method,
+    route: req.nextUrl.pathname,
+  });
+
+  return new Promise((resolve) => {
+    req.on('close', () => {
+      const duration = Date.now() - startTime;
+      requestDuration.record(duration, {
+        method: req.method,
+        route: req.nextUrl.pathname,
+        status_code: res.statusCode.toString(),
+      });
+    });
+  });
+}
+```
+
+### Business Metrics
+```typescript
+// Business-specific metrics
+const accountCreations = meter.createCounter('accounts_created_total', {
+  description: 'Total number of accounts created',
+});
+
+const transactionVolume = meter.createHistogram('transaction_amount', {
+  description: 'Transaction amounts processed',
+});
+
+// Usage in use cases
+export class CreateAccountUseCase {
+  async execute(data: AccountDto): Promise<AccountEntity> {
+    const account = await this.repository.create(data);
+
+    accountCreations.add(1, {
+      organization_id: data.organizationId,
+      account_type: data.type,
+    });
+
+    return account;
+  }
+}
+```
+
+## Error Monitoring
+
+### Error Tracking Patterns
+```typescript
+import { logger } from '@/core/infrastructure/logger';
+import { trace } from '@opentelemetry/api';
+
+export class ErrorHandler {
+  static handle(error: Error, context: ErrorContext) {
+    const span = trace.getActiveSpan();
+
+    // Log error with context
+    logger.error('Application error occurred', {
+      error: {
+        message: error.message,
+        stack: error.stack,
+        name: error.name,
+      },
+      context: {
+        userId: context.userId,
+        requestId: context.requestId,
+        operation: context.operation,
+      },
+      timestamp: new Date().toISOString(),
+    });
+
+    // Record in trace
+    span?.recordException(error);
+    span?.setStatus({
+      code: trace.SpanStatusCode.ERROR,
+      message: error.message,
+    });
+
+    // Send to error tracking service
+    this.reportError(error, context);
+  }
+
+  private static reportError(error: Error, context: ErrorContext) {
+    // Integration with error tracking service
+    // (Sentry, Bugsnag, etc.)
+  }
+}
+```
+
+### API Error Logging
+```typescript
+// src/app/api/utils/api-error-handler.ts
+export function handleApiError(error: unknown, request: NextRequest) {
+  const requestId = request.headers.get('x-request-id');
+  const userId = request.headers.get('x-user-id');
+
+  if (error instanceof ValidationError) {
+    logger.warn('Validation error in API request', {
+      requestId,
+      userId,
+      path: request.nextUrl.pathname,
+      method: request.method,
+      error: error.message,
+      details: error.details,
+    });
+
+    return NextResponse.json(
+      { error: 'Validation failed', details: error.details },
+      { status: 400 }
+    );
+  }
+
+  if (error instanceof AuthenticationError) {
+    logger.warn('Authentication failed', {
+      requestId,
+      path: request.nextUrl.pathname,
+      method: request.method,
+    });
+
+    return NextResponse.json(
+      { error: 'Authentication required' },
+      { status: 401 }
+    );
+  }
+
+  // Unexpected errors
+  logger.error('Unexpected API error', {
+    requestId,
+    userId,
+    path: request.nextUrl.pathname,
+    method: request.method,
+    error: {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+    },
+  });
+
+  return NextResponse.json(
+    { error: 'Internal server error' },
+    { status: 500 }
+  );
+}
+```
+
+## Performance Monitoring
+
+### Lighthouse CI Integration
+```yaml
+# .lighthouserc.js
+module.exports = {
+  ci: {
+    collect: {
+      startServerCommand: 'npm run start',
+      url: ['http://localhost:8081'],
+      numberOfRuns: 3,
+    },
+    assert: {
+      preset: 'lighthouse:recommended',
+      assertions: {
+        'categories:performance': ['error', { minScore: 0.8 }],
+        'categories:accessibility': ['error', { minScore: 0.9 }],
+        'categories:best-practices': ['error', { minScore: 0.9 }],
+        'categories:seo': ['error', { minScore: 0.8 }],
+      },
+    },
+    upload: {
+      target: 'lhci',
+      serverBaseUrl: process.env.LHCI_SERVER_URL,
+    },
+  },
+};
+```
+
+### Web Vitals Tracking
+```typescript
+import { getCLS, getFID, getFCP, getLCP, getTTFB } from 'web-vitals';
+
+export function trackWebVitals() {
+  getCLS((metric) => {
+    analytics.track('Core Web Vital', {
+      name: metric.name,
+      value: metric.value,
+      rating: metric.rating,
+    });
+  });
+
+  getFID((metric) => {
+    analytics.track('Core Web Vital', {
+      name: metric.name,
+      value: metric.value,
+      rating: metric.rating,
+    });
+  });
+
+  // Additional metrics...
+}
+```
+
+## Health Checks
+
+### Application Health Endpoints
+```typescript
+// src/app/api/admin/health/alive/route.ts
+export async function GET() {
+  return NextResponse.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    service: 'midaz-console',
+    version: process.env.npm_package_version,
+  });
+}
+
+// src/app/api/admin/health/ready/route.ts
+export async function GET() {
+  const checks = await Promise.allSettled([
+    checkDatabase(),
+    checkMidazAPI(),
+    checkAuthService(),
+  ]);
+
+  const isReady = checks.every(check => check.status === 'fulfilled');
+
+  return NextResponse.json({
+    status: isReady ? 'ready' : 'not_ready',
+    timestamp: new Date().toISOString(),
+    checks: checks.map((check, index) => ({
+      name: ['database', 'midaz-api', 'auth-service'][index],
+      status: check.status === 'fulfilled' ? 'healthy' : 'unhealthy',
+      error: check.status === 'rejected' ? check.reason.message : undefined,
+    })),
+  }, { status: isReady ? 200 : 503 });
+}
+```
+
+## Observability Best Practices
+
+### Context Propagation
+- Always propagate trace context across service boundaries
+- Include correlation IDs in all log entries
+- Maintain context through async operations
+
+### Sampling Strategies
+```typescript
+// Trace sampling configuration
+const sampler = new TraceIdRatioBasedSampler(0.1); // 10% sampling
+
+// Head-based sampling for critical operations
+const criticalSampler = new AlwaysOnSampler();
+```
+
+### Log Aggregation
+- Use structured logging for machine-readable format
+- Implement log correlation across distributed components
+- Set up proper log retention policies
+- Ensure sensitive data is redacted
+
+### Alerting Guidelines
+- Set up alerts for error rates, latency percentiles, and service availability
+- Create meaningful alert descriptions and runbooks
+- Implement escalation procedures for critical alerts
+- Monitor business-specific KPIs
+
+### Dashboard Creation
+- Create dashboards for different stakeholders (developers, operations, business)
+- Include both technical and business metrics
+- Use appropriate visualization types for different data
+- Implement drill-down capabilities for investigation
+
+## Security and Compliance
+
+### Sensitive Data Handling
+```typescript
+// Automatic PII redaction
+const logger = pino({
+  redact: {
+    paths: [
+      'password',
+      'token',
+      'authorization',
+      'cookie',
+      'ssn',
+      'email',
+      'phone',
+    ],
+    remove: true,
+  },
+});
+```
+
+### Audit Logging
+```typescript
+export function auditLog(action: string, resource: string, context: AuditContext) {
+  logger.info('Audit event', {
+    type: 'audit',
+    action,
+    resource,
+    userId: context.userId,
+    organizationId: context.organizationId,
+    timestamp: new Date().toISOString(),
+    outcome: context.outcome,
+    details: context.details,
+  });
+}
+```
+
+### Compliance Considerations
+- Ensure logs don't contain personal identifiable information (PII)
+- Implement proper data retention policies
+- Provide audit trails for compliance requirements
+- Maintain traceability for all user actions

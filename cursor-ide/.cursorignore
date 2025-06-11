@@ -1,0 +1,35 @@
+# ── Runtime / build artefacts ──────────────────────────────────
+.next/
+out/
+dist/
+.cache/
+coverage/
+.storybook-static/
+
+# ── Dependencies ───────────────────────────────────────────────
+node_modules/
+
+# ── Playwright ────────────────────
+playwright-report/
+test-results/
+**/__snapshots__/**
+*.snap
+
+# ── Logs & misc junk ───────────────────────────────────────────
+*.log
+*.tmp
+*.swp
+.DS_Store
+
+# ── Generated code you rarely read ─────────────────────────────
+tailwind.css          
+.next/static/css/**
+
+# ── Large static assets (leave SVG icons you hand-edit) ────────
+public/**/*.png
+public/**/*.jpg
+public/**/*.gif
+public/videos/**
+
+# ── Secrets / env variants (tokens useless to LLM) ─────────────
+.env*

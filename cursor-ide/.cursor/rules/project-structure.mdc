@@ -1,0 +1,214 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: Guidelines for organizing project files, directories, and modules following clean architecture principles
+globs:
+- src/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Project Structure Guide
+
+This is a Next.js 14+ application following Clean Architecture principles. The main code is organized in the following directories:
+
+## Key Directories
+
+### Core Application Structure
+- [src/app](mdc:src/app) - Next.js App Router structure for UI pages and API routes
+  - [src/app/(auth-routes)](mdc:src/app/(auth-routes)) - Unauthenticated routes (signin, signout)
+  - [src/app/(routes)](mdc:src/app/(routes)) - Authenticated routes organized by domain
+  - [src/app/api](mdc:src/app/api) - API routes implementing RESTful endpoints
+  - [src/app/@modal](mdc:src/app/@modal) - Parallel routes for modal interfaces
+  - [src/app/error.tsx](mdc:src/app/error.tsx) - Global error boundary
+  - [src/app/loading.tsx](mdc:src/app/loading.tsx) - Global loading state
+  - [src/app/not-found.tsx](mdc:src/app/not-found.tsx) - 404 page
+
+### UI and Components
+- [src/components](mdc:src/components) - Reusable UI components organized by functionality
+  - [src/components/ui](mdc:src/components/ui) - Base UI components (buttons, inputs, cards, etc.)
+  - Domain-specific components (transactions, organization-switcher, etc.)
+- [src/providers](mdc:src/providers) - React Context providers for global state
+
+### Server Actions
+- [src/actions](mdc:src/actions) - Server actions for form submissions and data mutations
+  - [src/actions/accounts](mdc:src/actions/accounts) - Account management actions
+  - [src/actions/auth](mdc:src/actions/auth) - Authentication actions
+  - [src/actions/organizations](mdc:src/actions/organizations) - Organization management actions
+
+### Business Logic (Clean Architecture)
+- [src/core](mdc:src/core) - Business logic following Clean Architecture
+  - [src/core/application](mdc:src/core/application) - Application layer with DTOs, mappers, and use cases
+  - [src/core/domain](mdc:src/core/domain) - Domain layer with entities and repository interfaces
+  - [src/core/infrastructure](mdc:src/core/infrastructure) - Infrastructure implementations and external integrations
+
+### Supporting Directories
+- [src/hooks](mdc:src/hooks) - Custom React hooks for shared functionality
+- [src/lib](mdc:src/lib) - External library configurations and integrations
+- [src/client](mdc:src/client) - HTTP client implementations
+- [src/types](mdc:src/types) - TypeScript type definitions
+- [src/schema](mdc:src/schema) - Zod schemas for data validation
+- [src/utils](mdc:src/utils) - Utility functions
+- [src/helpers](mdc:src/helpers) - Helper functions for common tasks
+- [src/exceptions](mdc:src/exceptions) - Custom exception handling
+- [src/middleware.ts](mdc:src/middleware.ts) - Next.js middleware for route protection and request handling
+- [src/events](mdc:src/events) - Event definitions and handlers
+- [src/emails](mdc:src/emails) - Email templates and delivery logic
+
+### Static Assets and Configuration
+- [public](mdc:public) - Static assets (images, animations, SVGs)
+- [locales](mdc:locales) - Internationalization files
+- [tests](mdc:tests) - Test files organized by type (e2e, fixtures, utils)
+- [scripts](mdc:scripts) - Utility scripts
+- [services](mdc:services) - Service configurations
+
+## Main Configuration Files
+
+- [package.json](mdc:package.json) - Project dependencies and scripts
+- [next.config.mjs](mdc:next.config.mjs) - Next.js configuration
+- [tsconfig.json](mdc:tsconfig.json) - TypeScript configuration
+- [tailwind.config.ts](mdc:tailwind.config.ts) - Tailwind CSS configuration
+- [components.json](mdc:components.json) - shadcn/ui components configuration
+- [jest.config.ts](mdc:jest.config.ts) - Jest testing configuration
+- [playwright.config.ts](mdc:playwright.config.ts) - Playwright E2E testing configuration
+- [.env.local.example](mdc:.env.local.example) - Environment variables template
+- [.eslintrc.json](mdc:.eslintrc.json) - ESLint configuration
+- [.prettierrc](mdc:.prettierrc) - Prettier configuration
+
+## App Router Patterns
+
+### Server and Client Components
+- Server Components (default) - Used for data fetching and static rendering
+- Client Components (marked with `'use client'`) - Used for interactive UI elements
+- Mixing patterns:
+  - Server components fetch data and pass props to client components
+  - Client components handle user interactions and local state
+
+### Route Organization
+
+#### Authenticated Routes ([src/app/(routes)](mdc:src/app/(routes)))
+- `accounts/` - Account management pages
+  - `accounts/[accountId]/` - Account details
+  - `accounts/create/` - Account creation flow
+- `assets/` - Asset management pages
+  - `assets/[assetId]/` - Asset details
+  - `assets/create/` - Asset creation flow
+- `ledgers/` - Ledger management pages
+  - `ledgers/[ledgerId]/` - Ledger details
+  - `ledgers/create/` - Ledger creation flow
+- `onboarding/` - User onboarding flow
+  - `onboarding/step1/` - First onboarding step
+  - `onboarding/step2/` - Second onboarding step
+  - `onboarding/complete/` - Onboarding completion
+- `portfolios/` - Portfolio management pages
+  - `portfolios/[portfolioId]/` - Portfolio details
+  - `portfolios/create/` - Portfolio creation flow
+- `segments/` - Segment management pages
+  - `segments/[segmentId]/` - Segment details
+  - `segments/create/` - Segment creation flow
+- `settings/` - Application settings
+  - `settings/organizations/` - Organization management
+  - `settings/users/` - User management
+  - `settings/profile/` - User profile settings
+  - `settings/preferences/` - User preferences
+- `transactions/` - Transaction management pages
+  - `transactions/[transactionId]/` - Transaction details
+  - `transactions/create/` - Transaction creation flow
+
+#### API Routes ([src/app/api](mdc:src/app/api))
+- `admin/` - Administrative endpoints
+  - `admin/health/` - Health check endpoint
+  - `admin/metrics/` - Application metrics
+- `auth/` - Authentication endpoints (NextAuth integration)
+  - `auth/[...nextauth]/` - NextAuth routes
+  - `auth/register/` - User registration
+- `identity/` - Identity management
+  - `identity/users/` - User management API
+  - `identity/groups/` - Group management API
+- `onboarding/` - Onboarding process API
+  - `onboarding/status/` - Onboarding status
+  - `onboarding/progress/` - Onboarding progress
+- `organizations/` - Organization and ledger management API
+  - `organizations/[organizationId]/` - Organization operations
+  - `organizations/[organizationId]/ledgers/` - Ledger operations
+- `utils/` - Utility endpoints and error handling
+  - `utils/upload/` - File upload API
+  - `utils/search/` - Search API
+
+### Route Grouping
+- Route groups (in parentheses) for logical organization: `(auth-routes)`, `(routes)`
+- Layout groups sharing the same layout: `(with-sidebar)`, `(full-width)`
+- Private routes with authentication checks
+- Parallel routes for complex layouts: `@dashboard`, `@sidebar`
+- Intercepting routes for modal patterns: `(.)[slug]`
+
+## Server Actions
+
+Server actions are organized by domain and follow a consistent pattern:
+
+```typescript
+// src/actions/accounts/create-account.ts
+'use server';
+
+import { z } from 'zod';
+import { createAccountUseCase } from '@/core/application/use-cases/accounts';
+
+const schema = z.object({
+  name: z.string().min(3).max(100),
+  type: z.enum(['checking', 'savings', 'investment']),
+  // Additional fields
+});
+
+export async function createAccount(formData: FormData) {
+  const parsed = schema.safeParse(Object.fromEntries(formData.entries()));
+
+  if (!parsed.success) {
+    return { error: parsed.error.format() };
+  }
+
+  try {
+    const result = await createAccountUseCase.execute(parsed.data);
+    return { success: true, data: result };
+  } catch (error) {
+    return { error: error.message };
+  }
+}
+```
+
+## Data Fetching Patterns
+
+### Server Component Data Fetching
+```typescript
+// src/app/(routes)/accounts/page.tsx
+export default async function AccountsPage() {
+  const accounts = await getAccountsUseCase.execute({
+    organizationId: 'current',
+    status: 'active',
+  });
+
+  return (
+    <div>
+      <PageHeader title="Accounts" />
+      <AccountsList accounts={accounts} />
+    </div>
+  );
+}
+```
+
+### Client Component Data Fetching (React Query)
+```typescript
+// src/components/accounts/use-accounts.ts
+'use client';
+
+import { useQuery } from '@tanstack/react-query';
+import { accountService } from '@/core/infrastructure/midaz/services';
+
+export function useAccounts(organizationId: string) {
+  return useQuery({
+    queryKey: ['accounts', organizationId],
+    queryFn: () => accountService.getAll(organizationId),
+  });
+}
+```

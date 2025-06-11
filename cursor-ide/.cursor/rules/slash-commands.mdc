@@ -1,0 +1,143 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: Documentation of available slash commands for quick actions and development workflow automation
+globs:
+- src/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Slash Commands
+
+This document outlines the available slash commands for Git operations and other utilities in this project.
+
+## Git Operations
+
+### Commit Command
+
+```
+/commit
+```
+
+⚠️ IMPORTANT: ALL commits MUST use a temporary file. The command will automatically:
+1. Create a temporary file using `mktemp`
+2. Open your default editor with the temporary file
+3. Wait for you to write and save the commit message
+4. Execute the commit using the file
+5. Clean up the temporary file
+
+❌ FORBIDDEN:
+- Direct commits with -m flag
+- Multiple -m flags
+- Inline multiline messages
+- Any commit without a temporary file
+
+The commit message must follow the Conventional Commits format. Uses the [git-commit.mdc](mdc:.cursor/rules/git-commit.mdc) template.
+
+**Example Usage:**
+```bash
+/commit  # This will create and open a temporary file for your message
+```
+
+This will:
+1. Generate a conventional commit message with body and subject based on staged changes
+2. Create a temporary file for the commit message
+3. Execute the commit command using the generated message
+
+The command supports the following templates:
+- `feat`: Feature additions
+- `fix`: Bug fixes
+- `docs`: Documentation changes
+- `style`: Code style changes
+- `refactor`: Code refactoring
+- `perf`: Performance improvements
+- `test`: Test additions or modifications
+- `chore`: Maintenance tasks
+- `ci`: CI/CD changes
+
+### Pull Request Command
+
+```
+/pr
+```
+
+Generates a pull request description based on my commits in this branch, using [pull-request.mdc](mdc:.cursor/rules/pull-request.mdc) as a reference template.
+
+**Example:**
+```
+/pr feat(auth): add biometric login
+```
+
+This will:
+1. Extract relevant information from the commit message
+2. Generate a comprehensive PR description
+3. Create a markdown file for easy copy-paste into GitHub/GitLab
+
+## Workflow Utilities
+
+### Documentation Command
+
+```
+/docs <component|function>
+```
+
+Generates documentation for the specified component or function, including:
+- Description
+- Props/parameters
+- Return values
+- Usage examples
+- Edge cases
+
+**Example:**
+```
+/docs UserDropdown
+```
+
+## Implementation Details
+
+### Commit Message Generation
+
+The commit command follows these steps:
+1. Uses `git diff --staged` to analyze changes
+2. Ignores `.mdc` files
+3. Categorizes changes by file type and modification pattern
+4. Generates a meaningful commit subject and body
+5. Creates a temporary file using `mktemp` for the commit message
+6. Writes the formatted message to the temporary file using heredoc
+7. Executes `git commit -F <temp-file>`
+8. Cleans up the temporary file
+
+Example implementation:
+```bash
+git_msg=$(mktemp)
+cat > "$git_msg" << 'EOF'
+feat(scope): short description
+
+- Change details
+- Additional context
+- Impact analysis
+
+BREAKING CHANGE: If applicable
+EOF
+
+git commit -F "$git_msg"
+rm "$git_msg"
+```
+
+This approach ensures:
+- Proper multiline formatting
+- Consistent commit message structure
+- Clean handling of special characters
+- Proper line breaks and spacing
+
+### PR Description Generation
+
+The PR command follows these steps:
+1. Parses the commit message to extract type, scope, and description
+2. Uses the `pull-request.mdc` template to structure the PR description
+3. Expands on the commit message to provide more context
+4. Creates sections for changes, motivation, and reviewer notes
+5. Generates a markdown file for easy copy-paste

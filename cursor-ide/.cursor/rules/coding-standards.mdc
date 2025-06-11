@@ -1,0 +1,363 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: Comprehensive coding standards and best practices for maintaining code quality, including formatting, naming conventions, and code organization principles
+globs:
+- src/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Coding Standards
+
+## TypeScript Standards
+
+### Type Safety
+- Use TypeScript for all new code with strict mode enabled
+- Define proper interfaces and types for all components, functions, and variables
+- Avoid using `any` type - use `unknown` when type is genuinely unknown
+- Use type inference where appropriate, explicit types when clarity is needed
+- Leverage utility types (`Partial<T>`, `Pick<T>`, `Omit<T>`, etc.)
+- Use `satisfies` operator for type validation while preserving literal types
+- Implement branded types for type-safe identifiers
+- Use `const` assertions for literal types when appropriate
+
+### Type Definitions
+- Place shared types in [src/types](mdc:src/types) directory
+- Use Zod schemas for runtime validation in [src/schema](mdc:src/schema)
+- Export types from domain entities and DTOs
+- Use generic types for reusable components and functions
+- Consider using `infer` for complex type extractions
+
+## Code Style and Formatting
+
+### Formatting Rules
+- Follow the formatting rules defined in [.prettierrc](mdc:.prettierrc)
+- Adhere to linting rules in [.eslintrc.json](mdc:.eslintrc.json)
+- Use Prettier for code formatting with Tailwind CSS plugin
+- Configure your editor to format on save
+- Follow consistent import ordering using absolute imports
+
+### Naming Conventions
+- **Variables and Functions**: `camelCase` (e.g., `getUserData`, `isLoading`)
+- **Classes and Interfaces**: `PascalCase` (e.g., `UserEntity`, `IUserRepository`)
+- **Components**: `PascalCase` for names, `kebab-case` for files (e.g., `UserDropdown` → `user-dropdown.tsx`)
+- **Constants**: `SCREAMING_SNAKE_CASE` (e.g., `API_BASE_URL`, `MAX_RETRY_ATTEMPTS`)
+- **Files and Directories**: `kebab-case` (e.g., `user-settings.tsx`, `page-header/`)
+- **API Routes**: Follow RESTful conventions with proper HTTP methods
+- **Type Parameters**: Single uppercase letter or PascalCase prefixed with T (e.g., `T`, `TValue`, `TResponse`)
+
+## Next.js Patterns
+
+### App Router Conventions
+- Use Next.js 14+ App Router patterns
+- Implement Server Components by default, Client Components when needed
+- Mark client components with `'use client'` directive at the top of the file
+- Use proper route grouping with `(group-name)` syntax
+- Implement loading, error, and not-found pages appropriately
+- Use parallel routes for complex layouts with independent navigation
+- Leverage server actions for form submissions and data mutations
+- Implement intercepting routes for modal patterns
+
+### API Route Patterns
+```typescript
+// Standard API route structure (App Router)
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    // Implementation
+  } catch (error) {
+    return handleApiError(error);
+  }
+}
+
+// With validation
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const parsed = schema.safeParse(body);
+
+    if (!parsed.success) {
+      return Response.json({ error: 'Validation failed', details: parsed.error.format() }, { status: 400 });
+    }
+
+    // Implementation with parsed.data
+  } catch (error) {
+    return handleApiError(error);
+  }
+}
+```
+
+### Environment Variables
+- Define environment variables with proper validation using Zod
+- Use `.env.local.example` for local development templates
+- Never commit sensitive credentials
+- Validate env vars at application startup
+- Differentiate between server-only and client-accessible variables
+- Use the `NEXT_PUBLIC_` prefix for client-accessible variables
+
+### Streaming and Suspense
+- Use React Suspense for progressively loading UI components
+- Implement streaming with appropriate fallbacks
+- Use `loading.tsx` for route segment loading states
+- Implement optimistic updates with server actions
+
+## React Patterns
+
+### Component Architecture
+- Use functional components with hooks exclusively
+- Follow the composition pattern over inheritance
+- Keep components small and focused on single responsibility
+- Separate UI logic from business logic
+- Use Server Components for data fetching and non-interactive UI
+- Use Client Components for interactive UI with state and effects
+
+### Server Component Structure
+```typescript
+// Standard server component structure
+interface ComponentProps {
+  // Props interface
+}
+
+export async function ServerComponent({ prop1, prop2 }: ComponentProps) {
+  // Data fetching logic
+  const data = await fetchData();
+
+  return (
+    // JSX with client components as needed
+    <ClientComponent data={data} />
+  );
+}
+```
+
+### Client Component Structure
+```typescript
+'use client';
+
+// Standard client component structure
+interface ComponentProps {
+  // Props interface
+}
+
+export function ClientComponent({ prop1, prop2 }: ComponentProps) {
+  // Hooks
+  // Event handlers
+  // Render logic
+
+  return (
+    // JSX
+  );
+}
+```
+
+### Hooks Usage
+- Use custom hooks for shared logic in [src/hooks](mdc:src/hooks)
+- Follow hooks rules (only call at top level)
+- Use `useCallback` and `useMemo` for performance optimization when needed
+- Implement proper cleanup in `useEffect`
+- Use `use` hook for promise consumption in Client Components
+- Leverage React 18+ hooks like `useId`, `useDeferredValue`, and `useTransition`
+- Consider React 19 hooks when available (`useActionState`, `useFormState`, etc.)
+
+### State Management
+- Use React Context for global state ([src/providers](mdc:src/providers))
+- Leverage `useState` for local component state
+- Use `useReducer` for complex state logic
+- Consider external state management (Zustand) for complex scenarios
+- Use `useOptimistic` for optimistic UI updates with server actions
+- Implement `useFormState` and `useFormStatus` for form handling with server actions
+
+## Form Handling
+
+### React Hook Form Integration
+- Use React Hook Form for client-side form implementations
+- Integrate with Zod for validation schemas
+- Implement proper error handling and display
+- Use controlled components for form inputs
+- Consider server-side form validation with server actions for critical forms
+
+### Form Component Pattern
+```typescript
+// Example form component
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+
+const schema = z.object({
+  name: z.string().min(2),
+  email: z.string().email(),
+});
+
+type FormData = z.infer<typeof schema>;
+
+export function ExampleForm() {
+  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+    resolver: zodResolver(schema),
+  });
+
+  const onSubmit = (data: FormData) => {
+    // handle form submission
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <input {...register('name')} />
+      {errors.name && <span>{errors.name.message}</span>}
+      <input {...register('email')} />
+      {errors.email && <span>{errors.email.message}</span>}
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+```
+
+## API Integration
+
+### HTTP Client Patterns
+- Use centralized HTTP client configuration in [src/client](mdc:src/client)
+- Implement proper error handling and retry logic
+- Use React Query/SWR for data fetching and caching in Client Components
+- Use native fetch with proper caching in Server Components
+- Follow repository pattern for API abstractions
+
+### Error Handling
+- Use custom exceptions in [src/exceptions](mdc:src/exceptions)
+- Implement consistent error response formats
+- Provide user-friendly error messages
+- Log errors appropriately for debugging
+- Use React Error Boundary for client-side error handling
+- Implement error.tsx files for route error handling
+
+## Testing Standards
+
+### Testing Strategy
+- Write tests for all new code with minimum 80% coverage
+- Use Jest for unit and integration tests
+- Use Playwright for end-to-end tests
+- Mock external dependencies appropriately
+- Implement React Testing Library for component tests
+- Test Server Components with specialized tooling
+- Implement contract tests for API endpoints
+
+### Test Organization
+```typescript
+// Test file structure
+describe('ComponentName', () => {
+  describe('when condition', () => {
+    it('should perform expected behavior', () => {
+      // Test implementation
+    });
+  });
+});
+```
+
+### Testing Patterns
+- Test behavior, not implementation details
+- Use testing-library for React component tests
+- Mock external services and APIs
+- Test error conditions and edge cases
+- Implement proper test factories and fixtures
+- Use snapshots sparingly and intentionally
+
+## Performance Guidelines
+
+### Optimization Strategies
+- Implement code splitting with dynamic imports
+- Use React.memo for expensive components
+- Optimize images and static assets with Next.js Image component
+- Implement proper caching strategies
+- Leverage React Server Components for reduced client bundle
+- Use appropriate fetching patterns (static, dynamic, streaming)
+- Implement progressive loading with Suspense boundaries
+
+### Bundle Optimization
+- Monitor bundle size with webpack-bundle-analyzer
+- Use tree shaking to eliminate dead code
+- Implement lazy loading for routes and components
+- Optimize third-party library usage
+- Use appropriate Next.js fetch caching options
+- Consider Edge Runtime for lightweight API routes
+
+## Security Standards
+
+### Input Validation
+- Validate all user inputs with Zod schemas
+- Sanitize data before processing
+- Implement proper XSS protection
+- Use CSRF protection for forms
+- Implement Content Security Policy (CSP)
+- Use HTTP Security Headers
+- Validate file uploads thoroughly
+
+### Authentication
+- Use NextAuth.js for authentication flows
+- Implement proper session management
+- Follow OAuth2/OIDC standards
+- Store sensitive data securely
+- Implement proper password policies
+- Use JWT with appropriate security measures
+- Consider passwordless authentication options
+
+### Authorization
+- Implement proper role-based access control
+- Validate permissions on both client and server
+- Use middleware for route protection
+- Implement API-level authorization checks
+- Log security-related events
+- Consider rate limiting for sensitive operations
+
+## Documentation Standards
+
+### Code Documentation
+- Write clear, descriptive comments for complex logic
+- Document public APIs and interfaces
+- Use JSDoc for function documentation
+- Maintain README files for complex modules
+- Document architectural decisions
+
+### Component Documentation
+- Use Storybook for component documentation
+- Provide usage examples and prop descriptions
+- Document component variations and states
+- Include accessibility guidelines
+- Implement component status (stable, beta, deprecated)
+
+## Accessibility Standards
+
+### WCAG Compliance
+- Follow WCAG 2.1 AA guidelines
+- Implement proper ARIA attributes
+- Ensure keyboard navigation support
+- Test with screen readers
+- Implement focus management
+- Support reduced motion preferences
+- Ensure proper text contrast ratios
+
+### Semantic HTML
+- Use appropriate HTML elements for content structure
+- Implement proper heading hierarchy
+- Use descriptive alt text for images
+- Ensure proper color contrast ratios
+- Implement proper form labels and descriptions
+- Use appropriate landmark regions
+
+## Internationalization
+
+### i18n Implementation
+- Use next-intl for internationalization
+- Extract text strings to locale files in [locales](mdc:locales)
+- Support right-to-left (RTL) languages
+- Format dates, numbers, and currencies appropriately
+- Implement proper pluralization rules
+- Use server-side internationalization when possible
+
+### Text Handling
+- Never hardcode user-facing text
+- Use translation keys consistently
+- Support pluralization rules
+- Implement proper text interpolation
+- Handle dynamic content appropriately

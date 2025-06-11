@@ -1,0 +1,476 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: Guidelines for implementing internationalization (i18n) and localization (l10n), including translation management and language support
+globs:
+- src/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Internationalization (i18n) Guidelines
+
+## Overview
+
+This project uses React Intl for internationalization with formatjs for message extraction and compilation. The i18n system supports multiple languages, proper pluralization, and date/number formatting.
+
+## Directory Structure
+
+### Locale Files Organization
+```text
+locales/
+├── compiled/           # Compiled translation files (used at runtime)
+│   ├── en.json        # English compiled messages
+│   ├── es.json        # Spanish compiled messages
+│   └── pt.json        # Portuguese compiled messages
+├── extracted/         # Extracted translation strings from source code
+│   ├── en.json        # Extracted English strings
+│   ├── es.json        # Extracted Spanish strings
+│   └── pt.json        # Extracted Portuguese strings
+└── messages/          # Source translation files (editable)
+    ├── en.json        # English source messages
+    ├── es.json        # Spanish source messages
+    └── pt.json        # Portuguese source messages
+```
+
+### Configuration Files
+- [intl.config.ts](mdc:intl.config.ts) - Internationalization configuration
+- [src/lib/intl](mdc:src/lib/intl) - i18n utilities and setup
+- [src/lib/languages](mdc:src/lib/languages) - Language definitions and helpers
+
+## Implementation Patterns
+
+### Component Internationalization
+```typescript
+import { useIntl, FormattedMessage } from 'react-intl';
+
+export function WelcomeComponent() {
+  const intl = useIntl();
+
+  return (
+    <div>
+      {/* Simple message */}
+      <h1>
+        <FormattedMessage
+          id="welcome.title"
+          defaultMessage="Welcome to Midaz Console"
+        />
+      </h1>
+
+      {/* Message with variables */}
+      <p>
+        <FormattedMessage
+          id="welcome.greeting"
+          defaultMessage="Hello, {userName}!"
+          values={{ userName: 'John Doe' }}
+        />
+      </p>
+
+      {/* Programmatic usage */}
+      <button
+        aria-label={intl.formatMessage({
+          id: 'button.createAccount',
+          defaultMessage: 'Create new account',
+        })}
+      >
+        <FormattedMessage
+          id="button.create"
+          defaultMessage="Create"
+        />
+      </button>
+    </div>
+  );
+}
+```
+
+### Form Field Internationalization
+```typescript
+import { useIntl } from 'react-intl';
+import { Input } from '@/components/ui/input';
+
+export function AccountForm() {
+  const intl = useIntl();
+
+  return (
+    <form>
+      <Input
+        placeholder={intl.formatMessage({
+          id: 'form.accountName.placeholder',
+          defaultMessage: 'Enter account name',
+        })}
+        aria-label={intl.formatMessage({
+          id: 'form.accountName.label',
+          defaultMessage: 'Account Name',
+        })}
+      />
+    </form>
+  );
+}
+```
+
+### Date and Number Formatting
+```typescript
+import { FormattedDate, FormattedNumber, FormattedRelativeTime } from 'react-intl';
+
+export function DataDisplay({ amount, createdAt }) {
+  return (
+    <div>
+      {/* Currency formatting */}
+      <FormattedNumber
+        value={amount}
+        style="currency"
+        currency="USD"
+      />
+
+      {/* Date formatting */}
+      <FormattedDate
+        value={createdAt}
+        year="numeric"
+        month="long"
+        day="2-digit"
+      />
+
+      {/* Relative time */}
+      <FormattedRelativeTime
+        value={-1}
+        unit="day"
+        updateIntervalInSeconds={60}
+      />
+    </div>
+  );
+}
+```
+
+### Pluralization Handling
+```typescript
+import { FormattedMessage } from 'react-intl';
+
+export function ItemCounter({ count }) {
+  return (
+    <FormattedMessage
+      id="items.count"
+      defaultMessage="{count, plural, =0 {No items} =1 {One item} other {# items}}"
+      values={{ count }}
+    />
+  );
+}
+```
+
+## Message Management
+
+### Message ID Conventions
+Use hierarchical naming with dot notation:
+
+```typescript
+// Good: Clear hierarchy and context
+"page.accounts.title"
+"form.createAccount.name.label"
+"form.createAccount.name.placeholder"
+"form.createAccount.name.error.required"
+"button.save"
+"button.cancel"
+"navigation.menu.accounts"
+
+// Bad: Flat or unclear structure
+"accountsTitle"
+"nameLabel"
+"save"
+```
+
+### Default Messages
+Always provide meaningful default messages:
+
+```typescript
+// Good: Clear, descriptive default
+<FormattedMessage
+  id="form.accountName.error.tooShort"
+  defaultMessage="Account name must be at least 3 characters long"
+/>
+
+// Bad: Missing or unclear default
+<FormattedMessage
+  id="form.error"
+  defaultMessage="Error"
+/>
+```
+
+### Message Extraction Process
+```bash
+# Extract messages from source code
+npm run extract:i18n
+
+# Compile messages for runtime use
+npm run compile:i18n
+
+# Combined workflow
+npm run i18n
+```
+
+### Script Configuration
+The extraction process is configured in [scripts/i18n-extract.ts](mdc:scripts/i18n-extract.ts):
+
+- Scans all TypeScript/TSX files for FormattedMessage components
+- Extracts message IDs and default messages
+- Generates extracted JSON files for translation
+- Maintains message metadata and location information
+
+## Translation Workflow
+
+### Adding New Messages
+1. Add FormattedMessage with ID and default message in code
+2. Run `npm run extract:i18n` to extract new messages
+3. Translate messages in locale files
+4. Run `npm run compile:i18n` to compile for runtime
+
+### Managing Translations
+```json
+// locales/messages/en.json
+{
+  "page.accounts.title": "Accounts",
+  "form.createAccount.name.label": "Account Name",
+  "form.createAccount.name.placeholder": "Enter account name",
+  "form.createAccount.submit": "Create Account"
+}
+
+// locales/messages/es.json
+{
+  "page.accounts.title": "Cuentas",
+  "form.createAccount.name.label": "Nombre de la Cuenta",
+  "form.createAccount.name.placeholder": "Ingrese el nombre de la cuenta",
+  "form.createAccount.submit": "Crear Cuenta"
+}
+```
+
+## Translation Key Management Rules
+
+### STRICT WORKFLOW ENFORCEMENT
+**⚠️ CRITICAL: Translation keys MUST NOT be added manually to extracted files**
+
+#### Mandatory Process for Adding New Translation Keys:
+
+1. **FIRST**: Add translation in your code using one of the approved methods:
+   - `FormattedMessage` component for rich text/JSX content
+   - `intl.formatMessage()` object for plain text strings
+2. **SECOND**: Run `npm run extract:i18n` to extract new translation keys
+3. **THIRD**: Fill the new keys in [locales/extracted/pt.json](mdc:locales/extracted/pt.json) and other language files
+4. **DO NOT**: Manually add keys directly to extracted JSON files without running extraction first
+
+#### Translation Implementation Methods:
+```typescript
+// Method 1: FormattedMessage component (for rich text/JSX)
+<FormattedMessage
+  id="page.accounts.title"
+  defaultMessage="Account Management"
+/>
+
+// Method 2: intl.formatMessage (for plain text strings)
+const placeholder = intl.formatMessage({
+  id: 'form.accountName.placeholder',
+  defaultMessage: 'Enter account name',
+});
+```
+
+#### What Files to Edit:
+- ✅ **ALLOWED**: Edit [locales/extracted/pt.json](mdc:locales/extracted/pt.json) ONLY after running extraction
+- ✅ **ALLOWED**: Edit [locales/extracted/es.json](mdc:locales/extracted/es.json) ONLY after running extraction
+- ✅ **ALLOWED**: Edit [locales/extracted/en.json](mdc:locales/extracted/en.json) ONLY after running extraction
+- ❌ **FORBIDDEN**: Manual key addition without extraction process
+- ❌ **IGNORE**: Do not edit `locales/compiled/` folder - this is auto-generated
+
+#### Validation Rules:
+- All translation keys must originate from actual `FormattedMessage` components or `intl.formatMessage()` calls in the codebase
+- Translation keys without corresponding source code will be flagged as invalid
+- The extraction process ensures consistency between code and translation files
+- Missing translations should be handled through the extraction workflow, not manual addition
+
+#### Why This Matters:
+- Maintains traceability between source code and translations
+- Prevents orphaned translation keys
+- Ensures consistent message ID conventions
+- Enables proper tooling support for translation management
+- Facilitates automated validation and testing
+
+### Translation Status Tracking
+- Use translation management tools to track completion
+- Maintain consistent terminology across languages
+- Review translations for cultural appropriateness
+- Test with actual translated content
+
+## Language Configuration
+
+### Supported Languages
+Current language support:
+- English (en) - Primary language
+- Spanish (es) - Secondary language
+- Portuguese (pt) - Secondary language
+
+### Adding New Languages
+1. Add language code to configuration
+2. Create message files in `locales/messages/`
+3. Update language selection component
+4. Test RTL support if applicable
+
+### Language Detection
+```typescript
+// Automatic language detection based on:
+// 1. User preference (stored in localStorage)
+// 2. Browser language settings
+// 3. Fallback to English
+
+const detectLanguage = (): string => {
+  const stored = localStorage.getItem('preferred-language');
+  const browser = navigator.language.split('-')[0];
+  const supported = ['en', 'es', 'pt'];
+
+  return supported.includes(stored)
+    ? stored
+    : supported.includes(browser)
+      ? browser
+      : 'en';
+};
+```
+
+## Context and Provider Setup
+
+### IntlProvider Configuration
+```typescript
+import { IntlProvider } from 'react-intl';
+import { useState, useEffect } from 'react';
+
+export function I18nProvider({ children }) {
+  const [locale, setLocale] = useState('en');
+  const [messages, setMessages] = useState({});
+
+  useEffect(() => {
+    const loadMessages = async () => {
+      const response = await fetch(`/locales/compiled/${locale}.json`);
+      const data = await response.json();
+      setMessages(data);
+    };
+
+    loadMessages();
+  }, [locale]);
+
+  return (
+    <IntlProvider
+      locale={locale}
+      messages={messages}
+      defaultLocale="en"
+      onError={(error) => {
+        console.warn('Intl error:', error);
+      }}
+    >
+      {children}
+    </IntlProvider>
+  );
+}
+```
+
+## Best Practices
+
+### Message Design
+- Keep messages short and clear
+- Avoid technical jargon in user-facing text
+- Use consistent terminology across the application
+- Consider context when writing messages
+
+### Variable Handling
+```typescript
+// Good: Clear variable names
+<FormattedMessage
+  id="user.welcome"
+  defaultMessage="Welcome back, {firstName}!"
+  values={{ firstName: user.firstName }}
+/>
+
+// Good: Proper formatting for complex data
+<FormattedMessage
+  id="transaction.summary"
+  defaultMessage="Transaction of {amount} on {date}"
+  values={{
+    amount: <FormattedNumber value={amount} style="currency" currency="USD" />,
+    date: <FormattedDate value={date} dateStyle="medium" />
+  }}
+/>
+```
+
+### Performance Considerations
+- Load only necessary locale data
+- Use message compilation for production
+- Implement proper caching for locale data
+- Consider code splitting for large translation files
+
+### Accessibility and i18n
+- Ensure proper lang attribute on HTML elements
+- Support screen readers with translated content
+- Handle text direction (LTR/RTL) appropriately
+- Test with different text lengths
+
+### Error Handling
+```typescript
+// Graceful fallback for missing translations
+const intl = useIntl();
+
+const getMessage = (id: string, defaultMessage: string) => {
+  try {
+    return intl.formatMessage({ id, defaultMessage });
+  } catch (error) {
+    console.warn(`Translation missing for ${id}`);
+    return defaultMessage;
+  }
+};
+```
+
+## Testing Internationalization
+
+### Component Testing with i18n
+```typescript
+import { IntlProvider } from 'react-intl';
+import { render } from '@testing-library/react';
+
+const renderWithIntl = (component: React.ReactElement, locale = 'en') => {
+  const messages = require(`../locales/compiled/${locale}.json`);
+
+  return render(
+    <IntlProvider locale={locale} messages={messages}>
+      {component}
+    </IntlProvider>
+  );
+};
+
+describe('WelcomeComponent', () => {
+  it('should display welcome message in English', () => {
+    const { getByText } = renderWithIntl(<WelcomeComponent />);
+    expect(getByText(/Welcome to Midaz Console/)).toBeInTheDocument();
+  });
+
+  it('should display welcome message in Spanish', () => {
+    const { getByText } = renderWithIntl(<WelcomeComponent />, 'es');
+    expect(getByText(/Bienvenido a Midaz Console/)).toBeInTheDocument();
+  });
+});
+```
+
+### Pseudo-localization Testing
+Use pseudo-localization to test for:
+- Text expansion/contraction issues
+- Character encoding problems
+- Missing translations
+- Layout breaking with longer text
+
+## Deployment Considerations
+
+### Build Process
+- Compile messages before production build
+- Verify all locale files are included
+- Test language switching functionality
+- Validate translation completeness
+
+### CDN and Caching
+- Cache compiled locale files appropriately
+- Use proper cache headers for translation files
+- Consider loading strategies for multiple locales
+- Implement fallback mechanisms for network issues
+

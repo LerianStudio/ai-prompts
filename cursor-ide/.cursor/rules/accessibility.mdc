@@ -1,0 +1,396 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: Guidelines for implementing web accessibility (a11y) features, ensuring compliance with WCAG standards and best practices
+globs:
+- src/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Accessibility Guidelines
+
+This document outlines our accessibility standards to ensure our application is usable by everyone, including people with disabilities. We aim to meet or exceed WCAG 2.1 AA standards.
+
+## Core Principles
+
+### Perceivable
+Information and user interface components must be presentable to users in ways they can perceive.
+
+### Operable
+User interface components and navigation must be operable by all users.
+
+### Understandable
+Information and the operation of the user interface must be understandable.
+
+### Robust
+Content must be robust enough to be interpreted reliably by a wide variety of user agents, including assistive technologies.
+
+## Semantic HTML
+
+### Document Structure
+- Use proper heading hierarchy (`<h1>` to `<h6>`) to create a logical document outline
+- Use landmark regions to identify page areas (`<header>`, `<main>`, `<nav>`, `<aside>`, `<footer>`)
+- Organize content with appropriate semantic elements (`<article>`, `<section>`, `<figure>`, `<blockquote>`)
+- Avoid using `<div>` and `<span>` when a semantic alternative exists
+- Use a single `<h1>` per page
+
+```jsx
+// Good example
+export function PageLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <>
+      <header>
+        <nav aria-label="Main Navigation">
+          {/* Navigation content */}
+        </nav>
+      </header>
+      <main id="main-content">
+        {children}
+      </main>
+      <footer>
+        {/* Footer content */}
+      </footer>
+    </>
+  );
+}
+```
+
+### Meaningful Text
+- Use descriptive link text that makes sense out of context
+- Avoid generic phrases like "click here" or "read more"
+- Provide text alternatives for non-text content (images, icons)
+- Use visually hidden text when necessary for context
+
+```jsx
+// Bad example
+<a href="/accounts/123">Click here</a>
+
+// Good example
+<a href="/accounts/123">View account details</a>
+
+// With icon and visually hidden text
+<a href="/settings">
+  <Icon name="settings" aria-hidden="true" />
+  <span className="sr-only">User settings</span>
+</a>
+```
+
+## Keyboard Accessibility
+
+### Focus Management
+- Ensure all interactive elements are focusable
+- Maintain a logical tab order that follows the visual layout
+- Make focus visible with clear indicators
+- Implement proper focus management for modals and dialogs
+- Use `tabIndex` appropriately (avoid positive values)
+
+### Keyboard Navigation
+- Ensure all functionality is operable through a keyboard
+- Implement standard keyboard interactions for custom components
+- Support arrow key navigation for complex widgets
+- Provide keyboard shortcuts for common actions
+- Allow users to skip repetitive content with skip links
+
+```jsx
+// Skip link implementation
+export function SkipLink() {
+  return (
+    <a
+      href="#main-content"
+      className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:p-4 focus:bg-white focus:text-black"
+    >
+      Skip to main content
+    </a>
+  );
+}
+```
+
+## ARIA Implementation
+
+### ARIA Roles and Attributes
+- Use ARIA roles to communicate component purpose when HTML semantics are insufficient
+- Provide accessible names and descriptions with `aria-label` and `aria-describedby`
+- Use `aria-expanded`, `aria-hidden`, `aria-current`, and other states appropriately
+- Implement `aria-live` regions for dynamic content
+- Follow the principle of "No ARIA is better than bad ARIA"
+
+### Interactive Components
+- Use appropriate ARIA patterns for custom components
+- Maintain ARIA states during component lifecycle
+- Test all custom components with screen readers
+- Implement proper keyboard interaction patterns
+
+```jsx
+// Accessible accordion component
+export function Accordion({ items }: { items: Array<{ title: string, content: React.ReactNode }> }) {
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+  return (
+    <div className="accordion">
+      {items.map((item, index) => {
+        const isOpen = openIndex === index;
+        const headingId = `accordion-heading-${index}`;
+        const contentId = `accordion-content-${index}`;
+
+        return (
+          <div key={index} className="accordion-item">
+            <h3>
+              <button
+                id={headingId}
+                aria-expanded={isOpen}
+                aria-controls={contentId}
+                onClick={() => setOpenIndex(isOpen ? null : index)}
+                className="accordion-trigger"
+              >
+                {item.title}
+                <span aria-hidden="true" className={`icon ${isOpen ? 'open' : 'closed'}`}>
+                  {isOpen ? '−' : '+'}
+                </span>
+              </button>
+            </h3>
+            <div
+              id={contentId}
+              role="region"
+              aria-labelledby={headingId}
+              hidden={!isOpen}
+              className="accordion-content"
+            >
+              {item.content}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+```
+
+## Forms and Input
+
+### Form Structure
+- Associate labels with form controls using `<label>` and `htmlFor`
+- Group related form elements with `<fieldset>` and `<legend>`
+- Use `aria-describedby` to associate help text with inputs
+- Provide clear error messages and validation feedback
+- Mark required fields with both visual indicators and `aria-required`
+
+### Input Accessibility
+- Support keyboard operation for all inputs
+- Provide clear focus states for all controls
+- Use appropriate input types (`email`, `tel`, `number`, etc.)
+- Implement custom form controls with proper ARIA roles
+- Allow form submission with keyboard
+
+```jsx
+// Accessible form field
+export function FormField({
+  id,
+  label,
+  required,
+  error,
+  description,
+  children
+}: FormFieldProps) {
+  const descriptionId = description ? `${id}-description` : undefined;
+  const errorId = error ? `${id}-error` : undefined;
+
+  return (
+    <div className="form-field">
+      <label htmlFor={id} className="form-label">
+        {label}{required && <span aria-hidden="true">*</span>}
+      </label>
+
+      {description && (
+        <p id={descriptionId} className="form-description">
+          {description}
+        </p>
+      )}
+
+      {React.cloneElement(children as React.ReactElement, {
+        id,
+        'aria-required': required || undefined,
+        'aria-describedby': [descriptionId, errorId].filter(Boolean).join(' ') || undefined,
+        'aria-invalid': error ? true : undefined
+      })}
+
+      {error && (
+        <p id={errorId} className="form-error" role="alert">
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
+```
+
+## Visual Design
+
+### Color and Contrast
+- Ensure sufficient color contrast (4.5:1 for normal text, 3:1 for large text)
+- Don't rely solely on color to convey information
+- Provide additional indicators (icons, patterns, text)
+- Support high contrast mode
+- Test designs with color blindness simulators
+
+### Text and Typography
+- Use relative units for font sizes (rem, em)
+- Ensure text can be resized up to 200% without loss of content
+- Maintain line height of at least 1.5 for body text
+- Keep line lengths between 66-80 characters
+- Use adequate spacing between paragraphs
+
+### Layout and Spacing
+- Design responsive layouts that adapt to different viewport sizes
+- Ensure content is operable at 320px width minimum
+- Use adequate spacing between interactive elements
+- Ensure hit areas are at least 44x44 pixels
+- Allow zooming without breaking layout
+
+## Media Accessibility
+
+### Images
+- Provide alternative text for all images with `alt` attributes
+- Use empty `alt=""` for decorative images
+- Make complex images accessible with detailed descriptions
+- Use appropriate text for image buttons
+
+### Video and Audio
+- Provide captions for all video content
+- Include audio descriptions for important visual information
+- Ensure media players are keyboard accessible
+- Provide transcripts for audio content
+- Include playback controls for all media
+
+```jsx
+// Accessible video player
+export function VideoPlayer({ src, title, caption, transcript }: VideoPlayerProps) {
+  return (
+    <figure>
+      <video
+        controls
+        aria-labelledby="video-title"
+        className="video-player"
+      >
+        <source src={src} type="video/mp4" />
+        <track kind="captions" src={caption} label="English captions" />
+        Your browser does not support the video tag.
+      </video>
+      <figcaption id="video-title">{title}</figcaption>
+      {transcript && (
+        <details>
+          <summary>Transcript</summary>
+          <div className="transcript">{transcript}</div>
+        </details>
+      )}
+    </figure>
+  );
+}
+```
+
+## Animation and Motion
+
+### Reduced Motion
+- Respect user preferences with `prefers-reduced-motion`
+- Provide alternatives to animation when needed
+- Avoid content that flashes more than 3 times per second
+- Allow users to pause, stop, or hide animations
+- Keep animations subtle and purposeful
+
+```jsx
+// Respecting reduced motion preferences
+export function FadeIn({ children }: { children: React.ReactNode }) {
+  // Check for reduced motion preference
+  const prefersReducedMotion =
+    typeof window !== 'undefined'
+      ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      : false;
+
+  const animation = prefersReducedMotion
+    ? {} // No animation
+    : {
+        initial: { opacity: 0 },
+        animate: { opacity: 1 },
+        transition: { duration: 0.3 }
+      };
+
+  return (
+    <motion.div {...animation}>
+      {children}
+    </motion.div>
+  );
+}
+```
+
+## Adaptive Experience
+
+### Light and Dark Mode
+- Support both light and dark color schemes
+- Respect user preferences with `prefers-color-scheme`
+- Ensure sufficient contrast in both modes
+- Allow users to override system preferences
+- Test all components in both color schemes
+
+### Screen Reader Support
+- Test with popular screen readers (NVDA, VoiceOver, JAWS)
+- Provide context and feedback for important actions
+- Use `aria-live` for dynamic content updates
+- Test screen reader navigation through the application
+- Ensure proper reading order matches visual order
+
+## Testing and Validation
+
+### Automated Testing
+- Implement automated accessibility tests in CI/CD pipeline
+- Use tools like axe-core, Lighthouse, and WAVE
+- Address all critical and serious issues before deployment
+- Run tests on key user flows and templates
+- Include accessibility in test coverage metrics
+
+### Manual Testing
+- Conduct keyboard navigation testing
+- Test with screen readers on different browsers
+- Verify color contrast for all elements
+- Test at different zoom levels (125%, 150%, 200%)
+- Perform usability testing with users with disabilities
+
+### Continuous Improvement
+- Maintain an accessibility backlog
+- Prioritize accessibility fixes in sprint planning
+- Conduct regular accessibility audits
+- Train team members on accessibility best practices
+- Document accessibility features and limitations
+
+## Component-Specific Guidelines
+
+### Modals and Dialogs
+- Trap focus within modal when open
+- Return focus to trigger element when closed
+- Use `role="dialog"` or `role="alertdialog"`
+- Ensure modals are properly labeled
+- Allow closing with Escape key
+
+### Tables
+- Use proper table markup (`<table>`, `<th>`, `<td>`)
+- Include table headers with proper scope
+- Provide captions or summaries for complex tables
+- Consider responsive alternatives for small screens
+- Test tables with screen readers
+
+### Navigation
+- Clearly indicate current page/section
+- Group related navigation items
+- Provide consistent navigation patterns
+- Implement breadcrumbs for deep navigation
+- Use `aria-current` for current page
+
+## Resources
+
+- [WCAG 2.1 Guidelines](mdc:https:/www.w3.org/TR/WCAG21)
+- [WAI-ARIA Authoring Practices](mdc:https:/www.w3.org/TR/wai-aria-practices-1.2)
+- [Inclusive Components](mdc:https:/inclusive-components.design)
+- [A11Y Project Checklist](mdc:https:/www.a11yproject.com/checklist)
+- [axe-core Testing Library](mdc:https:/github.com/dequelabs/axe-core)
+- [WebAIM Contrast Checker](mdc:https:/webaim.org/resources/contrastchecker)

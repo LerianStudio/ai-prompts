@@ -1,0 +1,164 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: Guidelines for organizing and implementing Next.js API routes, including route structure, error handling, authentication, and testing standards
+globs:
+- src/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# API Structure Guidelines
+
+## Next.js API Routes
+
+API routes are organized in the [src/app/api](mdc:src/app/api) directory, following a RESTful structure with nested resources:
+
+### API Route Organization
+
+#### Administrative Endpoints ([src/app/api/admin](mdc:src/app/api/admin))
+- `health/alive/` - Liveness probe (GET) - Application health status
+- `health/ready/` - Readiness probe (GET) - Service readiness status
+
+#### Authentication ([src/app/api/auth](mdc:src/app/api/auth))
+- `[...nextauth]/` - NextAuth.js integration for authentication flows
+
+#### Identity Management ([src/app/api/identity](mdc:src/app/api/identity))
+- `users/` - User management endpoints
+  - GET: List users with pagination
+  - POST: Create new user
+  - `[userId]/` - Individual user operations
+    - GET: Retrieve user details
+    - PUT: Update user information
+    - DELETE: Remove user
+    - `password/` - Password management (PUT)
+    - `password/admin/` - Admin password operations (PATCH)
+- `groups/` - Group management endpoints
+  - GET: List groups
+  - POST: Create new group
+  - `[groupId]/` - Individual group operations (GET, PUT, DELETE)
+
+#### Onboarding Process ([src/app/api/onboarding](mdc:src/app/api/onboarding))
+- GET: List onboarding flows
+- POST: Create new onboarding flow
+- `[id]/` - Specific onboarding flow management
+- `[id]/complete/` - Complete onboarding process (POST)
+
+#### Organization Management ([src/app/api/organizations](mdc:src/app/api/organizations))
+- GET: List organizations with pagination
+- POST: Create new organization
+- `[id]/` - Individual organization operations (GET, PUT, DELETE)
+- `parentOrganizations/` - Parent organization relationships (GET)
+
+#### Ledger Management ([src/app/api/organizations/[id]/ledgers](mdc:src/app/api/organizations/[id]/ledgers))
+Complex nested resource structure for financial entities:
+
+- **Ledgers**: `[ledgerId]/` - Ledger operations (GET, PUT, DELETE)
+- **Accounts**: `[ledgerId]/accounts/` - Account management
+  - GET: List accounts with pagination and filtering
+  - POST: Create new account
+  - `[accountId]/` - Individual account operations (GET, PATCH, DELETE)
+- **Assets**: `[ledgerId]/assets/` - Asset management
+  - GET: List assets
+  - POST: Create new asset
+  - `[assetId]/` - Individual asset operations (GET, PUT, DELETE)
+- **Portfolios**: `[ledgerId]/portfolios/` - Portfolio management
+  - GET: List portfolios
+  - POST: Create new portfolio
+  - `[portfolioId]/` - Individual portfolio operations (GET, PUT, DELETE)
+- **Segments**: `[ledgerId]/segments/` - Segment management
+  - GET: List segments
+  - POST: Create new segment
+  - `[segmentId]/` - Individual segment operations (GET, PUT, DELETE)
+- **Transactions**: `[ledgerId]/transactions/` - Transaction management
+  - GET: List transactions with pagination
+  - `[transactionId]/` - Individual transaction operations (GET, PATCH)
+  - `json/` - JSON-based transaction creation (POST)
+
+#### Relationship Endpoints
+- `accounts-portfolios/` - Account-portfolio relationships (GET)
+- `portfolios-accounts/` - Portfolio-account relationships (GET)
+- `ledgers-assets/` - Cross-ledger asset relationships (GET)
+
+#### Utility Endpoints ([src/app/api/utils](mdc:src/app/api/utils))
+- Centralized error handling utilities
+- Common API response formatters
+
+## API Implementation Pattern
+
+### 1. Route Handler Structure
+```typescript
+// Standard route handler implementation
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    // 1. Validate authentication and authorization
+    // 2. Parse and validate request parameters
+    // 3. Map request data to DTOs
+    // 4. Call appropriate use case
+    // 5. Format and return response
+  } catch (error) {
+    // 6. Handle errors consistently
+  }
+}
+```
+
+### 2. Use Case Integration ([src/core/application/use-cases](mdc:src/core/application/use-cases))
+- Route handlers delegate business logic to use cases
+- Use cases are organized by domain entities:
+  - `accounts/`, `assets/`, `ledgers/`, `portfolios/`, `segments/`, `transactions/`
+  - `auth/`, `users/`, `groups/`, `organizations/`, `onboarding/`
+- Use cases communicate with repositories to retrieve or persist data
+- Return DTOs to maintain clean separation between layers
+
+### 3. Repository Layer ([src/core/infrastructure](mdc:src/core/infrastructure))
+- Repository implementations handle data access logic
+- Midaz API integration in `midaz/repositories/`
+- External service communication and data mapping
+- Transform external data to domain entities
+
+## Error Handling Standards
+
+### Consistent Error Responses
+- Use standardized error response format across all endpoints
+- Leverage [src/exceptions](mdc:src/exceptions) for custom error types
+- Implement proper HTTP status codes:
+  - `200` - Success
+  - `201` - Created
+  - `400` - Bad Request (validation errors)
+  - `401` - Unauthorized
+  - `403` - Forbidden
+  - `404` - Not Found
+  - `409` - Conflict
+  - `500` - Internal Server Error
+
+### Error Handler Integration
+- Centralized error handling in [src/app/api/utils/api-error-handler.ts](mdc:src/app/api/utils/api-error-handler.ts)
+- Consistent error logging and monitoring
+- Proper error message sanitization for client responses
+
+## Authentication and Authorization
+
+### NextAuth Integration
+- Authentication handled through NextAuth.js
+- Session management and token validation
+- Role-based access control integration
+
+### Request Validation
+- Input validation using Zod schemas
+- Parameter sanitization and type checking
+- Rate limiting and request throttling where appropriate
+
+## API Documentation and Testing
+
+### OpenAPI/Swagger Documentation
+- Document all endpoints with proper schemas
+- Include request/response examples
+- Maintain up-to-date API documentation
+
+### Testing Strategy
+- Unit tests for use cases and repositories
+- Integration tests for API endpoints
+- End-to-end tests using Playwright
+- Mock external service dependencies

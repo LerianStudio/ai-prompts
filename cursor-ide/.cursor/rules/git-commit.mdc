@@ -1,0 +1,143 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: Guidelines for writing clear and consistent git commit messages following conventional commits specification
+globs:
+- src/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+## ⚠️ MANDATORY COMMIT PROCESS
+
+ALL commits MUST use a temporary file. Direct commits with -m flag are FORBIDDEN.
+
+1. Create a temporary commit message file:
+```bash
+git_msg=$(mktemp)
+```
+
+2. Write your commit message to the file:
+```bash
+cat > "$git_msg" << 'EOF'
+feat(scope): short description
+
+- Bullet point 1
+- Bullet point 2
+- Bullet point 3
+
+BREAKING CHANGE: description of breaking changes
+EOF
+```
+
+3. Commit using the file:
+```bash
+git commit -F "$git_msg"
+rm "$git_msg"  # Clean up
+```
+
+VIOLATIONS:
+❌ NEVER use git commit -m
+❌ NEVER use multiple -m flags
+❌ NEVER use inline multiline messages
+❌ NEVER commit directly without a temporary file
+
+## 🚀 Conventional Commits Guidelines
+
+This project uses **Conventional Commits** to automate changelogs and versioning via `semantic-release`.
+
+Only `feat`, `fix`, or `BREAKING CHANGE` will trigger version bumps. All types are parsed for changelogs.
+
+### ✅ Format
+
+<type>(<optional-scope>): <short description>
+
+[optional body]
+
+[optional footer(s)]
+
+### 🎯 Examples
+
+feat(auth): enable biometric login support
+fix(api): resolve timeout on /users
+docs(readme): improve setup guide
+chore(deps): update lodash to v4.17.21
+refactor(core): simplify loop logic
+style(css): fix button padding
+test(utils): add unit tests for parser
+ci(github): fix node version in workflow
+revert: feat(auth): add biometric login
+
+**Multi-line example with bullet points:**
+```text
+feat(applications): implement application management API
+
+- Add CRUD operations for applications management
+- Create application-related API endpoints
+- Implement React Query hooks for application data fetching
+- Extract security alert to a separate component
+- Add application options environment variable
+- Update forms to use real API data instead of mocks
+```
+
+### 🧠 Version Bumps
+
+| Type              | Triggers Version?  | Notes                                 |
+|-------------------|--------------------|----------------------------------------|
+| `feat`            | **Minor** bump     | Adds new feature (v1.2.0 → v1.3.0)     |
+| `fix`             | **Patch** bump     | Bug fix (v1.2.3 → v1.2.4)              |
+| `BREAKING CHANGE` | **Major** bump     | Any type with breaking footer          |
+| Others            | No bump            | Still included in changelog            |
+
+### 🔥 Breaking Change Example
+
+feat(auth): switch to OAuth2
+
+BREAKING CHANGE: legacy auth removed, update login flow
+
+### 🛑 Common Mistakes
+
+- `fix:` ← ❌ too vague (needs a subject)
+- `feature:` ← ❌ invalid type
+- `Update login screen` ← ❌ no type prefix
+
+### 🧪 Test Your Commits
+
+npx commitlint --from=HEAD~5 --to=HEAD
+
+### 📚 Reference
+
+- https://www.conventionalcommits.org/en/v1.0.0/
+- https://semantic-release.gitbook.io
+
+### 📝 Commit Message Best Practices
+
+To ensure proper multiline formatting, ALWAYS use a text file for commit messages:
+
+1. Create a temporary commit message file:
+```bash
+git_msg=$(mktemp)
+```
+
+2. Write your commit message to the file:
+```bash
+cat > "$git_msg" << 'EOF'
+feat(scope): short description
+
+- Bullet point 1
+- Bullet point 2
+- Bullet point 3
+
+BREAKING CHANGE: description of breaking changes
+EOF
+```
+
+3. Commit using the file:
+```bash
+git commit -F "$git_msg"
+rm "$git_msg"  # Clean up
+```
+
+NEVER use multiple -m flags or inline multiline messages as they may not preserve proper formatting.

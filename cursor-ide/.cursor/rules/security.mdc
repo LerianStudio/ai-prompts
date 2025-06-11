@@ -1,0 +1,253 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: Security best practices and guidelines for protecting sensitive data, implementing authentication, and preventing common vulnerabilities
+globs:
+- src/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Security Best Practices
+
+This document outlines security best practices for our Next.js application to ensure a secure, robust platform.
+
+## Authentication Security
+
+### User Authentication
+- Use NextAuth.js for secure authentication implementation
+- Implement OAuth 2.0 / OpenID Connect providers when possible
+- Support passwordless authentication options (magic links, WebAuthn)
+- Use proper JWT handling with appropriate expiration and rotation
+- Implement MFA (Multi-Factor Authentication) for sensitive operations
+- Store authentication tokens securely using HttpOnly cookies
+
+### Password Security (when needed)
+- Enforce strong password policies:
+  - Minimum 12 characters
+  - Mix of uppercase, lowercase, numbers, and special characters
+  - Check against common password databases
+- Use bcrypt or Argon2 for password hashing
+- Implement secure password reset flows with expiring tokens
+- Limit login attempts with progressive delays
+
+### Session Management
+- Use secure, HttpOnly, SameSite=Strict cookies
+- Implement proper session expiration and renewal
+- Allow users to view and terminate active sessions
+- Invalidate sessions on password change
+- Implement session timeouts for inactive users
+
+## API Security
+
+### API Authentication
+- Use proper authentication for all API routes
+- Implement token-based API authentication with short-lived tokens
+- Use scoped access tokens with minimal permissions
+- Validate all API calls on the server-side
+
+### Data Validation
+- Validate all input data on the server using Zod schemas
+- Implement proper sanitization for user-generated content
+- Use parameterized queries to prevent SQL injection
+- Validate file uploads (type, size, content)
+
+### Security Headers
+- Implement Content Security Policy (CSP)
+- Use Strict-Transport-Security header (HSTS)
+- Set X-Content-Type-Options: nosniff
+- Use X-Frame-Options to prevent clickjacking
+- Implement Permissions-Policy to limit features
+- Set Referrer-Policy appropriately
+
+```typescript
+// src/middleware.ts
+export const config = {
+  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
+};
+
+export function middleware(request: NextRequest) {
+  const nonce = crypto.randomUUID();
+
+  const cspHeader = `
+    default-src 'self';
+    script-src 'self' 'nonce-${nonce}' 'strict-dynamic';
+    style-src 'self' 'nonce-${nonce}';
+    img-src 'self' blob: data:;
+    font-src 'self';
+    connect-src 'self' https://api.example.com;
+    frame-ancestors 'none';
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+    block-all-mixed-content;
+    upgrade-insecure-requests;
+  `.replace(/\s{2,}/g, ' ').trim();
+
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set('x-nonce', nonce);
+  requestHeaders.set('Content-Security-Policy', cspHeader);
+
+  const response = NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  });
+
+  response.headers.set('Content-Security-Policy', cspHeader);
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  response.headers.set('X-Frame-Options', 'DENY');
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  response.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
+
+  return response;
+}
+```
+
+## Authorization Controls
+
+### Role-Based Access Control
+- Implement proper role-based access control (RBAC)
+- Define clear role hierarchies and permissions
+- Check permissions on both client and server sides
+- Never trust client-side authorization checks alone
+
+### Resource Authorization
+- Validate access to resources at the data layer
+- Implement object-level permissions when needed
+- Use middleware for route protection
+- Log authorization failures for security monitoring
+
+```typescript
+// Authorization middleware example
+export function withAuthorization(
+  handler: NextApiHandler,
+  requiredPermissions: string[]
+) {
+  return async (req: NextApiRequest, res: NextApiResponse) => {
+    const session = await getSession({ req });
+
+    if (!session) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    const hasPermission = await checkUserPermissions(
+      session.user.id,
+      requiredPermissions
+    );
+
+    if (!hasPermission) {
+      logger.warn('Authorization failure', {
+        userId: session.user.id,
+        requiredPermissions,
+        path: req.url,
+      });
+
+      return res.status(403).json({ message: 'Forbidden' });
+    }
+
+    return handler(req, res);
+  };
+}
+```
+
+## Data Protection
+
+### Sensitive Data Handling
+- Encrypt sensitive data at rest and in transit
+- Use HTTPS exclusively
+- Implement proper data classification
+- Apply the principle of least privilege
+- Use parameterized queries to prevent SQL injection
+- Implement proper data retention and deletion policies
+
+### Personal Data Protection
+- Follow GDPR and other data protection regulations
+- Implement privacy by design principles
+- Provide user data export and deletion capabilities
+- Obtain proper consent for data collection
+- Maintain audit logs for sensitive data access
+- Anonymize or pseudonymize data where possible
+
+## Client-Side Security
+
+### Frontend Security
+- Sanitize data before rendering
+- Use DOMPurify for rendering user-generated HTML
+- Implement proper CSRF protection
+- Use subresource integrity for external resources
+- Avoid innerHTML and dangerouslySetInnerHTML when possible
+
+### XSS Prevention
+- Use React's built-in XSS protections
+- Implement proper output encoding
+- Sanitize URLs before use
+- Avoid direct DOM manipulation
+- Use Content Security Policy to mitigate XSS risk
+
+## Infrastructure Security
+
+### Edge Security
+- Use Next.js Edge Runtime for critical security checks
+- Implement rate limiting for sensitive operations
+- Use CAPTCHA or similar for registration and login
+- Deploy WAF (Web Application Firewall) protection
+- Implement DDoS protection
+
+### Configuration Management
+- Use proper environment variable validation
+- Keep secrets out of source code
+- Use different credentials for development and production
+- Implement proper separation of environments
+- Use a secrets management solution
+
+## Security Monitoring
+
+### Logging and Monitoring
+- Implement comprehensive security logging
+- Use structured logging for better analysis
+- Log security events (authentication, authorization, etc.)
+- Monitor for suspicious activities
+- Set up alerts for security incidents
+
+### Incident Response
+- Develop an incident response plan
+- Establish a security contact
+- Define roles and responsibilities
+- Practice incident response procedures
+- Document lessons learned
+
+## Development Practices
+
+### Secure Coding Practices
+- Follow the OWASP Top 10 guidelines
+- Conduct regular security training
+- Implement peer code reviews with security focus
+- Use security linters and static analysis tools
+- Follow the principle of defense in depth
+
+### Dependency Management
+- Regularly update dependencies
+- Use npm audit or similar tools
+- Monitor for security advisories
+- Pin dependency versions
+- Consider using a dependency scanning tool
+
+## Deployment Security
+
+### CI/CD Security
+- Scan code for secrets before commits
+- Run security tests in CI pipeline
+- Use separate deployment credentials
+- Implement proper approval workflows
+- Scan container images for vulnerabilities
+
+### Production Safeguards
+- Implement progressive rollouts
+- Use feature flags for sensitive changes
+- Perform regular security assessments
+- Maintain backup and recovery procedures
+- Document system architecture and dependencies
