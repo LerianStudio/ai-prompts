@@ -18,7 +18,7 @@
         "command": "uv",
         "args": [
           "--directory",
-          "/home/gc4str0/Documents/Projects/interactive-feedback-mcp",
+          "/home/hostname/folder/interactive-feedback-mcp",
           "run",
           "server.py"
         ],
