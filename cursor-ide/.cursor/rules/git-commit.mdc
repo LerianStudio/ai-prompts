@@ -1,12 +1,6 @@
 ---
-description: 
-globs: 
-alwaysApply: false
----
----
 description: Guidelines for writing clear and consistent git commit messages following conventional commits specification
-globs:
-- src/**/*.{ts,tsx}
+globs: src/**/*.{ts,tsx}
 alwaysApply: false
 ---
 

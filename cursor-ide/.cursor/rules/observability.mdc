@@ -1,12 +1,6 @@
 ---
-description: 
-globs: 
-alwaysApply: false
----
----
 description: Standards for implementing logging, monitoring, and tracing to ensure application observability and performance tracking
-globs:
-- src/**/*.{ts,tsx}
+globs: src/**/*.{ts,tsx}
 alwaysApply: false
 ---
 

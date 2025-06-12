@@ -1,12 +1,6 @@
 ---
-description: 
-globs: 
-alwaysApply: false
----
----
 description: Standards for creating, reviewing, and managing pull requests, including templates and review processes
-globs:
-- src/**/*.{ts,tsx}
+globs: src/**/*.{ts,tsx}
 alwaysApply: false
 ---
 

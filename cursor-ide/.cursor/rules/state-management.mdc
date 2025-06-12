@@ -1,12 +1,6 @@
 ---
-description: 
-globs: 
-alwaysApply: false
----
----
 description: Best practices for managing application state, including Redux implementation, data flow patterns, and state organization
-globs:
-- src/**/*.{ts,tsx}
+globs: src/**/*.{ts,tsx}
 alwaysApply: false
 ---
 

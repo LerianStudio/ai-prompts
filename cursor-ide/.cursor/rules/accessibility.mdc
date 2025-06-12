@@ -1,12 +1,6 @@
 ---
-description: 
-globs: 
-alwaysApply: false
----
----
 description: Guidelines for implementing web accessibility (a11y) features, ensuring compliance with WCAG standards and best practices
-globs:
-- src/**/*.{ts,tsx}
+globs: src/**/*.{ts,tsx}
 alwaysApply: false
 ---
 
