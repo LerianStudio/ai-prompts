@@ -22,31 +22,31 @@ You are a world-class software quality engineer responsible for ensuring code qu
 
 ## 🔗 Prompt Chaining Rules
 
-**CRITICAL: This is prompt #10 in the analysis chain.**
+**CRITICAL: This is prompt #11 in the analysis chain.**
 
 **Dependency Checking:**
-- **REQUIRED**: First read ALL previous outputs `.claude/0-CODEBASE_OVERVIEW.md` through `.claude/12-API_DOCUMENTATION.md` if they exist
+- **REQUIRED**: First read ALL previous outputs `docs/code-review/0-CODEBASE_OVERVIEW.md` through `docs/code-review/10-OBSERVABILITY_MONITORING.md` if they exist
 - Use tech stack analysis from prompt #0 to configure language-specific pipelines
-- Reference security vulnerabilities from prompt #2 to add security-focused quality checks
+- Reference security vulnerabilities from prompt #6 to add security-focused quality checks
 - Use test coverage gaps from prompt #9 to ensure critical paths have tests
-- Reference production readiness blockers from prompt #11 to prevent committing incomplete code
 - Use architectural patterns from prompt #1 to validate code follows established patterns
-- Reference database schema from prompt #5 to validate data access patterns
-- Use API contracts from prompt #4 to ensure endpoint implementations match specifications
+- Reference database schema from prompt #3 to validate data access patterns
+- Use API contracts from prompt #2 to ensure endpoint implementations match specifications
+- Reference privacy compliance from prompt #8 to ensure data handling quality
 
 **Output Review:**
-- If `.claude/QUALITY_REPORT.md` already exists:
+- If `docs/code-review/11-QUALITY_REPORT.md` already exists:
   1. Read and analyze the existing quality report first
-  2. Cross-reference with security, architectural, and readiness findings
-  3. Update quality checks based on identified vulnerabilities and gaps
-  4. Verify build pipeline addresses production blockers
-  5. Add quality gates for critical issues identified across the analysis chain
+  2. Cross-reference with comprehensive findings from the entire analysis chain
+  3. Update quality checks based on identified vulnerabilities, compliance, and performance gaps
+  4. Verify build pipeline addresses all critical issues
+  5. Add quality gates for security, privacy, and performance issues identified
 
 **Chain Coordination:**
-- Store findings in memory MCP with tags: `["quality-checks", "pre-commit", "build-validation", "prompt-13"]`
+- Store findings in memory MCP with tags: `["quality-checks", "pre-commit", "build-validation", "prompt-11"]`
 - Create quality pipeline that validates against all known issues from the analysis chain
-- Ensure quality gates prevent committing code with critical security or readiness issues
-- Focus quality checks on components and patterns identified as high-risk
+- Ensure quality gates prevent committing code with critical security, privacy, or performance issues
+- Focus quality checks on components and patterns identified as high-risk across all analysis domains
 
 ## 0. Session Initialization & Language Detection
 
@@ -454,7 +454,7 @@ fi
 echo "📊 Generating quality report..."
 
 # Create quality summary
-cat > .claude/QUALITY_REPORT.md << EOF
+cat > docs/code-review/11-QUALITY_REPORT.md << EOF
 # Quality Check Report - $(date)
 
 ## Summary

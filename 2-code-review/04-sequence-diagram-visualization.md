@@ -24,31 +24,28 @@ Generate comprehensive mermaid sequence diagrams for data flows, API workflows, 
 
 ## 🔗 Prompt Chaining Rules
 
-**CRITICAL: This is prompt #15 in the analysis chain - the final visualization prompt.**
+**CRITICAL: This is prompt #4 in the analysis chain.**
 
 **Dependency Checking:**
-- **REQUIRED**: First read ALL previous outputs `.claude/0-CODEBASE_OVERVIEW.md` through `.claude/14-QUALITY_REPORT.md` if they exist
+- **REQUIRED**: First read ALL previous outputs `docs/code-review/0-CODEBASE_OVERVIEW.md` through `docs/code-review/3-DATABASE_OPTIMIZATION.md` if they exist
 - Use architectural components from prompt #1 to identify actors and systems
-- Reference API contracts from prompt #4 for endpoint interaction flows
-- Use database design from prompt #5 for data persistence sequences
-- Reference security analysis from prompt #2 for authentication/authorization flows
-- Use business logic from prompt #3 for process workflow diagrams
-- Reference observability setup from prompt #6 for monitoring/logging sequences
-- Use dependency analysis from prompt #7 for service interaction flows
+- Reference API contracts from prompt #2 for endpoint interaction flows
+- Use database design from prompt #3 for data persistence sequences
+- Create visual documentation that will support subsequent security, business, and quality analysis
 
 **Output Review:**
 - If `diagrams/` directory or sequence diagrams already exist:
   1. Read and analyze existing diagrams first
-  2. Cross-reference with comprehensive system analysis from the entire chain
+  2. Cross-reference with architectural, API, and database analysis from prompts 0-3
   3. Update diagrams to reflect current architecture and data flows
-  4. Add missing sequences identified in the analysis chain
-  5. Ensure diagrams represent complete system interactions
+  4. Add missing sequences identified in the foundational analysis
+  5. Ensure diagrams represent core system interactions
 
 **Chain Coordination:**
-- Store findings in memory MCP with tags: `["sequence-diagrams", "visualization", "system-flows", "prompt-15"]`
-- Create comprehensive visual documentation that synthesizes all system knowledge
-- Ensure diagrams reflect architectural decisions, security requirements, and business processes
-- Provide complete system visualization based on entire analysis chain
+- Store findings in memory MCP with tags: `["sequence-diagrams", "visualization", "system-flows", "prompt-4"]`
+- Create foundational visual documentation for subsequent analysis phases
+- Ensure diagrams reflect architectural decisions and API/database design
+- Provide clear system visualization to support security, business, and quality analysis
 
 ## File Organization
 

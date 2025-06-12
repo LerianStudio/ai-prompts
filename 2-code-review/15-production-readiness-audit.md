@@ -22,22 +22,22 @@ You are a production readiness auditor. Identify incomplete implementations, sec
 
 ## 🔗 Prompt Chaining Rules
 
-**CRITICAL: This is prompt #13 in the analysis chain.**
+**CRITICAL: This is prompt #15 in the analysis chain.**
 
 **Dependency Checking:**
-- **REQUIRED**: First read ALL previous outputs `.claude/0-CODEBASE_OVERVIEW.md` through `.claude/10-DOCUMENTATION.md` if they exist
+- **REQUIRED**: First read ALL previous outputs `docs/code-review/0-CODEBASE_OVERVIEW.md` through `docs/code-review/14-BUSINESS_WORKFLOW_CONSISTENCY.md` if they exist
 - Use architectural component analysis to focus readiness assessment on critical paths
-- Reference security vulnerabilities from prompt #2 to prioritize security blockers
-- Use API contract analysis from prompt #4 to validate API readiness
-- Reference database optimization from prompt #5 to check data layer readiness
-- Use observability gaps from prompt #6 to ensure monitoring is production-ready
+- Reference security vulnerabilities from prompt #6 to prioritize security blockers
+- Use API contract analysis from prompt #2 to validate API readiness
+- Reference database optimization from prompt #3 to check data layer readiness
+- Use observability gaps from prompt #10 to ensure monitoring is production-ready
 - Reference dependency vulnerabilities from prompt #7 to identify supply chain blockers
 - Use privacy compliance from prompt #8 to ensure regulatory readiness
 - Reference test coverage from prompt #9 to validate quality gates
-- Use documentation status from prompt #10 to ensure operational readiness
+- Use documentation status from prompt #12 to ensure operational readiness
 
 **Output Review:**
-- If `.claude/11-READINESS_AUDIT.md` already exists:
+- If `docs/code-review/15-READINESS_AUDIT.md` already exists:
   1. Read and analyze the existing output first
   2. Cross-reference with all findings from the comprehensive analysis chain
   3. Update production blocker assessment based on current state
@@ -45,7 +45,7 @@ You are a production readiness auditor. Identify incomplete implementations, sec
   5. Add new production concerns based on chain analysis findings
 
 **Chain Coordination:**
-- Store findings in memory MCP with tags: `["production-readiness", "audit", "blockers", "prompt-11"]`
+- Store findings in memory MCP with tags: `["production-readiness", "audit", "blockers", "prompt-15"]`
 - Create comprehensive readiness assessment that integrates all previous analysis findings
 - Focus on deployment blockers identified across the entire analysis chain
 - Provide final go/no-go recommendation based on complete system analysis
@@ -54,8 +54,8 @@ You are a production readiness auditor. Identify incomplete implementations, sec
 
 **REQUIRED OUTPUT LOCATIONS:**
 
-- `.claude/11-READINESS_AUDIT.md` - Complete audit report with findings
-- `.claude/11-CRITICAL_ISSUES.md` - Priority-ranked critical issues
+- `docs/code-review/15-READINESS_AUDIT.md` - Complete audit report with findings
+- `docs/code-review/15-CRITICAL_ISSUES.md` - Priority-ranked critical issues
 
 **IMPORTANT RULES:**
 
@@ -193,7 +193,7 @@ grep -r "console\.log\|fmt\.Println\|print(" --include="*.{js,ts,go,py,java}" ./
 ### Priority-Ranked Issues
 
 ```bash
-cat > .claude/CRITICAL_ISSUES.md << 'EOF'
+cat > docs/code-review/15-CRITICAL_ISSUES.md << 'EOF'
 # Critical Production Blockers
 
 ## P0 - IMMEDIATE (Deploy Blockers)
@@ -225,7 +225,7 @@ EOF
 ### Full Audit Report
 
 ```bash
-cat > .claude/READINESS_AUDIT.md << 'EOF'
+cat > docs/code-review/15-READINESS_AUDIT.md << 'EOF'
 # Production Readiness Audit
 
 ## Executive Summary

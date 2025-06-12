@@ -27,27 +27,27 @@ This approach enables deeper analysis, better pattern recognition, and more thor
 ## Prerequisites
 
 **REQUIRED**: Read ALL analysis outputs from the complete chain:
-- `.claude/0-CODEBASE_OVERVIEW.md` - Foundation tasks and architectural improvements
-- `.claude/1-ARCHITECTURE_ANALYSIS.md` - Design pattern improvements and refactoring tasks
-- `.claude/2-SECURITY_ANALYSIS.md` - Security vulnerabilities and hardening tasks
-- `.claude/3-BUSINESS_ANALYSIS.md` - Business logic improvements and feature gaps
-- `.claude/4-API_CONTRACT_ANALYSIS.md` - API improvements and standardization tasks
-- `.claude/5-DATABASE_OPTIMIZATION.md` - Database performance and schema improvements
-- `.claude/6-OBSERVABILITY_MONITORING.md` - Monitoring and logging implementation tasks
-- `.claude/7-DEPENDENCY_SECURITY_ANALYSIS.md` - Dependency updates and security patches
-- `.claude/8-PRIVACY_COMPLIANCE_ANALYSIS.md` - Privacy compliance and data protection tasks
-- `.claude/9-TEST_COVERAGE_ANALYSIS.md` - Testing improvements and coverage expansion
-- `.claude/10-DOCUMENTATION_GENERATION.md` - Documentation creation and maintenance tasks
-- `.claude/11-PRODUCTION_READINESS_AUDIT.md` - Production deployment and operations tasks
-- `.claude/12-API_DOCUMENTATION_GENERATOR.md` - API documentation and client integration tasks
-- `.claude/13-PRE_COMMIT_QUALITY_CHECKS.md` - Quality assurance and automation tasks
-- `.claude/14-DEPLOYMENT_PREPARATION.md` - Deployment pipeline and infrastructure tasks
-- `.claude/15-SEQUENCE_DIAGRAMS.md` - Visual documentation and communication tasks
-- `.claude/16-BUSINESS_WORKFLOW_CONSISTENCY.md` - Process optimization and workflow tasks
+- `docs/code-review/0-CODEBASE_OVERVIEW.md` - Foundation tasks and architectural improvements
+- `docs/code-review/1-ARCHITECTURE_ANALYSIS.md` - Design pattern improvements and refactoring tasks
+- `docs/code-review/2-API_CONTRACT_ANALYSIS.md` - API improvements and standardization tasks
+- `docs/code-review/3-DATABASE_OPTIMIZATION.md` - Database performance and schema improvements
+- `docs/code-review/4-SEQUENCE_DIAGRAMS.md` - Visual documentation and communication tasks
+- `docs/code-review/5-BUSINESS_ANALYSIS.md` - Business logic improvements and feature gaps
+- `docs/code-review/6-SECURITY_ANALYSIS.md` - Security vulnerabilities and hardening tasks
+- `docs/code-review/7-DEPENDENCY_SECURITY_ANALYSIS.md` - Dependency updates and security patches
+- `docs/code-review/8-PRIVACY_COMPLIANCE_ANALYSIS.md` - Privacy compliance and data protection tasks
+- `docs/code-review/9-TEST_COVERAGE_ANALYSIS.md` - Testing improvements and coverage expansion
+- `docs/code-review/10-OBSERVABILITY_MONITORING.md` - Monitoring and logging implementation tasks
+- `docs/code-review/11-PRE_COMMIT_QUALITY_CHECKS.md` - Quality assurance and automation tasks
+- `docs/code-review/12-DOCUMENTATION_GENERATION.md` - Documentation creation and maintenance tasks
+- `docs/code-review/13-API_DOCUMENTATION_GENERATOR.md` - API documentation and client integration tasks
+- `docs/code-review/14-BUSINESS_WORKFLOW_CONSISTENCY.md` - Process optimization and workflow tasks
+- `docs/code-review/15-PRODUCTION_READINESS_AUDIT.md` - Production deployment and operations tasks
+- `docs/code-review/16-DEPLOYMENT_PREPARATION.md` - Deployment pipeline and infrastructure tasks
 
 **Cross-Reference**: Synthesize findings across all domains to create comprehensive action plans.
 
-**Output Review**: If `.claude/17-COMPREHENSIVE_TODO_LIST.md` exists, review and merge with new findings.
+**Output Review**: If `docs/code-review/17-COMPREHENSIVE_TODO_LIST.md` exists, review and merge with new findings.
 
 ## Core Task Synthesis Framework
 
@@ -56,16 +56,16 @@ This approach enables deeper analysis, better pattern recognition, and more thor
 **High-Priority Task Discovery**:
 ```bash
 # Extract critical findings from all analysis files
-rg "🔴|Critical|High-Impact|CRITICAL|Security Risk" .claude/*.md -A 2 -B 1
-rg "MUST|REQUIRED|URGENT|IMMEDIATE" .claude/*.md -A 1
-rg "vulnerability|exploit|breach|failure" .claude/*.md -A 2
+rg "🔴|Critical|High-Impact|CRITICAL|Security Risk" docs/code-review/*.md -A 2 -B 1
+rg "MUST|REQUIRED|URGENT|IMMEDIATE" docs/code-review/*.md -A 1
+rg "vulnerability|exploit|breach|failure" docs/code-review/*.md -A 2
 ```
 
 **Security & Compliance Tasks**:
 ```bash
 # Security-related action items
-rg "fix|patch|update|upgrade|implement" .claude/2-SECURITY*.md .claude/7-DEPENDENCY*.md .claude/8-PRIVACY*.md -A 1
-rg "TODO|FIXME|BUG|ISSUE" .claude/*.md -A 1 -B 1
+rg "fix|patch|update|upgrade|implement" docs/code-review/6-SECURITY*.md docs/code-review/7-DEPENDENCY*.md docs/code-review/8-PRIVACY*.md -A 1
+rg "TODO|FIXME|BUG|ISSUE" docs/code-review/*.md -A 1 -B 1
 ```
 
 ### 2. Development Task Classification (15min)
@@ -73,17 +73,17 @@ rg "TODO|FIXME|BUG|ISSUE" .claude/*.md -A 1 -B 1
 **Feature & Enhancement Tasks**:
 ```bash
 # Development improvements from all analyses
-rg "enhancement|improvement|optimize|refactor" .claude/*.md -A 2
-rg "missing|lacking|incomplete|partial" .claude/*.md -A 1
-rg "should|could|recommend|suggest" .claude/*.md -A 2
+rg "enhancement|improvement|optimize|refactor" docs/code-review/*.md -A 2
+rg "missing|lacking|incomplete|partial" docs/code-review/*.md -A 1
+rg "should|could|recommend|suggest" docs/code-review/*.md -A 2
 ```
 
 **Technical Debt & Quality Tasks**:
 ```bash
 # Code quality and technical debt items
-rg "debt|legacy|deprecated|outdated" .claude/*.md -A 1
-rg "standardize|normalize|consolidate" .claude/*.md -A 1
-rg "test|coverage|documentation" .claude/*.md -A 2
+rg "debt|legacy|deprecated|outdated" docs/code-review/*.md -A 1
+rg "standardize|normalize|consolidate" docs/code-review/*.md -A 1
+rg "test|coverage|documentation" docs/code-review/*.md -A 2
 ```
 
 ### 3. Infrastructure & Operations Tasks (10min)
@@ -91,9 +91,9 @@ rg "test|coverage|documentation" .claude/*.md -A 2
 **Deployment & Monitoring Tasks**:
 ```bash
 # Infrastructure and operational improvements
-rg "deploy|monitor|alert|metric|log" .claude/*.md -A 2
-rg "scale|performance|availability|reliability" .claude/*.md -A 1
-rg "backup|disaster|recovery|failover" .claude/*.md -A 1
+rg "deploy|monitor|alert|metric|log" docs/code-review/*.md -A 2
+rg "scale|performance|availability|reliability" docs/code-review/*.md -A 1
+rg "backup|disaster|recovery|failover" docs/code-review/*.md -A 1
 ```
 
 ### 4. Business Process Tasks (10min)
@@ -101,9 +101,9 @@ rg "backup|disaster|recovery|failover" .claude/*.md -A 1
 **Workflow & Process Improvements**:
 ```bash
 # Business process and workflow tasks
-rg "workflow|process|business|user.*experience" .claude/*.md -A 2
-rg "integration|client|api.*contract" .claude/*.md -A 1
-rg "compliance|audit|policy|procedure" .claude/*.md -A 1
+rg "workflow|process|business|user.*experience" docs/code-review/*.md -A 2
+rg "integration|client|api.*contract" docs/code-review/*.md -A 1
+rg "compliance|audit|policy|procedure" docs/code-review/*.md -A 1
 ```
 
 ### 5. Developer Comment Tags (5min)
@@ -124,7 +124,7 @@ rg "///" . --include="*.{go,js,ts,py,java,rs,php,rb,kt,swift,c,cpp,h,hpp}" -A 1 
 
 ## Token-Optimized Output Structure
 
-Create `.claude/17-COMPREHENSIVE_TODO_LIST.md`:
+Create `docs/code-review/17-COMPREHENSIVE_TODO_LIST.md`:
 
 ```markdown
 # Comprehensive Development Todo List

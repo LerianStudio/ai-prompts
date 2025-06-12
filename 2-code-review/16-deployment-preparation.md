@@ -22,22 +22,22 @@ You are a production readiness engineer. Execute language-agnostic cleanup and q
 
 ## 🔗 Prompt Chaining Rules
 
-**CRITICAL: This is prompt #14 in the analysis chain - the final deployment preparation prompt.**
+**CRITICAL: This is prompt #16 in the analysis chain - the final deployment preparation prompt.**
 
 **Dependency Checking:**
-- **REQUIRED**: First read ALL previous outputs `.claude/0-CODEBASE_OVERVIEW.md` through `.claude/13-QUALITY_REPORT.md` if they exist
+- **REQUIRED**: First read ALL previous outputs `docs/code-review/0-CODEBASE_OVERVIEW.md` through `docs/code-review/15-READINESS_AUDIT.md` if they exist
 - Use tech stack analysis from prompt #0 to configure language-specific cleanup
-- Reference production readiness audit from prompt #11 to ensure all blockers are resolved
-- Use security analysis from prompt #2 to verify no sensitive data remains in build artifacts
-- Reference API documentation from prompt #12 to ensure production endpoints are documented
-- Use database optimization from prompt #5 to verify production data configurations
-- Reference observability setup from prompt #6 to ensure monitoring is deployment-ready
+- Reference production readiness audit from prompt #15 to ensure all blockers are resolved
+- Use security analysis from prompt #6 to verify no sensitive data remains in build artifacts
+- Reference API documentation from prompt #13 to ensure production endpoints are documented
+- Use database optimization from prompt #3 to verify production data configurations
+- Reference observability setup from prompt #10 to ensure monitoring is deployment-ready
 - Use dependency security from prompt #7 to verify no vulnerable packages in production build
-- Reference quality checks from prompt #13 to ensure code meets deployment standards
-- Use documentation from prompt #10 to verify operational readiness
+- Reference quality checks from prompt #11 to ensure code meets deployment standards
+- Use documentation from prompt #12 to verify operational readiness
 
 **Output Review:**
-- If `.claude/14-QUALITY_REPORT.md` already exists:
+- If `docs/code-review/16-QUALITY_REPORT.md` already exists:
   1. Read and analyze the existing cleanup report first
   2. Cross-reference with comprehensive findings from the entire analysis chain
   3. Update cleanup procedures based on identified security and readiness issues
@@ -45,7 +45,7 @@ You are a production readiness engineer. Execute language-agnostic cleanup and q
   5. Add final validation steps for issues discovered across the analysis chain
 
 **Chain Coordination:**
-- Store findings in memory MCP with tags: `["deployment-ready", "cleanup", "final-validation", "prompt-14"]`
+- Store findings in memory MCP with tags: `["deployment-ready", "cleanup", "final-validation", "prompt-16"]`
 - Create final deployment package that addresses all issues identified in the analysis chain
 - Ensure cleanup process preserves production-critical configurations
 - Provide final deployment readiness assessment based on complete system analysis
@@ -54,8 +54,8 @@ You are a production readiness engineer. Execute language-agnostic cleanup and q
 
 **REQUIRED OUTPUT LOCATIONS:**
 
-- `.claude/14-QUALITY_REPORT.md` - Quality assessment report
-- `.claude/14-CLEANUP_SUMMARY.md` - Cleanup actions taken
+- `docs/code-review/16-QUALITY_REPORT.md` - Quality assessment report
+- `docs/code-review/16-CLEANUP_SUMMARY.md` - Cleanup actions taken
 
 **IMPORTANT RULES:**
 
@@ -210,7 +210,7 @@ fi
 ### Quality Report
 
 ```bash
-cat > .claude/QUALITY_REPORT.md << EOF
+cat > docs/code-review/16-QUALITY_REPORT.md << EOF
 # Production Readiness Report
 
 ## Cleanup Summary

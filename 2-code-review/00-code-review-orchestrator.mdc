@@ -1,0 +1,341 @@
+---
+description: Master orchestrator for complete code review workflow with logical phase progression
+globs: 
+alwaysApply: false
+---
+# Rule: Complete Code Review Orchestration
+
+## Goal
+
+To guide an AI assistant through a comprehensive, systematic code review process across all engineering disciplines. This orchestrator manages the complete 18-prompt analysis chain with optimized execution order and logical phase progression.
+
+## 🔗 Enhanced Reasoning Integration
+
+**IMPORTANT**: Use both Memory MCP and Sequential Thinking MCP for enhanced analysis:
+
+### Memory MCP Integration
+- Store findings, decisions, and patterns in memory for cross-session learning
+- Reference previous analysis and build upon established knowledge  
+- Tag entries appropriately for organization and retrieval
+
+### Sequential Thinking MCP Usage
+- Use `mcp__sequential-thinking__sequentialthinking` for complex analysis and reasoning
+- Break down complex problems into systematic thinking steps
+- Allow thoughts to evolve and build upon previous insights
+- Question assumptions and explore alternative approaches
+- Generate and verify solution hypotheses through structured reasoning
+
+## Process Overview
+
+This orchestrator manages a **6-phase code review workflow** with logical progression and optimal dependency management:
+
+### Phase 1: Foundation & Technical Architecture (00-05)
+**Objective**: Establish technical foundation and system understanding
+
+### Phase 2: Security & Compliance (06-08) 
+**Objective**: Comprehensive security and regulatory compliance analysis
+
+### Phase 3: Quality & Testing (09-11)
+**Objective**: Quality assurance, testing coverage, and operational excellence
+
+### Phase 4: Documentation & Workflow (12-14)
+**Objective**: Documentation quality and business workflow validation
+
+### Phase 5: Production Readiness (15-16)
+**Objective**: Deployment preparation and production validation
+
+### Phase 6: Final Synthesis (17)
+**Objective**: Comprehensive action planning and task generation
+
+## Execution Phases
+
+### 🏗️ Phase 1: Foundation & Technical Architecture
+
+**Execute in order for optimal technical understanding:**
+
+```bash
+# Foundation Analysis
+claude 2-code-review/00-codebase-overview.md
+claude 2-code-review/01-architecture-analysis.md
+
+# Core Technical Analysis (NEW ORDER IMPLEMENTED)
+claude 2-code-review/02-api-contract-analysis.md      # Foundational API understanding
+claude 2-code-review/03-database-optimization.md     # Foundational data layer  
+claude 2-code-review/04-sequence-diagram-visualization.md  # Visual foundation
+
+# Business Context (after technical foundation)
+claude 2-code-review/05-business-analysis.md          # Business understanding
+```
+
+**Phase 1 Dependencies:**
+- 00 → All subsequent prompts (foundation)
+- 01 → All architectural decisions
+- 02 → API documentation and testing strategies
+- 03 → Performance and scaling decisions
+- 04 → Business workflow understanding
+- 05 → Integration and feature planning
+
+### 🔒 Phase 2: Security & Compliance
+
+**Execute after technical foundation is established:**
+
+```bash
+# Security Analysis Chain
+claude 2-code-review/06-security-vulnerability-analysis.md
+claude 2-code-review/07-dependency-security-analysis.md
+claude 2-code-review/08-privacy-compliance-analysis.md
+```
+
+**Phase 2 Dependencies:**
+- Requires: Phase 1 complete (architecture + API contracts)
+- 06 → 07 → 08 (security findings build upon each other)
+- All security findings feed into production readiness (Phase 5)
+
+### ✅ Phase 3: Quality & Testing
+
+**Execute after architecture and security foundation:**
+
+```bash
+# Quality Assurance Chain  
+claude 2-code-review/09-test-coverage-analysis.md
+claude 2-code-review/10-observability-monitoring.md
+claude 2-code-review/11-pre-commit-quality-checks.md
+```
+
+**Phase 3 Dependencies:**
+- Requires: Phase 1 (architecture) + Phase 2 (security context)
+- 09 → Test strategy informs deployment preparation
+- 10 → Monitoring setup required for production
+- 11 → Quality gates for development workflow
+
+### 📚 Phase 4: Documentation & Workflow
+
+**Execute after core technical and quality analysis:**
+
+```bash
+# Documentation and Process Analysis
+claude 2-code-review/12-documentation-generation.md
+claude 2-code-review/13-api-documentation-generator.md
+claude 2-code-review/14-business-workflow-consistency.md
+```
+
+**Phase 4 Dependencies:**
+- Requires: All previous phases for comprehensive documentation
+- 12 → General documentation quality
+- 13 → API-specific documentation (requires Phase 1 API analysis)
+- 14 → Business workflow validation (requires sequence diagrams from Phase 1)
+
+### 🚀 Phase 5: Production Readiness
+
+**Execute after all technical analysis is complete:**
+
+```bash
+# Production Deployment Analysis
+claude 2-code-review/15-production-readiness-audit.md
+claude 2-code-review/16-deployment-preparation.md
+```
+
+**Phase 5 Dependencies:**
+- Requires: ALL previous phases (comprehensive readiness assessment)
+- 15 → Identifies production blockers from all analyses
+- 16 → Final deployment checklist and preparation
+
+### 🎯 Phase 6: Final Synthesis
+
+**Execute last - synthesizes all findings:**
+
+```bash
+# Comprehensive Action Planning
+claude 2-code-review/17-comprehensive-todo-generation.md
+```
+
+**Phase 6 Dependencies:**
+- Requires: ALL previous phases complete
+- Transforms all findings into actionable tasks with priorities
+
+## Execution Order (Implemented)
+
+### Current vs. Recommended Order
+
+| Original | Current | Prompt | Rationale |
+|----------|---------|--------|-----------|
+| 00 | 00 | Codebase Overview | ✅ Foundation - no change |
+| 01 | 01 | Architecture Analysis | ✅ Foundation - no change |
+| 02 | 05 | Business Analysis | 📈 Better after technical foundation |
+| 03 | 06 | Security Vulnerability | 📈 Logical security grouping |
+| 04 | 07 | Dependency Security | 📈 Logical security grouping |
+| 05 | 08 | Privacy Compliance | 📈 Logical security grouping |
+| 06 | 02 | API Contract Analysis | 📈 Core technical foundation |
+| 07 | 03 | Database Optimization | 📈 Core technical foundation |
+| 08 | 09 | Test Coverage | 📈 Logical quality grouping |
+| 09 | 10 | Observability | 📈 Logical quality grouping |
+| 10 | 11 | Pre-commit Quality | 📈 Logical quality grouping |
+| 11 | 12 | Documentation | 📈 Logical documentation grouping |
+| 12 | 13 | API Documentation | 📈 Logical documentation grouping |
+| 13 | 15 | Production Readiness | 📈 Logical production grouping |
+| 14 | 16 | Deployment Preparation | 📈 Logical production grouping |
+| 15 | 04 | Sequence Diagrams | 📈 Visual foundation helps understanding |
+| 16 | 14 | Business Workflow | 📈 After sequence diagrams |
+| 17 | 17 | Todo Generation | ✅ Final synthesis - no change |
+
+## Quick Execution Commands
+
+### Full Analysis (Optimized Order)
+```bash
+# Phase 1: Foundation & Technical Architecture
+claude 2-code-review/00-codebase-overview.md && \
+claude 2-code-review/01-architecture-analysis.md && \
+claude 2-code-review/02-api-contract-analysis.md && \
+claude 2-code-review/03-database-optimization.md && \
+claude 2-code-review/04-sequence-diagram-visualization.md && \
+claude 2-code-review/05-business-analysis.md
+
+# Phase 2: Security & Compliance  
+claude 2-code-review/06-security-vulnerability-analysis.md && \
+claude 2-code-review/07-dependency-security-analysis.md && \
+claude 2-code-review/08-privacy-compliance-analysis.md
+
+# Phase 3: Quality & Testing
+claude 2-code-review/09-test-coverage-analysis.md && \
+claude 2-code-review/10-observability-monitoring.md && \
+claude 2-code-review/11-pre-commit-quality-checks.md
+
+# Phase 4: Documentation & Workflow
+claude 2-code-review/12-documentation-generation.md && \
+claude 2-code-review/13-api-documentation-generator.md && \
+claude 2-code-review/14-business-workflow-consistency.md
+
+# Phase 5: Production Readiness
+claude 2-code-review/15-production-readiness-audit.md && \
+claude 2-code-review/16-deployment-preparation.md
+
+# Phase 6: Final Synthesis
+claude 2-code-review/17-comprehensive-todo-generation.md
+```
+
+### Quick Analysis (Essential prompts only)
+```bash
+# Foundation + Key Analysis
+claude 2-code-review/00-codebase-overview.md && \
+claude 2-code-review/01-architecture-analysis.md && \
+claude 2-code-review/06-security-vulnerability-analysis.md && \
+claude 2-code-review/09-test-coverage-analysis.md && \
+claude 2-code-review/15-production-readiness-audit.md && \
+claude 2-code-review/17-comprehensive-todo-generation.md
+```
+
+### Focused Analysis (By concern area)
+```bash
+# Security Focus
+claude 2-code-review/00-codebase-overview.md && \
+claude 2-code-review/06-security-vulnerability-analysis.md && \
+claude 2-code-review/07-dependency-security-analysis.md && \
+claude 2-code-review/08-privacy-compliance-analysis.md
+
+# Quality Focus  
+claude 2-code-review/00-codebase-overview.md && \
+claude 2-code-review/09-test-coverage-analysis.md && \
+claude 2-code-review/10-observability-monitoring.md && \
+claude 2-code-review/11-pre-commit-quality-checks.md
+
+# Production Readiness Focus
+claude 2-code-review/00-codebase-overview.md && \
+claude 2-code-review/15-production-readiness-audit.md && \
+claude 2-code-review/16-deployment-preparation.md
+```
+
+## Integration with Other Chains
+
+### With Pre-Development Chain
+```bash
+# 1. Complete pre-development planning
+claude 1-pre-development/1-create-prd.mdc
+claude 1-pre-development/2-create-trd.mdc  
+claude 1-pre-development/3-generate-tasks.mdc
+claude 1-pre-development/4-validate-chain.mdc
+
+# 2. Analyze existing codebase for integration
+claude 2-code-review/00-code-review-orchestrator.mdc  # This file
+# Follow with recommended execution order
+
+# 3. Generate implementation plan
+claude 1-pre-development/5-generate-sub-tasks.mdc
+```
+
+### With Memory Management
+```bash
+# Initialize memory context
+claude 0-memory-related/m2-memory-retrieval.md
+
+# Execute code review with memory integration
+claude 2-code-review/00-code-review-orchestrator.mdc
+
+# Store findings and maintain memory
+claude 0-memory-related/m5-memory-maintenance.md
+```
+
+## Output Organization
+
+All analysis outputs will be systematically organized in:
+
+```
+docs/code-review/
+├── 0-CODEBASE_OVERVIEW.md
+├── 1-ARCHITECTURE_ANALYSIS.md
+├── 2-API_CONTRACT_ANALYSIS.md
+├── 3-DATABASE_OPTIMIZATION.md
+├── 4-SEQUENCE_DIAGRAM_VISUALIZATION.md
+├── 5-BUSINESS_ANALYSIS.md
+├── 6-SECURITY_ANALYSIS.md
+├── 7-DEPENDENCY_SECURITY_ANALYSIS.md
+├── 8-PRIVACY_COMPLIANCE_ANALYSIS.md
+├── 9-TEST_COVERAGE_ANALYSIS.md
+├── 10-OBSERVABILITY_MONITORING.md
+├── 11-PRE_COMMIT_QUALITY_CHECKS.md
+├── 12-DOCUMENTATION.md
+├── 13-API_DOCUMENTATION.md
+├── 14-BUSINESS_WORKFLOW_CONSISTENCY.md
+├── 15-PRODUCTION_READINESS_AUDIT.md
+├── 16-DEPLOYMENT_PREPARATION.md
+├── 17-COMPREHENSIVE_TODO_LIST.md
+└── components/, api/, monitoring/, diagrams/
+```
+
+## Memory Integration
+
+Store comprehensive findings in memory with appropriate tags:
+- `["code-review", "foundation", "phase-1"]` for foundation analysis
+- `["code-review", "security", "phase-2"]` for security analysis  
+- `["code-review", "quality", "phase-3"]` for quality analysis
+- `["code-review", "documentation", "phase-4"]` for documentation analysis
+- `["code-review", "production", "phase-5"]` for production readiness
+- `["code-review", "synthesis", "phase-6"]` for final synthesis
+
+## Success Criteria
+
+### Phase Completion Criteria
+- **Phase 1**: Technical foundation established, system architecture understood
+- **Phase 2**: Security posture assessed, compliance gaps identified  
+- **Phase 3**: Quality metrics established, testing strategy validated
+- **Phase 4**: Documentation quality verified, workflows validated
+- **Phase 5**: Production readiness confirmed, deployment plan ready
+- **Phase 6**: Actionable task list generated with priorities and ownership
+
+### Overall Success Metrics
+- All 18 prompts executed successfully
+- No critical production blockers identified
+- Comprehensive task list with clear priorities
+- Architecture compliance verified
+- Security vulnerabilities addressed
+- Quality gates established
+
+## Final Instructions
+
+1. **Execute in phases** - Don't rush through all prompts at once
+2. **Validate dependencies** - Ensure each phase builds upon previous findings  
+3. **Store in memory** - Use Memory MCP for cross-session continuity
+4. **Review outputs** - Check that each analysis builds upon previous work
+5. **Synthesize findings** - Use Phase 6 to create actionable plans
+6. **Iterate if needed** - Re-run specific phases if major issues are discovered
+
+This orchestrator ensures systematic, comprehensive code review with optimal execution order and clear phase progression for maximum analysis effectiveness.

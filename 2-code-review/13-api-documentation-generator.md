@@ -22,37 +22,38 @@ You are an API documentation specialist. Generate OpenAPI specifications and Pos
 
 ## 🔗 Prompt Chaining Rules
 
-**CRITICAL: This is prompt #12 in the analysis chain.**
+**CRITICAL: This is prompt #13 in the analysis chain.**
 
 **Dependency Checking:**
-- **REQUIRED**: First read ALL previous outputs `.claude/0-CODEBASE_OVERVIEW.md` through `.claude/11-READINESS_AUDIT.md` if they exist
+- **REQUIRED**: First read ALL previous outputs `docs/code-review/0-CODEBASE_OVERVIEW.md` through `docs/code-review/12-DOCUMENTATION_GENERATION.md` if they exist
 - Use architectural API boundaries from prompt #1 to identify service endpoints
-- Reference API contract analysis from prompt #4 as the primary source for schemas and endpoints
-- Use security analysis from prompt #2 to include proper authentication schemes
-- Reference database models from prompt #5 to ensure accurate request/response schemas
-- Use observability requirements from prompt #6 to add monitoring endpoints
-- Reference business logic from prompt #3 to include relevant business endpoints
-- Use readiness audit from prompt #11 to focus on production-ready endpoints only
+- Reference API contract analysis from prompt #2 as the primary source for schemas and endpoints
+- Use security analysis from prompt #6 to include proper authentication schemes
+- Reference database models from prompt #3 to ensure accurate request/response schemas
+- Use observability requirements from prompt #10 to add monitoring endpoints
+- Reference business logic from prompt #5 to include relevant business endpoints
+- Use quality checks from prompt #11 to ensure API documentation meets standards
 
 **Output Review:**
 - If `api/openapi.yaml` or `postman/collection.json` already exist:
   1. Read and analyze existing API documentation first
-  2. Cross-reference with API contract findings from the analysis chain
-  3. Update schemas and endpoints based on current codebase state
+  2. Cross-reference with API contract and comprehensive system findings from the analysis chain
+  3. Update schemas and endpoints based on current codebase state and documentation standards
   4. Verify authentication schemes reflect security requirements
-  5. Add any missing endpoints identified in architectural or business analysis
+  5. Add any missing endpoints identified in architectural, business, or quality analysis
 
 **Chain Coordination:**
-- Store findings in memory MCP with tags: `["api-documentation", "openapi", "postman", "prompt-12"]`
+- Store findings in memory MCP with tags: `["api-documentation", "openapi", "postman", "prompt-13"]`
 - Create API documentation that reflects comprehensive system understanding
-- Ensure generated docs align with architectural decisions and security requirements
-- Focus on production-ready endpoints validated by readiness audit
+- Ensure generated docs align with architectural decisions, security requirements, and quality standards
+- Focus on well-documented, tested endpoints that meet quality criteria
 
 ## File Organization
 
 **REQUIRED OUTPUT LOCATIONS:**
 
 - `api/openapi.yaml` - OpenAPI 3.0.3 specification (root directory)
+- `docs/code-review/13-API_DOCS_COMPLETE.md` - API documentation generation summary
 - `postman/collection.json` - Postman collection
 - `postman/environment.json` - Single environment file (no multiple environments)
 - `scripts/openapi-to-postman.js` - Conversion script

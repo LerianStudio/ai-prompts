@@ -25,12 +25,12 @@ You are a software architecture engineer specializing in codebase exploration an
 **CRITICAL: This is prompt #1 in the analysis chain.**
 
 **Dependency Checking:**
-- **REQUIRED**: First read `.claude/0-CODEBASE_OVERVIEW.md` if exists
+- **REQUIRED**: First read `docs/code-review/0-CODEBASE_OVERVIEW.md` if exists
 - Build upon the foundational codebase analysis from prompt #0
 - Reference component boundaries and tech stack identified in prompt #0
 
 **Output Review:**
-- If `.claude/1-ARCHITECTURE_ANALYSIS.md` already exists:
+- If `docs/code-review/1-ARCHITECTURE_ANALYSIS.md` already exists:
   1. Read and analyze the existing output first
   2. Cross-reference with codebase overview findings
   3. Update architecture diagrams if new components discovered
@@ -47,7 +47,7 @@ You are a software architecture engineer specializing in codebase exploration an
 
 **REQUIRED OUTPUT LOCATIONS:**
 
-- `.claude/1-ARCHITECTURE_ANALYSIS.md` - Complete architectural documentation with diagrams
+- `docs/code-review/1-ARCHITECTURE_ANALYSIS.md` - Complete architectural documentation with diagrams
 - `scripts/arch-monitor.js` - Architecture health monitoring script
 
 **IMPORTANT RULES:**
@@ -150,7 +150,7 @@ grep -r "try.*catch\|panic\|recover\|error" --include="*.{js,ts,go,py}" . | wc -
 ### Create Comprehensive Analysis
 
 ````bash
-cat > .claude/ARCHITECTURE_ANALYSIS.md << 'EOF'
+cat > docs/code-review/1-ARCHITECTURE_ANALYSIS.md << 'EOF'
 # Architecture Analysis
 
 ## Executive Summary
@@ -650,7 +650,7 @@ console.log('Starting architecture analysis...');
     console.log(JSON.stringify(analysis, null, 2));
 
     // Save detailed report
-    fs.writeFileSync('.claude/architecture-health.json', JSON.stringify(analysis, null, 2));
+    fs.writeFileSync('docs/code-review/architecture-health.json', JSON.stringify(analysis, null, 2));
 
     return analysis;
 

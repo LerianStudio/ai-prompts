@@ -22,33 +22,33 @@ You are an API architect specializing in API design, contract testing, and backw
 
 ## 🔗 Prompt Chaining Rules
 
-**CRITICAL: This is prompt #6 in the analysis chain.**
+**CRITICAL: This is prompt #2 in the analysis chain.**
 
 **Dependency Checking:**
-- **REQUIRED**: First read `.claude/0-CODEBASE_OVERVIEW.md` through `.claude/5-PRIVACY_COMPLIANCE_ANALYSIS.md` if they exist
+- **REQUIRED**: First read `docs/code-review/0-CODEBASE_OVERVIEW.md` through `docs/code-review/1-ARCHITECTURE_ANALYSIS.md` if they exist
 - Use architectural API boundaries identified in previous analysis
 - Reference security vulnerabilities that affect API endpoints
 - Incorporate performance improvements identified for API components
 
 **Output Review:**
-- If `.claude/4-API_CONTRACT.md` already exists:
+- If `docs/code-review/2-API_CONTRACT.md` already exists:
   1. Read and analyze the existing output first
-  2. Cross-reference with architectural and security changes from prompts 0-3
+  2. Cross-reference with architectural changes from prompts 0-1
   3. Update API contract analysis for new endpoints
   4. Verify breaking change assessments are current
   5. Add contract considerations for new architectural patterns
 
 **Chain Coordination:**
-- Store findings in memory MCP with tags: `["api-contracts", "breaking-changes", "prompt-4"]`
+- Store findings in memory MCP with tags: `["api-contracts", "breaking-changes", "prompt-2"]`
 - Focus API analysis on endpoints identified in architectural analysis
-- Prioritize API security based on vulnerability findings from prompt #2
-- Align API improvements with business optimization from prompt #3
+- Create detailed API contract documentation for subsequent security and business analysis
+- Establish API standards that will guide later analysis phases
 
 ## File Organization
 
 **REQUIRED OUTPUT LOCATIONS:**
 
-- `.claude/4-API_CONTRACT.md` - Complete API contract analysis with schemas
+- `docs/code-review/2-API_CONTRACT.md` - Complete API contract analysis with schemas
 - `tests/contracts/` - Generated contract test suites
 
 **IMPORTANT RULES:**
@@ -173,7 +173,7 @@ Check for:
 ### Create Comprehensive Analysis
 
 ````bash
-cat > .claude/API_CONTRACT.md << 'EOF'
+cat > docs/code-review/2-API_CONTRACT.md << 'EOF'
 # API Contract Analysis
 
 ## Executive Summary

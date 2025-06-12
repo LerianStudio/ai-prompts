@@ -22,34 +22,33 @@ You are a database architect specializing in schema analysis, query optimization
 
 ## 🔗 Prompt Chaining Rules
 
-**CRITICAL: This is prompt #7 in the analysis chain.**
+**CRITICAL: This is prompt #3 in the analysis chain.**
 
 **Dependency Checking:**
-- **REQUIRED**: First read `.claude/0-CODEBASE_OVERVIEW.md` through `.claude/6-API_CONTRACT_ANALYSIS.md` if they exist
+- **REQUIRED**: First read `docs/code-review/0-CODEBASE_OVERVIEW.md` through `docs/code-review/2-API_CONTRACT_ANALYSIS.md` if they exist
 - Use architectural data layer components identified in previous analysis
-- Reference database security vulnerabilities from security assessment
-- Incorporate database performance improvements from business analysis
-- Align database optimization with API contract performance requirements
+- Reference API contract requirements for database performance
+- Align database optimization with API endpoint performance requirements
 
 **Output Review:**
-- If `.claude/5-DATABASE_ANALYSIS.md` already exists:
+- If `docs/code-review/3-DATABASE_ANALYSIS.md` already exists:
   1. Read and analyze the existing output first
-  2. Cross-reference with architectural and performance changes from prompts 0-4
+  2. Cross-reference with architectural and API changes from prompts 0-2
   3. Update database optimization for new schema changes
   4. Verify index recommendations are still relevant
-  5. Add database considerations for new API endpoints and security requirements
+  5. Add database considerations for API performance requirements
 
 **Chain Coordination:**
-- Store findings in memory MCP with tags: `["database", "performance", "optimization", "prompt-5"]`
+- Store findings in memory MCP with tags: `["database", "performance", "optimization", "prompt-3"]`
 - Focus database analysis on data models identified in architectural analysis
-- Prioritize database security based on vulnerability findings from prompt #2
-- Optimize database performance for API endpoints identified in prompt #4
+- Optimize database performance for API endpoints identified in prompt #2
+- Create database optimization foundation for subsequent security and business analysis
 
 ## File Organization
 
 **REQUIRED OUTPUT LOCATIONS:**
 
-- `.claude/5-DATABASE_ANALYSIS.md` - Complete database assessment with optimization plan
+- `docs/code-review/3-DATABASE_ANALYSIS.md` - Complete database assessment with optimization plan
 - `scripts/db-monitor.js` - Database health monitoring script
 
 **IMPORTANT RULES:**
@@ -136,7 +135,7 @@ grep -r "JOIN\|join" --include="*.{sql,js,ts}" . | head -10
 ### Create Optimization Assessment
 
 ````bash
-cat > .claude/DATABASE_ANALYSIS.md << 'EOF'
+cat > docs/code-review/3-DATABASE_ANALYSIS.md << 'EOF'
 # Database Analysis
 
 ## Executive Summary

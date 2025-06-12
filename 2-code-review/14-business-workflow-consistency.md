@@ -27,26 +27,24 @@ This approach enables deeper analysis, better pattern recognition, and more thor
 ## Prerequisites
 
 **REQUIRED**: Read ALL previous analysis outputs:
-- `.claude/0-CODEBASE_OVERVIEW.md` - Foundation understanding
-- `.claude/1-ARCHITECTURE_ANALYSIS.md` - System design patterns
-- `.claude/2-SECURITY_ANALYSIS.md` - Auth/authorization flows
-- `.claude/3-BUSINESS_ANALYSIS.md` - Business logic and rules
-- `.claude/4-API_CONTRACT_ANALYSIS.md` - Endpoint specifications
-- `.claude/5-DATABASE_OPTIMIZATION.md` - Data flow patterns
-- `.claude/6-OBSERVABILITY_MONITORING.md` - Process tracking
-- `.claude/7-DEPENDENCY_SECURITY_ANALYSIS.md` - External service dependencies
-- `.claude/8-PRIVACY_COMPLIANCE_ANALYSIS.md` - Data handling workflows
-- `.claude/9-TEST_COVERAGE_ANALYSIS.md` - Business scenario coverage
-- `.claude/10-DOCUMENTATION_GENERATION.md` - Process documentation
-- `.claude/11-PRODUCTION_READINESS_AUDIT.md` - Operational workflows
-- `.claude/12-API_DOCUMENTATION_GENERATOR.md` - Client integration patterns
-- `.claude/13-PRE_COMMIT_QUALITY_CHECKS.md` - Quality gates
-- `.claude/14-DEPLOYMENT_PREPARATION.md` - Release workflows
-- `.claude/15-SEQUENCE_DIAGRAMS.md` - Process visualizations
+- `docs/code-review/0-CODEBASE_OVERVIEW.md` - Foundation understanding
+- `docs/code-review/1-ARCHITECTURE_ANALYSIS.md` - System design patterns
+- `docs/code-review/2-API_CONTRACT_ANALYSIS.md` - Endpoint specifications
+- `docs/code-review/3-DATABASE_OPTIMIZATION.md` - Data flow patterns
+- `docs/code-review/4-SEQUENCE_DIAGRAMS.md` - Process visualizations
+- `docs/code-review/5-BUSINESS_ANALYSIS.md` - Business logic and rules
+- `docs/code-review/6-SECURITY_ANALYSIS.md` - Auth/authorization flows
+- `docs/code-review/7-DEPENDENCY_SECURITY_ANALYSIS.md` - External service dependencies
+- `docs/code-review/8-PRIVACY_COMPLIANCE_ANALYSIS.md` - Data handling workflows
+- `docs/code-review/9-TEST_COVERAGE_ANALYSIS.md` - Business scenario coverage
+- `docs/code-review/10-OBSERVABILITY_MONITORING.md` - Process tracking
+- `docs/code-review/11-PRE_COMMIT_QUALITY_CHECKS.md` - Quality gates
+- `docs/code-review/12-DOCUMENTATION_GENERATION.md` - Process documentation
+- `docs/code-review/13-API_DOCUMENTATION_GENERATOR.md` - Client integration patterns
 
-**Cross-Reference**: Use findings from architectural (#1), business (#3), API (#4), and testing (#9) analysis.
+**Cross-Reference**: Use findings from architectural (#1), business (#5), API (#2), and testing (#9) analysis.
 
-**Output Review**: If `.claude/16-BUSINESS_WORKFLOW_CONSISTENCY.md` exists, review and update against current codebase state.
+**Output Review**: If `docs/code-review/14-BUSINESS_WORKFLOW_CONSISTENCY.md` exists, review and update against current codebase state.
 
 ## Core Analysis Framework
 
@@ -116,7 +114,7 @@ rg "(success|failure|error).*callback" --type go,js,ts,py -A 2
 
 ## Token-Optimized Output Structure
 
-Create `.claude/16-BUSINESS_WORKFLOW_CONSISTENCY.md`:
+Create `docs/code-review/14-BUSINESS_WORKFLOW_CONSISTENCY.md`:
 
 ```markdown
 # Business Workflow Consistency Analysis

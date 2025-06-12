@@ -22,33 +22,34 @@ You are a product engineer and business analyst specializing in identifying opti
 
 ## 🔗 Prompt Chaining Rules
 
-**CRITICAL: This is prompt #2 in the analysis chain.**
+**CRITICAL: This is prompt #5 in the analysis chain.**
 
 **Dependency Checking:**
-- **REQUIRED**: First read `.claude/0-CODEBASE_OVERVIEW.md` and `.claude/1-ARCHITECTURE_ANALYSIS.md` if they exist
+- **REQUIRED**: First read `docs/code-review/0-CODEBASE_OVERVIEW.md` through `docs/code-review/4-SEQUENCE_DIAGRAM_VISUALIZATION.md` if they exist
 - Use architectural components to identify business logic boundaries
-- Reference security findings to prioritize business-critical improvements
-- Build upon performance insights from previous architectural analysis
+- Reference API contracts to understand business process endpoints
+- Use database optimization insights to prioritize data-driven improvements
+- Reference sequence diagrams to understand business workflow patterns
 
 **Output Review:**
-- If `.claude/2-BUSINESS_ANALYSIS.md` already exists:
+- If `docs/code-review/5-BUSINESS_ANALYSIS.md` already exists:
   1. Read and analyze the existing output first
-  2. Cross-reference with new findings from prompts 0-1
-  3. Update ROI calculations based on current architecture
-  4. Verify improvement opportunities are still relevant
-  5. Add business value assessments for new architectural patterns
+  2. Cross-reference with new findings from prompts 0-4
+  3. Update ROI calculations based on current architecture and API design
+  4. Verify improvement opportunities align with database optimization
+  5. Add business value assessments for workflow patterns from sequence diagrams
 
 **Chain Coordination:**
-- Store findings in memory MCP with tags: `["business-improvement", "performance", "prompt-2"]`
-- Focus improvements on components identified in architectural analysis
-- Quantify business impact using architectural complexity data
-- Create improvement roadmap that aligns with system architecture priorities
+- Store findings in memory MCP with tags: `["business-improvement", "performance", "prompt-5"]`
+- Focus improvements on components identified in foundational analysis
+- Quantify business impact using architectural, API, and database insights
+- Create improvement roadmap that aligns with technical foundation
 
 ## File Organization
 
 **REQUIRED OUTPUT LOCATIONS:**
 
-- `.claude/2-BUSINESS_ANALYSIS.md` - Complete improvement analysis with ROI metrics
+- `docs/code-review/5-BUSINESS_ANALYSIS.md` - Complete improvement analysis with ROI metrics
 - `scripts/perf-monitor.js` - Performance monitoring script
 
 **IMPORTANT RULES:**
@@ -157,7 +158,7 @@ grep -r "retry\|fallback\|recover" --include="*.{js,ts,go,py}" . | wc -l
 ### Create Business Impact Assessment
 
 ````bash
-cat > .claude/IMPROVEMENT_ANALYSIS.md << 'EOF'
+cat > docs/code-review/5-BUSINESS_ANALYSIS.md << 'EOF'
 # Improvement Analysis
 
 ## Executive Summary

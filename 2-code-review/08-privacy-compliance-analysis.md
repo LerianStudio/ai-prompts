@@ -22,36 +22,36 @@ You are a privacy engineer specializing in GDPR, CCPA, and data protection compl
 
 ## 🔗 Prompt Chaining Rules
 
-**CRITICAL: This is prompt #5 in the analysis chain.**
+**CRITICAL: This is prompt #8 in the analysis chain.**
 
 **Dependency Checking:**
-- **REQUIRED**: First read all previous outputs `.claude/0-CODEBASE_OVERVIEW.md` through `.claude/4-DEPENDENCY_SECURITY_ANALYSIS.md` if they exist
+- **REQUIRED**: First read all previous outputs `docs/code-review/0-CODEBASE_OVERVIEW.md` through `docs/code-review/7-DEPENDENCY_SECURITY_ANALYSIS.md` if they exist
 - Use architectural data flow analysis to identify PII handling points
 - Reference security vulnerabilities that affect data protection
 - Incorporate database schema analysis to find personal data storage
 - Use API contract analysis to identify data collection and sharing points
-- Reference observability gaps that affect data processing transparency
+- Reference business logic analysis to understand data processing purposes
 
 **Output Review:**
-- If `.claude/8-DATA_PRIVACY_AUDIT.md` already exists:
+- If `docs/code-review/8-DATA_PRIVACY_AUDIT.md` already exists:
   1. Read and analyze the existing output first
-  2. Cross-reference with architectural, security, and data changes from prompts 0-7
+  2. Cross-reference with architectural, API, database, security, and business changes from prompts 0-7
   3. Update privacy assessment for new data flows and API endpoints
-  4. Verify compliance status against current architectural patterns
-  5. Add privacy considerations for new dependencies and monitoring systems
+  4. Verify compliance status against current system design
+  5. Add privacy considerations for business processes and dependencies
 
 **Chain Coordination:**
 - Store findings in memory MCP with tags: `["privacy", "gdpr", "data-protection", "prompt-8"]`
-- Focus privacy analysis on data handling identified in architectural and database analysis
-- Prioritize data protection based on security vulnerabilities and API exposure
-- Create privacy compliance aligned with observability and dependency security strategies
+- Focus privacy analysis on data handling identified in foundational and security analysis
+- Prioritize data protection based on security vulnerabilities and business criticality
+- Create privacy compliance framework for subsequent testing and monitoring
 
 ## File Organization
 
 **REQUIRED OUTPUT LOCATIONS:**
 
-- `.claude/8-DATA_PRIVACY_AUDIT.md` - Complete privacy compliance assessment
-- `.claude/8-PII_INVENTORY.md` - Personal data classification report
+- `docs/code-review/8-DATA_PRIVACY_AUDIT.md` - Complete privacy compliance assessment
+- `docs/code-review/8-PII_INVENTORY.md` - Personal data classification report
 
 **IMPORTANT RULES:**
 
@@ -186,7 +186,7 @@ grep -r "cron\|schedule\|cleanup\|retention" --include="*.{js,ts,go,py,yml}" . |
 ### Create Compliance Assessment
 
 ````bash
-cat > .claude/DATA_PRIVACY_AUDIT.md << 'EOF'
+cat > docs/code-review/8-DATA_PRIVACY_AUDIT.md << 'EOF'
 # Privacy Compliance Audit
 
 ## Executive Summary
@@ -395,7 +395,7 @@ class UserService {
 
 # Create PII inventory
 
-cat > .claude/PII_INVENTORY.md << 'EOF'
+cat > docs/code-review/8-PII_INVENTORY.md << 'EOF'
 
 # Personal Data Inventory
 

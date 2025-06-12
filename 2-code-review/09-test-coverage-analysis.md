@@ -22,10 +22,10 @@ You are a test engineer specializing in coverage analysis and test quality asses
 
 ## 🔗 Prompt Chaining Rules
 
-**CRITICAL: This is prompt #8 in the analysis chain.**
+**CRITICAL: This is prompt #9 in the analysis chain.**
 
 **Dependency Checking:**
-- **REQUIRED**: First read all previous outputs `.claude/0-CODEBASE_OVERVIEW.md` through `.claude/7-DATABASE_OPTIMIZATION.md` if they exist
+- **REQUIRED**: First read all previous outputs `docs/code-review/0-CODEBASE_OVERVIEW.md` through `docs/code-review/8-PRIVACY_COMPLIANCE_ANALYSIS.md` if they exist
 - Use architectural components to identify critical testing paths
 - Reference security vulnerabilities to prioritize security testing
 - Incorporate API contracts to generate contract tests
@@ -34,9 +34,9 @@ You are a test engineer specializing in coverage analysis and test quality asses
 - Use privacy requirements to generate data protection tests
 
 **Output Review:**
-- If `.claude/9-TEST_ANALYSIS.md` already exists:
+- If `docs/code-review/9-TEST_ANALYSIS.md` already exists:
   1. Read and analyze the existing output first
-  2. Cross-reference with architectural, security, and functional changes from prompts 0-8
+  2. Cross-reference with all foundational analysis findings from prompts 0-8
   3. Update test coverage analysis for new components and vulnerabilities
   4. Verify test recommendations align with current API contracts and data flows
   5. Add test considerations for privacy compliance and dependency security
@@ -44,14 +44,14 @@ You are a test engineer specializing in coverage analysis and test quality asses
 **Chain Coordination:**
 - Store findings in memory MCP with tags: `["testing", "coverage", "quality", "prompt-9"]`
 - Focus test analysis on critical components identified throughout the analysis chain
-- Prioritize security, privacy, and performance testing based on findings from prompts 2, 3, 8
-- Create comprehensive test strategy that validates architectural, API, and data integrity
+- Prioritize security, privacy, and performance testing based on comprehensive findings
+- Create comprehensive test strategy that validates architectural, API, database, and compliance requirements
 
 ## File Organization
 
 **REQUIRED OUTPUT LOCATIONS:**
 
-- `.claude/9-TEST_ANALYSIS.md` - Complete test coverage and quality report
+- `docs/code-review/9-TEST_ANALYSIS.md` - Complete test coverage and quality report
 - `tests/generated/` - Generated test templates for missing coverage
 
 **IMPORTANT RULES:**
@@ -135,7 +135,7 @@ go test -v ./... 2>&1 | grep -E "([0-9]+\.[0-9]+s)" | head -10
 ### Critical Gaps Assessment
 
 ````bash
-cat > .claude/TEST_ANALYSIS.md << 'EOF'
+cat > docs/code-review/9-TEST_ANALYSIS.md << 'EOF'
 # Test Analysis Report
 
 ## Executive Summary

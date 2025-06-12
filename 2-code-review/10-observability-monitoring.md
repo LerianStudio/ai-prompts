@@ -22,34 +22,35 @@ You are an observability engineer specializing in monitoring, logging, tracing, 
 
 ## 🔗 Prompt Chaining Rules
 
-**CRITICAL: This is prompt #9 in the analysis chain.**
+**CRITICAL: This is prompt #10 in the analysis chain.**
 
 **Dependency Checking:**
-- **REQUIRED**: First read all previous outputs `.claude/0-CODEBASE_OVERVIEW.md` through `.claude/5-DATABASE_ANALYSIS.md` if they exist
+- **REQUIRED**: First read all previous outputs `docs/code-review/0-CODEBASE_OVERVIEW.md` through `docs/code-review/9-TEST_COVERAGE_ANALYSIS.md` if they exist
 - Use architectural components to identify critical monitoring points
 - Reference security vulnerabilities to prioritize security monitoring
 - Incorporate performance bottlenecks to focus observability metrics
 - Align monitoring with API contract SLAs and database performance targets
+- Use test coverage analysis to ensure monitoring covers tested components
 
 **Output Review:**
-- If `.claude/6-OBSERVABILITY_GAPS.md` already exists:
+- If `docs/code-review/10-OBSERVABILITY_GAPS.md` already exists:
   1. Read and analyze the existing output first
-  2. Cross-reference with architectural, security, and performance changes from prompts 0-5
-  3. Update monitoring strategy for new components and vulnerabilities
-  4. Verify observability coverage for new API endpoints and database optimizations
-  5. Add monitoring considerations for security and performance improvements
+  2. Cross-reference with comprehensive analysis findings from prompts 0-9
+  3. Update monitoring strategy for new components, vulnerabilities, and test coverage
+  4. Verify observability coverage for API endpoints, database optimization, and compliance requirements
+  5. Add monitoring considerations for security, privacy, and testing frameworks
 
 **Chain Coordination:**
-- Store findings in memory MCP with tags: `["observability", "monitoring", "sre", "prompt-6"]`
-- Focus observability on critical components identified in architectural analysis
-- Prioritize security monitoring based on vulnerability findings from prompt #2
-- Monitor performance metrics for business-critical paths from prompt #3
+- Store findings in memory MCP with tags: `["observability", "monitoring", "sre", "prompt-10"]`
+- Focus observability on critical components identified throughout the analysis chain
+- Prioritize security and privacy monitoring based on comprehensive findings
+- Create monitoring foundation for subsequent quality and deployment phases
 
 ## File Organization
 
 **REQUIRED OUTPUT LOCATIONS:**
 
-- `.claude/6-OBSERVABILITY_GAPS.md` - Complete observability assessment with implementation plan
+- `docs/code-review/10-OBSERVABILITY_GAPS.md` - Complete observability assessment with implementation plan
 - `monitoring/` - Monitoring configuration and dashboard files
 
 **IMPORTANT RULES:**
@@ -160,7 +161,7 @@ grep -r "pool.*size\|active.*connections" --include="*.{js,ts,go,py}" . | head -
 ### Create Gap Analysis
 
 ````bash
-cat > .claude/OBSERVABILITY_GAPS.md << 'EOF'
+cat > docs/code-review/10-OBSERVABILITY_GAPS.md << 'EOF'
 # Observability Analysis
 
 ## Executive Summary

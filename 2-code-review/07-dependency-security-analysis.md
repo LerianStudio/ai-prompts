@@ -22,34 +22,34 @@ You are a supply chain security expert specializing in dependency management and
 
 ## 🔗 Prompt Chaining Rules
 
-**CRITICAL: This is prompt #4 in the analysis chain.**
+**CRITICAL: This is prompt #7 in the analysis chain.**
 
 **Dependency Checking:**
-- **REQUIRED**: First read all previous outputs `.claude/0-CODEBASE_OVERVIEW.md` through `.claude/3-SECURITY_ANALYSIS.md` if they exist
+- **REQUIRED**: First read all previous outputs `docs/code-review/0-CODEBASE_OVERVIEW.md` through `docs/code-review/6-SECURITY_ANALYSIS.md` if they exist
 - Use tech stack analysis from overview to focus dependency assessment
 - Reference architectural dependencies to understand supply chain attack surface
 - Incorporate security vulnerabilities to prioritize dependency security
-- Align dependency monitoring with observability infrastructure
+- Align dependency monitoring with API and database requirements
 
 **Output Review:**
-- If `.claude/7-DEPENDENCY_HEALTH.md` already exists:
+- If `docs/code-review/7-DEPENDENCY_HEALTH.md` already exists:
   1. Read and analyze the existing output first
-  2. Cross-reference with tech stack and architecture changes from prompts 0-6
+  2. Cross-reference with tech stack, API, database, and security changes from prompts 0-6
   3. Update dependency analysis for new packages and versions
   4. Verify vulnerability assessments against current security findings
-  5. Add supply chain considerations for new architectural patterns
+  5. Add supply chain considerations for business-critical dependencies
 
 **Chain Coordination:**
 - Store findings in memory MCP with tags: `["supply-chain", "dependencies", "security", "prompt-7"]`
-- Focus dependency analysis on components identified in architectural analysis
-- Prioritize dependency security based on vulnerability findings and observability gaps
-- Create dependency monitoring aligned with security and observability strategies
+- Focus dependency analysis on components identified in foundational analysis
+- Prioritize dependency security based on vulnerability findings and business criticality
+- Create dependency monitoring aligned with security and performance requirements
 
 ## File Organization
 
 **REQUIRED OUTPUT LOCATIONS:**
 
-- `.claude/7-DEPENDENCY_HEALTH.md` - Complete dependency security and health report
+- `docs/code-review/7-DEPENDENCY_HEALTH.md` - Complete dependency security and health report
 - `scripts/dependency-monitor.js` - Automated monitoring script
 
 **IMPORTANT RULES:**
@@ -152,7 +152,7 @@ jq '. | to_entries | map({
 ### Create Security Assessment
 
 ````bash
-cat > .claude/DEPENDENCY_HEALTH.md << 'EOF'
+cat > docs/code-review/7-DEPENDENCY_HEALTH.md << 'EOF'
 # Dependency Health Analysis
 
 ## Executive Summary
@@ -387,7 +387,7 @@ const licenses = await this.checkLicenses();
       overallHealth: this.calculateHealth(security, outdated, licenses)
     };
 
-    fs.writeFileSync('.claude/dependency-health-report.json', JSON.stringify(report, null, 2));
+    fs.writeFileSync('docs/code-review/dependency-health-report.json', JSON.stringify(report, null, 2));
     console.log('Dependency health report generated');
     return report;
 

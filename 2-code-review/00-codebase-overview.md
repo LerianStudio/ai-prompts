@@ -29,7 +29,7 @@ You are a software architecture engineer specializing in rapid codebase analysis
 - Must create base documentation that subsequent prompts will build upon
 
 **Output Review:**
-- If `.claude/0-CODEBASE_OVERVIEW.md` already exists:
+- If `docs/code-review/0-CODEBASE_OVERVIEW.md` already exists:
   1. Read and analyze the existing output first
   2. Review it against current codebase state
   3. Update sections that have become outdated
@@ -45,7 +45,7 @@ You are a software architecture engineer specializing in rapid codebase analysis
 
 **REQUIRED OUTPUT LOCATIONS:**
 
-- `.claude/0-CODEBASE_OVERVIEW.md` - Complete codebase analysis with component diagrams
+- `docs/code-review/0-CODEBASE_OVERVIEW.md` - Complete codebase analysis with component diagrams
 - Multiple agents coordination for comprehensive coverage
 
 **IMPORTANT RULES:**
@@ -136,7 +136,7 @@ memory_store_decision
 
 ## 4. Documentation Creation
 
-Create comprehensive overview in `.claude/CODEBASE_OVERVIEW.md`:
+Create comprehensive overview in `docs/code-review/0-CODEBASE_OVERVIEW.md`:
 
 ````markdown
 # Codebase Overview
@@ -395,7 +395,7 @@ For comprehensive analysis, coordinate multiple specialized agents:
 memory_store_chunk
   content="Complete codebase overview created with [X] components, [Y] endpoints, [Z] design patterns identified"
   tags=["codebase-overview", "documentation", "analysis-complete"]
-  files_modified=[".claude/CODEBASE_OVERVIEW.md"]
+  files_modified=["docs/code-review/0-CODEBASE_OVERVIEW.md"]
 
 memory_create create_thread
   name="Codebase Analysis Overview"

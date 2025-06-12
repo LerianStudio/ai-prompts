@@ -22,10 +22,10 @@ You are a technical writer specializing in auto-generating comprehensive documen
 
 ## 🔗 Prompt Chaining Rules
 
-**CRITICAL: This is prompt #10 in the analysis chain - the final synthesis prompt.**
+**CRITICAL: This is prompt #12 in the analysis chain.**
 
 **Dependency Checking:**
-- **REQUIRED**: First read ALL previous outputs `.claude/0-CODEBASE_OVERVIEW.md` through `.claude/9-TEST_ANALYSIS.md` if they exist
+- **REQUIRED**: First read ALL previous outputs `docs/code-review/0-CODEBASE_OVERVIEW.md` through `docs/code-review/11-QUALITY_REPORT.md` if they exist
 - Synthesize architectural overview into comprehensive documentation
 - Incorporate security findings into security documentation
 - Include API contracts in API reference documentation
@@ -34,25 +34,27 @@ You are a technical writer specializing in auto-generating comprehensive documen
 - Add dependency management from supply chain analysis
 - Include privacy and compliance documentation
 - Incorporate testing strategies and setup guides
+- Reference quality checks and build processes
 
 **Output Review:**
 - If any documentation files already exist in `README.md`, `docs/`, etc.:
   1. Read and analyze all existing documentation first
-  2. Cross-reference with comprehensive findings from prompts 0-9
-  3. Update documentation to reflect current architecture, security, and best practices
-  4. Ensure documentation covers all components, APIs, and operational aspects
+  2. Cross-reference with comprehensive findings from prompts 0-11
+  3. Update documentation to reflect current architecture, security, quality, and best practices
+  4. Ensure documentation covers all components, APIs, operational aspects, and quality processes
   5. Add any missing sections based on analysis chain findings
 
 **Chain Coordination:**
-- Store findings in memory MCP with tags: `["documentation", "synthesis", "final", "prompt-10"]`
+- Store findings in memory MCP with tags: `["documentation", "synthesis", "comprehensive", "prompt-12"]`
 - Create comprehensive documentation that serves as the single source of truth
-- Ensure documentation reflects all critical findings from the entire analysis chain
-- Provide clear onboarding and operational guidance based on all specialist analyses
+- Ensure documentation reflects all critical findings from the analysis chain
+- Provide clear onboarding, operational, and quality guidance based on all specialist analyses
 
 ## File Organization
 
 **REQUIRED OUTPUT LOCATIONS:**
 - `README.md` - Main project documentation (root directory)
+- `docs/code-review/12-DOCUMENTATION_COMPLETE.md` - Documentation generation summary
 - `docs/API.md` - Complete API reference
 - `docs/SETUP.md` - Installation and setup guide
 - `docs/DEVELOPMENT.md` - Development workflow guide
