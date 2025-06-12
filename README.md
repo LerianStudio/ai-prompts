@@ -1,12 +1,55 @@
 # AI Prompts for LerianStudio Ecosystem
 
-A comprehensive collection of token-optimized AI prompts designed for systematic codebase analysis, development workflows, and knowledge management within the LerianStudio ecosystem.
+A comprehensive collection of AI prompts designed for complete software development lifecycle management within the LerianStudio ecosystem. Features pre-development planning, comprehensive code review, and memory-driven development workflows.
 
 ## 🎯 Purpose
 
-This repository provides a complete **18-prompt analysis chain** that enables comprehensive, AI-assisted codebase analysis across multiple engineering disciplines. All prompts are optimized for token efficiency (50-75% reduction) while maintaining full functionality and chaining dependencies.
+This repository provides three integrated systems for complete software development lifecycle management:
 
-## 🔗 Complete Analysis Chain (00-17)
+1. **Pre-Development Planning Chain (1-5)**: Business requirements → Technical specs → Atomic tasks → Validation → Implementation planning
+2. **Code Review Analysis Chain (00-17)**: Comprehensive codebase analysis across all engineering disciplines
+3. **Memory Management System (m1-m5)**: Session continuity and knowledge persistence across development workflows
+
+## 🚀 Pre-Development Planning Chain (1-5)
+
+**Complete project planning workflow from business requirements to implementation tasks:**
+
+| # | Prompt | Purpose | Output |
+|---|--------|---------|--------|
+| 1 | `1-create-prd.mdc` | Business requirements gathering | `docs/pre-development/prd-[feature].md` |
+| 2 | `2-create-trd.mdc` | Technical specifications | `docs/pre-development/trd-[feature].md` |
+| 3 | `3-generate-tasks.mdc` | Atomic development phases | `docs/pre-development/tasks/tasks-[feature].md` |
+| 4 | `4-validate-chain.mdc` | **NEW** Consistency validation | `docs/pre-development/validation-report-[feature].md` |
+| 5 | `5-generate-sub-tasks.mdc` | Implementation sub-tasks | `docs/pre-development/tasks/T-[id]/ST-T-[id]-[num].md` |
+
+### Key Features:
+- **Validation Gates**: Comprehensive validation between phases with remediation procedures
+- **Git Workflow Integration**: Sub-tasks → tasks-implementation → develop branch workflow
+- **Architecture Enforcement**: Hexagonal Architecture, lib-commons, lib-auth compliance at all levels
+- **Individual Task Files**: Granular tracking with separate files for each sub-task
+- **Chain Validation**: Requirements traceability from PRD through implementation
+
+### Execution Flow:
+```bash
+# 1. Create PRD (Business Requirements)
+claude 1-pre-development/1-create-prd.mdc
+
+# 2. Create TRD (Technical Specifications) 
+claude 1-pre-development/2-create-trd.mdc
+
+# 3. Generate Atomic Tasks
+claude 1-pre-development/3-generate-tasks.mdc
+
+# 4. Validate Chain Consistency (MANDATORY)
+claude 1-pre-development/4-validate-chain.mdc
+
+# 5. Generate Implementation Sub-Tasks (only after validation PASS)
+claude 1-pre-development/5-generate-sub-tasks.mdc
+```
+
+## 🔗 Code Review Analysis Chain (00-17)
+
+**Comprehensive codebase analysis across all engineering disciplines:**
 
 Sequential prompts that build upon each other with comprehensive dependency tracking, organized into logical development phases:
 
@@ -56,32 +99,45 @@ Sequential prompts that build upon each other with comprehensive dependency trac
 | 16 | `16-business-workflow-consistency.md` | Business Process Analyst | End-to-end workflow validation |
 | 17 | `17-comprehensive-todo-generation.md` | Project Coordinator | Action planning with developer comment integration |
 
-## 🧠 Memory Management Prompts (m1-m5)
+## 🧠 Memory Management System (m1-m5)
 
-Memory Context Protocol (MCP) integration for session continuity:
+**Memory Context Protocol (MCP) integration for session continuity and knowledge persistence:**
 
-| # | Prompt | Purpose |
-|---|--------|---------|
-| m1 | `memory-related/m1-memory-analysis.md` | Memory pattern analysis & intelligence |
-| m2 | `memory-related/m2-memory-retrieval.md` | Context retrieval & task status |
-| m3 | `memory-related/m3-task-management.md` | Automated task tracking |
-| m4 | `memory-related/m4-memory-workflow.md` | Session lifecycle management |
-| m5 | `memory-related/m5-memory-maintenance.md` | Memory updates & cleanup |
+| # | Prompt | Purpose | Integration |
+|---|--------|---------|-------------|
+| m1 | `0-memory-related/m1-memory-analysis.md` | Memory pattern analysis & intelligence | Works with all workflows |
+| m2 | `0-memory-related/m2-memory-retrieval.md` | Context retrieval & task status | Session initialization |
+| m3 | `0-memory-related/m3-task-management.md` | Automated task tracking | Cross-session continuity |
+| m4 | `0-memory-related/m4-memory-workflow.md` | Session lifecycle management | Workflow automation |
+| m5 | `0-memory-related/m5-memory-maintenance.md` | Memory updates & cleanup | Data quality management |
+
+### Integration with Development Workflows:
+- **Pre-Development**: Memory analysis informs planning decisions and requirements gathering
+- **Code Review**: Pattern detection supports quality improvements and architectural insights  
+- **Implementation**: Task continuity maintains context across development sessions
+- **Documentation**: Knowledge transfer capabilities support comprehensive documentation
 
 ## 🎯 Key Features
 
-### 🔗 Chaining System
-- **Sequential Dependencies**: Each prompt #1-17 references all previous outputs
-- **Comprehensive Integration**: Architectural, security, and business findings cross-referenced
-- **Output Review**: Existing analysis automatically updated with new findings
-- **Memory MCP Integration**: Full session continuity and pattern learning
-- **Developer Comment Integration**: Prompt #17 includes `///AUTHOR` inline todo extraction
+### 🔗 Multi-Chain Integration
+- **Pre-Development Chain**: Business requirements → Technical specs → Validated implementation plans
+- **Code Review Chain**: Sequential dependencies with each prompt #00-17 referencing previous outputs
+- **Memory Integration**: Full session continuity and cross-project pattern learning
+- **Validation Gates**: Mandatory validation with remediation procedures before implementation
+- **Git Workflow**: Integrated branching strategy (feature → tasks-implementation → develop)
 
-### ⚡ Token Optimization
-- **50-75% Token Reduction** from original versions
-- **Preserved Functionality**: All core analysis capabilities maintained
-- **Practical Examples**: Working code snippets and monitoring scripts
+### 🎯 Development Workflow Features
+- **Atomic Tasks**: Each task delivers complete, working, deployable software increments
+- **Architecture Enforcement**: Hexagonal Architecture, lib-commons, lib-auth compliance at all levels
+- **Cross-Task Integration**: Comprehensive integration testing between completed tasks
+- **Individual Tracking**: Separate files for each sub-task enabling parallel development
+- **Requirements Traceability**: Complete traceability from business requirements to implementation
+
+### ⚡ Quality & Efficiency
+- **Validation-First**: Chain validation prevents implementation of flawed designs
+- **Working Examples**: Complete code snippets and practical implementation patterns
 - **Language Agnostic**: Support for Go, TypeScript, Python, Java, Rust, .NET
+- **Enterprise-Grade**: Professional quality analysis rivaling commercial tools
 
 ## 🧠 Memory Integration
 
@@ -115,7 +171,18 @@ memory_tasks session_end session_id="[session]" repository="github.com/org/repo"
 
 ## 🚀 Quick Start
 
-### 1. Complete System Analysis
+### 1. Pre-Development Planning (NEW)
+**Start any new feature/project with comprehensive planning:**
+```bash
+# Complete pre-development workflow
+claude 1-pre-development/1-create-prd.mdc      # Business requirements
+claude 1-pre-development/2-create-trd.mdc      # Technical specifications  
+claude 1-pre-development/3-generate-tasks.mdc  # Atomic development phases
+claude 1-pre-development/4-validate-chain.mdc  # Validation & consistency check
+claude 1-pre-development/5-generate-sub-tasks.mdc  # Implementation sub-tasks
+```
+
+### 2. Complete Code Review Analysis
 Run the full **18-prompt chain** for comprehensive codebase analysis:
 ```bash
 # Foundation analysis (Phase 1)
@@ -151,7 +218,25 @@ claude 16-business-workflow-consistency.md
 claude 17-comprehensive-todo-generation.md    # Includes ///AUTHOR comment extraction
 ```
 
-### 2. Focused Analysis
+### 3. Integrated Workflow
+**Combine pre-development planning with code review:**
+```bash
+# 1. Plan new feature
+claude 1-pre-development/1-create-prd.mdc
+claude 1-pre-development/2-create-trd.mdc
+claude 1-pre-development/3-generate-tasks.mdc
+claude 1-pre-development/4-validate-chain.mdc
+
+# 2. Analyze existing codebase for integration
+claude 2-code-review/00-codebase-overview.md
+claude 2-code-review/01-architecture-analysis.md
+claude 2-code-review/06-api-contract-analysis.md
+
+# 3. Generate implementation plan
+claude 1-pre-development/5-generate-sub-tasks.mdc
+```
+
+### 4. Focused Analysis
 For specific concerns, run foundation + targeted prompts:
 ```bash
 # Security-focused analysis
@@ -171,7 +256,7 @@ claude 00-codebase-overview.md
 claude 17-comprehensive-todo-generation.md
 ```
 
-### 3. Memory Integration
+### 5. Memory Integration
 Use memory prompts for session continuity:
 ```bash
 # Start with memory context
@@ -184,8 +269,25 @@ claude memory-related/m3-task-management.md + 01-architecture-analysis.md
 claude memory-related/m5-memory-maintenance.md
 ```
 
-### 4. Access Results
+### 6. Access Results
 Analysis outputs are systematically organized:
+
+**Pre-Development Outputs:**
+```
+docs/pre-development/
+├── prd-[feature].md                    # Product Requirements
+├── trd-[feature].md                    # Technical Requirements
+├── validation-report-[feature].md     # Chain validation results
+└── tasks/
+    ├── tasks-[feature].md              # Atomic development phases
+    └── T-[id]/                         # Individual task directories
+        ├── task.md                     # Task specification
+        ├── ST-T-[id]-001.md           # Sub-task files
+        ├── ST-T-[id]-002.md
+        └── ...
+```
+
+**Code Review Outputs:**
 ```
 .claude/
 ├── 0-CODEBASE_OVERVIEW.md
