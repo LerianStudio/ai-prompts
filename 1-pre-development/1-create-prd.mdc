@@ -9,7 +9,7 @@ To guide an AI assistant in creating a detailed Product Requirements Document (P
 1.  **Receive Initial Prompt:** The user provides a brief description or request for a new feature or functionality.
 2.  **Ask Clarifying Questions:** Before writing the PRD, the AI *must* ask clarifying questions to gather sufficient detail. The goal is to understand the "what" and "why" of the feature, not necessarily the "how" (which the developer will figure out).
 3.  **Generate PRD:** Based on the initial prompt and the user's answers to the clarifying questions, generate a PRD using the structure outlined below.
-4.  **Save PRD:** Save the generated document as `prd-[feature-name].md` inside the `/docs/` directory.
+4.  **Save PRD:** Save the generated document as `prd-[feature-name].md` inside the `/docs/pre-development/` directory.
 
 ## Clarifying Questions (Examples)
 
@@ -230,19 +230,30 @@ src/
 
 **MANDATORY**: Use lib-commons for all shared functionality (https://github.com/LerianStudio/lib-commons or https://github.com/LerianStudio/lib-commons-js).
 
+#### lib-auth Integration (Midaz Projects)
+
+**MANDATORY FOR MIDAZ PROJECTS**: Use lib-auth for authentication and authorization (https://github.com/LerianStudio/lib-auth).
+
 **Required lib-commons Components:**
 - [ ] **Error Handling**: Standardized error types and handling
 - [ ] **Validation**: Common validation patterns and utilities
 - [ ] **Database Utilities**: Connection pooling, migration tools
 - [ ] **Observability**: Logging, metrics, tracing utilities
-- [ ] **Security**: JWT validation, RBAC utilities
 - [ ] **Configuration**: Environment and config management
 
+**Required lib-auth Components (Midaz Projects):**
+- [ ] **Authentication**: JWT token validation and management
+- [ ] **Authorization**: RBAC utilities and permission management
+- [ ] **Security Middleware**: Request authentication and authorization
+- [ ] **User Management**: User context and session handling
+
 **Integration Checklist:**
-- [ ] **Version Compatibility**: Use latest stable lib-commons version
-- [ ] **API Compliance**: Follow lib-commons interface contracts
+- [ ] **Version Compatibility**: Use latest stable lib-commons and lib-auth versions
+- [ ] **API Compliance**: Follow lib-commons and lib-auth interface contracts
 - [ ] **Error Propagation**: Use lib-commons error types consistently
-- [ ] **Testing Integration**: Use lib-commons test utilities
+- [ ] **Authentication Flow**: Implement lib-auth authentication patterns (Midaz projects)
+- [ ] **Authorization Patterns**: Use lib-auth RBAC utilities (Midaz projects)
+- [ ] **Testing Integration**: Use lib-commons and lib-auth test utilities
 
 ### Architectural Principles
 
@@ -272,7 +283,7 @@ Assume the primary reader of the PRD is a **junior developer**. Therefore, requi
 ## Output
 
 *   **Format:** Markdown (`.md`)
-*   **Location:** `/docs/`
+*   **Location:** `/docs/pre-development/`
 *   **Filename:** `prd-[feature-name].md`
 
 ## Final Instructions
@@ -283,6 +294,7 @@ Assume the primary reader of the PRD is a **junior developer**. Therefore, requi
 4. **Keep it junior-developer friendly** - Use clear language and provide concrete examples
 5. **Validate completeness** - Ensure all sections provide enough detail for technical implementation
 6. **After completing the PRD** - Inform the user that the next step is to create a TRD using `@create-trd.mdc`
+7. **Chain Continuation** - The PRD serves as foundation for TRD; maintain consistency in architecture patterns and requirements
 
 ## Quality Checklist
 

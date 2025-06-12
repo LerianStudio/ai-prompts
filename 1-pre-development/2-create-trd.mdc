@@ -11,11 +11,12 @@ To guide an AI assistant in creating a detailed Technical Requirements Document 
 
 ## Process
 
-1. **Read Existing PRD:** The AI must first read the PRD document (typically `prd-[feature-name].md` in `/docs/pre-development/`)
-2. **Analyze PRD Content:** Extract key requirements, data models, API specifications, and architectural patterns
-3. **Ask Technical Questions:** Gather additional technical details not covered in the PRD
-4. **Generate TRD:** Create a comprehensive technical specification using the structure below
-5. **Save TRD:** Save the document as `trd-[feature-name].md` in the `/docs/pre-development/` directory
+1. **Read Existing PRD:** The AI must first read the PRD document (`prd-[feature-name].md` in `/docs/pre-development/`)
+2. **Reference PRD Architecture:** Build upon PRD architecture patterns rather than duplicating them
+3. **Analyze PRD Content:** Extract key requirements, data models, API specifications, and architectural patterns
+4. **Ask Technical Questions:** Gather additional technical details not covered in the PRD
+5. **Generate TRD:** Create a comprehensive technical specification using the structure below
+6. **Save TRD:** Save the document as `trd-[feature-name].md` in the `/docs/pre-development/` directory
 
 ## Clarifying Questions (Technical Deep Dive)
 
@@ -64,15 +65,15 @@ The generated TRD should include the following sections (strictly using this num
 0. **Index**
 1. **Executive Summary:** Technical overview linking to PRD objectives
 2. **System Architecture:** High-level architecture diagram and component overview
-3. **Technology Stack:** Complete list of technologies, languages, frameworks, and tools
+3. **Technology Stack:** Complete list of technologies, languages, frameworks, and tools (including lib-commons and lib-auth for Midaz projects)
 4. **Data Architecture:** Detailed database schema, data flow, and storage strategy
 5. **API Specifications:** Complete API documentation with OpenAPI/Swagger specs
 6. **Component Design:** Detailed design of each system component
 7. **Integration Architecture:** How components integrate with each other and external systems
-8. **Security Architecture:** Authentication, authorization, encryption, and security measures
+8. **Security Architecture:** Authentication, authorization, encryption, and security measures (referencing lib-auth for Midaz projects)
 9. **Performance Requirements:** Specific metrics, benchmarks, and optimization strategies
 10. **Infrastructure Requirements:** Servers, networking, storage, and deployment needs
-11. **Development Standards:** Coding standards, patterns, and best practices
+11. **Development Standards:** Coding standards, patterns, and best practices (including lib-commons integration requirements)
 12. **Testing Strategy:** Comprehensive testing plan including unit, integration, and e2e tests
 13. **Deployment Architecture:** CI/CD pipeline, deployment strategy, and rollback procedures
 14. **Monitoring & Observability:** Logging, metrics, tracing, and alerting requirements
@@ -289,11 +290,13 @@ The TRD must align with the PRD's development phases:
 ## Final Instructions
 
 1. **Read PRD First** - Always read the corresponding PRD before starting
-2. **Ask Technical Questions** - Don't assume technical decisions
-3. **Be Specific** - Provide exact versions, configurations, and commands
-4. **Include Examples** - Every section should have concrete examples
-5. **Consider Operations** - Think about deployment, monitoring, and maintenance
-6. **Validate Completeness** - Ensure a developer can implement from this document alone
+2. **Build Upon PRD** - Reference PRD architecture patterns, don't duplicate them
+3. **Ask Technical Questions** - Don't assume technical decisions not covered in PRD
+4. **Be Specific** - Provide exact versions, configurations, and commands
+5. **Include Examples** - Every section should have concrete examples
+6. **Consider Operations** - Think about deployment, monitoring, and maintenance
+7. **Validate Completeness** - Ensure a developer can implement from this document alone
+8. **Reference lib-commons/lib-auth** - Specify concrete integration patterns for Midaz projects
 
 ## Quality Checklist
 
@@ -319,3 +322,6 @@ The TRD must:
 3. Ensure technical phases align with PRD phases
 4. Address all risks identified in the PRD
 5. Implement all architectural patterns specified in the PRD
+6. **Build Upon PRD:** TRD should reference PRD Architecture Patterns (Section 16) rather than duplicating them
+7. **Add Implementation Details:** Focus on technical implementation specifics, not repeating architectural principles
+8. **lib-commons/lib-auth Integration:** Specify concrete usage of lib-commons and lib-auth as defined in PRD

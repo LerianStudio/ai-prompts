@@ -3,19 +3,20 @@ description:
 globs: 
 alwaysApply: false
 ---
-# Rule: Generating Main Tasks from PRD and TRD Analysis
+# Rule: Generating Tasks from PRD and TRD Analysis
 
 ## Goal
 
-To guide an AI assistant in analyzing both Product Requirements Document (PRD) and Technical Requirements Document (TRD) to generate atomic, functional main tasks (phases) that serve as the foundation for project implementation. Each main task must deliver a complete, working, and testable application increment.
+To guide an AI assistant in analyzing both Product Requirements Document (PRD) and Technical Requirements Document (TRD) to generate atomic, functional tasks (phases) that serve as the foundation for project implementation. Each task must deliver a complete, working, and testable application increment.
 
 ## Process
 
-1. **Read Both Documents:** The AI must first read both the PRD and TRD documents for comprehensive understanding (tipically at `/docs/pre-development/`)
-2. **Analyze Development Roadmap:** Extract and understand the phases outlined in both PRD and TRD
-3. **Apply Atomic Principles:** Ensure each main task is self-contained and delivers working functionality
-4. **Generate Main Tasks:** Create detailed main task specifications using the structure below
-5. **Save Output:** Save as `main-tasks-[feature-name].md` in `/docs/pre-development/tasks/` directory
+1. **Read Both Documents:** The AI must first read both the PRD and TRD documents for comprehensive understanding from `/docs/pre-development/`
+2. **Verify Chain Validation:** Ensure validation-report-[feature-name].md shows PASS status before proceeding
+3. **Analyze Development Roadmap:** Extract and understand the phases outlined in both PRD and TRD
+4. **Apply Atomic Principles:** Ensure each task is self-contained and delivers working functionality
+5. **Generate Tasks:** Create detailed task specifications using the structure below
+6. **Save Output:** Save as `tasks-[feature-name].md` in `/docs/pre-development/tasks/` directory
 
 ## Input Documents Analysis
 
@@ -24,7 +25,7 @@ To guide an AI assistant in analyzing both Product Requirements Document (PRD) a
 - **Logical Dependency Chain (Section 14):** Understand the foundation-first approach
 - **Functional Requirements (Section 5):** Map requirements to deliverable phases
 - **User Stories (Section 3):** Identify user value delivery points
-- **Success Metrics (Section 9):** Define measurable outcomes for each phase
+- **Success Metrics (Section 9):** Define measurable outcomes for each task
 
 ### TRD Analysis Requirements
 - **Implementation Roadmap (Section 16):** Extract technical phases and dependencies
@@ -36,7 +37,7 @@ To guide an AI assistant in analyzing both Product Requirements Document (PRD) a
 ## Atomic Phase Principles
 
 ### Definition of "Atomic"
-Each main task MUST be:
+Each task MUST be:
 - **Self-Contained:** Can be developed, tested, and deployed independently
 - **Functional:** Delivers working software that users can interact with
 - **Testable:** Has clear acceptance criteria and can be validated
@@ -44,16 +45,16 @@ Each main task MUST be:
 - **Valuable:** Provides measurable user or business value
 
 ### Phase Validation Checklist
-Before finalizing each main task, ensure:
+Before finalizing each task, ensure:
 - [ ] **Independent Deployment:** Can be deployed without dependencies on future phases
 - [ ] **User Interaction:** Users can perform meaningful actions with this phase alone
 - [ ] **Complete Feature Set:** All components needed for the phase are included
 - [ ] **Quality Standards:** Testing, monitoring, and observability are included
 - [ ] **Rollback Capability:** Can be safely rolled back if issues arise
 
-## Main Task Structure
+## Task Structure
 
-Each generated main task should include these sections (strictly follow this structure):
+Each generated task should include these sections (strictly follow this structure):
 
 ### 1. Task Overview
 - **Task ID:** MT-[number] (e.g., MT-001, MT-002)
@@ -79,9 +80,12 @@ Each generated main task should include these sections (strictly follow this str
 - **Data Model:** What data structures are implemented
 - **Integration Points:** Which integrations are functional
 - **Infrastructure:** What deployment infrastructure is required
+- **Architecture Patterns:** Hexagonal Architecture compliance requirements
+- **lib-commons Integration:** Required lib-commons components and patterns
+- **lib-auth Integration:** Authentication and authorization patterns (for Midaz projects)
 
 ### 5. Dependencies
-- **Required Previous Phases:** Which main tasks must be completed first
+- **Required Previous Phases:** Which tasks must be completed first
 - **External Dependencies:** Third-party services, libraries, or tools needed
 - **Internal Dependencies:** Existing system components required
 - **Blocking Dependencies:** What could prevent this phase from starting
@@ -95,8 +99,10 @@ Each generated main task should include these sections (strictly follow this str
 ### 7. Testing Requirements
 - **Unit Testing:** Required unit test coverage and scope
 - **Integration Testing:** Integration points that must be tested
+- **Cross-Task Integration:** How this task integrates with previous completed tasks
 - **End-to-End Testing:** Complete user workflows to validate
 - **Performance Testing:** Load and performance validation requirements
+- **System Integration:** Full system validation with all completed tasks
 
 ### 8. Deployment Definition
 - **Deployment Target:** Where this phase will be deployed
@@ -116,7 +122,7 @@ Each generated main task should include these sections (strictly follow this str
 - **Timeline Risks:** Factors that could affect delivery
 - **Quality Risks:** Potential quality or performance issues
 
-## Example Main Task Format
+## Example Task Format
 
 ```markdown
 ## MT-001: CLI Foundation with Local Storage
@@ -155,7 +161,7 @@ Each generated main task should include these sections (strictly follow this str
 ## Quality Standards
 
 ### Completeness Validation
-Each main task must include:
+Each task must include:
 - [ ] **Clear Success Definition:** Unambiguous criteria for completion
 - [ ] **User Workflow:** Complete user journey from start to finish
 - [ ] **Technical Architecture:** All required components identified
@@ -163,19 +169,50 @@ Each main task must include:
 - [ ] **Deployment Plan:** Clear deployment and validation process
 
 ### Atomic Validation
-Verify each main task:
+Verify each task:
 - [ ] **Standalone Value:** Provides value without future phases
 - [ ] **Complete Feature Set:** All components needed are included
 - [ ] **Working Software:** Results in functional, testable application
 - [ ] **User-Facing:** Users can interact with and benefit from the deliverable
 - [ ] **Production-Ready:** Includes monitoring, logging, and observability
+- [ ] **Deployable:** Complete deployment process defined
+
+## Task Deployment Workflow
+
+### Git Workflow for Tasks (Atomic Phases):
+
+1. **Task Branch:** Create tasks-implementation branch for each task
+   ```bash
+   git checkout -b tasks-implementation/T-[task-id]-[short-name]
+   # Example: git checkout -b tasks-implementation/T-001-cli-foundation
+   ```
+
+2. **Sub-Task Integration:** All sub-task PRs merge into tasks-implementation branch
+
+3. **Task Completion:** When all sub-tasks are complete:
+   ```bash
+   # Verify working deployment
+   make build && make test && make deploy-staging
+   
+   # Create PR to develop
+   git push origin tasks-implementation/T-[task-id]-[short-name]
+   # Create PR: tasks-implementation/T-[task-id] → develop
+   ```
+
+4. **Task PR Requirements:**
+   - Complete working application increment
+   - All tests passing
+   - Deployment verified
+   - Documentation updated
+   - Architecture compliance verified
+   - Integration testing with previous tasks completed
 
 ## Output Structure
 
 ### File Organization
 ```
 docs/pre-development/tasks/
-├── main-tasks-[feature-name].md     # This document
+├── tasks-[feature-name].md     # This document
 ├── phase-dependencies.md            # Dependency visualization
 └── acceptance-checklist.md          # Validation checklist
 ```
@@ -190,6 +227,38 @@ graph TD
     D --> E[MT-005: Production Deployment]
 ```
 
+## Cross-Task Integration Strategy
+
+### Integration Testing Approach
+
+**After Each Task Completion:**
+1. **Backward Compatibility:** Ensure new task doesn't break previous tasks
+2. **API Compatibility:** Verify interface contracts remain stable
+3. **Data Flow Validation:** Test data flow through completed system
+4. **Performance Impact:** Measure system performance with new task
+5. **User Journey Testing:** Validate complete user workflows
+
+**Integration Test Types:**
+- **API Integration:** Test endpoints work together
+- **Data Integration:** Verify data consistency across tasks
+- **UI Integration:** Ensure seamless user experience
+- **Performance Integration:** System-wide performance validation
+- **Security Integration:** End-to-end security validation
+
+**Integration Environments:**
+- **Integration Environment:** Dedicated environment for cross-task testing
+- **Staging Environment:** Production-like environment for final validation
+- **Performance Environment:** Dedicated environment for load testing
+
+### Integration Documentation
+
+**Required for Each Task:**
+- **Integration Points:** How this task connects to previous tasks
+- **Interface Contracts:** APIs, data formats, communication protocols
+- **Integration Tests:** Specific tests to validate cross-task functionality
+- **Rollback Procedures:** How to safely revert if integration fails
+- **Performance Benchmarks:** Expected system performance with this task
+
 ## Integration with Development Chain
 
 ### Input Sources
@@ -199,16 +268,17 @@ graph TD
 - **User Stories:** Value delivery validation
 
 ### Output Usage
-- **generate-sub-tasks.mdc:** Uses main tasks to create detailed sub-tasks
+- **generate-sub-tasks.mdc:** Uses tasks to create detailed sub-tasks
 - **Project Planning:** Provides sprint/milestone boundaries
 - **Team Coordination:** Defines handoff points between teams
 - **Stakeholder Communication:** Shows delivery milestones
+- **Integration Testing:** Provides framework for cross-task integration
 
 ## Validation Checklist
 
-Before finalizing main tasks:
-- [ ] **PRD Alignment:** All PRD phases represented in main tasks
-- [ ] **TRD Alignment:** Technical roadmap matches main task structure
+Before finalizing tasks:
+- [ ] **PRD Alignment:** All PRD phases represented in tasks
+- [ ] **TRD Alignment:** Technical roadmap matches task structure
 - [ ] **Atomic Principle:** Each task delivers working software
 - [ ] **Dependency Logic:** Dependencies are logical and minimal
 - [ ] **User Value:** Each phase provides measurable user benefit
@@ -219,17 +289,17 @@ Before finalizing main tasks:
 ## Final Instructions
 
 1. **Read Both Documents:** Always analyze both PRD and TRD thoroughly
-2. **Apply Atomic Thinking:** Each main task must be a complete, working increment
+2. **Apply Atomic Thinking:** Each task must be a complete, working increment
 3. **Validate Dependencies:** Ensure dependencies are necessary and minimal
 4. **Define Success Clearly:** Each task must have unambiguous completion criteria
 5. **Include Quality Measures:** Testing, monitoring, and observability in every phase
 6. **Plan for Users:** Each phase should provide tangible user value
-7. **Next Step:** After completing main tasks, use `@generate-sub-tasks.mdc` for detailed breakdown
+7. **Next Step:** After completing tasks, use `@generate-sub-tasks.mdc` for detailed breakdown
 
 ## Relationship to Chain
 
 This rule is the third step in the development chain:
 1. **create-prd.mdc** → Defines business requirements and high-level phases
 2. **create-trd.mdc** → Translates to technical specifications and implementation roadmap
-3. **generate-main-tasks.mdc** → Creates atomic, functional development phases ← **YOU ARE HERE**
-4. **generate-sub-tasks.mdc** → Breaks down each main task into implementable sub-tasks
+3. **generate-tasks.mdc** → Creates atomic, functional development phases ← **YOU ARE HERE**
+4. **generate-sub-tasks.mdc** → Breaks down each task into implementable sub-tasks

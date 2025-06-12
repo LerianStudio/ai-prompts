@@ -1,0 +1,325 @@
+---
+description: Validation step to ensure PRD/TRD/Tasks consistency before proceeding
+globs: 
+alwaysApply: false
+---
+# Rule: Validate Development Chain Consistency
+
+## Goal
+
+To guide an AI assistant in validating that the Product Requirements Document (PRD), Technical Requirements Document (TRD), and generated tasks maintain consistency and alignment before proceeding to implementation. This validation step ensures that business requirements, technical specifications, and implementation plans are coherent and complete.
+
+## Process
+
+1. **Read All Chain Documents:** Load PRD, TRD, and main tasks documents from `/docs/pre-development/`
+2. **Cross-Reference Analysis:** Validate alignment between documents
+3. **Architecture Consistency:** Ensure architecture patterns are consistently applied
+4. **Requirements Traceability:** Verify all PRD requirements are addressed in TRD and tasks
+5. **Generate Validation Report:** Create detailed validation report with findings
+6. **Save Validation:** Save as `validation-report-[feature-name].md` in `/docs/pre-development/`
+
+## Required Input Documents
+
+### Document Locations
+- **PRD:** `/docs/pre-development/prd-[feature-name].md`
+- **TRD:** `/docs/pre-development/trd-[feature-name].md`
+- **Main Tasks:** `/docs/pre-development/tasks/main-tasks-[feature-name].md`
+- **Sub-Tasks:** `/docs/pre-development/tasks/MT-*/` (if generated)
+
+### Validation Prerequisites
+Before running validation, ensure:
+- [ ] PRD is complete and approved
+- [ ] TRD references PRD and adds technical specifications
+- [ ] Main tasks are generated and atomic
+- [ ] All documents follow chain progression
+
+## Validation Categories
+
+### 1. Requirements Traceability Matrix
+
+**Objective:** Ensure every PRD requirement is addressed in TRD and tasks.
+
+**Validation Steps:**
+- Extract all numbered requirements from PRD Section 5 (Functional Requirements)
+- Map each requirement to corresponding TRD sections
+- Verify each requirement is covered by main tasks
+- Identify orphaned or missing requirements
+
+**Output Format:**
+```markdown
+| PRD Req ID | Requirement | TRD Section | Main Task | Status |
+|------------|-------------|-------------|-----------|---------|
+| FR-001 | User authentication | 8.1 | MT-001 | ✅ Covered |
+| FR-002 | Task creation | 6.2 | MT-002 | ✅ Covered |
+| FR-003 | Data export | - | - | ❌ Missing |
+```
+
+### 2. Architecture Consistency Check
+
+**Objective:** Ensure architectural patterns are consistently applied across all documents.
+
+**Validation Points:**
+- **Hexagonal Architecture:** Verify TRD implements PRD architecture requirements
+- **Component Structure:** Check TRD components match PRD architectural vision
+- **Data Flow:** Ensure data modeling consistency between PRD and TRD
+- **API Design:** Verify TRD API specs implement PRD API modeling
+- **lib-commons Integration:** Confirm lib-commons usage is specified throughout
+- **lib-auth Integration:** Validate authentication patterns align with lib-auth
+
+**Architecture Validation Checklist:**
+- [ ] TRD System Architecture (Section 2) reflects PRD Architecture Patterns (Section 16)
+- [ ] TRD Component Design (Section 6) follows Hexagonal Architecture principles
+- [ ] TRD API Specifications (Section 5) implement PRD API Modeling (Section 11)
+- [ ] TRD Data Architecture (Section 4) aligns with PRD Data Modeling (Section 10)
+- [ ] lib-commons integration specified in TRD Development Standards (Section 11)
+- [ ] lib-auth patterns defined in TRD Security Architecture (Section 8)
+
+### 3. Technical Specification Completeness
+
+**Objective:** Ensure TRD provides sufficient technical detail for implementation.
+
+**Validation Areas:**
+- **Database Schema:** Complete DDL with indexes and constraints
+- **API Endpoints:** Full OpenAPI specifications for all PRD API requirements
+- **Component Interfaces:** Clear interfaces between system components
+- **Security Implementation:** Detailed security measures for each requirement
+- **Performance Specifications:** Measurable performance targets
+- **Testing Strategy:** Comprehensive testing approach for all components
+
+### 4. Task Breakdown Validation
+
+**Objective:** Ensure main tasks are atomic, complete, and deliverable.
+
+**Atomic Task Verification:**
+- [ ] Each main task delivers working software
+- [ ] All PRD phases represented in main tasks
+- [ ] Dependencies are logical and minimal
+- [ ] Acceptance criteria are measurable
+- [ ] Testing requirements are complete
+
+**Task Coverage Analysis:**
+- Map PRD Development Roadmap (Section 13) to main tasks
+- Verify TRD Implementation Roadmap (Section 16) aligns with main tasks
+- Ensure all technical components from TRD are covered
+- Validate user stories are addressed across tasks
+
+### 5. Development Chain Continuity
+
+**Objective:** Ensure smooth progression from business requirements to implementation.
+
+**Chain Validation Points:**
+- **PRD → TRD:** All business requirements have technical specifications
+- **TRD → Tasks:** All technical components are planned for implementation
+- **Tasks → Implementation:** All tasks are implementable with provided specifications
+- **Architecture Enforcement:** Patterns are consistently referenced throughout
+
+## Validation Report Structure
+
+Generate a comprehensive validation report with the following sections:
+
+### 0. Executive Summary
+- Overall validation status (PASS/FAIL/NEEDS_REVIEW)
+- Critical issues requiring immediate attention
+- Recommendation for proceeding to implementation
+- Required remediation steps (if validation fails)
+
+### 1. Requirements Traceability Analysis
+- Complete traceability matrix
+- Missing or orphaned requirements
+- Coverage gaps and recommendations
+
+### 2. Architecture Consistency Report
+- Architecture pattern compliance across documents
+- Component interface alignment
+- Data model consistency
+- API specification alignment
+
+### 3. Technical Completeness Assessment
+- TRD specification gaps
+- Implementation readiness score
+- Missing technical details
+
+### 4. Task Breakdown Evaluation
+- Atomic task validation results
+- Task coverage analysis
+- Dependency validation
+- Acceptance criteria completeness
+
+### 5. Chain Continuity Analysis
+- Document progression validation
+- Architecture pattern enforcement
+- Integration points verification
+
+### 6. Critical Issues and Blockers
+- Issues that must be resolved before implementation
+- Recommendations for resolution
+- Priority ranking of issues
+
+### 7. Recommendations and Next Steps
+- Document updates required
+- Process improvements needed
+- Go/no-go recommendation for implementation
+
+### 8. Validation Metadata
+- Documents validated and versions
+- Validation date and validator
+- Validation criteria and methodology
+
+### 9. Remediation Plan (if FAIL/NEEDS_REVIEW)
+- Specific document updates required
+- Priority order for fixes
+- Re-validation requirements
+- Estimated effort for remediation
+- Go/no-go decision criteria for proceeding
+
+## Critical Validation Rules
+
+### Blocking Issues (Must Fix Before Implementation)
+- **Missing Requirements:** Any PRD requirement not addressed in TRD or tasks
+- **Architecture Violations:** TRD not following PRD architecture patterns
+- **Non-Atomic Tasks:** Main tasks that don't deliver working software
+- **Missing Dependencies:** Unresolved external or internal dependencies
+- **Incomplete Specifications:** TRD sections without sufficient implementation detail
+
+### Warning Issues (Should Fix Before Implementation)
+- **Inconsistent Naming:** Different terminology across documents
+- **Performance Gaps:** Missing performance specifications
+- **Testing Gaps:** Incomplete testing strategies
+- **Documentation Gaps:** Missing documentation requirements
+- **lib-commons/lib-auth Gaps:** Insufficient integration specifications
+
+## Architecture Pattern Enforcement
+
+### Hexagonal Architecture Validation
+Ensure TRD includes:
+- [ ] Domain layer isolation (no external dependencies)
+- [ ] Port interfaces for all external interactions
+- [ ] Adapter implementations clearly separated
+- [ ] Dependency injection configuration
+- [ ] Testing strategy for domain logic isolation
+
+### lib-commons Integration Validation
+Verify TRD specifies:
+- [ ] lib-commons version and components used
+- [ ] Error handling integration with lib-commons patterns
+- [ ] Validation utilities usage
+- [ ] Database utilities integration
+- [ ] Observability integration (logging, metrics, tracing)
+- [ ] Configuration management integration
+
+### lib-auth Integration Validation (for Midaz projects)
+Confirm TRD includes:
+- [ ] lib-auth version and authentication flows
+- [ ] JWT validation integration
+- [ ] RBAC utilities usage
+- [ ] Security headers configuration
+- [ ] Authorization middleware integration
+
+## Output Format
+
+### Validation Report File
+- **Location:** `/docs/pre-development/validation-report-[feature-name].md`
+- **Format:** Markdown with clear pass/fail indicators
+- **Status Indicators:**
+  - ✅ PASS - Requirement fully satisfied
+  - ⚠️ WARNING - Issue identified but not blocking
+  - ❌ FAIL - Critical issue that blocks implementation
+  - 🔄 NEEDS_REVIEW - Requires human review/decision
+
+### Validation Summary
+Include a summary table at the top of the report:
+
+```markdown
+# Validation Summary
+
+| Category | Status | Issues | Warnings | Notes |
+|----------|--------|--------|----------|-------|
+| Requirements Traceability | ✅ PASS | 0 | 2 | All requirements covered |
+| Architecture Consistency | ❌ FAIL | 1 | 0 | Missing lib-commons integration |
+| Technical Completeness | ⚠️ WARNING | 0 | 3 | API specs need detail |
+| Task Breakdown | ✅ PASS | 0 | 1 | All tasks atomic |
+| Chain Continuity | ✅ PASS | 0 | 0 | Smooth progression |
+
+**Overall Status: ❌ FAIL - 1 critical issue must be resolved**
+
+## Remediation Procedures
+
+### When Validation Fails (❌ FAIL Status)
+
+**Immediate Actions:**
+1. **STOP Implementation:** Do not proceed to sub-task generation
+2. **Document Issues:** Create detailed issue list with specific fixes needed
+3. **Assign Ownership:** Determine who will fix each issue (PRD author, TRD author, etc.)
+4. **Set Timeline:** Establish deadlines for remediation
+
+**Remediation Process:**
+1. **Critical Issues First:** Address blocking issues in priority order
+2. **Update Documents:** Make required changes to PRD, TRD, or tasks
+3. **Cross-Reference Updates:** Ensure changes don't create new inconsistencies
+4. **Re-run Validation:** Complete validation again after fixes
+5. **Approval Gate:** Get explicit approval before proceeding
+
+### When Validation Needs Review (⚠️ NEEDS_REVIEW Status)
+
+**Review Process:**
+1. **Stakeholder Review:** Present issues to relevant stakeholders
+2. **Risk Assessment:** Evaluate impact of proceeding with known issues
+3. **Mitigation Planning:** Define how to handle identified risks
+4. **Decision Documentation:** Record go/no-go decision with rationale
+5. **Conditional Approval:** May proceed with specific monitoring/mitigation
+
+### Remediation Examples
+
+**Missing Requirements:**
+- **Issue:** PRD requirement FR-003 not addressed in TRD
+- **Fix:** Add technical specification for FR-003 in TRD Section 6
+- **Validation:** Re-check requirements traceability matrix
+
+**Architecture Violations:**
+- **Issue:** TRD doesn't specify lib-commons integration
+- **Fix:** Add lib-commons usage details in TRD Section 11
+- **Validation:** Re-check architecture consistency report
+
+**Non-Atomic Tasks:**
+- **Issue:** Task T-002 doesn't deliver working software
+- **Fix:** Split T-002 into atomic sub-phases or restructure scope
+- **Validation:** Re-check atomic task validation criteria
+```
+
+## Final Instructions
+
+1. **Read All Documents:** Always validate the complete chain
+2. **Be Thorough:** Check every requirement and specification
+3. **Flag Inconsistencies:** Don't let small issues pass through
+4. **Provide Solutions:** Include specific recommendations for fixes
+5. **Block if Necessary:** Don't approve flawed chains for implementation
+6. **Update Documents:** Recommend specific document updates needed
+7. **Next Step:** Only proceed to sub-task generation after PASS validation
+8. **Remediation Required:** If validation fails, follow remediation procedures before continuing
+9. **Re-validation:** Always re-run complete validation after any document changes
+
+## Quality Checklist
+
+Before approving the chain for implementation:
+- [ ] All PRD requirements traced to TRD and tasks
+- [ ] Architecture patterns consistently applied
+- [ ] Technical specifications sufficient for implementation
+- [ ] Main tasks are atomic and deliverable
+- [ ] Dependencies are resolved and minimal
+- [ ] lib-commons and lib-auth integration specified
+- [ ] Testing strategy is comprehensive
+- [ ] Performance requirements are measurable
+- [ ] Security requirements are complete
+- [ ] Documentation requirements are clear
+
+## Relationship to Development Chain
+
+This validation step sits between main task generation and sub-task creation:
+
+1. **create-prd.mdc** → PRD created
+2. **create-trd.mdc** → TRD created
+3. **generate-main-tasks.mdc** → Main tasks created
+4. **validate-chain.mdc** → Validation performed ← **YOU ARE HERE**
+5. **generate-sub-tasks.mdc** → Sub-tasks created (only after PASS validation)
+
+The validation ensures quality and consistency before detailed implementation planning begins.
