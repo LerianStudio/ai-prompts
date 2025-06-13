@@ -41,48 +41,9 @@ Components specific to particular pages or routes, composed of composite and bas
 
 ### Server Component Patterns
 Server components are used for:
-- Data fetching directly from databases or APIs
-- Accessing backend resources directly
 - Rendering static or infrequently changing UI
 - SEO-critical content
 - Layout structures and page shells
-
-```typescript
-// Server component pattern
-// src/components/accounts/accounts-list.tsx
-import { getAccounts } from '@/core/application/use-cases/accounts';
-
-interface AccountsListProps {
-  organizationId: string;
-  status?: 'active' | 'inactive' | 'all';
-}
-
-export async function AccountsList({ organizationId, status = 'all' }: AccountsListProps) {
-  // Server-side data fetching
-  const accounts = await getAccounts({ organizationId, status });
-
-  return (
-    <div className="space-y-4">
-      {accounts.length === 0 ? (
-        <EmptyResourceState
-          title="No accounts found"
-          description="Create your first account to get started."
-        />
-      ) : (
-        <ul>
-          {accounts.map(account => (
-            <AccountCard
-              key={account.id}
-              account={account}
-              actions={<AccountActions accountId={account.id} />}
-            />
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-}
-```
 
 ### Client Component Patterns
 Client components are used for:
@@ -245,7 +206,6 @@ Specialized form components in [src/components/form](mdc:src/components/form):
 
 ### Implementation Patterns
 - Use functional components with hooks
-- Leverage React.forwardRef for UI components that need ref access
 - Implement proper error boundaries where appropriate
 - Use React.memo for performance optimization when needed
 - Avoid prop drilling with context or composition
@@ -262,7 +222,6 @@ Specialized form components in [src/components/form](mdc:src/components/form):
 - Use fluid typography and spacing
 
 ### Optimization Techniques
-- Minimize client-side JavaScript with server components
 - Use dynamic imports for code splitting
 - Implement proper key props for list rendering
 - Memoize expensive calculations with useMemo
@@ -288,7 +247,7 @@ Specialized form components in [src/components/form](mdc:src/components/form):
 
 ```typescript
 // src/components/data-table/data-table.tsx
-interface DataTableProps<T> {
+type DataTableProps<T> = {
   data: T[];
   columns: Column<T>[];
   pagination?: {
@@ -384,6 +343,5 @@ export function FormField<T extends Record<string, any>>({
 - **Lucide React**: Icon library for consistent iconography
 - **TanStack Query**: Data fetching, caching, and synchronization
 - **TanStack Table**: Headless table component with sorting, filtering, and pagination
-- **Next.js Server Actions**: Form submissions and data mutations
 - **React Server Components**: Progressive and streaming rendering
 - **Sonner**: Toast notifications

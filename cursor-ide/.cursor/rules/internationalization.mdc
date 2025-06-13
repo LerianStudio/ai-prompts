@@ -104,9 +104,9 @@ export function AccountForm() {
 }
 ```
 
-### Date and Number Formatting
+### Number Formatting
 ```typescript
-import { FormattedDate, FormattedNumber, FormattedRelativeTime } from 'react-intl';
+import { FormattedNumber, FormattedRelativeTime } from 'react-intl';
 
 export function DataDisplay({ amount, createdAt }) {
   return (
@@ -116,14 +116,6 @@ export function DataDisplay({ amount, createdAt }) {
         value={amount}
         style="currency"
         currency="USD"
-      />
-
-      {/* Date formatting */}
-      <FormattedDate
-        value={createdAt}
-        year="numeric"
-        month="long"
-        day="2-digit"
       />
 
       {/* Relative time */}
@@ -401,21 +393,6 @@ export function I18nProvider({ children }) {
 - Support screen readers with translated content
 - Handle text direction (LTR/RTL) appropriately
 - Test with different text lengths
-
-### Error Handling
-```typescript
-// Graceful fallback for missing translations
-const intl = useIntl();
-
-const getMessage = (id: string, defaultMessage: string) => {
-  try {
-    return intl.formatMessage({ id, defaultMessage });
-  } catch (error) {
-    console.warn(`Translation missing for ${id}`);
-    return defaultMessage;
-  }
-};
-```
 
 ## Testing Internationalization
 

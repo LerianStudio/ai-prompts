@@ -52,7 +52,7 @@ alwaysApply: false
 - Use proper route grouping with `(group-name)` syntax
 - Implement loading, error, and not-found pages appropriately
 - Use parallel routes for complex layouts with independent navigation
-- Leverage server actions for form submissions and data mutations
+- Don't use server actions for form submissions and data mutations, use react-query instead to perform query and mutations
 - Implement intercepting routes for modal patterns
 
 ### API Route Patterns
@@ -98,7 +98,6 @@ export async function POST(request: NextRequest) {
 - Use React Suspense for progressively loading UI components
 - Implement streaming with appropriate fallbacks
 - Use `loading.tsx` for route segment loading states
-- Implement optimistic updates with server actions
 
 ## React Patterns
 
@@ -107,13 +106,12 @@ export async function POST(request: NextRequest) {
 - Follow the composition pattern over inheritance
 - Keep components small and focused on single responsibility
 - Separate UI logic from business logic
-- Use Server Components for data fetching and non-interactive UI
 - Use Client Components for interactive UI with state and effects
 
 ### Server Component Structure
 ```typescript
 // Standard server component structure
-interface ComponentProps {
+type ComponentProps = {
   // Props interface
 }
 
@@ -133,7 +131,7 @@ export async function ServerComponent({ prop1, prop2 }: ComponentProps) {
 'use client';
 
 // Standard client component structure
-interface ComponentProps {
+type ComponentProps = {
   // Props interface
 }
 
@@ -150,6 +148,7 @@ export function ClientComponent({ prop1, prop2 }: ComponentProps) {
 
 ### Hooks Usage
 - Use custom hooks for shared logic in [src/hooks](mdc:src/hooks)
+- Try to use hooks that already exists in the project on new features
 - Follow hooks rules (only call at top level)
 - Use `useCallback` and `useMemo` for performance optimization when needed
 - Implement proper cleanup in `useEffect`
@@ -163,16 +162,17 @@ export function ClientComponent({ prop1, prop2 }: ComponentProps) {
 - Use `useReducer` for complex state logic
 - Consider external state management (Zustand) for complex scenarios
 - Use `useOptimistic` for optimistic UI updates with server actions
-- Implement `useFormState` and `useFormStatus` for form handling with server actions
 
 ## Form Handling
 
 ### React Hook Form Integration
+- For forms, use components found in [src/components/form](mdc:src/components/form)
 - Use React Hook Form for client-side form implementations
 - Integrate with Zod for validation schemas
 - Implement proper error handling and display
 - Use controlled components for form inputs
 - Consider server-side form validation with server actions for critical forms
+- Avoid using the native form html tag, instead use the Form component
 
 ### Form Component Pattern
 ```typescript
@@ -180,6 +180,7 @@ export function ClientComponent({ prop1, prop2 }: ComponentProps) {
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { InputField } from '@/components/form/input-field
 
 const schema = z.object({
   name: z.string().min(2),
@@ -189,7 +190,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export function ExampleForm() {
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+  const { control, register, handleSubmit, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
 
@@ -198,12 +199,15 @@ export function ExampleForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <input {...register('name')} />
-      {errors.name && <span>{errors.name.message}</span>}
-      <input {...register('email')} />
-      {errors.email && <span>{errors.email.message}</span>}
-      <button type="submit">Submit</button>
+    <Form onSubmit={handleSubmit(onSubmit)}>
+      <InputField
+        name='name'
+        control={control}
+      />
+      <InputField
+        name='email'
+        control={control}
+      />
     </form>
   );
 }
@@ -214,8 +218,7 @@ export function ExampleForm() {
 ### HTTP Client Patterns
 - Use centralized HTTP client configuration in [src/client](mdc:src/client)
 - Implement proper error handling and retry logic
-- Use React Query/SWR for data fetching and caching in Client Components
-- Use native fetch with proper caching in Server Components
+- Use React Query for data fetching and caching in Client Components
 - Follow repository pattern for API abstractions
 
 ### Error Handling
@@ -223,7 +226,6 @@ export function ExampleForm() {
 - Implement consistent error response formats
 - Provide user-friendly error messages
 - Log errors appropriately for debugging
-- Use React Error Boundary for client-side error handling
 - Implement error.tsx files for route error handling
 
 ## Testing Standards
@@ -260,21 +262,12 @@ describe('ComponentName', () => {
 ## Performance Guidelines
 
 ### Optimization Strategies
-- Implement code splitting with dynamic imports
 - Use React.memo for expensive components
 - Optimize images and static assets with Next.js Image component
 - Implement proper caching strategies
 - Leverage React Server Components for reduced client bundle
 - Use appropriate fetching patterns (static, dynamic, streaming)
 - Implement progressive loading with Suspense boundaries
-
-### Bundle Optimization
-- Monitor bundle size with webpack-bundle-analyzer
-- Use tree shaking to eliminate dead code
-- Implement lazy loading for routes and components
-- Optimize third-party library usage
-- Use appropriate Next.js fetch caching options
-- Consider Edge Runtime for lightweight API routes
 
 ## Security Standards
 
@@ -283,7 +276,6 @@ describe('ComponentName', () => {
 - Sanitize data before processing
 - Implement proper XSS protection
 - Use CSRF protection for forms
-- Implement Content Security Policy (CSP)
 - Use HTTP Security Headers
 - Validate file uploads thoroughly
 
@@ -294,12 +286,10 @@ describe('ComponentName', () => {
 - Store sensitive data securely
 - Implement proper password policies
 - Use JWT with appropriate security measures
-- Consider passwordless authentication options
 
 ### Authorization
 - Implement proper role-based access control
 - Validate permissions on both client and server
-- Use middleware for route protection
 - Implement API-level authorization checks
 - Log security-related events
 - Consider rate limiting for sensitive operations
@@ -307,6 +297,7 @@ describe('ComponentName', () => {
 ## Documentation Standards
 
 ### Code Documentation
+- Code should be auto explicative
 - Write clear, descriptive comments for complex logic
 - Document public APIs and interfaces
 - Use JSDoc for function documentation
@@ -342,10 +333,10 @@ describe('ComponentName', () => {
 ## Internationalization
 
 ### i18n Implementation
-- Use next-intl for internationalization
+- Use i18n for internationalization
 - Extract text strings to locale files in [locales](mdc:locales)
-- Support right-to-left (RTL) languages
 - Format dates, numbers, and currencies appropriately
+- Format dates using day.js
 - Implement proper pluralization rules
 - Use server-side internationalization when possible
 
