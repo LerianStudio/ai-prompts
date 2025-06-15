@@ -15,8 +15,46 @@ To guide an AI assistant in creating a detailed Technical Requirements Document 
 2. **Reference PRD Architecture:** Build upon PRD architecture patterns rather than duplicating them
 3. **Analyze PRD Content:** Extract key requirements, data models, API specifications, and architectural patterns
 4. **Ask Technical Questions:** Gather additional technical details not covered in the PRD
-5. **Generate TRD:** Create a comprehensive technical specification using the structure below
-6. **Save TRD:** Save the document as `trd-[feature-name].md` in the `/docs/pre-development/` directory
+   - **IMPORTANT:** WAIT for user responses before proceeding
+   - Only ask questions where PRD lacks technical clarity
+   - Group related technical questions together
+5. **Generate TRD Draft:** Create a comprehensive technical specification using the structure below
+6. **Request Technical Review:** Present the TRD draft and ask for feedback:
+   - "Please review this technical approach. Are there any technical decisions you'd like to change?"
+   - **WAIT for user approval or feedback**
+7. **Incorporate Feedback:** Update TRD based on user's technical preferences
+8. **Save TRD:** Only after approval, save the document as `trd-[feature-name].md` in the `/docs/pre-development/` directory
+
+## User Interaction Guidelines
+
+### Technical Decision Points
+1. **After PRD Analysis:** Ask only necessary technical questions and WAIT
+2. **After TRD Generation:** Request technical review and WAIT for approval
+3. **After Technical Changes:** Confirm updates align with architecture
+
+### Example Interaction Flow
+```
+AI: "I've reviewed the PRD for [feature-name]. I need clarification on a few technical aspects:
+
+1. What technology stack should we use? (Node.js, Go, Python?)
+2. Which database is preferred for this data model? (PostgreSQL, MongoDB?)
+3. What are the expected performance requirements? (response time, concurrent users)
+4. Are there specific security requirements beyond standard practices?
+
+Please provide your technical preferences."
+
+[WAIT FOR USER RESPONSE]
+
+User: [provides technical decisions]
+
+AI: "Based on the PRD and your technical decisions, I've created a TRD that outlines..."
+
+[AI generates TRD]
+
+AI: "Please review this technical approach. Are there any technical decisions you'd like to change?"
+
+[WAIT FOR USER APPROVAL]
+```
 
 ## Clarifying Questions (Technical Deep Dive)
 

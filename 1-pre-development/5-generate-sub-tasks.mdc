@@ -16,7 +16,11 @@ To guide an AI assistant in analyzing tasks and breaking them down into detailed
 3. **Analyze Task Structure:** Extract and understand each task's scope, dependencies, and deliverables
 4. **Apply Granular Breakdown:** Ensure each sub-task is specific and implementable
 5. **Generate Sub-Tasks:** Create detailed sub-task specifications using the structure below
-6. **Save Output:** Create individual files for each task and sub-task in `/docs/pre-development/tasks/` directory (see File Organization section)
+6. **Optional User Review:** Since sub-tasks are implementation details, user review is optional:
+   - "I've created detailed sub-tasks for implementation. Would you like to review the granularity, or shall I proceed with saving them?"
+   - If user wants to review, WAIT for feedback
+   - If user approves or skips review, proceed to save
+7. **Save Output:** Create individual files for each task and sub-task in `/docs/pre-development/tasks/` directory (see File Organization section)
 
 ## Input Document Analysis
 
@@ -103,6 +107,44 @@ Each generated sub-task should include these sections (strictly follow this stru
 ### 7. Dependencies and Blockers
 - **Required Sub-Tasks:** Sub-tasks that must be completed first
 - **External Dependencies:** Third-party services, libraries, or tools
+
+## User Interaction Guidelines
+
+### Optional Review Process
+Since sub-tasks are implementation details, user review is optional but available:
+
+1. **Summary Presentation:** Show task breakdown summary first
+2. **Granularity Check:** Ask if level of detail is appropriate
+3. **Quick Approval:** Allow user to skip detailed review
+
+### Example Interaction Flow
+```
+AI: "I've broken down the main tasks into detailed sub-tasks:
+
+**MT-001: Foundation Phase** → 8 sub-tasks
+- ST-001: Project setup and configuration (2h)
+- ST-002: Database schema creation (3h)
+- ST-003: Basic authentication implementation (4h)
+- ... (5 more sub-tasks)
+
+**MT-002: Core Features** → 12 sub-tasks
+**MT-003: Enhancements** → 6 sub-tasks
+
+Total: 26 implementation sub-tasks
+
+Would you like to:
+1. Review the detailed breakdown
+2. Adjust the granularity (more/fewer sub-tasks)
+3. Proceed with saving these sub-tasks
+
+What's your preference?"
+
+[WAIT FOR USER RESPONSE - OR PROCEED IF USER SAYS "PROCEED"]
+
+User: "Proceed with saving"
+
+AI: "Great! I'll save all sub-tasks in the organized structure..."
+```
 - **Environmental Requirements:** Development environment setup needs
 - **Potential Blockers:** Known issues or complications
 

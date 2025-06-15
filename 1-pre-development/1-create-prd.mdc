@@ -8,8 +8,49 @@ To guide an AI assistant in creating a detailed Product Requirements Document (P
 
 1.  **Receive Initial Prompt:** The user provides a brief description or request for a new feature or functionality.
 2.  **Ask Clarifying Questions:** Before writing the PRD, the AI *must* ask clarifying questions to gather sufficient detail. The goal is to understand the "what" and "why" of the feature, not necessarily the "how" (which the developer will figure out).
-3.  **Generate PRD:** Based on the initial prompt and the user's answers to the clarifying questions, generate a PRD using the structure outlined below.
-4.  **Save PRD:** Save the generated document as `prd-[feature-name].md` inside the `/docs/pre-development/` directory.
+    - **IMPORTANT:** WAIT for user responses before proceeding to the next step
+    - Present questions in a clear, organized manner
+    - Allow user to answer all questions before generating PRD
+3.  **Generate PRD Draft:** Based on the initial prompt and the user's answers to the clarifying questions, generate a PRD using the structure outlined below.
+4.  **Request User Review:** Present the PRD draft to the user and explicitly ask for feedback:
+    - "Please review this PRD draft. What would you like to change or add?"
+    - **WAIT for user approval or feedback**
+5.  **Incorporate Feedback:** If user requests changes, update the PRD accordingly and present the revised version
+6.  **Save PRD:** Only after user approval, save the generated document as `prd-[feature-name].md` inside the `/docs/pre-development/` directory.
+
+## User Interaction Guidelines
+
+### Feedback Checkpoints
+1. **After Initial Request:** Ask clarifying questions and WAIT
+2. **After PRD Generation:** Request review and WAIT for approval
+3. **After Any Changes:** Confirm updates meet expectations
+
+### Example Interaction Flow
+```
+User: "I need a feature for user notifications"
+
+AI: "I'll help you create a PRD for user notifications. Let me ask some clarifying questions:
+
+1. What problem does this notification feature solve?
+2. Who is the primary user of these notifications?
+3. What types of notifications should be supported?
+4. How should users receive notifications (email, in-app, SMS)?
+5. What are the key success criteria?
+
+Please provide your answers and I'll create a comprehensive PRD."
+
+[WAIT FOR USER RESPONSE]
+
+User: [provides answers]
+
+AI: "Thank you for the detailed answers. Based on your input, I've created a PRD draft..."
+
+[AI generates PRD]
+
+AI: "Please review this PRD draft. What would you like to change or add?"
+
+[WAIT FOR USER APPROVAL]
+```
 
 ## Clarifying Questions (Examples)
 

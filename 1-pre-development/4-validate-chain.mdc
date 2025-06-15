@@ -16,7 +16,14 @@ To guide an AI assistant in validating that the Product Requirements Document (P
 3. **Architecture Consistency:** Ensure architecture patterns are consistently applied
 4. **Requirements Traceability:** Verify all PRD requirements are addressed in TRD and tasks
 5. **Generate Validation Report:** Create detailed validation report with findings
-6. **Save Validation:** Save as `validation-report-[feature-name].md` in `/docs/pre-development/`
+6. **Present Report to User:** Show validation results and ask for acknowledgment:
+   - "Here's the validation report. Please review any issues found. Should we proceed or address these first?"
+   - **WAIT for user decision**
+7. **Handle Issues:** If issues found, user decides whether to:
+   - Proceed anyway (with documented risks)
+   - Go back and fix specific documents
+   - Iterate on the entire chain
+8. **Save Validation:** After user acknowledgment, save as `validation-report-[feature-name].md` in `/docs/pre-development/`
 
 ## Required Input Documents
 
@@ -112,6 +119,41 @@ Before running validation, ensure:
 - **TRD → Tasks:** All technical components are planned for implementation
 - **Tasks → Implementation:** All tasks are implementable with provided specifications
 - **Architecture Enforcement:** Patterns are consistently referenced throughout
+
+## User Interaction Guidelines
+
+### Validation Review Process
+1. **Present Summary First:** Show high-level findings before details
+2. **Highlight Critical Issues:** Make blocking issues clearly visible
+3. **Offer Clear Options:** Let user decide how to proceed
+
+### Example Interaction Flow
+```
+AI: "I've completed the validation of your pre-development documents. Here's the summary:
+
+**Overall Status: NEEDS_REVIEW**
+
+✅ Requirements Traceability: All PRD requirements mapped (100%)
+⚠️  Architecture Consistency: Minor pattern inconsistency found
+✅ Task Coverage: All features covered in tasks
+❌ Technical Gaps: Missing error handling specification
+
+**Critical Issue:**
+- TRD doesn't specify error handling approach for API endpoints
+
+Would you like to:
+1. Go back and update the TRD with error handling details
+2. Proceed with a note to address during implementation
+3. Review the full validation report first
+
+Please let me know how you'd like to proceed."
+
+[WAIT FOR USER DECISION]
+
+User: "Let's update the TRD first"
+
+AI: "Understood. Please run the TRD generation again to add error handling specifications."
+```
 
 ## Validation Report Structure
 

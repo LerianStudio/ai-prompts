@@ -1,0 +1,342 @@
+---
+description: Master orchestrator for pre-development workflow with user feedback loops
+globs: 
+alwaysApply: false
+---
+# Rule: Pre-Development Workflow Orchestration
+
+## Goal
+
+To guide an AI assistant through a comprehensive pre-development planning process that transforms user ideas into detailed, implementable technical specifications. This orchestrator manages the complete 5-prompt workflow with explicit user feedback loops at each stage to ensure alignment and quality.
+
+## 🔗 Enhanced Reasoning Integration
+
+**IMPORTANT**: Use both Memory MCP and Sequential Thinking MCP for enhanced analysis:
+
+### Memory MCP Integration
+- Store requirements, decisions, and architectural patterns for cross-session learning
+- Reference previous projects and established patterns
+- Tag entries appropriately for organization and retrieval
+
+### Sequential Thinking MCP Usage
+- Use `mcp__sequential-thinking__sequentialthinking` for complex requirement analysis
+- Break down complex features into systematic thinking steps
+- Allow requirements to evolve through user feedback
+- Question assumptions and explore alternative approaches
+- Generate and verify solution hypotheses through structured reasoning
+
+## Process Overview
+
+This orchestrator manages a **5-phase pre-development workflow** with mandatory user feedback checkpoints:
+
+### Phase 1: Product Requirements Document (PRD)
+**Objective**: Transform user ideas into clear business requirements
+**User Interaction**: Required - clarifying questions and PRD review
+
+### Phase 2: Technical Requirements Document (TRD)
+**Objective**: Convert business requirements into technical specifications
+**User Interaction**: Required - technical decisions and TRD review
+
+### Phase 3: Task Generation
+**Objective**: Break down requirements into atomic, implementable phases
+**User Interaction**: Required - task prioritization and approval
+
+### Phase 4: Chain Validation
+**Objective**: Ensure consistency across all documents
+**User Interaction**: Required - review validation report
+
+### Phase 5: Sub-Task Generation
+**Objective**: Create detailed implementation plans
+**User Interaction**: Optional - review granular breakdown
+
+## Execution Phases
+
+### 📋 Phase 1: Product Requirements Document (PRD)
+
+**Interactive process with mandatory user feedback:**
+
+```bash
+# Start PRD creation with user's initial idea
+claude 1-pre-development/1-create-prd.mdc
+
+# Process flow:
+# 1. AI reads user's initial feature request
+# 2. AI asks clarifying questions (WAIT FOR USER RESPONSE)
+# 3. User provides answers
+# 4. AI generates PRD draft
+# 5. User reviews and provides feedback (WAIT FOR APPROVAL)
+# 6. AI incorporates feedback and finalizes PRD
+```
+
+**Key User Interactions:**
+- Initial feature description
+- Answers to clarifying questions about:
+  - Problem/goal definition
+  - Target users and personas
+  - Core functionality and user stories
+  - Success criteria and metrics
+  - Scope boundaries (non-goals)
+  - Data requirements and relationships
+- Review and approval of PRD draft
+
+**Output**: `docs/pre-development/prd-[feature-name].md`
+
+### 🔧 Phase 2: Technical Requirements Document (TRD)
+
+**Build upon approved PRD with technical specifications:**
+
+```bash
+# Create TRD based on approved PRD
+claude 1-pre-development/2-create-trd.mdc
+
+# Process flow:
+# 1. AI reads approved PRD
+# 2. AI analyzes technical implications
+# 3. AI asks technical clarifying questions (WAIT FOR USER RESPONSE)
+# 4. User provides technical decisions
+# 5. AI generates TRD draft
+# 6. User reviews technical approach (WAIT FOR APPROVAL)
+# 7. AI finalizes TRD
+```
+
+**Key User Interactions:**
+- Technology stack decisions
+- Infrastructure and deployment preferences
+- Performance and reliability requirements
+- Security and compliance needs
+- Integration points and dependencies
+- Review and approval of technical approach
+
+**Output**: `docs/pre-development/trd-[feature-name].md`
+
+### 📝 Phase 3: Task Generation
+
+**Create atomic, implementable phases:**
+
+```bash
+# Generate main tasks from PRD and TRD
+claude 1-pre-development/3-generate-tasks.mdc
+
+# Process flow:
+# 1. AI reads both PRD and TRD
+# 2. AI analyzes development roadmap
+# 3. AI generates atomic task breakdown
+# 4. User reviews task prioritization (WAIT FOR FEEDBACK)
+# 5. User can adjust task order or scope
+# 6. AI incorporates feedback and finalizes tasks
+```
+
+**Key User Interactions:**
+- Review of proposed development phases
+- Feedback on task prioritization
+- Adjustment of phase boundaries
+- Approval of atomic task structure
+
+**Output**: `docs/pre-development/tasks/tasks-[feature-name].md`
+
+### ✅ Phase 4: Chain Validation
+
+**Ensure document consistency and completeness:**
+
+```bash
+# Validate consistency across all documents
+claude 1-pre-development/4-validate-chain.mdc
+
+# Process flow:
+# 1. AI reads PRD, TRD, and Tasks
+# 2. AI performs comprehensive validation
+# 3. AI generates validation report
+# 4. User reviews validation findings (WAIT FOR ACKNOWLEDGMENT)
+# 5. If issues found, user decides on corrections
+# 6. Iterate previous phases if needed
+```
+
+**Key User Interactions:**
+- Review validation report
+- Decision on addressing any inconsistencies
+- Approval to proceed or iterate
+
+**Output**: `docs/pre-development/validation-report-[feature-name].md`
+
+### 🔨 Phase 5: Sub-Task Generation
+
+**Create detailed implementation plans:**
+
+```bash
+# Generate granular sub-tasks (optional based on project complexity)
+claude 1-pre-development/5-generate-sub-tasks.mdc
+
+# Process flow:
+# 1. AI reads validated task structure
+# 2. AI breaks down each task into sub-tasks
+# 3. AI generates detailed implementation steps
+# 4. User optionally reviews granularity
+# 5. AI creates sub-task documentation
+```
+
+**Key User Interactions (Optional):**
+- Review of sub-task granularity
+- Feedback on implementation approach
+- Approval of detailed breakdown
+
+**Output**: `docs/pre-development/tasks/MT-*/` (organized by main task)
+
+## User Feedback Integration
+
+### Mandatory Checkpoints
+
+1. **PRD Clarification** - User must answer questions before PRD generation
+2. **PRD Approval** - User must review and approve PRD before proceeding
+3. **TRD Technical Decisions** - User must provide technical preferences
+4. **TRD Approval** - User must approve technical approach
+5. **Task Review** - User must review and approve task breakdown
+6. **Validation Acknowledgment** - User must review validation results
+
+### Feedback Incorporation Process
+
+```markdown
+## Standard Feedback Loop
+
+1. AI presents draft/questions
+2. User provides feedback/answers
+3. AI acknowledges feedback: "I understand you want to [summary of feedback]"
+4. AI incorporates changes
+5. AI presents updated version
+6. User confirms or requests additional changes
+7. Process repeats until user approves
+```
+
+## Quick Execution Commands
+
+### Full Workflow (With All Feedback Loops)
+```bash
+# Phase 1: Create PRD with user feedback
+claude 1-pre-development/1-create-prd.mdc
+# [User provides initial idea, answers questions, reviews PRD]
+
+# Phase 2: Create TRD with technical decisions  
+claude 1-pre-development/2-create-trd.mdc
+# [User provides technical preferences, reviews TRD]
+
+# Phase 3: Generate tasks with prioritization feedback
+claude 1-pre-development/3-generate-tasks.mdc
+# [User reviews and approves task breakdown]
+
+# Phase 4: Validate chain consistency
+claude 1-pre-development/4-validate-chain.mdc
+# [User reviews validation report]
+
+# Phase 5: Generate detailed sub-tasks (optional)
+claude 1-pre-development/5-generate-sub-tasks.mdc
+# [User optionally reviews sub-task granularity]
+```
+
+### Minimal Workflow (Essential documents only)
+```bash
+# Create PRD and TRD only
+claude 1-pre-development/1-create-prd.mdc
+# [User interaction required]
+claude 1-pre-development/2-create-trd.mdc
+# [User interaction required]
+```
+
+### Validation-First Workflow (For existing documents)
+```bash
+# If PRD/TRD already exist, start with validation
+claude 1-pre-development/4-validate-chain.mdc
+# [Review existing documents for consistency]
+```
+
+## Output Organization
+
+All pre-development outputs are systematically organized:
+
+```
+docs/pre-development/
+├── prd-[feature-name].md              # Product Requirements Document
+├── trd-[feature-name].md              # Technical Requirements Document
+├── validation-report-[feature-name].md # Consistency validation report
+└── tasks/
+    ├── tasks-[feature-name].md        # Main atomic tasks
+    └── MT-[XX]-[task-name]/           # Sub-tasks for each main task
+        ├── overview.md                # Task overview and context
+        └── ST-[XX]-[subtask-name].md  # Individual sub-tasks
+```
+
+## Memory Integration
+
+Store planning decisions and patterns with appropriate tags:
+- `["pre-dev", "requirements", "prd", "feature-name"]` for PRD decisions
+- `["pre-dev", "technical", "trd", "feature-name"]` for technical choices
+- `["pre-dev", "tasks", "breakdown", "feature-name"]` for task organization
+- `["pre-dev", "validation", "consistency"]` for validation findings
+- `["pre-dev", "feedback", "user-decisions"]` for user preferences
+
+## Success Criteria
+
+### Phase Completion Criteria
+- **Phase 1**: PRD approved by user with clear requirements
+- **Phase 2**: TRD approved with technical approach defined
+- **Phase 3**: Tasks reviewed and prioritization confirmed
+- **Phase 4**: Validation shows PASS or issues acknowledged
+- **Phase 5**: Sub-tasks generated (if needed) with implementation clarity
+
+### Overall Success Metrics
+- All documents maintain consistency
+- User feedback incorporated at each stage
+- Requirements traceable through all documents
+- Technical approach aligns with business needs
+- Tasks are truly atomic and implementable
+- Clear path from idea to implementation
+
+## Best Practices
+
+### For Effective User Interaction
+
+1. **Ask Specific Questions** - Avoid open-ended queries that overwhelm users
+2. **Provide Examples** - Show sample answers or options when asking questions
+3. **Summarize Understanding** - Reflect back what you understood before proceeding
+4. **Incremental Progress** - Don't generate everything at once; work iteratively
+5. **Clear Checkpoints** - Make it obvious when user input is needed
+6. **Respect User Time** - Batch related questions together
+
+### For Document Quality
+
+1. **Maintain Traceability** - Every requirement should flow through all documents
+2. **Use Consistent Terminology** - Same terms across PRD, TRD, and tasks
+3. **Reference Previous Sections** - TRD references PRD, tasks reference both
+4. **Version Control Friendly** - Structure documents for easy diffing
+5. **Progressive Enhancement** - Each phase adds detail without duplicating
+
+## Integration with Other Chains
+
+### With Code Review Chain
+```bash
+# After implementation begins
+# 1. Complete pre-development planning (this chain)
+# 2. Implement features based on tasks
+# 3. Run code review chain to validate implementation
+claude 2-code-review/00-code-review-orchestrator.mdc
+```
+
+### With Memory Management
+```bash
+# Store project context for future reference
+# Initialize memory with project patterns
+claude 0-memory-related/m1-memory-initialization.md
+
+# After pre-development completion
+# Store architectural decisions and patterns
+claude 0-memory-related/m3-memory-storage.md
+```
+
+## Final Instructions
+
+1. **Always Wait for User** - Never skip feedback checkpoints
+2. **Iterate When Needed** - Go back to previous phases based on validation
+3. **Maintain Context** - Use Memory MCP to maintain context across sessions
+4. **Document Decisions** - Record why choices were made, not just what
+5. **Focus on Clarity** - Junior developers should understand all documents
+6. **Validate Continuously** - Check consistency throughout the process
+
+This orchestrator ensures systematic pre-development planning with continuous user engagement, resulting in clear, implementable specifications that align with user needs and technical constraints.

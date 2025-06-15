@@ -12,11 +12,15 @@ To guide an AI assistant in analyzing both Product Requirements Document (PRD) a
 ## Process
 
 1. **Read Both Documents:** The AI must first read both the PRD and TRD documents for comprehensive understanding from `/docs/pre-development/`
-2. **Verify Chain Validation:** Ensure validation-report-[feature-name].md shows PASS status before proceeding
+2. **Verify Chain Validation:** Ensure validation-report-[feature-name].md shows PASS status before proceeding (if exists)
 3. **Analyze Development Roadmap:** Extract and understand the phases outlined in both PRD and TRD
 4. **Apply Atomic Principles:** Ensure each task is self-contained and delivers working functionality
-5. **Generate Tasks:** Create detailed task specifications using the structure below
-6. **Save Output:** Save as `tasks-[feature-name].md` in `/docs/pre-development/tasks/` directory
+5. **Generate Task Breakdown:** Create detailed task specifications using the structure below
+6. **Request User Review:** Present task breakdown and ask for feedback:
+   - "Please review this task breakdown. Would you like to adjust the prioritization or scope of any tasks?"
+   - **WAIT for user feedback on task organization**
+7. **Incorporate Feedback:** Adjust task structure based on user preferences
+8. **Save Output:** After approval, save as `tasks-[feature-name].md` in `/docs/pre-development/tasks/` directory
 
 ## Input Documents Analysis
 
@@ -51,6 +55,38 @@ Before finalizing each task, ensure:
 - [ ] **Complete Feature Set:** All components needed for the phase are included
 - [ ] **Quality Standards:** Testing, monitoring, and observability are included
 - [ ] **Rollback Capability:** Can be safely rolled back if issues arise
+
+## User Interaction Guidelines
+
+### Task Review Points
+1. **After Task Generation:** Present complete task breakdown and WAIT for feedback
+2. **Priority Discussion:** Allow user to adjust task order or dependencies
+3. **Scope Refinement:** User can split or combine tasks as needed
+
+### Example Interaction Flow
+```
+AI: "Based on the PRD and TRD, I've created the following atomic task breakdown:
+
+**MT-001: Foundation Phase** (2 weeks)
+- Basic application structure with authentication
+- Delivers: Working login system
+
+**MT-002: Core Feature Phase** (3 weeks)  
+- Implement primary business logic
+- Delivers: Main user workflow
+
+**MT-003: Enhancement Phase** (2 weeks)
+- Add advanced features
+- Delivers: Complete feature set
+
+Would you like to adjust the prioritization or scope of any tasks?"
+
+[WAIT FOR USER RESPONSE]
+
+User: "Can we split MT-002 into two smaller tasks?"
+
+AI: "Certainly! Let me restructure MT-002 into two atomic tasks..."
+```
 
 ## Task Structure
 
