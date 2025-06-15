@@ -110,10 +110,11 @@ npm run typecheck
 
 **AFTER COMPLETING:**
 ```bash
-# Final validation
+# Quality validation (REQUIRED)
 npm run build              # Ensure production build works
 npm test                   # All tests pass
 npm run lint              # Code quality check
+npm run typecheck         # TypeScript validation
 npm run a11y-test         # Accessibility validation (if available)
 
 # Commit with detailed message
@@ -125,6 +126,7 @@ Implementation: [key functionality implemented]
 Integration: [how it connects with existing components]
 Testing: [test coverage and validation]
 Accessibility: [a11y considerations implemented]
+Quality: All quality checks passed
 
 Files Modified:
 - [list of modified files]
@@ -461,6 +463,58 @@ const ComponentWithErrorHandling = ({ data, onAction }) => {
 - [ ] **Component is responsive across breakpoints**
 - [ ] **Performance is acceptable (no lag or memory leaks)**
 - [ ] **Tests pass and provide adequate coverage**
+- [ ] **All quality checks pass (build, lint, typecheck, tests)**
+
+### 9. Quality Assurance Requirements
+**CRITICAL:** Each atomic frontend task MUST include comprehensive quality validation:
+
+#### Frontend Quality Checks (REQUIRED)
+```bash
+# Run after each atomic task completion
+npm run build              # Production build verification
+npm test                   # Test execution with coverage
+npm run lint              # ESLint code quality
+npm run typecheck         # TypeScript validation
+npm run a11y-test         # Accessibility validation (if available)
+npm run bundle-size       # Bundle size analysis (if available)
+```
+
+#### Python Backend Integration (if applicable)
+```bash
+# Run if task includes backend changes
+ruff check .              # Linting and formatting
+mypy .                   # Type checking
+pytest                   # Test execution
+black .                  # Code formatting
+```
+
+#### Go Backend Integration (if applicable)
+```bash
+# Run if task includes backend changes
+make fmt                 # Code formatting
+make vet                 # Static analysis
+gosec ./...             # Security analysis
+govulncheck ./...       # Vulnerability check
+go test ./...           # Test execution
+```
+
+#### Quality Gates
+Each atomic task must pass ALL quality gates before completion:
+
+1. **Build Quality:** Production build succeeds without warnings
+2. **Code Quality:** No linting errors or warnings
+3. **Type Safety:** TypeScript compilation succeeds
+4. **Test Quality:** All tests pass with >80% coverage
+5. **Accessibility:** No a11y violations (WCAG 2.1 AA)
+6. **Performance:** Bundle size impact <5% of current size
+7. **Integration:** No regression in existing functionality
+
+**FAILURE PROTOCOL:** If any quality check fails:
+1. Fix issues immediately before proceeding
+2. Document quality violations in memory: `memory_store_chunk` with tag `quality-violation`
+3. Re-run complete quality check suite
+4. Only mark atomic task as complete when ALL quality checks pass
+5. Include quality validation in commit message
 
 ### 🧠 Required Memory Actions During Implementation
 

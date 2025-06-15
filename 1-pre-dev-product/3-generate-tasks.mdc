@@ -199,6 +199,48 @@ Each generated task should include these sections (strictly follow this structur
 - **Timeline Risks:** Factors that could affect delivery
 - **Quality Risks:** Potential quality or performance issues
 
+### 11. Quality Assurance Requirements
+**CRITICAL:** Each task and sub-task MUST include programming language-specific quality checks:
+
+#### Go Projects
+```bash
+# Run after each task/sub-task completion
+make fmt              # Code formatting
+make vet              # Static analysis
+gosec ./...          # Security analysis
+govulncheck ./...    # Vulnerability check
+go test ./...        # Test execution
+```
+
+#### TypeScript/JavaScript Projects
+```bash
+# Run after each task/sub-task completion
+npm run lint         # ESLint code quality
+npm run typecheck    # TypeScript validation
+npm test            # Test execution
+npm run build       # Production build verification
+```
+
+#### Python Projects
+```bash
+# Run after each task/sub-task completion
+ruff check .         # Linting and formatting
+mypy .              # Type checking
+pytest              # Test execution
+black .             # Code formatting
+```
+
+#### Other Languages
+- **Rust:** `cargo fmt && cargo clippy && cargo test`
+- **Java:** `mvn compile && mvn test && mvn checkstyle:check`
+- **C#:** `dotnet format && dotnet test && dotnet build`
+
+**FAILURE PROTOCOL:** If quality checks fail:
+1. Fix issues immediately before proceeding
+2. Document quality violations in memory: `memory_store_chunk` with tag `quality-violation`
+3. Re-run checks to ensure resolution
+4. Only mark task as complete when ALL quality checks pass
+
 ## Example Task Format
 
 ```markdown
