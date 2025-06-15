@@ -99,6 +99,13 @@ Each generated task should include these sections (strictly follow this structur
 - **Duration Estimate:** Rough timeline (e.g., "4-6 weeks")
 - **Atomic Validation:** Confirm this delivers a working application
 
+### 🔀 Git Workflow for Implementation
+**CRITICAL:** Each task will be broken into sub-tasks. Each sub-task MUST:
+1. **Create branch:** `git checkout -b feature/ST-MT-[task-id]-[num]-[desc]`
+2. **Implement** the sub-task requirements
+3. **Commit with details:** Include implementation notes and any deviations
+4. **Push and PR:** Create pull request for code review before merging
+
 ### 2. Deliverable Description
 - **Primary Deliverable:** What working software will be delivered
 - **User Value:** How users benefit from this phase
@@ -116,6 +123,7 @@ Each generated task should include these sections (strictly follow this structur
 - **Data Model:** What data structures are implemented
 - **Integration Points:** Which integrations are functional
 - **Infrastructure:** What deployment infrastructure is required
+- **File Organization:** Target <300 lines per file, max 500 lines (split logically if larger)
 - **Architecture Patterns:** Hexagonal Architecture compliance requirements
 - **lib-commons Integration:** Required lib-commons components and patterns
 - **lib-auth Integration:** Authentication and authorization patterns (for Midaz projects)

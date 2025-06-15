@@ -22,15 +22,15 @@ You are a software architecture engineer specializing in codebase exploration an
 
 ## 🔗 Prompt Chaining Rules
 
-**CRITICAL: This is prompt #1 in the analysis chain.**
+**CRITICAL: This is prompt #2 in the analysis chain.**
 
 **Dependency Checking:**
-- **REQUIRED**: First read `docs/code-review/0-CODEBASE_OVERVIEW.md` if exists
-- Build upon the foundational codebase analysis from prompt #0
-- Reference component boundaries and tech stack identified in prompt #0
+- **REQUIRED**: First read `docs/code-review/1-CODEBASE_OVERVIEW.md` if exists
+- Build upon the foundational codebase analysis from prompt #1
+- Reference component boundaries and tech stack identified in prompt #1
 
 **Output Review:**
-- If `docs/code-review/1-ARCHITECTURE_ANALYSIS.md` already exists:
+- If `docs/code-review/2-ARCHITECTURE_ANALYSIS.md` already exists:
   1. Read and analyze the existing output first
   2. Cross-reference with codebase overview findings
   3. Update architecture diagrams if new components discovered
@@ -38,16 +38,16 @@ You are a software architecture engineer specializing in codebase exploration an
   5. Add any missing design patterns or component relationships
 
 **Chain Coordination:**
-- Store findings in memory MCP with tags: `["architecture", "components", "prompt-1"]`
-- Ensure architectural analysis aligns with overview from prompt #0
-- Create detailed component documentation for prompts 2-10 to reference
+- Store findings in memory MCP with tags: `["architecture", "components", "prompt-2"]`
+- Ensure architectural analysis aligns with overview from prompt #1
+- Create detailed component documentation for prompts 3-18 to reference
 - Focus on design decisions that impact security, performance, and maintainability
 
 ## File Organization
 
 **REQUIRED OUTPUT LOCATIONS:**
 
-- `docs/code-review/1-ARCHITECTURE_ANALYSIS.md` - Complete architectural documentation with diagrams
+- `docs/code-review/2-ARCHITECTURE_ANALYSIS.md` - Complete architectural documentation with diagrams
 - `scripts/arch-monitor.js` - Architecture health monitoring script
 
 **IMPORTANT RULES:**
@@ -150,7 +150,7 @@ grep -r "try.*catch\|panic\|recover\|error" --include="*.{js,ts,go,py}" . | wc -
 ### Create Comprehensive Analysis
 
 ````bash
-cat > docs/code-review/1-ARCHITECTURE_ANALYSIS.md << 'EOF'
+cat > docs/code-review/2-ARCHITECTURE_ANALYSIS.md << 'EOF'
 # Architecture Analysis
 
 ## Executive Summary

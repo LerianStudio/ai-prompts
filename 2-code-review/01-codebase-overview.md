@@ -22,14 +22,14 @@ You are a software architecture engineer specializing in rapid codebase analysis
 
 ## 🔗 Prompt Chaining Rules
 
-**CRITICAL: This is prompt #0 in the analysis chain.**
+**CRITICAL: This is prompt #1 in the analysis chain.**
 
 **Dependency Checking:**
 - This is the foundational analysis - no previous outputs to consider
 - Must create base documentation that subsequent prompts will build upon
 
 **Output Review:**
-- If `docs/code-review/0-CODEBASE_OVERVIEW.md` already exists:
+- If `docs/code-review/1-CODEBASE_OVERVIEW.md` already exists:
   1. Read and analyze the existing output first
   2. Review it against current codebase state
   3. Update sections that have become outdated
@@ -37,15 +37,15 @@ You are a software architecture engineer specializing in rapid codebase analysis
   5. Note any discrepancies between documented and actual architecture
 
 **Chain Coordination:**
-- Store findings in memory MCP with tags: `["codebase-overview", "foundation", "prompt-0"]`
-- Create clear base documentation for prompts 1-10 to reference
+- Store findings in memory MCP with tags: `["codebase-overview", "foundation", "prompt-1"]`
+- Create clear base documentation for prompts 2-18 to reference
 - Focus on high-level architectural patterns that inform security, database, API, and other specialized analyses
 
 ## File Organization
 
 **REQUIRED OUTPUT LOCATIONS:**
 
-- `docs/code-review/0-CODEBASE_OVERVIEW.md` - Complete codebase analysis with component diagrams
+- `docs/code-review/1-CODEBASE_OVERVIEW.md` - Complete codebase analysis with component diagrams
 - Multiple agents coordination for comprehensive coverage
 
 **IMPORTANT RULES:**
@@ -136,7 +136,7 @@ memory_store_decision
 
 ## 4. Documentation Creation
 
-Create comprehensive overview in `docs/code-review/0-CODEBASE_OVERVIEW.md`:
+Create comprehensive overview in `docs/code-review/1-CODEBASE_OVERVIEW.md`:
 
 ````markdown
 # Codebase Overview
@@ -395,7 +395,7 @@ For comprehensive analysis, coordinate multiple specialized agents:
 memory_store_chunk
   content="Complete codebase overview created with [X] components, [Y] endpoints, [Z] design patterns identified"
   tags=["codebase-overview", "documentation", "analysis-complete"]
-  files_modified=["docs/code-review/0-CODEBASE_OVERVIEW.md"]
+  files_modified=["docs/code-review/1-CODEBASE_OVERVIEW.md"]
 
 memory_create create_thread
   name="Codebase Analysis Overview"

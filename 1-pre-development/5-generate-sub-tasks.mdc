@@ -66,11 +66,38 @@ Each generated sub-task should include these sections (strictly follow this stru
 - **Parent Task:** Reference to task (e.g., "T-001: CLI Foundation with Local Storage")
 - **Estimated Duration:** 2-4 hours maximum
 - **Implementation Type:** Code, Configuration, Testing, Documentation, Research
-- **Git Workflow:** Create branch, implement, commit with deviation notes, PR to tasks-implementation
+
+### 🔀 Git Workflow (REQUIRED)
+**BEFORE STARTING:**
+```bash
+git checkout -b feature/ST-T-[task-id]-[num]-[short-desc]
+# Example: git checkout -b feature/ST-T-001-001-task-entity
+```
+
+**AFTER COMPLETING:**
+```bash
+git add .
+git commit -m "feat(ST-T-[task-id]-[num]): [brief description]
+
+Implemented:
+- [what was built]
+
+Deviations:
+- [any changes from plan]
+
+Notes:
+- [implementation details]"
+
+git push -u origin feature/ST-T-[task-id]-[num]-[short-desc]
+```
 
 ### 2. Deliverable Specification
 - **Primary Output:** Specific files, functions, or components to create
 - **Code Location:** Exact file paths and directory structure
+- **File Size Guidelines:** 
+  - **Target:** <300 lines per file for optimal LLM processing
+  - **Maximum:** 500 lines per file (hard limit)
+  - **Split Strategy:** If approaching 500 lines, break into logical modules
 - **Technical Requirements:** Specific technologies, libraries, patterns to use
 - **Interface Definition:** APIs, function signatures, data structures
 - **Architecture Compliance:** Hexagonal Architecture pattern requirements
