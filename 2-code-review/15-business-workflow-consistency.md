@@ -198,3 +198,39 @@ memory_store_chunk "Workflow Validation: [summary]" session_id repository
 This prompt completes the 16-prompt analysis chain by validating that technical implementations serve business needs effectively. Cross-reference architectural decisions (#1), API contracts (#4), and business analysis (#3) to ensure technical solutions align with business workflow requirements.
 
 **Final Chain Validation**: Ensure all technical analysis outputs (#1-15) support identified business workflows and client integration patterns.
+
+## 📋 Todo List Generation
+
+**REQUIRED**: Generate or append to `docs/code-review/code-review-todo-list.md` with findings from this analysis.
+
+### Todo Entry Format
+```markdown
+## Business Workflow Analysis Findings
+
+### 🔴 CRITICAL (Immediate Action Required)
+- [ ] **[Task Title]**: [Brief description]
+  - **Impact**: [High/Medium/Low]
+  - **Effort**: [Time estimate]
+  - **Files**: `[affected files]`
+  - **Details**: [Additional context if needed]
+
+### 🟡 HIGH (Sprint Priority)
+- [ ] **[Task Title]**: [Brief description]
+  - **Impact**: [High/Medium/Low]
+  - **Effort**: [Time estimate]
+  - **Files**: `[affected files]`
+
+### 🟢 MEDIUM (Backlog)
+- [ ] **[Task Title]**: [Brief description]
+  - **Impact**: [High/Medium/Low]
+  - **Effort**: [Time estimate]
+
+### 🔵 LOW (Future Consideration)
+- [ ] **[Task Title]**: [Brief description]
+```
+
+### Implementation
+1. If `code-review-todo-list.md` doesn't exist, create it with proper header
+2. Append findings under appropriate priority sections
+3. Include specific file references and effort estimates
+4. Tag with analysis type for filtering (e.g., `#security`, `#performance`, `#api`)

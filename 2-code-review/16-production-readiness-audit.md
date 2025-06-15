@@ -298,3 +298,40 @@ memory_tasks session_end session_id="audit-$(date +%s)" repository="github.com/o
 - **Language Agnostic**: Covers Go, JavaScript/TypeScript, Python, Java patterns
 - **Actionable Results**: Provides specific file:line references and fix examples
 - **Risk-Based Priority**: P0 (deploy blockers) → P1 (security) → P2 (functionality) → P3 (quality)
+
+
+## 📋 Todo List Generation
+
+**REQUIRED**: Generate or append to `docs/code-review/code-review-todo-list.md` with findings from this analysis.
+
+### Todo Entry Format
+```markdown
+## Production Readiness Analysis Findings
+
+### 🔴 CRITICAL (Immediate Action Required)
+- [ ] **[Task Title]**: [Brief description]
+  - **Impact**: [High/Medium/Low]
+  - **Effort**: [Time estimate]
+  - **Files**: `[affected files]`
+  - **Details**: [Additional context if needed]
+
+### 🟡 HIGH (Sprint Priority)
+- [ ] **[Task Title]**: [Brief description]
+  - **Impact**: [High/Medium/Low]
+  - **Effort**: [Time estimate]
+  - **Files**: `[affected files]`
+
+### 🟢 MEDIUM (Backlog)
+- [ ] **[Task Title]**: [Brief description]
+  - **Impact**: [High/Medium/Low]
+  - **Effort**: [Time estimate]
+
+### 🔵 LOW (Future Consideration)
+- [ ] **[Task Title]**: [Brief description]
+```
+
+### Implementation
+1. If `code-review-todo-list.md` doesn't exist, create it with proper header
+2. Append findings under appropriate priority sections
+3. Include specific file references and effort estimates
+4. Tag with analysis type for filtering (e.g., `#security`, `#performance`, `#api`)

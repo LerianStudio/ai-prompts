@@ -855,4 +855,40 @@ memory_tasks session_end session_id="architecture-$(date +%s)" repository="githu
 - **Pattern Recognition**: Look for established patterns like MVC, layered architecture, event-driven
 - **Visual Documentation**: Use mermaid diagrams to clearly show relationships and data flow
 - **Language Agnostic**: Adapts to any technology stack while maintaining systematic analysis approach
+
+## 📋 Todo List Generation
+
+**REQUIRED**: Generate or append to `docs/code-review/code-review-todo-list.md` with findings from this analysis.
+
+### Todo Entry Format
+```markdown
+## Architecture Analysis Findings
+
+### 🔴 CRITICAL (Immediate Action Required)
+- [ ] **[Task Title]**: [Brief description]
+  - **Impact**: [High/Medium/Low]
+  - **Effort**: [Time estimate]
+  - **Files**: `[affected files]`
+  - **Details**: [Additional context if needed]
+
+### 🟡 HIGH (Sprint Priority)
+- [ ] **[Task Title]**: [Brief description]
+  - **Impact**: [High/Medium/Low]
+  - **Effort**: [Time estimate]
+  - **Files**: `[affected files]`
+
+### 🟢 MEDIUM (Backlog)
+- [ ] **[Task Title]**: [Brief description]
+  - **Impact**: [High/Medium/Low]
+  - **Effort**: [Time estimate]
+
+### 🔵 LOW (Future Consideration)
+- [ ] **[Task Title]**: [Brief description]
+```
+
+### Implementation
+1. If `code-review-todo-list.md` doesn't exist, create it with proper header
+2. Append findings under appropriate priority sections
+3. Include specific file references and effort estimates
+4. Tag with analysis type for filtering (e.g., `#security`, `#performance`, `#api`)
 ```

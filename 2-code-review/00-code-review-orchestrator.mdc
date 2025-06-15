@@ -55,25 +55,25 @@ This orchestrator manages a **6-phase code review workflow** with logical progre
 
 ```bash
 # Foundation Analysis
-claude 2-code-review/00-codebase-overview.md
-claude 2-code-review/01-architecture-analysis.md
+claude 2-code-review/01-codebase-overview.md
+claude 2-code-review/02-architecture-analysis.md
 
 # Core Technical Analysis (NEW ORDER IMPLEMENTED)
-claude 2-code-review/02-api-contract-analysis.md      # Foundational API understanding
-claude 2-code-review/03-database-optimization.md     # Foundational data layer  
-claude 2-code-review/04-sequence-diagram-visualization.md  # Visual foundation
+claude 2-code-review/03-api-contract-analysis.md      # Foundational API understanding
+claude 2-code-review/04-database-optimization.md     # Foundational data layer  
+claude 2-code-review/05-sequence-diagram-visualization.md  # Visual foundation
 
 # Business Context (after technical foundation)
-claude 2-code-review/05-business-analysis.md          # Business understanding
+claude 2-code-review/06-business-analysis.md          # Business understanding
 ```
 
 **Phase 1 Dependencies:**
-- 00 → All subsequent prompts (foundation)
-- 01 → All architectural decisions
-- 02 → API documentation and testing strategies
-- 03 → Performance and scaling decisions
-- 04 → Business workflow understanding
-- 05 → Integration and feature planning
+- 01 → All subsequent prompts (foundation)
+- 02 → All architectural decisions
+- 03 → API documentation and testing strategies
+- 04 → Performance and scaling decisions
+- 05 → Business workflow understanding
+- 06 → Integration and feature planning
 
 ### 🔒 Phase 2: Security & Compliance
 
@@ -81,14 +81,14 @@ claude 2-code-review/05-business-analysis.md          # Business understanding
 
 ```bash
 # Security Analysis Chain
-claude 2-code-review/06-security-vulnerability-analysis.md
-claude 2-code-review/07-dependency-security-analysis.md
-claude 2-code-review/08-privacy-compliance-analysis.md
+claude 2-code-review/07-security-vulnerability-analysis.md
+claude 2-code-review/08-dependency-security-analysis.md
+claude 2-code-review/09-privacy-compliance-analysis.md
 ```
 
 **Phase 2 Dependencies:**
 - Requires: Phase 1 complete (architecture + API contracts)
-- 06 → 07 → 08 (security findings build upon each other)
+- 07 → 08 → 09 (security findings build upon each other)
 - All security findings feed into production readiness (Phase 5)
 
 ### ✅ Phase 3: Quality & Testing
@@ -97,16 +97,16 @@ claude 2-code-review/08-privacy-compliance-analysis.md
 
 ```bash
 # Quality Assurance Chain  
-claude 2-code-review/09-test-coverage-analysis.md
-claude 2-code-review/10-observability-monitoring.md
-claude 2-code-review/11-pre-commit-quality-checks.md
+claude 2-code-review/10-test-coverage-analysis.md
+claude 2-code-review/11-observability-monitoring.md
+claude 2-code-review/12-pre-commit-quality-checks.md
 ```
 
 **Phase 3 Dependencies:**
 - Requires: Phase 1 (architecture) + Phase 2 (security context)
-- 09 → Test strategy informs deployment preparation
-- 10 → Monitoring setup required for production
-- 11 → Quality gates for development workflow
+- 10 → Test strategy informs deployment preparation
+- 11 → Monitoring setup required for production
+- 12 → Quality gates for development workflow
 
 ### 📚 Phase 4: Documentation & Workflow
 
@@ -114,16 +114,16 @@ claude 2-code-review/11-pre-commit-quality-checks.md
 
 ```bash
 # Documentation and Process Analysis
-claude 2-code-review/12-documentation-generation.md
-claude 2-code-review/13-api-documentation-generator.md
-claude 2-code-review/14-business-workflow-consistency.md
+claude 2-code-review/13-documentation-generation.md
+claude 2-code-review/14-api-documentation-generator.md
+claude 2-code-review/15-business-workflow-consistency.md
 ```
 
 **Phase 4 Dependencies:**
 - Requires: All previous phases for comprehensive documentation
-- 12 → General documentation quality
-- 13 → API-specific documentation (requires Phase 1 API analysis)
-- 14 → Business workflow validation (requires sequence diagrams from Phase 1)
+- 13 → General documentation quality
+- 14 → API-specific documentation (requires Phase 1 API analysis)
+- 15 → Business workflow validation (requires sequence diagrams from Phase 1)
 
 ### 🚀 Phase 5: Production Readiness
 
@@ -131,14 +131,14 @@ claude 2-code-review/14-business-workflow-consistency.md
 
 ```bash
 # Production Deployment Analysis
-claude 2-code-review/15-production-readiness-audit.md
-claude 2-code-review/16-deployment-preparation.md
+claude 2-code-review/16-production-readiness-audit.md
+claude 2-code-review/17-deployment-preparation.md
 ```
 
 **Phase 5 Dependencies:**
 - Requires: ALL previous phases (comprehensive readiness assessment)
-- 15 → Identifies production blockers from all analyses
-- 16 → Final deployment checklist and preparation
+- 16 → Identifies production blockers from all analyses
+- 17 → Final deployment checklist and preparation
 
 ### 🎯 Phase 6: Final Synthesis
 
@@ -146,7 +146,7 @@ claude 2-code-review/16-deployment-preparation.md
 
 ```bash
 # Comprehensive Action Planning
-claude 2-code-review/17-comprehensive-todo-generation.md
+claude 2-code-review/18-comprehensive-todo-generation.md
 ```
 
 **Phase 6 Dependencies:**
@@ -159,89 +159,90 @@ claude 2-code-review/17-comprehensive-todo-generation.md
 
 | Original | Current | Prompt | Rationale |
 |----------|---------|--------|-----------|
-| 00 | 00 | Codebase Overview | ✅ Foundation - no change |
-| 01 | 01 | Architecture Analysis | ✅ Foundation - no change |
-| 02 | 05 | Business Analysis | 📈 Better after technical foundation |
-| 03 | 06 | Security Vulnerability | 📈 Logical security grouping |
-| 04 | 07 | Dependency Security | 📈 Logical security grouping |
-| 05 | 08 | Privacy Compliance | 📈 Logical security grouping |
-| 06 | 02 | API Contract Analysis | 📈 Core technical foundation |
-| 07 | 03 | Database Optimization | 📈 Core technical foundation |
-| 08 | 09 | Test Coverage | 📈 Logical quality grouping |
-| 09 | 10 | Observability | 📈 Logical quality grouping |
-| 10 | 11 | Pre-commit Quality | 📈 Logical quality grouping |
-| 11 | 12 | Documentation | 📈 Logical documentation grouping |
-| 12 | 13 | API Documentation | 📈 Logical documentation grouping |
-| 13 | 15 | Production Readiness | 📈 Logical production grouping |
-| 14 | 16 | Deployment Preparation | 📈 Logical production grouping |
-| 15 | 04 | Sequence Diagrams | 📈 Visual foundation helps understanding |
-| 16 | 14 | Business Workflow | 📈 After sequence diagrams |
-| 17 | 17 | Todo Generation | ✅ Final synthesis - no change |
+| 00 | 00 | Code Review Orchestrator | ✅ Master controller - no change |
+| 00 | 01 | Codebase Overview | 📈 Foundation prompt |
+| 01 | 02 | Architecture Analysis | 📈 Foundation - shifted by 1 |
+| 02 | 06 | Business Analysis | 📈 Better after technical foundation |
+| 03 | 07 | Security Vulnerability | 📈 Logical security grouping |
+| 04 | 08 | Dependency Security | 📈 Logical security grouping |
+| 05 | 09 | Privacy Compliance | 📈 Logical security grouping |
+| 06 | 03 | API Contract Analysis | 📈 Core technical foundation |
+| 07 | 04 | Database Optimization | 📈 Core technical foundation |
+| 08 | 10 | Test Coverage | 📈 Logical quality grouping |
+| 09 | 11 | Observability | 📈 Logical quality grouping |
+| 10 | 12 | Pre-commit Quality | 📈 Logical quality grouping |
+| 11 | 13 | Documentation | 📈 Logical documentation grouping |
+| 12 | 14 | API Documentation | 📈 Logical documentation grouping |
+| 13 | 16 | Production Readiness | 📈 Logical production grouping |
+| 14 | 17 | Deployment Preparation | 📈 Logical production grouping |
+| 15 | 05 | Sequence Diagrams | 📈 Visual foundation helps understanding |
+| 16 | 15 | Business Workflow | 📈 After sequence diagrams |
+| 17 | 18 | Todo Generation | 📈 Final synthesis - shifted by 1 |
 
 ## Quick Execution Commands
 
 ### Full Analysis (Optimized Order)
 ```bash
 # Phase 1: Foundation & Technical Architecture
-claude 2-code-review/00-codebase-overview.md && \
-claude 2-code-review/01-architecture-analysis.md && \
-claude 2-code-review/02-api-contract-analysis.md && \
-claude 2-code-review/03-database-optimization.md && \
-claude 2-code-review/04-sequence-diagram-visualization.md && \
-claude 2-code-review/05-business-analysis.md
+claude 2-code-review/01-codebase-overview.md && \
+claude 2-code-review/02-architecture-analysis.md && \
+claude 2-code-review/03-api-contract-analysis.md && \
+claude 2-code-review/04-database-optimization.md && \
+claude 2-code-review/05-sequence-diagram-visualization.md && \
+claude 2-code-review/06-business-analysis.md
 
 # Phase 2: Security & Compliance  
-claude 2-code-review/06-security-vulnerability-analysis.md && \
-claude 2-code-review/07-dependency-security-analysis.md && \
-claude 2-code-review/08-privacy-compliance-analysis.md
+claude 2-code-review/07-security-vulnerability-analysis.md && \
+claude 2-code-review/08-dependency-security-analysis.md && \
+claude 2-code-review/09-privacy-compliance-analysis.md
 
 # Phase 3: Quality & Testing
-claude 2-code-review/09-test-coverage-analysis.md && \
-claude 2-code-review/10-observability-monitoring.md && \
-claude 2-code-review/11-pre-commit-quality-checks.md
+claude 2-code-review/10-test-coverage-analysis.md && \
+claude 2-code-review/11-observability-monitoring.md && \
+claude 2-code-review/12-pre-commit-quality-checks.md
 
 # Phase 4: Documentation & Workflow
-claude 2-code-review/12-documentation-generation.md && \
-claude 2-code-review/13-api-documentation-generator.md && \
-claude 2-code-review/14-business-workflow-consistency.md
+claude 2-code-review/13-documentation-generation.md && \
+claude 2-code-review/14-api-documentation-generator.md && \
+claude 2-code-review/15-business-workflow-consistency.md
 
 # Phase 5: Production Readiness
-claude 2-code-review/15-production-readiness-audit.md && \
-claude 2-code-review/16-deployment-preparation.md
+claude 2-code-review/16-production-readiness-audit.md && \
+claude 2-code-review/17-deployment-preparation.md
 
 # Phase 6: Final Synthesis
-claude 2-code-review/17-comprehensive-todo-generation.md
+claude 2-code-review/18-comprehensive-todo-generation.md
 ```
 
 ### Quick Analysis (Essential prompts only)
 ```bash
 # Foundation + Key Analysis
-claude 2-code-review/00-codebase-overview.md && \
-claude 2-code-review/01-architecture-analysis.md && \
-claude 2-code-review/06-security-vulnerability-analysis.md && \
-claude 2-code-review/09-test-coverage-analysis.md && \
-claude 2-code-review/15-production-readiness-audit.md && \
-claude 2-code-review/17-comprehensive-todo-generation.md
+claude 2-code-review/01-codebase-overview.md && \
+claude 2-code-review/02-architecture-analysis.md && \
+claude 2-code-review/07-security-vulnerability-analysis.md && \
+claude 2-code-review/10-test-coverage-analysis.md && \
+claude 2-code-review/16-production-readiness-audit.md && \
+claude 2-code-review/18-comprehensive-todo-generation.md
 ```
 
 ### Focused Analysis (By concern area)
 ```bash
 # Security Focus
-claude 2-code-review/00-codebase-overview.md && \
-claude 2-code-review/06-security-vulnerability-analysis.md && \
-claude 2-code-review/07-dependency-security-analysis.md && \
-claude 2-code-review/08-privacy-compliance-analysis.md
+claude 2-code-review/01-codebase-overview.md && \
+claude 2-code-review/07-security-vulnerability-analysis.md && \
+claude 2-code-review/08-dependency-security-analysis.md && \
+claude 2-code-review/09-privacy-compliance-analysis.md
 
 # Quality Focus  
-claude 2-code-review/00-codebase-overview.md && \
-claude 2-code-review/09-test-coverage-analysis.md && \
-claude 2-code-review/10-observability-monitoring.md && \
-claude 2-code-review/11-pre-commit-quality-checks.md
+claude 2-code-review/01-codebase-overview.md && \
+claude 2-code-review/10-test-coverage-analysis.md && \
+claude 2-code-review/11-observability-monitoring.md && \
+claude 2-code-review/12-pre-commit-quality-checks.md
 
 # Production Readiness Focus
-claude 2-code-review/00-codebase-overview.md && \
-claude 2-code-review/15-production-readiness-audit.md && \
-claude 2-code-review/16-deployment-preparation.md
+claude 2-code-review/01-codebase-overview.md && \
+claude 2-code-review/16-production-readiness-audit.md && \
+claude 2-code-review/17-deployment-preparation.md
 ```
 
 ## Integration with Other Chains
@@ -280,24 +281,24 @@ All analysis outputs will be systematically organized in:
 
 ```
 docs/code-review/
-├── 0-CODEBASE_OVERVIEW.md
-├── 1-ARCHITECTURE_ANALYSIS.md
-├── 2-API_CONTRACT_ANALYSIS.md
-├── 3-DATABASE_OPTIMIZATION.md
-├── 4-SEQUENCE_DIAGRAM_VISUALIZATION.md
-├── 5-BUSINESS_ANALYSIS.md
-├── 6-SECURITY_ANALYSIS.md
-├── 7-DEPENDENCY_SECURITY_ANALYSIS.md
-├── 8-PRIVACY_COMPLIANCE_ANALYSIS.md
-├── 9-TEST_COVERAGE_ANALYSIS.md
-├── 10-OBSERVABILITY_MONITORING.md
-├── 11-PRE_COMMIT_QUALITY_CHECKS.md
-├── 12-DOCUMENTATION.md
-├── 13-API_DOCUMENTATION.md
-├── 14-BUSINESS_WORKFLOW_CONSISTENCY.md
-├── 15-PRODUCTION_READINESS_AUDIT.md
-├── 16-DEPLOYMENT_PREPARATION.md
-├── 17-COMPREHENSIVE_TODO_LIST.md
+├── 1-CODEBASE_OVERVIEW.md
+├── 2-ARCHITECTURE_ANALYSIS.md
+├── 3-API_CONTRACT_ANALYSIS.md
+├── 4-DATABASE_OPTIMIZATION.md
+├── 5-SEQUENCE_DIAGRAM_VISUALIZATION.md
+├── 6-BUSINESS_ANALYSIS.md
+├── 7-SECURITY_ANALYSIS.md
+├── 8-DEPENDENCY_SECURITY_ANALYSIS.md
+├── 9-PRIVACY_COMPLIANCE_ANALYSIS.md
+├── 10-TEST_COVERAGE_ANALYSIS.md
+├── 11-OBSERVABILITY_MONITORING.md
+├── 12-PRE_COMMIT_QUALITY_CHECKS.md
+├── 13-DOCUMENTATION.md
+├── 14-API_DOCUMENTATION.md
+├── 15-BUSINESS_WORKFLOW_CONSISTENCY.md
+├── 16-PRODUCTION_READINESS_AUDIT.md
+├── 17-DEPLOYMENT_PREPARATION.md
+├── 18-COMPREHENSIVE_TODO_LIST.md
 └── components/, api/, monitoring/, diagrams/
 ```
 
@@ -339,3 +340,55 @@ Store comprehensive findings in memory with appropriate tags:
 6. **Iterate if needed** - Re-run specific phases if major issues are discovered
 
 This orchestrator ensures systematic, comprehensive code review with optimal execution order and clear phase progression for maximum analysis effectiveness.
+
+## Todo List Generation Directive
+
+**IMPORTANT**: Each individual code review prompt (01-17) MUST generate or append to a consolidated `code-review-todo-list.md` file. This ensures all findings are captured in a single, actionable document.
+
+### Todo List Requirements for Each Prompt
+
+At the end of each analysis prompt (01-17), include the following directive:
+
+```markdown
+## 📋 Todo List Generation
+
+**REQUIRED**: Generate or append to `docs/code-review/code-review-todo-list.md` with findings from this analysis.
+
+### Todo Entry Format
+```markdown
+## [Analysis Name] Findings
+
+### 🔴 CRITICAL (Immediate Action Required)
+- [ ] **[Task Title]**: [Brief description]
+  - **Impact**: [High/Medium/Low]
+  - **Effort**: [Time estimate]
+  - **Files**: `[affected files]`
+  - **Details**: [Additional context if needed]
+
+### 🟡 HIGH (Sprint Priority)
+- [ ] **[Task Title]**: [Brief description]
+  - **Impact**: [High/Medium/Low]
+  - **Effort**: [Time estimate]
+  - **Files**: `[affected files]`
+
+### 🟢 MEDIUM (Backlog)
+- [ ] **[Task Title]**: [Brief description]
+  - **Impact**: [High/Medium/Low]
+  - **Effort**: [Time estimate]
+
+### 🔵 LOW (Future Consideration)
+- [ ] **[Task Title]**: [Brief description]
+```
+
+### Implementation
+1. If `code-review-todo-list.md` doesn't exist, create it with proper header
+2. Append findings under appropriate priority sections
+3. Include specific file references and effort estimates
+4. Tag with analysis type for filtering (e.g., `#security`, `#performance`, `#api`)
+```
+
+This directive ensures that:
+1. All findings are captured in a single, consolidated todo list
+2. Tasks are properly prioritized across all analysis dimensions
+3. The final synthesis (prompt #18) has a complete dataset to work with
+4. Teams can start working on critical items immediately without waiting for full analysis completion
