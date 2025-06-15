@@ -1,3 +1,0 @@
-{"id":"1749733967101-rnmv8fyug","timestamp":"2025-06-12T13:12:48.328Z","operation":"server_startup","duration":1227.65,"performanceLevel":"critical","context":{"version":"2.27.0","transport":"stdio"}}
-{"id":"1749739565394-e4m6ml3d7","timestamp":"2025-06-12T14:46:06.561Z","operation":"server_startup","duration":1167.42,"performanceLevel":"critical","context":{"version":"2.27.0","transport":"stdio"}}
-{"id":"1749742330843-x2x6ra4b9","timestamp":"2025-06-12T15:32:12.381Z","operation":"server_startup","duration":1537.72,"performanceLevel":"critical","context":{"version":"2.27.0","transport":"stdio"}}
