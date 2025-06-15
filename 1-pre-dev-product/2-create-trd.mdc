@@ -5,6 +5,25 @@ alwaysApply: false
 ---
 # Rule: Generating a Technical Requirements Document (TRD)
 
+## 🧠 Enhanced Analysis Tools - USE THESE!
+
+**CRITICAL:** Leverage these tools throughout the TRD creation process:
+
+### 🧩 Memory MCP Integration
+- **Retrieve PRD context:** `memory_search` for related requirements and design decisions
+- **Store technical choices:** `memory_store_decision` for architecture, technology stack, and patterns
+- **Reference best practices:** `memory_search` for proven technical approaches from past projects
+- **Session tracking:** `memory_tasks` for TRD development workflow
+- **Tags to use:** `["trd", "technical", "architecture", "feature-name", "technology-stack"]`
+
+### 🔄 Sequential Thinking MCP
+- **Use for:** Architecture analysis, technology evaluation, system design validation
+- **Pattern:** Business requirements → technical constraints → architecture options → implementation approach
+- **Benefit:** Ensures technical decisions align with business needs and scale requirements
+- **When:** During technology stack analysis and architecture decision-making
+
+**Pro tip:** Reference memory for PRD decisions and store all technical rationale for future TRDs!
+
 ## Goal
 
 To guide an AI assistant in creating a detailed Technical Requirements Document (TRD) in Markdown format, based on an existing Product Requirements Document (PRD). The TRD should translate business requirements into technical specifications suitable for implementation by developers.
@@ -12,18 +31,34 @@ To guide an AI assistant in creating a detailed Technical Requirements Document 
 ## Process
 
 1. **Read Existing PRD:** The AI must first read the PRD document (`prd-[feature-name].md` in `/docs/pre-development/`)
+   - 🧩 **Memory Action:** `memory_search` to retrieve PRD decisions and context
+   
 2. **Reference PRD Architecture:** Build upon PRD architecture patterns rather than duplicating them
+   - 🔄 **Sequential Thinking:** Analyze business requirements to identify technical implications
+
 3. **Analyze PRD Content:** Extract key requirements, data models, API specifications, and architectural patterns
+   - 🧩 **Memory Action:** `memory_search` for similar technical implementations
+   - 🔄 **Sequential Thinking:** Map business features to technical components and dependencies
+
 4. **Ask Technical Questions:** Gather additional technical details not covered in the PRD
+   - 🧩 **Memory Action:** `memory_search` for common technical decision points and pitfalls
    - **IMPORTANT:** WAIT for user responses before proceeding
    - Only ask questions where PRD lacks technical clarity
    - Group related technical questions together
 5. **Generate TRD Draft:** Create a comprehensive technical specification using the structure below
+   - 🧩 **Memory Action:** `memory_store_decision` for architecture choices, technology stack, and patterns
+   - 🔄 **Sequential Thinking:** Validate technical approach against scalability and maintainability
+
 6. **Request Technical Review:** Present the TRD draft and ask for feedback:
    - "Please review this technical approach. Are there any technical decisions you'd like to change?"
    - **WAIT for user approval or feedback**
+   - 🧩 **Memory Action:** `memory_store_chunk` with technical feedback and concerns
+
 7. **Incorporate Feedback:** Update TRD based on user's technical preferences
+   - 🧩 **Memory Action:** `memory_store_decision` documenting technical changes and rationale
+
 8. **Save TRD:** Only after approval, save the document as `trd-[feature-name].md` in the `/docs/pre-development/` directory
+   - 🧩 **Memory Action:** `memory_create_thread` linking PRD and TRD decisions for coherent project context
 
 ## User Interaction Guidelines
 

@@ -5,6 +5,28 @@ alwaysApply: false
 ---
 # Rule: Generating Sub-Tasks from Tasks Analysis
 
+## 🧠 Enhanced Analysis Tools - USE THESE!
+
+**CRITICAL:** Leverage these tools throughout the sub-task generation process:
+
+### 🧩 Memory MCP Integration
+- **Retrieve context:** `memory_search` for PRD, TRD, and task decisions to maintain consistency
+- **Store implementation patterns:** `memory_store_chunk` with successful sub-task structures and patterns
+- **Reference similar breakdowns:** `memory_search` for comparable sub-task implementations from past projects
+- **Track development workflow:** `memory_tasks` for sub-task generation and implementation progress
+- **Store decisions:** `memory_store_decision` for sub-task boundary decisions and implementation approaches
+- **Tags to use:** `["sub-tasks", "implementation", "breakdown", "feature-name", "development"]`
+
+### 🔄 Sequential Thinking MCP
+- **Use for:** Complex task decomposition, dependency analysis, implementation sequencing
+- **Pattern:** Task requirements → technical components → implementation steps → sub-task boundaries
+- **Benefit:** Ensures sub-tasks are logically sequenced and properly sized for LLM implementation
+- **When:** During task breakdown analysis, dependency mapping, and implementation planning
+
+**IMPLEMENTATION TIP:** Each sub-task should include Memory MCP actions to store implementation progress and learnings!
+
+**Pro tip:** Store every implementation decision and pattern to build a knowledge base of successful development approaches!
+
 ## Goal
 
 To guide an AI assistant in analyzing tasks and breaking them down into detailed, implementable sub-tasks. Each sub-task must be specific, actionable, and small enough to be completed in a single development session while contributing to the completion of its parent task.
@@ -12,15 +34,27 @@ To guide an AI assistant in analyzing tasks and breaking them down into detailed
 ## Process
 
 1. **Read Tasks Document:** The AI must first read the tasks-[feature-name].md document to understand the atomic phases from `/docs/pre-development/tasks/`
+   - 🧩 **Memory Action:** `memory_search` to retrieve all related context from PRD, TRD, and validation steps
+
 2. **Verify Chain Validation:** Ensure validation-report-[feature-name].md shows PASS status and tasks are validated
+   - 🧩 **Memory Action:** `memory_search` for validation patterns and any documented risks
+
 3. **Analyze Task Structure:** Extract and understand each task's scope, dependencies, and deliverables
+   - 🔄 **Sequential Thinking:** Map task boundaries to implementation components and dependencies
+
 4. **Apply Granular Breakdown:** Ensure each sub-task is specific and implementable
+   - 🔄 **Sequential Thinking:** Validate each sub-task is atomic and can be completed in 2-4 hours
+
 5. **Generate Sub-Tasks:** Create detailed sub-task specifications using the structure below
+   - 🧩 **Memory Action:** `memory_store_decision` for sub-task breakdown rationale and implementation approach
 6. **Optional User Review:** Since sub-tasks are implementation details, user review is optional:
    - "I've created detailed sub-tasks for implementation. Would you like to review the granularity, or shall I proceed with saving them?"
    - If user wants to review, WAIT for feedback
    - If user approves or skips review, proceed to save
+   - 🧩 **Memory Action:** `memory_store_chunk` with user feedback on sub-task granularity (if provided)
+
 7. **Save Output:** Create individual files for each task and sub-task in `/docs/pre-development/tasks/` directory (see File Organization section)
+   - 🧩 **Memory Action:** `memory_create_thread` completing the full development chain: PRD → TRD → Tasks → Sub-tasks
 
 ## Input Document Analysis
 
@@ -130,6 +164,53 @@ git push -u origin feature/ST-T-[task-id]-[num]-[short-desc]
 - **Git Workflow Complete:** Branch created, committed with implementation details and deviations
 - **PR Submitted:** Pull request created against tasks-implementation branch
 - **Review Approved:** Code review completed and PR merged
+- **🧩 Memory Actions Complete:** Implementation progress and learnings stored in memory
+
+### 🧠 Required Memory Actions During Implementation
+**CRITICAL:** Every sub-task implementation MUST include these Memory MCP actions:
+
+### 🔄 Sequential Thinking for Complex Sub-Tasks
+**RECOMMENDED:** For complex implementation decisions, use Sequential Thinking MCP:
+```
+mcp__sequential-thinking__sequentialthinking
+  thought="[current implementation challenge or decision point]"
+  thought_number=1
+  total_thoughts=3-5
+  next_thought_needed=true
+```
+Use this when facing:
+- Architecture decisions within the sub-task
+- Complex algorithm implementations  
+- Integration challenges
+- Performance optimization choices
+
+**Before Starting:**
+```
+memory_store_chunk
+  content="Starting ST-[ID]: [task-name]. Context: [brief context]"
+  tags=["sub-task", "started", "ST-[ID]", "feature-name"]
+  session_id="[current-session]"
+  repository="[project-repo]"
+```
+
+**During Implementation:**
+```
+memory_store_decision 
+  decision="[key implementation choice made]"
+  rationale="[why this approach was chosen]"
+  alternatives="[other options considered]"
+  session_id="[current-session]"
+  repository="[project-repo]"
+```
+
+**After Completion:**
+```
+memory_store_chunk
+  content="Completed ST-[ID]: [summary]. Deviations: [any changes]. Learnings: [insights gained]"
+  tags=["sub-task", "completed", "ST-[ID]", "learnings"]
+  session_id="[current-session]"
+  repository="[project-repo]"
+```
 
 ### 7. Dependencies and Blockers
 - **Required Sub-Tasks:** Sub-tasks that must be completed first

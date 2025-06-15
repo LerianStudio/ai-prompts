@@ -5,6 +5,25 @@ alwaysApply: false
 ---
 # Rule: Generating Tasks from PRD and TRD Analysis
 
+## 🧠 Enhanced Analysis Tools - USE THESE!
+
+**CRITICAL:** Leverage these tools throughout the task generation process:
+
+### 🧩 Memory MCP Integration
+- **Retrieve context:** `memory_search` for PRD and TRD decisions, patterns, and constraints
+- **Store task logic:** `memory_store_decision` for task breakdown rationale and dependencies
+- **Reference implementations:** `memory_search` for similar task structures from past projects
+- **Track progress:** `memory_tasks` for task generation workflow and user feedback
+- **Tags to use:** `["tasks", "breakdown", "atomic", "feature-name", "implementation"]`
+
+### 🔄 Sequential Thinking MCP
+- **Use for:** Complex dependency analysis, task prioritization, atomic validation
+- **Pattern:** Requirements → technical components → task boundaries → dependency mapping
+- **Benefit:** Ensures tasks are truly atomic and deliver working software increments
+- **When:** During task boundary definition and dependency analysis
+
+**Pro tip:** Store task breakdown decisions to improve future task generation accuracy!
+
 ## Goal
 
 To guide an AI assistant in analyzing both Product Requirements Document (PRD) and Technical Requirements Document (TRD) to generate atomic, functional tasks (phases) that serve as the foundation for project implementation. Each task must deliver a complete, working, and testable application increment.
@@ -12,15 +31,29 @@ To guide an AI assistant in analyzing both Product Requirements Document (PRD) a
 ## Process
 
 1. **Read Both Documents:** The AI must first read both the PRD and TRD documents for comprehensive understanding from `/docs/pre-development/`
+   - 🧩 **Memory Action:** `memory_search` to retrieve related PRD and TRD decisions
+
 2. **Verify Chain Validation:** Ensure validation-report-[feature-name].md shows PASS status before proceeding (if exists)
+   - 🧩 **Memory Action:** `memory_search` for validation patterns and common issues
+
 3. **Analyze Development Roadmap:** Extract and understand the phases outlined in both PRD and TRD
+   - 🔄 **Sequential Thinking:** Map requirements to implementation phases and identify dependencies
+
 4. **Apply Atomic Principles:** Ensure each task is self-contained and delivers working functionality
+   - 🔄 **Sequential Thinking:** Validate each task can stand alone and deliver user value
+
 5. **Generate Task Breakdown:** Create detailed task specifications using the structure below
+   - 🧩 **Memory Action:** `memory_store_decision` for task boundaries and atomic validation logic
 6. **Request User Review:** Present task breakdown and ask for feedback:
    - "Please review this task breakdown. Would you like to adjust the prioritization or scope of any tasks?"
    - **WAIT for user feedback on task organization**
+   - 🧩 **Memory Action:** `memory_store_chunk` with user feedback on task structure
+
 7. **Incorporate Feedback:** Adjust task structure based on user preferences
+   - 🧩 **Memory Action:** `memory_store_decision` documenting task adjustments and rationale
+
 8. **Save Output:** After approval, save as `tasks-[feature-name].md` in `/docs/pre-development/tasks/` directory
+   - 🧩 **Memory Action:** `memory_create_thread` linking PRD → TRD → Tasks for full context chain
 
 ## Input Documents Analysis
 

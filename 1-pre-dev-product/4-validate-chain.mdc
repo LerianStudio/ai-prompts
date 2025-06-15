@@ -5,6 +5,25 @@ alwaysApply: false
 ---
 # Rule: Validate Development Chain Consistency
 
+## 🧠 Enhanced Analysis Tools - USE THESE!
+
+**CRITICAL:** Leverage these tools throughout the validation process:
+
+### 🧩 Memory MCP Integration
+- **Retrieve decisions:** `memory_search` for PRD, TRD, and task decisions to cross-validate
+- **Store validation patterns:** `memory_store_chunk` with common consistency issues found
+- **Reference validation history:** `memory_search` for similar validation scenarios and outcomes
+- **Track validation workflow:** `memory_tasks` for validation process management
+- **Tags to use:** `["validation", "consistency", "chain-verification", "feature-name"]`
+
+### 🔄 Sequential Thinking MCP
+- **Use for:** Complex cross-document analysis, inconsistency detection, completeness validation
+- **Pattern:** PRD requirements → TRD technical specs → Task implementation → consistency check
+- **Benefit:** Systematic validation ensures no requirements are lost in translation
+- **When:** During cross-reference analysis and completeness validation
+
+**Pro tip:** Store validation patterns to improve future validation accuracy and speed!
+
 ## Goal
 
 To guide an AI assistant in validating that the Product Requirements Document (PRD), Technical Requirements Document (TRD), and generated tasks maintain consistency and alignment before proceeding to implementation. This validation step ensures that business requirements, technical specifications, and implementation plans are coherent and complete.
@@ -12,18 +31,32 @@ To guide an AI assistant in validating that the Product Requirements Document (P
 ## Process
 
 1. **Read All Chain Documents:** Load PRD, TRD, and main tasks documents from `/docs/pre-development/`
+   - 🧩 **Memory Action:** `memory_search` to retrieve all related decisions from the development chain
+
 2. **Cross-Reference Analysis:** Validate alignment between documents
+   - 🔄 **Sequential Thinking:** Systematically trace each requirement through all documents
+
 3. **Architecture Consistency:** Ensure architecture patterns are consistently applied
+   - 🧩 **Memory Action:** `memory_search` for established architecture patterns and decisions
+
 4. **Requirements Traceability:** Verify all PRD requirements are addressed in TRD and tasks
+   - 🔄 **Sequential Thinking:** Map each PRD requirement to TRD specs and task implementation
+
 5. **Generate Validation Report:** Create detailed validation report with findings
+   - 🧩 **Memory Action:** `memory_store_chunk` with validation patterns and issues discovered
 6. **Present Report to User:** Show validation results and ask for acknowledgment:
    - "Here's the validation report. Please review any issues found. Should we proceed or address these first?"
    - **WAIT for user decision**
+   - 🧩 **Memory Action:** `memory_store_chunk` with user's validation decisions and risk acceptance
+
 7. **Handle Issues:** If issues found, user decides whether to:
    - Proceed anyway (with documented risks)
    - Go back and fix specific documents
    - Iterate on the entire chain
+   - 🧩 **Memory Action:** `memory_store_decision` documenting validation resolution approach
+
 8. **Save Validation:** After user acknowledgment, save as `validation-report-[feature-name].md` in `/docs/pre-development/`
+   - 🧩 **Memory Action:** `memory_create_thread` completing the full PRD → TRD → Tasks → Validation chain
 
 ## Required Input Documents
 

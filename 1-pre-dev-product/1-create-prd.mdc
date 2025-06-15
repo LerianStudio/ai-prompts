@@ -1,5 +1,24 @@
 # Rule: Generating a Product Requirements Document (PRD)
 
+## 🧠 Enhanced Analysis Tools - USE THESE!
+
+**CRITICAL:** Leverage these tools throughout the PRD creation process:
+
+### 🧩 Memory MCP Integration
+- **Store insights:** `memory_store_chunk` for key requirements, user preferences, and design decisions
+- **Reference patterns:** `memory_search` for similar features from past projects
+- **Build knowledge:** `memory_store_decision` for rationale behind feature choices
+- **Session tracking:** `memory_tasks` for PRD creation workflow management
+- **Tags to use:** `["prd", "requirements", "feature-name", "user-research"]`
+
+### 🔄 Sequential Thinking MCP
+- **Use for:** Complex requirement analysis, user journey mapping, feature prioritization
+- **Pattern:** Break down user needs → business objectives → feature requirements → success metrics
+- **Benefit:** Ensures thorough analysis of requirements from multiple perspectives
+- **When:** During clarifying questions formulation and requirement synthesis
+
+**Pro tip:** Store every user answer and design decision in memory for future reference!
+
 ## Goal
 
 To guide an AI assistant in creating a detailed Product Requirements Document (PRD) in Markdown format, based on an initial user prompt. The PRD should be clear, actionable, and suitable for a junior developer to understand and implement the feature.
@@ -7,16 +26,29 @@ To guide an AI assistant in creating a detailed Product Requirements Document (P
 ## Process
 
 1.  **Receive Initial Prompt:** The user provides a brief description or request for a new feature or functionality.
+    - 🧩 **Memory Action:** `memory_store_chunk` with initial request and context
+    - 🔄 **Sequential Thinking:** Analyze initial request complexity and scope
+
 2.  **Ask Clarifying Questions:** Before writing the PRD, the AI *must* ask clarifying questions to gather sufficient detail. The goal is to understand the "what" and "why" of the feature, not necessarily the "how" (which the developer will figure out).
+    - 🧩 **Memory Action:** `memory_search` for similar features and common pitfalls
+    - 🔄 **Sequential Thinking:** Structure questions by user journey, business impact, technical constraints
     - **IMPORTANT:** WAIT for user responses before proceeding to the next step
     - Present questions in a clear, organized manner
     - Allow user to answer all questions before generating PRD
 3.  **Generate PRD Draft:** Based on the initial prompt and the user's answers to the clarifying questions, generate a PRD using the structure outlined below.
+    - 🧩 **Memory Action:** `memory_store_decision` for key design choices and trade-offs
+    - 🔄 **Sequential Thinking:** Validate requirements flow from user needs to business value
+
 4.  **Request User Review:** Present the PRD draft to the user and explicitly ask for feedback:
     - "Please review this PRD draft. What would you like to change or add?"
     - **WAIT for user approval or feedback**
+    - 🧩 **Memory Action:** `memory_store_chunk` with user feedback and iteration notes
+
 5.  **Incorporate Feedback:** If user requests changes, update the PRD accordingly and present the revised version
+    - 🧩 **Memory Action:** `memory_store_decision` documenting why changes were made
+
 6.  **Save PRD:** Only after user approval, save the generated document as `prd-[feature-name].md` inside the `/docs/pre-development/` directory.
+    - 🧩 **Memory Action:** `memory_create_thread` linking all PRD-related decisions and insights
 
 ## User Interaction Guidelines
 

@@ -1,0 +1,279 @@
+---
+description: Streamlined orchestrator for quick feature development workflow
+globs: 
+alwaysApply: false
+---
+# Rule: Feature Development Workflow Orchestration
+
+## Goal
+
+To guide an AI assistant through a streamlined feature development process that transforms feature requests into implementable tasks quickly. This orchestrator manages a **3-phase feature workflow** optimized for speed while maintaining quality and integration with existing systems.
+
+## 🧠 Enhanced Reasoning Integration
+
+**IMPORTANT**: Use both Memory MCP and Sequential Thinking MCP for enhanced analysis:
+
+### Memory MCP Integration
+- Retrieve existing product context, architecture patterns, and design decisions
+- Reference established tech stack and development patterns
+- Store feature decisions and implementation approaches for future features
+- Tag entries appropriately for feature-level organization
+
+### Sequential Thinking MCP Usage
+- Use `mcp__sequential-thinking__sequentialthinking` for feature complexity analysis
+- Break down feature requirements into technical components systematically
+- Validate feature integration with existing architecture
+- Question assumptions and explore implementation alternatives
+
+## Process Overview
+
+This orchestrator manages a **3-phase feature workflow** with focused user feedback:
+
+### Phase 1: Feature Brief
+**Objective**: Capture feature requirements and user stories quickly
+**User Interaction**: Required - clarifying questions and brief review
+**Output**: `docs/pre-development/feature-brief-[feature-name].md`
+
+### Phase 2: Technical Approach  
+**Objective**: Define implementation strategy within existing architecture
+**User Interaction**: Required - technical decisions and approach review
+**Output**: `docs/pre-development/tech-approach-[feature-name].md`
+
+### Phase 3: Implementation Plan
+**Objective**: Break down into atomic, implementable tasks with git workflow
+**User Interaction**: Optional - review task breakdown
+**Output**: `docs/pre-development/tasks/feature-[feature-name]/`
+
+## Execution Phases
+
+### 📋 Phase 1: Feature Brief
+
+**Interactive process with mandatory user feedback:**
+
+```bash
+# Start feature brief creation
+claude 2-pre-dev-feature/1-feature-brief.mdc
+
+# Process flow:
+# 1. AI retrieves existing product context from Memory MCP
+# 2. AI asks focused clarifying questions (WAIT FOR USER RESPONSE)
+# 3. User provides feature details
+# 4. AI generates feature brief draft
+# 5. User reviews and provides feedback (WAIT FOR APPROVAL)
+# 6. AI incorporates feedback and finalizes brief
+```
+
+**Key User Interactions:**
+- Feature description and user value
+- Answers to clarifying questions about:
+  - User stories and acceptance criteria
+  - Integration points with existing features
+  - Business priority and constraints
+  - Success metrics
+- Review and approval of feature brief
+
+**Output**: `docs/pre-development/feature-brief-[feature-name].md`
+
+### 🔧 Phase 2: Technical Approach
+
+**Build upon approved feature brief with implementation strategy:**
+
+```bash
+# Create technical approach based on feature brief
+claude 2-pre-dev-feature/2-technical-approach.mdc
+
+# Process flow:
+# 1. AI reads approved feature brief
+# 2. AI retrieves existing architecture from Memory MCP
+# 3. AI asks technical clarifying questions (WAIT FOR USER RESPONSE)
+# 4. User provides technical preferences
+# 5. AI generates technical approach draft
+# 6. User reviews technical strategy (WAIT FOR APPROVAL)
+# 7. AI finalizes technical approach
+```
+
+**Key User Interactions:**
+- Implementation approach within existing architecture
+- Integration strategy with current codebase
+- Performance and scalability considerations
+- Testing approach and deployment strategy
+- Review and approval of technical approach
+
+**Output**: `docs/pre-development/tech-approach-[feature-name].md`
+
+### 📝 Phase 3: Implementation Plan
+
+**Create atomic, implementable tasks with git workflow:**
+
+```bash
+# Generate implementation tasks from feature brief and technical approach
+claude 2-pre-dev-feature/3-implementation-plan.mdc
+
+# Process flow:
+# 1. AI reads both feature brief and technical approach
+# 2. AI analyzes implementation roadmap
+# 3. AI generates atomic task breakdown with git workflow
+# 4. User optionally reviews task structure (WAIT FOR FEEDBACK if requested)
+# 5. User can adjust task organization
+# 6. AI incorporates feedback and finalizes implementation plan
+```
+
+**Key User Interactions (Optional):**
+- Review of proposed implementation phases
+- Feedback on task prioritization and scope
+- Adjustment of task boundaries
+- Approval of implementation structure
+
+**Output**: `docs/pre-development/tasks/feature-[feature-name]/`
+
+## Key Differences from Product Workflow
+
+### **Assumptions Made**
+- ✅ Product architecture is established
+- ✅ Tech stack and patterns are defined
+- ✅ Development workflow is in place
+- ✅ Testing strategy exists
+- ✅ Deployment pipeline is functional
+
+### **Focus Areas**
+- 🎯 **Integration** over architecture decisions
+- 🎯 **Implementation** over design exploration  
+- 🎯 **Speed** over comprehensive documentation
+- 🎯 **Iteration** over upfront planning
+
+### **Reduced Complexity**
+- **No PRD**: Feature brief replaces full product requirements
+- **No TRD**: Technical approach focuses on implementation strategy
+- **No Validation**: Assumes existing architecture validation
+- **Faster Feedback**: 3 phases vs 5 phases
+
+## Quick Execution Commands
+
+### Full Feature Workflow
+```bash
+# Phase 1: Feature Brief with user feedback
+claude 2-pre-dev-feature/1-feature-brief.mdc
+# [User provides feature details, answers questions, reviews brief]
+
+# Phase 2: Technical Approach with implementation decisions  
+claude 2-pre-dev-feature/2-technical-approach.mdc
+# [User provides technical preferences, reviews approach]
+
+# Phase 3: Implementation Plan with task breakdown
+claude 2-pre-dev-feature/3-implementation-plan.mdc
+# [User optionally reviews task breakdown]
+```
+
+### Express Workflow (Minimal user interaction)
+```bash
+# Create feature brief and technical approach only
+claude 2-pre-dev-feature/1-feature-brief.mdc
+# [User interaction required]
+claude 2-pre-dev-feature/2-technical-approach.mdc
+# [User interaction required]
+# Skip implementation plan for immediate development
+```
+
+## Output Organization
+
+All feature development outputs are systematically organized:
+
+```
+docs/pre-development/
+├── feature-brief-[feature-name].md       # Feature requirements and user stories
+├── tech-approach-[feature-name].md       # Implementation strategy
+└── tasks/
+    └── feature-[feature-name]/           # Implementation tasks
+        ├── overview.md                   # Feature implementation overview
+        └── FT-[XX]-[task-name].md        # Individual feature tasks
+```
+
+## Memory Integration
+
+Store feature decisions and patterns with appropriate tags:
+- `["feature", "brief", "requirements", "feature-name"]` for feature specifications
+- `["feature", "technical", "implementation", "feature-name"]` for technical choices
+- `["feature", "tasks", "breakdown", "feature-name"]` for task organization
+- `["feature", "integration", "existing-system"]` for integration patterns
+
+## Success Criteria
+
+### Phase Completion Criteria
+- **Phase 1**: Feature brief approved with clear requirements and acceptance criteria
+- **Phase 2**: Technical approach approved with implementation strategy defined
+- **Phase 3**: Implementation plan generated with atomic tasks and git workflow
+
+### Overall Success Metrics
+- Features integrated smoothly with existing system
+- Implementation tasks are truly atomic and implementable
+- User feedback incorporated at each stage
+- Clear path from feature request to implementation
+- Minimal disruption to existing architecture
+
+## Best Practices
+
+### For Effective Feature Development
+
+1. **Leverage Existing Context** - Use Memory MCP to retrieve relevant patterns and decisions
+2. **Focus on Integration** - Ensure new features work seamlessly with existing functionality
+3. **Maintain Consistency** - Follow established patterns and conventions
+4. **Quick Validation** - Get user feedback early and often
+5. **Atomic Tasks** - Ensure each task can be completed independently
+6. **Git-First** - Include git workflow from the start
+
+### For Quality Assurance
+
+1. **Reference Architecture** - Ensure feature aligns with existing system design
+2. **Consistent Patterns** - Use established coding patterns and conventions
+3. **Testing Strategy** - Include testing approach in technical approach
+4. **Performance Consideration** - Evaluate impact on existing system performance
+5. **Documentation Updates** - Plan for necessary documentation changes
+
+## Integration with Product Workflow
+
+### When to Use Feature vs Product Workflow
+
+**Use 2-pre-dev-feature for:**
+- Adding new functionality to existing products
+- Enhancing existing features
+- Bug fixes that require significant changes
+- Performance improvements
+- Integration with new third-party services
+
+**Use 1-pre-dev-product for:**
+- New products or applications
+- Major architectural changes
+- Complete system redesigns
+- New technology stack adoption
+- Complex multi-feature initiatives
+
+### Workflow Transition
+
+```bash
+# Start with product workflow for new systems
+claude 1-pre-dev-product/0-pre-dev-orchestrator.mdc
+
+# Switch to feature workflow for enhancements
+claude 2-pre-dev-feature/0-feature-orchestrator.mdc
+```
+
+## Integration with Code Review Chain
+
+```bash
+# After feature implementation begins
+# 1. Complete feature development planning (this workflow)
+# 2. Implement features based on tasks
+# 3. Run code review chain to validate implementation
+claude 2-code-review/00-code-review-orchestrator.mdc
+```
+
+## Final Instructions
+
+1. **Start Fast** - Feature workflow is designed for speed
+2. **Leverage Context** - Use Memory MCP to retrieve existing decisions
+3. **Focus on Integration** - Ensure seamless integration with existing system
+4. **Iterate Quickly** - Get user feedback and adjust rapidly
+5. **Maintain Quality** - Don't sacrifice quality for speed
+6. **Document Decisions** - Store important decisions for future features
+
+This orchestrator ensures rapid feature development with continuous user engagement, resulting in well-integrated features that align with existing system architecture and user needs.

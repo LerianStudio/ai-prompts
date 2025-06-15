@@ -1,0 +1,454 @@
+---
+description: Convert feature brief and technical approach into atomic implementation tasks
+globs: 
+alwaysApply: false
+---
+# Rule: Creating Feature Implementation Plan
+
+## 🧠 Enhanced Analysis Tools - USE THESE!
+
+**CRITICAL:** Leverage these tools throughout the implementation planning process:
+
+### 🧩 Memory MCP Integration
+- **Retrieve context:** `memory_search` for feature brief, technical approach, and related decisions
+- **Store task logic:** `memory_store_decision` for task breakdown rationale and implementation sequencing
+- **Reference implementations:** `memory_search` for similar feature implementations and successful patterns
+- **Track progress:** `memory_tasks` for implementation planning workflow
+- **Store patterns:** `memory_store_chunk` with successful task structures for future features
+- **Tags to use:** `["implementation-plan", "feature-tasks", "breakdown", "feature-name", "development"]`
+
+### 🔄 Sequential Thinking MCP
+- **Use for:** Complex task decomposition, dependency analysis, implementation sequencing
+- **Pattern:** Technical approach → implementation components → task boundaries → git workflow
+- **Benefit:** Ensures tasks are atomic, properly sequenced, and efficiently implementable
+- **When:** During task boundary analysis and dependency mapping
+
+**Pro tip:** Store every task breakdown decision to improve future feature task generation!
+
+## Goal
+
+To guide an AI assistant in analyzing feature brief and technical approach to generate atomic, implementable tasks with integrated git workflow. Each task must be specific, actionable, and completable in a single development session.
+
+## Process
+
+1. **Read Context Documents:** Load feature brief and technical approach from previous phases
+   - 🧩 **Memory Action:** `memory_search` to retrieve all related feature decisions and context
+
+2. **Analyze Implementation Scope:** Extract implementation requirements and integration points
+   - 🔄 **Sequential Thinking:** Map technical approach to implementation components and dependencies
+
+3. **Apply Atomic Principles:** Ensure each task is self-contained and implementable in 2-4 hours
+   - 🔄 **Sequential Thinking:** Validate task boundaries and completion criteria
+
+4. **Generate Implementation Tasks:** Create detailed task specifications with git workflow
+   - 🧩 **Memory Action:** `memory_store_decision` for task breakdown and implementation approach
+
+5. **Optional User Review:** Since tasks are implementation details, user review is optional:
+   - "I've created detailed implementation tasks. Would you like to review the breakdown, or shall I proceed with saving them?"
+   - If user wants to review, WAIT for feedback
+   - If user approves or skips review, proceed to save
+   - 🧩 **Memory Action:** `memory_store_chunk` with user feedback (if provided)
+
+6. **Save Implementation Plan:** Create organized task files in `/docs/pre-development/tasks/feature-[feature-name]/`
+   - 🧩 **Memory Action:** `memory_create_thread` completing feature brief → technical approach → implementation plan
+
+## Feature Task Principles
+
+### Definition of "Atomic Feature Task"
+Each task MUST be:
+- **Single Session:** Completable in 2-4 hours maximum
+- **Specific:** Clear implementation requirements within existing system
+- **Testable:** Can be validated independently
+- **Integrable:** Fits cleanly with existing codebase
+- **Git-Ready:** Includes complete git workflow
+
+### Task Validation Checklist
+Before finalizing each task, ensure:
+- [ ] **Clear Deliverable:** Specific code, API, or UI component
+- [ ] **Integration Path:** Clear how it connects with existing system
+- [ ] **Test Strategy:** Clear validation approach
+- [ ] **File Size Compliance:** Targets <300 lines, max 500 lines per file
+- [ ] **Git Workflow:** Complete branch/commit/PR process
+
+## Feature Task Structure
+
+Each generated feature task should include these sections:
+
+### 1. Feature Task Overview
+- **Task ID:** FT-[feature-id]-[number] (e.g., FT-001-001, FT-001-002)
+- **Task Name:** Clear, action-oriented name (e.g., "Add Priority Field to Task Model")
+- **Parent Feature:** Reference to feature (e.g., "Feature: Task Priority Management")
+- **Estimated Duration:** 2-4 hours maximum
+- **Implementation Type:** Code, Configuration, Testing, Integration
+- **Integration Points:** Existing components this task touches
+
+### 🔀 Git Workflow (REQUIRED)
+**BEFORE STARTING:**
+```bash
+git checkout -b feature/FT-[feature-id]-[num]-[short-desc]
+# Example: git checkout -b feature/FT-001-001-priority-field
+```
+
+**AFTER COMPLETING:**
+```bash
+git add .
+git commit -m "feat(FT-[feature-id]-[num]): [brief description]
+
+Implemented:
+- [what was built]
+
+Integration:
+- [how it connects with existing system]
+
+Notes:
+- [implementation details and decisions]"
+
+git push -u origin feature/FT-[feature-id]-[num]-[short-desc]
+```
+
+### 2. Integration Specification
+- **Existing Components:** Specific files/components this task modifies or extends
+- **New Components:** New files/components this task creates
+- **File Size Guidelines:** 
+  - **Target:** <300 lines per file for optimal LLM processing
+  - **Maximum:** 500 lines per file (hard limit)
+  - **Split Strategy:** If approaching 500 lines, break into logical modules
+- **API Integration:** How task integrates with existing APIs
+- **Data Integration:** How task works with existing data models
+- **UI Integration:** How task fits into existing user interface
+
+### 3. Implementation Details
+- **Step-by-Step Approach:** Numbered implementation steps within existing codebase
+- **Code Examples:** Key code snippets showing integration patterns
+- **Existing Code Modifications:** Specific changes to existing files
+- **New Code Creation:** New files and their structure
+- **Dependencies:** Libraries or components needed
+
+### 4. Acceptance Criteria
+- **Functional Criteria:** What the task must accomplish
+- **Integration Criteria:** How it must work with existing system
+- **Performance Criteria:** Performance requirements within existing system
+- **Quality Criteria:** Code quality and consistency requirements
+
+### 5. Testing Requirements
+- **Unit Tests:** Specific test cases for new functionality
+- **Integration Tests:** Tests for interaction with existing components
+- **Manual Testing:** Manual validation steps
+- **Regression Testing:** Ensuring existing functionality still works
+
+### 6. Definition of Done
+- **Code Complete:** All code written and integrated
+- **Tests Passing:** All tests written and passing
+- **Integration Verified:** Works seamlessly with existing system
+- **Performance Validated:** Meets performance requirements
+- **Git Workflow Complete:** Branch created, committed, and PR submitted
+- **🧩 Memory Actions Complete:** Implementation progress stored
+
+### 🧠 Required Memory Actions During Implementation
+**CRITICAL:** Every feature task implementation MUST include these Memory MCP actions:
+
+**Before Starting:**
+```
+memory_store_chunk
+  content="Starting FT-[ID]: [task-name]. Integration context: [existing components involved]"
+  tags=["feature-task", "started", "FT-[ID]", "feature-name"]
+  session_id="[current-session]"
+  repository="[project-repo]"
+```
+
+**During Implementation:**
+```
+memory_store_decision 
+  decision="[key integration or implementation choice]"
+  rationale="[why this approach works with existing system]"
+  alternatives="[other options considered]"
+  session_id="[current-session]"
+  repository="[project-repo]"
+```
+
+**After Completion:**
+```
+memory_store_chunk
+  content="Completed FT-[ID]: [summary]. Integration success: [how it works with existing system]. Learnings: [insights for future features]"
+  tags=["feature-task", "completed", "FT-[ID]", "integration-success"]
+  session_id="[current-session]"
+  repository="[project-repo]"
+```
+
+### 🔄 Sequential Thinking for Complex Tasks
+**RECOMMENDED:** For complex integration decisions, use Sequential Thinking MCP:
+```
+mcp__sequential-thinking__sequentialthinking
+  thought="[integration challenge or implementation decision]"
+  thought_number=1
+  total_thoughts=3-5
+  next_thought_needed=true
+```
+Use when facing:
+- Complex integration with existing components
+- Performance optimization within existing system
+- API design that affects existing endpoints
+- Data model changes that impact existing features
+
+### 7. Dependencies and Integration
+- **Required Tasks:** Feature tasks that must be completed first
+- **Existing Component Dependencies:** Current system components needed
+- **External Dependencies:** Third-party services or libraries
+- **Integration Sequence:** Order for integrating with existing system
+
+## Implementation Plan Structure
+
+Create organized implementation plan:
+
+```
+docs/pre-development/tasks/feature-[feature-name]/
+├── overview.md                           # Feature implementation overview
+├── FT-[feature-id]-001-[task-name].md    # Individual feature tasks
+├── FT-[feature-id]-002-[task-name].md
+├── FT-[feature-id]-003-[task-name].md
+└── implementation-sequence.md             # Task execution order and dependencies
+```
+
+### Overview Document Structure
+
+```markdown
+# Feature Implementation Plan: [Feature Name]
+
+## 🎯 Implementation Overview
+
+**Feature:** [Feature name]
+**Total Tasks:** [Number of implementation tasks]
+**Estimated Duration:** [Total development time]
+**Integration Complexity:** [Low/Medium/High]
+
+## 📋 Task Summary
+
+| Task ID | Name | Duration | Type | Dependencies |
+|---------|------|----------|------|--------------|
+| FT-001-001 | [Task name] | 3h | Code | None |
+| FT-001-002 | [Task name] | 2h | Integration | FT-001-001 |
+| FT-001-003 | [Task name] | 4h | Testing | FT-001-002 |
+
+## 🔗 Integration Map
+
+```mermaid
+graph TD
+    A[Existing Component 1] -->|Modified by| B[FT-001-001]
+    B -->|Enables| C[FT-001-002]
+    C -->|Integrates with| D[Existing Component 2]
+    C -->|Tested by| E[FT-001-003]
+```
+
+## 📅 Implementation Sequence
+
+### Week 1
+- **Day 1:** FT-001-001 - [Task name]
+- **Day 2:** FT-001-002 - [Task name]
+- **Day 3:** FT-001-003 - [Task name]
+
+### Parallel Opportunities
+- [Tasks that can be done simultaneously]
+
+### Critical Path
+- [Tasks that block other work]
+```
+
+## Example Feature Task
+
+```markdown
+## FT-001-001: Add Priority Field to Task Model
+
+### 1. Feature Task Overview
+- **Task ID:** FT-001-001
+- **Task Name:** Add Priority Field to Task Model
+- **Parent Feature:** Task Priority Management
+- **Estimated Duration:** 3 hours
+- **Implementation Type:** Code (Backend Model Extension)
+- **Integration Points:** Task model, Task API, Task database schema
+
+### 🔀 Git Workflow (REQUIRED)
+**BEFORE STARTING:**
+```bash
+git checkout -b feature/FT-001-001-priority-field
+```
+
+**AFTER COMPLETING:**
+```bash
+git add .
+git commit -m "feat(FT-001-001): add priority field to task model
+
+Implemented:
+- Added priority enum to task model
+- Updated database schema with migration
+- Extended task API to handle priority
+
+Integration:
+- Maintains backward compatibility with existing tasks
+- Default priority set to 'medium' for existing tasks
+
+Notes:
+- Used existing validation patterns
+- Followed established model structure"
+
+git push -u origin feature/FT-001-001-priority-field
+```
+
+### 2. Integration Specification
+- **Existing Components:** 
+  - `models/task.js` - Extend with priority field
+  - `routes/tasks.js` - Update API endpoints
+  - `controllers/taskController.js` - Add priority handling
+- **New Components:** 
+  - `migrations/add_task_priority.sql` - Database migration
+- **File Size Guidelines:** All modified files stay under 300 lines
+- **API Integration:** Extend existing task endpoints with priority parameter
+- **Data Integration:** Add priority column to tasks table with default value
+
+### 3. Implementation Details
+**Step-by-Step Approach:**
+1. Create database migration for priority field
+2. Update Task model with priority enum
+3. Modify task controller to handle priority in CRUD operations
+4. Update API routes to accept priority parameter
+5. Add validation for priority values
+6. Update existing tests to include priority scenarios
+
+**Code Examples:**
+```javascript
+// Task model extension (models/task.js)
+const TaskPriority = {
+  LOW: 'low',
+  MEDIUM: 'medium', 
+  HIGH: 'high'
+};
+
+// Add to existing Task schema
+priority: {
+  type: String,
+  enum: Object.values(TaskPriority),
+  default: TaskPriority.MEDIUM
+}
+```
+
+**Database Migration:**
+```sql
+-- migrations/add_task_priority.sql
+ALTER TABLE tasks 
+ADD COLUMN priority VARCHAR(10) 
+DEFAULT 'medium' 
+CHECK (priority IN ('low', 'medium', 'high'));
+```
+
+### 4. Acceptance Criteria
+- **Functional Criteria:**
+  - Task model includes priority field with enum validation
+  - API accepts priority in create/update operations
+  - Default priority is set for existing tasks
+  - Priority is returned in all task responses
+  
+- **Integration Criteria:**
+  - Existing task functionality remains unchanged
+  - All existing tests continue to pass
+  - New priority field is properly validated
+  
+- **Performance Criteria:**
+  - Database queries perform within existing benchmarks
+  - API response times remain under 200ms
+
+### 5. Testing Requirements
+- **Unit Tests:**
+  - Task model validates priority values correctly
+  - Task model rejects invalid priority values
+  - Task controller handles priority in CRUD operations
+  - Default priority is applied correctly
+  
+- **Integration Tests:**
+  - Task API accepts priority in requests
+  - Task API returns priority in responses
+  - Database migration applies successfully
+  
+- **Manual Testing:**
+  - Create task with each priority level
+  - Update task priority
+  - Verify existing tasks have default priority
+
+### 6. Definition of Done
+- [ ] Task model includes priority field with validation
+- [ ] Database migration creates priority column
+- [ ] API endpoints handle priority parameter
+- [ ] All tests pass including new priority tests
+- [ ] Existing functionality remains unaffected
+- [ ] Code follows existing style and patterns
+- [ ] Git workflow completed with detailed commit
+- [ ] 🧩 Memory actions completed
+
+### 7. Dependencies and Integration
+- **Required Tasks:** None (foundational task)
+- **Existing Component Dependencies:** Task model, Task API, Database
+- **External Dependencies:** Database migration tool
+- **Integration Sequence:** This task enables all subsequent priority-related tasks
+```
+
+## Memory Actions During Process
+
+### Initial Context Retrieval
+```
+memory_search "feature-brief technical-approach [feature-name]" repository="[project-repo]"
+memory_store_chunk
+  content="Starting implementation plan for [feature-name]. Context: [brief and approach summary]"
+  tags=["implementation-plan", "started", "feature-name"]
+  session_id="[current-session]"
+  repository="[project-repo]"
+```
+
+### After Task Generation
+```
+memory_store_decision
+  decision="Task breakdown for [feature-name]"
+  rationale="Integration approach: [approach]. Task boundaries: [reasoning]. Implementation sequence: [sequence logic]"
+  context="Total tasks: [count]. Critical path: [tasks]. Parallel opportunities: [tasks]"
+  session_id="[current-session]"
+  repository="[project-repo]"
+```
+
+### After Plan Completion
+```
+memory_create_thread
+  name="Feature Implementation: [feature-name]"
+  description="Complete feature development from brief through implementation tasks"
+  chunk_ids=["[feature-brief-chunks]", "[tech-approach-chunks]", "[implementation-plan-chunks]"]
+  repository="[project-repo]"
+```
+
+## Quality Validation
+
+Before finalizing implementation plan, ensure:
+
+### Task Atomicity
+- [ ] **Each task is completable in 2-4 hours**
+- [ ] **Clear deliverable for each task**
+- [ ] **Tasks are independent where possible**
+- [ ] **Dependencies are minimal and clear**
+
+### Integration Quality
+- [ ] **All integration points identified**
+- [ ] **Existing system impact minimized**
+- [ ] **File size limits respected**
+- [ ] **Performance impact considered**
+
+### Implementation Readiness
+- [ ] **Clear implementation path for each task**
+- [ ] **All dependencies available**
+- [ ] **Testing approach defined**
+- [ ] **Git workflow included**
+
+## Final Instructions
+
+1. **Integration First** - Always prioritize clean integration with existing system
+2. **Atomic Focus** - Ensure tasks are truly atomic and implementable
+3. **Memory Integration** - Store all decisions and patterns for future features
+4. **Quality Consistency** - Maintain existing code quality and patterns
+5. **Git Discipline** - Include complete git workflow for every task
+6. **Performance Aware** - Consider impact on existing system performance
+
+This implementation plan provides the final level of detail needed for efficient feature development with seamless integration into existing systems.
