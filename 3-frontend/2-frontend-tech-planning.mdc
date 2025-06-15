@@ -1,0 +1,651 @@
+---
+description: Convert design specifications into technical frontend implementation strategy
+globs: 
+alwaysApply: false
+---
+# Rule: Frontend Technical Planning
+
+## 🧠 Enhanced Analysis Tools - USE THESE!
+
+**CRITICAL:** Leverage these tools throughout the technical planning process:
+
+### 🧩 Memory MCP Integration
+- **Retrieve technical context:** `memory_search` for existing frontend architecture, component patterns, and tech stack decisions
+- **Store technical decisions:** `memory_store_decision` for implementation strategy, technology choices, and architecture patterns
+- **Reference similar implementations:** `memory_search` for comparable frontend solutions and successful technical patterns
+- **Link to design analysis:** `memory_search` for design specifications and requirements from previous phase
+- **Tags to use:** `["frontend-tech-planning", "implementation-strategy", "architecture", "feature-name", "tech-stack"]`
+
+### 🔄 Sequential Thinking MCP
+- **Use for:** Technical architecture decisions, BFF integration strategy, performance optimization planning
+- **Pattern:** Design requirements → technical architecture → implementation strategy → performance considerations
+- **Benefit:** Ensures technical approach is optimal for design requirements and system integration
+- **When:** During architecture analysis and technology selection
+
+**Pro tip:** Always reference existing frontend architecture patterns to ensure consistency and avoid technical debt!
+
+## Goal
+
+To guide an AI assistant in creating a comprehensive Frontend Technical Plan that converts design specifications into implementation strategy, ensuring optimal BFF integration, performance, and maintainability.
+
+## Process
+
+1. **Read Design Analysis:** Load approved design specifications from previous phase
+   - 🧩 **Memory Action:** `memory_search` to retrieve design analysis decisions and requirements
+
+2. **Retrieve Technical Context:** Use Memory MCP to understand existing frontend architecture
+   - 🧩 **Memory Action:** `memory_search` for frontend architecture, tech stack, and integration patterns
+
+3. **Analyze Technical Requirements:** Map design requirements to technical implementation needs
+   - 🔄 **Sequential Thinking:** Convert design specifications to technical architecture requirements
+
+4. **Ask Technical Questions:** Gather specific technical preferences and constraints
+   - **IMPORTANT:** WAIT for user responses before proceeding
+   - Focus on implementation strategy within existing tech stack
+
+5. **Generate Technical Plan:** Create comprehensive frontend implementation strategy
+   - 🧩 **Memory Action:** `memory_store_decision` for key technical choices and rationale
+
+6. **Request Technical Review:** Present plan and ask for feedback:
+   - "Please review this frontend technical plan. Are there any technical decisions you'd like to adjust?"
+   - **WAIT for user approval or feedback**
+   - 🧩 **Memory Action:** `memory_store_chunk` with user technical feedback
+
+7. **Incorporate Feedback:** Update plan based on user's technical preferences
+   - 🧩 **Memory Action:** `memory_store_decision` documenting technical changes and rationale
+
+8. **Save Technical Plan:** After approval, save as `frontend-tech-plan-[feature-name].md` in `/docs/frontend-development/`
+   - 🧩 **Memory Action:** Link design analysis and technical plan in memory thread
+
+## User Interaction Guidelines
+
+### Technical Decision Points
+
+Ask **3-5 focused technical questions** maximum. Focus on:
+
+1. **Implementation Strategy:** How should components integrate with existing frontend architecture?
+2. **State Management:** What state management approach fits this feature's complexity?
+3. **BFF Integration:** How should this connect with existing or new BFF endpoints?
+4. **Performance Strategy:** Any specific performance requirements or constraints?
+5. **Testing Approach:** What testing strategy should we prioritize for this feature?
+
+### Example Question Sets
+
+**For Component-Heavy Features:**
+- "Should we create new reusable components or extend existing ones from [component library]?"
+- "How should component state be managed - local state, context, or global store?"
+- "Any specific performance requirements for component rendering?"
+
+**For Data-Driven Features:**
+- "How should we handle data fetching - custom hooks, existing data layer, or new patterns?"
+- "What's the expected data update frequency - static, periodic, or real-time?"
+- "How should we handle offline/error states for data interactions?"
+
+**For Integration-Heavy Features:**
+- "Should we extend existing BFF endpoints or create new ones?"
+- "How should authentication/authorization be handled for new endpoints?"
+- "Any specific caching or performance requirements for API calls?"
+
+## Frontend Technical Plan Structure
+
+Create technical plan using this structure:
+
+```markdown
+# Frontend Technical Plan: [Feature Name]
+
+## 🏗️ Technical Implementation Overview
+
+**Feature:** [Feature name from design analysis]
+**Implementation Complexity:** [Low/Medium/High based on design and integration requirements]
+**Primary Technology Focus:** [Component architecture/Data integration/User interaction/Performance]
+**Estimated Development Time:** [Based on technical complexity assessment]
+
+## 📋 Frontend Architecture Strategy
+
+### Existing Architecture Integration
+- **Current Frontend Stack:** [React/Vue/Angular version and key libraries]
+- **Component Library:** [Existing design system and component library usage]
+- **State Management:** [Current state management approach and integration]
+- **Styling Strategy:** [CSS-in-JS/CSS Modules/Tailwind/Styled Components]
+- **Build System:** [Webpack/Vite/Create React App configuration]
+
+### New Architecture Requirements
+- **Component Architecture Changes:** [New components and component hierarchy needed]
+- **State Management Extensions:** [Additional state management requirements]
+- **Styling Extensions:** [New styling patterns or design system extensions]
+- **Build Configuration:** [Build system modifications for new requirements]
+
+```mermaid
+graph TD
+    A[Existing App Architecture] -->|Integrates with| B[New Feature Components]
+    B -->|Uses| C[Existing Component Library]
+    B -->|Connects to| D[BFF/API Layer]
+    B -->|Manages state via| E[State Management Layer]
+    C -->|Styled with| F[Design System]
+```
+
+## 🛠️ Component Architecture Design
+
+### Component Hierarchy Strategy
+```
+FeatureContainer/
+├── FeatureLayout/                    # Main layout wrapper
+│   ├── FeatureHeader/               # Feature-specific header
+│   ├── FeatureContent/              # Main content area
+│   │   ├── PrimaryComponent/        # Core feature component
+│   │   ├── SecondaryComponent/      # Supporting components
+│   │   └── DataDisplayComponent/    # Data visualization
+│   └── FeatureFooter/               # Feature-specific footer
+└── FeatureModals/                   # Modal dialogs and overlays
+```
+
+### Component Specifications
+- **Container Components:** [Smart components handling data and state]
+- **Presentation Components:** [Pure components for UI rendering]
+- **Shared Components:** [Reusable components for common patterns]
+- **Feature-Specific Components:** [Components unique to this feature]
+
+### Component Props and Interface Design
+```typescript
+// Example component interfaces
+interface PrimaryComponentProps {
+  data: FeatureData;
+  onAction: (action: ActionType) => void;
+  loading?: boolean;
+  error?: string;
+  variant?: 'default' | 'compact' | 'expanded';
+}
+
+interface FeatureData {
+  id: string;
+  title: string;
+  metadata: Record<string, any>;
+  // ... other data properties
+}
+```
+
+### Component State Management
+- **Local State:** [Component-level state using useState/ref]
+- **Shared State:** [Context or prop drilling for component communication]
+- **Global State:** [Redux/Zustand/Context for application-wide state]
+- **Server State:** [React Query/SWR for API data management]
+
+## 🔗 BFF/Backend Integration Strategy
+
+### API Integration Architecture
+```javascript
+// API service layer structure
+const FeatureAPI = {
+  // Data fetching
+  getFeatureData: (params) => bffClient.get('/api/feature/data', { params }),
+  getFeatureList: (filters) => bffClient.get('/api/feature/list', { params: filters }),
+  
+  // Data mutations
+  createFeatureItem: (data) => bffClient.post('/api/feature/items', data),
+  updateFeatureItem: (id, data) => bffClient.put(`/api/feature/items/${id}`, data),
+  deleteFeatureItem: (id) => bffClient.delete(`/api/feature/items/${id}`),
+  
+  // Real-time features
+  subscribeToFeatureUpdates: (callback) => websocket.subscribe('feature-updates', callback)
+};
+```
+
+### BFF Endpoint Requirements
+- **Existing Endpoints:** [BFF endpoints already available for integration]
+- **New Endpoint Needs:** [New BFF endpoints required for feature]
+- **Data Transformation:** [Frontend data transformation and normalization needs]
+- **Error Handling:** [API error handling and user feedback strategy]
+
+### Data Flow Strategy
+```mermaid
+sequenceDiagram
+    participant UI as Frontend Component
+    participant API as API Service Layer
+    participant BFF as BFF Service
+    participant BE as Backend Service
+    
+    UI->>API: Request feature data
+    API->>BFF: HTTP request with auth
+    BFF->>BE: Business logic request
+    BE-->>BFF: Raw data response
+    BFF-->>API: Transformed data
+    API-->>UI: Normalized data
+    UI->>UI: Update component state
+```
+
+### Authentication & Authorization
+- **Auth Strategy:** [How feature integrates with existing auth system]
+- **Permission Handling:** [Role-based access control for feature functionality]
+- **Token Management:** [JWT/session token handling for API calls]
+- **Security Considerations:** [XSS, CSRF, and data protection measures]
+
+## ⚡ Performance Optimization Strategy
+
+### Loading Performance
+- **Code Splitting:** [Component-level code splitting and lazy loading strategy]
+- **Bundle Optimization:** [Webpack/Vite optimization for feature code]
+- **Asset Loading:** [Image and media optimization strategy]
+- **Initial Load Time:** [Target metrics and optimization techniques]
+
+```javascript
+// Code splitting example
+const FeatureComponent = lazy(() => 
+  import('./components/FeatureComponent').then(module => ({
+    default: module.FeatureComponent
+  }))
+);
+
+// Performance monitoring
+const useFeaturePerformance = () => {
+  useEffect(() => {
+    performance.mark('feature-render-start');
+    return () => {
+      performance.mark('feature-render-end');
+      performance.measure('feature-render', 'feature-render-start', 'feature-render-end');
+    };
+  }, []);
+};
+```
+
+### Runtime Performance
+- **Rendering Optimization:** [React.memo, useMemo, useCallback strategy]
+- **State Update Optimization:** [Batching and efficient state updates]
+- **List Rendering:** [Virtualization for large data sets]
+- **Memory Management:** [Cleanup and memory leak prevention]
+
+### Caching Strategy
+- **API Response Caching:** [React Query/SWR caching configuration]
+- **Component Memoization:** [Strategic memoization for expensive components]
+- **Asset Caching:** [Browser caching strategy for static assets]
+- **State Persistence:** [LocalStorage/SessionStorage for user preferences]
+
+## 🎨 Styling and Design System Integration
+
+### Styling Architecture
+- **CSS Strategy:** [CSS-in-JS/CSS Modules/Tailwind implementation]
+- **Theme Integration:** [Design system theme and token usage]
+- **Component Styling:** [Styled components and style composition]
+- **Responsive Design:** [Breakpoint management and responsive utilities]
+
+```javascript
+// Styling approach example
+const FeatureStyles = {
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing.md,
+    padding: theme.spacing.lg,
+    backgroundColor: theme.colors.background.primary,
+    borderRadius: theme.borderRadius.md,
+  },
+  header: {
+    typography: theme.typography.heading.h2,
+    color: theme.colors.text.primary,
+    marginBottom: theme.spacing.sm,
+  }
+};
+```
+
+### Design System Extensions
+- **New Components:** [Components to add to design system]
+- **Token Extensions:** [New design tokens needed]
+- **Pattern Documentation:** [New interaction patterns to document]
+- **Accessibility Compliance:** [WCAG compliance implementation]
+
+### Responsive Design Implementation
+```css
+/* Responsive breakpoint strategy */
+.feature-container {
+  /* Mobile-first approach */
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  
+  /* Tablet breakpoint */
+  @media (min-width: 768px) {
+    flex-direction: row;
+    gap: 2rem;
+  }
+  
+  /* Desktop breakpoint */
+  @media (min-width: 1024px) {
+    gap: 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+}
+```
+
+## 🧪 Testing Strategy
+
+### Testing Architecture
+- **Unit Testing:** [Component testing with Jest/Vitest and Testing Library]
+- **Integration Testing:** [Component integration and API integration tests]
+- **E2E Testing:** [Cypress/Playwright for user workflow testing]
+- **Visual Regression:** [Chromatic/Percy for visual testing]
+
+### Test Implementation Plan
+```javascript
+// Example test structure
+describe('FeatureComponent', () => {
+  describe('Component Rendering', () => {
+    it('renders with required props', () => {
+      render(<FeatureComponent data={mockData} onAction={mockAction} />);
+      expect(screen.getByRole('button')).toBeInTheDocument();
+    });
+    
+    it('handles loading state correctly', () => {
+      render(<FeatureComponent loading={true} />);
+      expect(screen.getByRole('progressbar')).toBeInTheDocument();
+    });
+  });
+  
+  describe('User Interactions', () => {
+    it('calls onAction when button is clicked', () => {
+      const mockAction = jest.fn();
+      render(<FeatureComponent onAction={mockAction} />);
+      fireEvent.click(screen.getByRole('button'));
+      expect(mockAction).toHaveBeenCalledWith(expectedAction);
+    });
+  });
+  
+  describe('API Integration', () => {
+    it('fetches data on mount', async () => {
+      const mockApiCall = jest.spyOn(FeatureAPI, 'getFeatureData');
+      render(<FeatureComponent />);
+      await waitFor(() => {
+        expect(mockApiCall).toHaveBeenCalledWith(expectedParams);
+      });
+    });
+  });
+});
+```
+
+### Performance Testing
+- **Lighthouse Audits:** [Automated performance monitoring]
+- **Bundle Analysis:** [Webpack Bundle Analyzer for size optimization]
+- **Runtime Performance:** [React DevTools Profiler integration]
+- **Load Testing:** [API performance under expected load]
+
+## 📱 Mobile and Accessibility Strategy
+
+### Mobile-First Implementation
+- **Touch Interactions:** [Touch-friendly component design]
+- **Mobile Navigation:** [Mobile-specific navigation patterns]
+- **Performance on Mobile:** [Mobile-specific performance optimizations]
+- **PWA Features:** [Progressive Web App functionality if applicable]
+
+### Accessibility Implementation
+```javascript
+// Accessibility example
+const AccessibleFeatureComponent = () => {
+  const [announceText, setAnnounceText] = useState('');
+  
+  return (
+    <div>
+      <div aria-live="polite" className="sr-only">
+        {announceText}
+      </div>
+      <button
+        aria-label="Activate feature"
+        onClick={() => {
+          handleFeatureAction();
+          setAnnounceText('Feature activated successfully');
+        }}
+      >
+        Activate
+      </button>
+    </div>
+  );
+};
+```
+
+### Cross-Browser Compatibility
+- **Browser Support:** [Specific browser version requirements]
+- **Polyfills:** [Required polyfills for target browsers]
+- **Feature Detection:** [Progressive enhancement strategy]
+- **Testing Matrix:** [Browser/device testing coverage]
+
+## 🔧 Development Workflow Integration
+
+### Development Environment Setup
+- **Local Development:** [Development server and hot reload configuration]
+- **Environment Variables:** [Configuration for different environments]
+- **Development Tools:** [Browser extensions and development aids]
+- **Debugging Strategy:** [Debugging tools and techniques]
+
+### Git Workflow Integration
+```bash
+# Feature development workflow
+git checkout -b feature/FE-[feature-id]-[component-name]
+
+# Development cycle
+npm run dev                    # Start development server
+npm run test:watch            # Run tests in watch mode
+npm run lint                  # Check code quality
+npm run build                 # Verify production build
+
+# Commit strategy
+git commit -m "feat(FE-[feature-id]): implement [component-name]
+
+Implemented:
+- [Component functionality]
+- [Integration points]
+- [Testing coverage]
+
+Technical details:
+- [Key technical decisions]
+- [Performance considerations]"
+```
+
+### Code Quality Standards
+- **Linting:** [ESLint configuration and rules]
+- **Formatting:** [Prettier configuration]
+- **Type Safety:** [TypeScript implementation strategy]
+- **Code Review:** [Review checklist and standards]
+
+## 📊 Monitoring and Analytics
+
+### Performance Monitoring
+```javascript
+// Performance monitoring setup
+const usePerformanceMonitoring = () => {
+  useEffect(() => {
+    // Track feature usage
+    analytics.track('feature_viewed', {
+      feature_name: 'feature-name',
+      user_id: user.id,
+      timestamp: Date.now()
+    });
+    
+    // Monitor performance
+    const observer = new PerformanceObserver((list) => {
+      list.getEntries().forEach((entry) => {
+        if (entry.name.includes('feature')) {
+          analytics.track('performance_metric', {
+            metric_name: entry.name,
+            duration: entry.duration,
+            feature: 'feature-name'
+          });
+        }
+      });
+    });
+    
+    observer.observe({ entryTypes: ['measure'] });
+    return () => observer.disconnect();
+  }, []);
+};
+```
+
+### Error Tracking
+- **Error Boundaries:** [React error boundary implementation]
+- **Error Reporting:** [Sentry/Bugsnag integration for error tracking]
+- **User Feedback:** [User feedback collection for error scenarios]
+- **Performance Alerts:** [Monitoring and alerting for performance degradation]
+
+## 🚀 Deployment Strategy
+
+### Build and Deployment
+- **Build Configuration:** [Production build optimization]
+- **Environment-Specific Builds:** [Different builds for different environments]
+- **Asset Optimization:** [Image and asset optimization pipeline]
+- **CDN Strategy:** [Content delivery network configuration]
+
+### Feature Flag Integration
+```javascript
+// Feature flag implementation
+const useFeatureFlag = (flagName) => {
+  const [isEnabled, setIsEnabled] = useState(false);
+  
+  useEffect(() => {
+    featureFlagService.isEnabled(flagName).then(setIsEnabled);
+  }, [flagName]);
+  
+  return isEnabled;
+};
+
+const FeatureComponent = () => {
+  const isNewFeatureEnabled = useFeatureFlag('new-feature-flag');
+  
+  if (!isNewFeatureEnabled) {
+    return <LegacyComponent />;
+  }
+  
+  return <NewFeatureComponent />;
+};
+```
+
+### Rollback Strategy
+- **Safe Deployment:** [Blue-green or canary deployment strategy]
+- **Quick Rollback:** [Fast rollback procedures for issues]
+- **Monitoring:** [Real-time monitoring during deployment]
+- **User Communication:** [User notification strategy for deployments]
+
+## 📝 Technical Risk Assessment
+
+### Implementation Risks
+- **Technical Complexity:** [Areas of high technical complexity and mitigation]
+- **Integration Challenges:** [Potential integration issues with existing systems]
+- **Performance Risks:** [Performance bottlenecks and optimization strategies]
+- **Browser Compatibility:** [Cross-browser issues and fallback strategies]
+
+### Mitigation Strategies
+- **Prototype Development:** [Early prototyping for complex features]
+- **Incremental Implementation:** [Breaking complex features into phases]
+- **Testing Strategy:** [Comprehensive testing to catch issues early]
+- **Monitoring:** [Real-time monitoring to detect issues quickly]
+
+## ✅ Definition of Technical Success
+
+### Technical Completion Criteria
+- [ ] **All components render correctly across target browsers**
+- [ ] **BFF integration works seamlessly with proper error handling**
+- [ ] **Performance metrics meet established benchmarks**
+- [ ] **Accessibility standards are met (WCAG 2.1 AA)**
+- [ ] **Mobile responsiveness works across target devices**
+- [ ] **All automated tests pass with adequate coverage**
+- [ ] **Code follows established quality standards**
+
+### Quality Gates
+- [ ] **Code review approval from senior developers**
+- [ ] **Design review confirmation of design fidelity**
+- [ ] **Performance audit passes Lighthouse benchmarks**
+- [ ] **Accessibility audit confirms WCAG compliance**
+- [ ] **Cross-browser testing validates compatibility**
+- [ ] **Security review confirms no vulnerabilities**
+
+## 🔗 Next Phase Preparation
+
+### For Component Integration Architecture
+- **Component Design Guidance:** [Detailed component architecture requirements]
+- **Integration Specifications:** [BFF and system integration details]
+- **State Management Design:** [Detailed state management architecture]
+- **Performance Requirements:** [Specific performance targets and metrics]
+
+### Implementation Readiness
+- **Development Environment:** [Environment setup requirements]
+- **Dependency Management:** [Required packages and version constraints]
+- **Configuration Needs:** [Build and runtime configuration requirements]
+- **Testing Infrastructure:** [Testing setup and framework requirements]
+```
+
+## Memory Actions During Process
+
+### Initial Context Retrieval
+```
+memory_search "frontend-architecture tech-stack component-patterns" repository="[project-repo]"
+memory_search "[feature-name] design-analysis requirements" repository="[project-repo]"
+memory_store_chunk
+  content="Starting frontend technical planning for [feature-name]. Design context: [design summary]. Tech context: [architecture summary]"
+  tags=["frontend-tech-planning", "started", "feature-name", "architecture"]
+  session_id="[current-session]"
+  repository="[project-repo]"
+```
+
+### After User Technical Input
+```
+memory_store_chunk
+  content="Technical preferences for [feature-name]: [user responses summary]. Key decisions: [technical choices]"
+  tags=["frontend-tech-planning", "user-input", "technical-decisions"]
+  session_id="[current-session]"
+  repository="[project-repo]"
+```
+
+### After Technical Plan Creation
+```
+memory_store_decision
+  decision="Frontend technical implementation strategy for [feature-name]"
+  rationale="Architecture approach: [approach]. Technology choices: [choices]. BFF integration: [integration strategy]. Performance strategy: [performance approach]"
+  context="Component architecture: [approach]. State management: [strategy]. Testing strategy: [approach]. Performance targets: [metrics]"
+  session_id="[current-session]"
+  repository="[project-repo]"
+```
+
+### After User Approval
+```
+memory_create_thread
+  name="Frontend Technical Development: [feature-name]"
+  description="Frontend development from design analysis through technical planning to implementation"
+  chunk_ids=["[design-analysis-chunks]", "[tech-planning-chunks]"]
+  repository="[project-repo]"
+```
+
+## Quality Validation
+
+Before finalizing technical plan, ensure:
+
+### Technical Architecture Validation
+- [ ] **Architecture aligns with existing frontend systems**
+- [ ] **Component design supports reusability and maintainability**
+- [ ] **State management strategy is appropriate for feature complexity**
+- [ ] **BFF integration follows established patterns**
+
+### Performance Validation
+- [ ] **Performance targets are realistic and measurable**
+- [ ] **Optimization strategies are specific and actionable**
+- [ ] **Caching strategy is appropriate for data patterns**
+- [ ] **Bundle size impact is considered and minimized**
+
+### Implementation Readiness
+- [ ] **All technical dependencies are available**
+- [ ] **Development workflow is clearly defined**
+- [ ] **Testing strategy covers all critical functionality**
+- [ ] **Deployment strategy supports safe releases**
+
+### Quality Standards
+- [ ] **Code quality standards are defined and achievable**
+- [ ] **Accessibility requirements are technically feasible**
+- [ ] **Cross-browser compatibility strategy is comprehensive**
+- [ ] **Security considerations are properly addressed**
+
+## Final Instructions
+
+1. **Design Integration** - Ensure technical plan directly addresses design requirements
+2. **Architecture Consistency** - Maintain alignment with existing frontend architecture
+3. **BFF Integration Focus** - Plan robust backend integration from the start
+4. **Performance First** - Consider performance implications in all technical decisions
+5. **Testing Integration** - Plan comprehensive testing strategy upfront
+6. **Accessibility Compliance** - Ensure accessibility is built into technical approach
+7. **Memory Integration** - Store all technical decisions and rationale for future reference
+
+This technical plan provides the foundation for detailed component architecture design and atomic task implementation with technical excellence and system integration quality.

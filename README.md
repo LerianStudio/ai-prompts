@@ -4,50 +4,65 @@ A comprehensive collection of AI prompts designed for complete software developm
 
 ## 🎯 Overview
 
-This repository provides three integrated systems that work together to support the entire software development lifecycle:
+This repository provides integrated systems that work together to support the entire software development lifecycle:
 
 | System | Purpose | Directory | Quick Start |
 |--------|---------|-----------|-------------|
-| **Memory Management** | Cross-session learning & pattern recognition | [`0-memory-related/`](0-memory-related/) | `claude 0-memory-related/m0-memory-orchestrator.md` |
-| **Pre-Development** | Interactive planning from idea to implementation | [`1-pre-development/`](1-pre-development/) | `claude 1-pre-development/0-pre-dev-orchestrator.mdc` |
-| **Code Review** | 18-point systematic code analysis | [`2-code-review/`](2-code-review/) | `claude 2-code-review/00-code-review-orchestrator.mdc` |
+| **Memory System** | Cross-session learning & pattern recognition | [`0-memory-system/`](0-memory-system/) | `claude 0-memory-system/m0-memory-orchestrator.mdc` |
+| **Product Development** | Comprehensive planning from idea to implementation | [`1-pre-dev-product/`](1-pre-dev-product/) | `claude 1-pre-dev-product/0-pre-dev-orchestrator.mdc` |
+| **Feature Development** | Streamlined feature addition to existing products | [`2-pre-dev-feature/`](2-pre-dev-feature/) | `claude 2-pre-dev-feature/0-feature-orchestrator.mdc` |
+| **Frontend Development** | Complete frontend development with flexible design inputs | [`3-frontend/`](3-frontend/) | `claude 3-frontend/0-frontend-orchestrator.mdc` |
+| **Code Review** | 18-point systematic code analysis | [`4-code-review/`](4-code-review/) | `claude 4-code-review/00-code-review-orchestrator.mdc` |
 
 ## 📚 Documentation
 
 - **[ORCHESTRATORS.md](ORCHESTRATORS.md)** - Comprehensive guide to all orchestrators and workflow integration
-- **[Memory Management README](0-memory-related/README.md)** - Detailed memory system documentation
-- **[Pre-Development README](1-pre-development/README.md)** - Interactive planning workflow guide
-- **[Code Review README](2-code-review/README.md)** - Systematic analysis documentation
+- **[Memory Management README](0-memory-system/README.md)** - Detailed memory system documentation
+- **[Pre-Development README](1-pre-dev-product/README.md)** - Interactive planning workflow guide
+- **[Frontend Development README](3-frontend/README.md)** - Complete frontend development workflow
+- **[Code Review README](4-code-review/README.md)** - Systematic analysis documentation
 
 ## 🚀 Quick Start Workflows
 
 ### 1. New Feature Development
 ```bash
 # Initialize memory context
-claude 0-memory-related/m0-memory-orchestrator.md
+claude 0-memory-system/m0-memory-orchestrator.mdc
 
 # Plan the feature interactively
-claude 1-pre-development/0-pre-dev-orchestrator.mdc
+claude 1-pre-dev-product/0-pre-dev-orchestrator.mdc
 
 # Analyze integration points
-claude 2-code-review/01-codebase-overview.md
+claude 4-code-review/01-codebase-overview.md
 ```
 
-### 2. Existing Code Analysis
+### 2. Frontend Development
+```bash
+# Design input analysis (any format: sketches, Figma, specs)
+claude 3-frontend/1-design-input-analysis.mdc
+
+# Complete frontend implementation
+claude 3-frontend/0-frontend-orchestrator.mdc
+
+# Validate with code review
+claude 4-code-review/00-code-review-orchestrator.mdc
+```
+
+### 3. Existing Code Analysis
 ```bash
 # Full code review
-claude 2-code-review/00-code-review-orchestrator.mdc
+claude 4-code-review/00-code-review-orchestrator.mdc
 
 # Store findings
-claude 0-memory-related/m4-memory-workflow.md
+claude 0-memory-system/m4-memory-workflow.md
 ```
 
-### 3. Quick Security Check
+### 4. Quick Security Check
 ```bash
 # Security-focused analysis
-claude 2-code-review/01-codebase-overview.md
-claude 2-code-review/07-security-vulnerability-analysis.md
-claude 2-code-review/08-dependency-security-analysis.md
+claude 4-code-review/01-codebase-overview.md
+claude 4-code-review/07-security-vulnerability-analysis.md
+claude 4-code-review/08-dependency-security-analysis.md
 ```
 
 ## 🔄 Development Lifecycle Integration
@@ -56,17 +71,19 @@ claude 2-code-review/08-dependency-security-analysis.md
 ```mermaid
 graph LR
     A[Memory Context] --> B[Pre-Development Planning]
-    B --> C[Implementation]
-    C --> D[Code Review]
-    D --> E[Memory Storage]
-    E --> A
+    B --> C[Frontend Development]
+    C --> D[Implementation]
+    D --> E[Code Review]
+    E --> F[Memory Storage]
+    F --> A
 ```
 
 1. **Initialize**: Start with memory context to leverage existing patterns
 2. **Plan**: Use pre-development for interactive requirements and design
-3. **Implement**: Follow generated tasks and sub-tasks
-4. **Review**: Comprehensive code analysis and validation
-5. **Learn**: Store insights back to memory for future projects
+3. **Frontend**: Design and implement frontend with systematic precision
+4. **Implement**: Follow generated tasks and sub-tasks
+5. **Review**: Comprehensive code analysis and validation
+6. **Learn**: Store insights back to memory for future projects
 
 ## 🎯 Key Features
 

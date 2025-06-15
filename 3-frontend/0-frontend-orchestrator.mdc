@@ -1,0 +1,281 @@
+---
+description: Complete frontend development workflow orchestrator for flexible design inputs
+globs: 
+alwaysApply: false
+---
+# Frontend Development Orchestrator
+
+## 🚀 Frontend Development Workflow
+
+Welcome to the **3-frontend** workflow - a systematic approach to frontend development that handles flexible design inputs (from iPad sketches to Figma designs) and creates atomic, human-reviewable implementation tasks.
+
+## 🎯 When to Use This Workflow
+
+### ✅ Perfect for:
+- **Frontend features** with any design input (sketches, Figma, references)
+- **UI components** that need systematic breakdown
+- **Integration with existing BFF/backend** systems
+- **Human-AI pair programming** scenarios
+- **Atomic commit workflows** for easy review
+
+### ❌ Use other workflows for:
+- **Complete product development** → Use `1-pre-dev-product`
+- **Quick feature additions** → Use `2-pre-dev-feature`
+- **Backend-only development** → Use `1-pre-dev-product`
+
+## 📋 Workflow Overview
+
+This workflow consists of **5 progressive phases** with mandatory user feedback loops:
+
+```mermaid
+graph TD
+    A[Phase 1: Design Input Analysis] --> B[Phase 2: Frontend Technical Planning]
+    B --> C[Phase 3: Component Integration Architecture]
+    C --> D[Phase 4: Atomic Implementation Tasks]
+    D --> E[Phase 5: Design Validation Integration]
+    
+    A1[iPad Sketches] --> A
+    A2[Figma Designs] --> A
+    A3[Written Specs] --> A
+    A4[Reference Apps] --> A
+    
+    E --> F[Implementation Ready]
+```
+
+## 🛠️ Phase-by-Phase Execution
+
+### 🎨 Phase 1: Design Input Analysis (DIA)
+**File:** `1-design-input-analysis.mdc`  
+**Duration:** 1-3 hours  
+**User Interaction:** **REQUIRED** - Design iteration and clarification
+
+**Purpose:** Transform any design input into clear implementation specifications
+
+**Inputs Supported:**
+- 📱 iPad sketches/drawings
+- 🎨 Figma designs  
+- 📝 Written descriptions
+- 🖼️ Reference screenshots
+- 🔗 Existing app examples
+
+**Key Outputs:**
+- Design requirement specifications
+- User experience definitions
+- Responsive behavior plans
+- Design system alignment
+- Missing design gap identification
+
+---
+
+### 🔧 Phase 2: Frontend Technical Planning (FTP)
+**File:** `2-frontend-tech-planning.mdc`  
+**Duration:** 2-4 hours  
+**User Interaction:** **REQUIRED** - Technical decision validation
+
+**Purpose:** Convert design understanding into technical implementation strategy
+
+**Key Outputs:**
+- Component architecture strategy
+- State management approach
+- BFF/API integration plan
+- Performance optimization strategy
+- Technology stack decisions
+
+---
+
+### 🏗️ Phase 3: Component Integration Architecture (CIA)
+**File:** `3-component-integration-arch.mdc`  
+**Duration:** 2-3 hours  
+**User Interaction:** **OPTIONAL** - Architecture review
+
+**Purpose:** Design detailed component structure and backend integration
+
+**Key Outputs:**
+- Component hierarchy design
+- Props interfaces and data contracts
+- BFF API integration patterns
+- State management implementation
+- Reusable component identification
+
+---
+
+### ⚡ Phase 4: Atomic Implementation Tasks (AIT)
+**File:** `4-atomic-implementation-tasks.mdc`  
+**Duration:** 1-2 hours  
+**User Interaction:** **OPTIONAL** - Task breakdown review
+
+**Purpose:** Break down into atomic, human-reviewable implementation tasks
+
+**Key Outputs:**
+- 2-4 hour atomic tasks
+- Complete git workflow per task
+- Human pair-coding friendly scope
+- BFF integration task separation
+- Single commit per task strategy
+
+---
+
+### ✅ Phase 5: Design Validation Integration (DVI)
+**File:** `5-design-validation-integration.mdc`  
+**Duration:** 1-2 hours  
+**User Interaction:** **OPTIONAL** - Quality validation review
+
+**Purpose:** Ensure design fidelity and integration quality standards
+
+**Key Outputs:**
+- Design-to-code validation checklist
+- BFF integration testing plan
+- Visual regression testing strategy
+- Accessibility compliance validation
+- Performance benchmarking plan
+
+## 🚀 Quick Start Options
+
+### Option 1: Complete Orchestrated Workflow
+```bash
+# Start here for first-time users or complex features
+claude 3-frontend/0-frontend-orchestrator.mdc
+```
+
+### Option 2: Phase-by-Phase Execution
+```bash
+# Phase 1: Analyze your design input
+claude 3-frontend/1-design-input-analysis.mdc
+
+# Phase 2: Plan technical implementation  
+claude 3-frontend/2-frontend-tech-planning.mdc
+
+# Phase 3: Design component architecture
+claude 3-frontend/3-component-integration-arch.mdc
+
+# Phase 4: Create atomic tasks
+claude 3-frontend/4-atomic-implementation-tasks.mdc
+
+# Phase 5: Validate and integrate
+claude 3-frontend/5-design-validation-integration.mdc
+```
+
+### Option 3: Express Mode (Experienced Users)
+```bash
+# Skip orchestrator, run phases directly based on your needs
+claude 3-frontend/1-design-input-analysis.mdc
+# ... continue based on outputs
+```
+
+## 📁 Output Organization
+
+```
+docs/frontend-development/
+├── design-analysis-[feature].md          # Phase 1 output
+├── frontend-tech-plan-[feature].md       # Phase 2 output  
+├── component-integration-[feature].md     # Phase 3 output
+├── validation-checklist-[feature].md     # Phase 5 output
+└── tasks/
+    └── frontend-[feature]/               # Phase 4 outputs
+        ├── overview.md                   # Task overview
+        └── FE-[XX]-[task-name].md        # Individual atomic tasks
+```
+
+## 🔗 Integration with Other Workflows
+
+### Backend Integration
+```bash
+# If you need backend development first
+claude 1-pre-dev-product/0-pre-dev-orchestrator.mdc
+# Then return to frontend workflow
+claude 3-frontend/0-frontend-orchestrator.mdc
+```
+
+### Code Review Integration
+```bash
+# After implementation, validate with systematic review
+claude 3-code-review/00-code-review-orchestrator.mdc
+```
+
+### Memory Management
+```bash
+# Maintain context across sessions
+claude 0-memory-system/m0-memory-orchestrator.mdc
+```
+
+## 🎯 Key Workflow Principles
+
+### Design Flexibility
+- **Adapts to any design input level** - from rough sketches to pixel-perfect Figma
+- **Fills design gaps systematically** - AI suggests missing specifications
+- **Iterates with user feedback** - ensures design intent is captured
+
+### Atomic Development
+- **2-4 hour tasks maximum** - perfect for focused development sessions
+- **Single commit per task** - easy human review and validation
+- **Complete feature slices** - each task delivers working functionality
+- **Pair-coding optimized** - human can easily understand and validate each task
+
+### Integration First
+- **BFF integration planning** - considers backend API contracts from start
+- **Existing system alignment** - respects current architecture patterns
+- **Performance consideration** - plans optimization from architecture phase
+
+## 🧠 Memory MCP Integration
+
+Every phase includes comprehensive Memory MCP integration:
+
+- **Context Retrieval:** Access existing design systems and implementation patterns
+- **Decision Storage:** Store design and technical choices for future reference
+- **Pattern Building:** Learn from successful frontend implementations
+- **Knowledge Continuity:** Maintain context across development sessions
+
+## 📏 File Size Guidelines
+
+All generated code follows LLM-optimized guidelines:
+- **Target:** <300 lines per file
+- **Maximum:** 500 lines per file (hard limit)
+- **Strategy:** Component-based splitting for maintainability
+
+## 🔄 Git Workflow Integration
+
+Every implementation task includes complete git workflow:
+
+```bash
+# Before starting each task
+git checkout -b feature/FE-[feature-id]-[num]-[desc]
+
+# After completing each task  
+git commit -m "feat(FE-[feature-id]-[num]): [description]
+Implemented: [what was built]
+Design: [design implementation notes]
+Integration: [BFF/backend integration]
+Notes: [technical decisions]"
+
+git push -u origin feature/FE-[feature-id]-[num]-[desc]
+```
+
+## 🏆 Success Metrics
+
+### Speed Metrics
+- Design analysis: <3 hours
+- Technical planning: <4 hours  
+- Architecture design: <3 hours
+- Task breakdown: <2 hours
+- Validation planning: <2 hours
+- **Total planning: <2 days**
+
+### Quality Metrics
+- Tasks are atomic and completable in single sessions
+- Design intent is preserved in implementation
+- BFF integration is seamless
+- Code is human-reviewable and maintainable
+- Performance targets are met
+
+## 🔧 Next Steps
+
+**Ready to start?** Choose your entry point:
+
+1. **New to this workflow?** → Start with complete orchestration
+2. **Have specific design input?** → Jump to Phase 1
+3. **Need quick task breakdown?** → Skip to Phase 4
+4. **Validating existing implementation?** → Use Phase 5
+
+---
+
+🚀 **Let's build amazing frontend experiences with systematic precision!**

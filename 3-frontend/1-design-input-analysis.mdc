@@ -1,0 +1,398 @@
+---
+description: Analyze flexible design inputs and create implementation specifications
+globs: 
+alwaysApply: false
+---
+# Rule: Design Input Analysis
+
+## 🧠 Enhanced Analysis Tools - USE THESE!
+
+**CRITICAL:** Leverage these tools throughout the design analysis process:
+
+### 🧩 Memory MCP Integration
+- **Retrieve design context:** `memory_search` for existing design systems, component patterns, and UI conventions
+- **Store design decisions:** `memory_store_decision` for design choices, responsive strategies, and user experience patterns
+- **Reference similar designs:** `memory_search` for comparable UI implementations and successful patterns
+- **Track design process:** `memory_tasks` for design analysis workflow management
+- **Tags to use:** `["design-analysis", "ui-ux", "frontend-design", "feature-name", "design-input"]`
+
+### 🔄 Sequential Thinking MCP
+- **Use for:** Complex design interpretation, user flow analysis, responsive design strategy
+- **Pattern:** Design input → user intent → technical requirements → implementation specifications
+- **Benefit:** Ensures design analysis captures user needs and technical feasibility
+- **When:** During design interpretation and gap analysis
+
+**Pro tip:** Always reference existing design systems to ensure consistency and avoid reinventing UI patterns!
+
+## Goal
+
+To guide an AI assistant in analyzing any form of design input (iPad sketches, Figma designs, written specs, references) and transforming them into clear, implementable frontend specifications with systematic design iteration.
+
+## Process
+
+1. **Retrieve Design Context:** Use Memory MCP to understand existing design systems and UI patterns
+   - 🧩 **Memory Action:** `memory_search` for design systems, component libraries, and UI conventions
+
+2. **Analyze Design Input:** Process whatever design materials are provided
+   - 🔄 **Sequential Thinking:** Interpret design intent and extract technical requirements
+
+3. **Identify Design Gaps:** Determine what specifications are missing or unclear
+   - 🔄 **Sequential Thinking:** Analyze completeness and identify areas needing clarification
+
+4. **Ask Design Questions:** Gather specific details about user experience and visual design
+   - **IMPORTANT:** WAIT for user responses before proceeding
+   - Focus on design intent, user flows, and visual specifications
+
+5. **Generate Design Specifications:** Create comprehensive design requirements
+   - 🧩 **Memory Action:** `memory_store_decision` for key design choices and rationale
+
+6. **Request Design Review:** Present specifications and ask for feedback:
+   - "Please review these design specifications. What would you like to adjust or clarify?"
+   - **WAIT for user approval or feedback**
+   - 🧩 **Memory Action:** `memory_store_chunk` with user design feedback
+
+7. **Iterate on Design:** Update specifications based on user input
+   - 🧩 **Memory Action:** `memory_store_decision` documenting design changes and rationale
+
+8. **Save Design Analysis:** After approval, save as `design-analysis-[feature-name].md` in `/docs/frontend-development/`
+   - 🧩 **Memory Action:** Create design analysis thread for future reference
+
+## Design Input Types
+
+### 📱 iPad Sketches/Drawings
+**Approach:** Extract intent and suggest detailed specifications
+- Identify layout structure and component hierarchy
+- Interpret user flows and interactions
+- Suggest responsive behavior and breakpoints
+- Propose visual styling within existing design system
+- Ask clarifying questions about unclear elements
+
+### 🎨 Figma Designs
+**Approach:** Analyze comprehensive specifications and extract implementation details
+- Extract design tokens (colors, typography, spacing)
+- Identify component specifications and variants
+- Analyze responsive breakpoints and behavior
+- Extract interaction states and animations
+- Document asset requirements and optimization needs
+
+### 📝 Written Descriptions
+**Approach:** Transform functional requirements into visual specifications
+- Interpret functional requirements as UI components
+- Suggest layout structures and user flows
+- Propose visual hierarchy and information architecture
+- Reference existing design patterns
+- Create wireframe-level specifications
+
+### 🖼️ Reference Screenshots/Apps
+**Approach:** Analyze existing implementations and adapt to current context
+- Identify successful UI patterns and adapt them
+- Extract interaction patterns and user flows
+- Analyze responsive behavior and breakpoints
+- Adapt visual styling to current design system
+- Document functional requirements from visual cues
+
+### 🔗 Mixed/Multiple Inputs
+**Approach:** Synthesize multiple sources into cohesive specifications
+- Prioritize authoritative sources (Figma > sketches > references)
+- Resolve conflicts between different inputs
+- Fill gaps using design system patterns
+- Create unified specification from multiple sources
+
+## User Interaction Guidelines
+
+### Design Clarification Questions
+
+Ask **4-6 focused questions** maximum. Tailor questions to input type:
+
+### For Low-Fidelity Inputs (Sketches, Descriptions)
+1. **User Flow:** "What's the primary user journey through this interface?"
+2. **Visual Priority:** "What are the most important elements users should notice first?"
+3. **Interactions:** "How should users interact with [specific element]?"
+4. **Responsive Behavior:** "How should this adapt on mobile vs desktop?"
+5. **Integration:** "How does this connect with existing [feature/page]?"
+
+### For High-Fidelity Inputs (Figma, Screenshots)
+1. **Missing Specs:** "I see [specific element] - what happens when users [interaction]?"
+2. **State Management:** "How should [component] behave in different states (loading, error, empty)?"
+3. **Data Integration:** "What data comes from the BFF/backend for [specific section]?"
+4. **Edge Cases:** "How should this handle [specific edge case scenario]?"
+
+### For Reference/Inspiration Inputs
+1. **Adaptation:** "Which specific aspects of [reference] should we implement?"
+2. **Brand Alignment:** "How should we adapt this to match our current design system?"
+3. **Functionality:** "Should we replicate the exact functionality or modify it?"
+4. **Scope:** "Are there parts of this reference we should exclude?"
+
+## Design Analysis Structure
+
+Create design analysis using this structure:
+
+```markdown
+# Design Analysis: [Feature Name]
+
+## 🎨 Design Input Summary
+
+**Input Type:** [iPad sketch/Figma design/Written spec/Reference/Mixed]
+**Design Complexity:** [Simple/Medium/Complex]
+**Implementation Scope:** [Single component/Feature set/Full interface]
+**Design System Alignment:** [Fully aligned/Requires extensions/New patterns needed]
+
+## 📋 Design Requirements
+
+### Visual Specifications
+- **Layout Structure:** [Main layout pattern and component arrangement]
+- **Visual Hierarchy:** [Information priority and visual emphasis]
+- **Color Palette:** [Specific colors from design system or new requirements]
+- **Typography:** [Text styles, sizes, weights following design system]
+- **Spacing & Layout:** [Grid system, margins, padding specifications]
+- **Visual Style:** [Overall aesthetic direction and styling approach]
+
+### Component Specifications
+- **Primary Components:** [Main UI components needed]
+- **Component Variants:** [Different states, sizes, or configurations]
+- **Interactive Elements:** [Buttons, forms, navigation, etc.]
+- **Data Display:** [Lists, cards, tables, charts, etc.]
+- **Media Elements:** [Images, icons, illustrations requirements]
+
+### Responsive Design Strategy
+```css
+/* Breakpoint specifications */
+Mobile: 320px - 768px
+  - [Mobile-specific layout adjustments]
+  - [Component behavior changes]
+  
+Tablet: 768px - 1024px  
+  - [Tablet-specific adaptations]
+  - [Layout transitions]
+  
+Desktop: 1024px+
+  - [Desktop layout optimization]
+  - [Enhanced interactions]
+```
+
+## 🔄 User Experience Specifications
+
+### User Flows
+1. **Primary Flow:** [Main user journey through the interface]
+2. **Secondary Flows:** [Alternative paths and edge cases]
+3. **Error Flows:** [How users recover from errors]
+
+### Interaction Patterns
+- **Navigation:** [How users move through the interface]
+- **Data Input:** [Form interactions, validation, feedback]
+- **Content Interaction:** [Viewing, editing, sharing content]
+- **System Feedback:** [Loading states, success/error messages]
+
+### Accessibility Requirements
+- **Keyboard Navigation:** [Tab order and keyboard shortcuts]
+- **Screen Reader Support:** [ARIA labels and semantic structure]
+- **Color Contrast:** [Accessibility-compliant color combinations]
+- **Focus Management:** [Visual focus indicators and management]
+
+## 🔗 Integration Specifications
+
+### Design System Integration
+- **Existing Components:** [Components from current design system to reuse]
+- **Component Extensions:** [Existing components that need modifications]
+- **New Components:** [Completely new components needed]
+- **Design Token Usage:** [Colors, spacing, typography from design system]
+
+### Data Integration Points
+- **Static Content:** [Text, images, and static elements]
+- **Dynamic Content:** [Data from BFF/backend APIs]
+- **User-Generated Content:** [Content created by users]
+- **Real-Time Data:** [Live updates and dynamic information]
+
+### BFF/Backend Dependencies
+- **API Endpoints:** [Required backend APIs for data]
+- **Data Structures:** [Expected data formats and contracts]
+- **Authentication:** [User authentication and permission requirements]
+- **Real-Time Features:** [WebSocket or real-time data requirements]
+
+## 📐 Technical Implementation Constraints
+
+### Browser Support
+- **Target Browsers:** [Specific browser support requirements]
+- **Progressive Enhancement:** [Fallback strategies for older browsers]
+- **Mobile Browser Support:** [Mobile-specific considerations]
+
+### Performance Requirements
+- **Loading Performance:** [Page load and component render targets]
+- **Image Optimization:** [Asset compression and delivery strategy]
+- **Bundle Size:** [JavaScript/CSS size constraints]
+- **Perceived Performance:** [Loading states and progressive enhancement]
+
+### Technology Constraints
+- **Framework Integration:** [React/Vue/Angular specific considerations]
+- **Styling Approach:** [CSS modules/Styled-components/Tailwind]
+- **State Management:** [Redux/Context/Zustand requirements]
+- **Testing Requirements:** [Unit/Integration/E2E testing needs]
+
+## 🎯 Design Gaps and Assumptions
+
+### Identified Gaps
+- **Missing Specifications:** [Design elements that need clarification]
+- **Interaction Unclear:** [User interactions that need definition]
+- **Responsive Behavior:** [Breakpoint behavior needing specification]
+- **Edge Cases:** [Scenarios not covered in original design]
+
+### Design Assumptions Made
+- **Visual Styling:** [Assumptions about styling based on design system]
+- **Responsive Behavior:** [Assumed breakpoint behavior]
+- **Interaction Patterns:** [Assumed user interaction patterns]
+- **Data Handling:** [Assumptions about data structure and flow]
+
+### Recommendations for Design Iteration
+- **High Priority:** [Critical design decisions needing immediate clarification]
+- **Medium Priority:** [Important but not blocking design questions]
+- **Future Consideration:** [Design improvements for future iterations]
+
+## 🚀 Implementation Readiness Assessment
+
+### Design Completeness
+- [ ] **Layout structure clearly defined**
+- [ ] **Component specifications detailed**
+- [ ] **Responsive behavior documented**
+- [ ] **Interaction patterns specified**
+- [ ] **Integration points identified**
+
+### Technical Feasibility
+- [ ] **Compatible with existing tech stack**
+- [ ] **Performance requirements achievable**
+- [ ] **Accessibility requirements addressable**
+- [ ] **Timeline realistic for scope**
+
+### Design System Impact
+- [ ] **New components documented**
+- [ ] **Design token usage planned**
+- [ ] **Component library integration planned**
+- [ ] **Design system evolution considered**
+
+## 📝 Next Phase Preparation
+
+### For Frontend Technical Planning
+- **Component Architecture Needs:** [Guidance for technical component design]
+- **State Management Requirements:** [Data flow and state needs]
+- **API Integration Points:** [Backend integration specifications]
+- **Performance Considerations:** [Technical performance requirements]
+
+### Design Iteration Items
+- **Unresolved Questions:** [Questions for next design iteration]
+- **User Testing Needs:** [Areas requiring user validation]
+- **Design Review Items:** [Elements needing design team review]
+
+## 🔗 Design References and Assets
+
+### Design System Resources
+- **Component Library:** [Links to existing component documentation]
+- **Design Tokens:** [Color, typography, spacing specifications]
+- **Pattern Library:** [Established UI patterns and templates]
+
+### External References
+- **Inspiration Sources:** [References used for design decisions]
+- **Competitor Analysis:** [Relevant competitive UI patterns]
+- **Accessibility Guidelines:** [WCAG and accessibility resource links]
+
+### Asset Requirements
+- **Images:** [Required images, illustrations, photography]
+- **Icons:** [Icon specifications and requirements]
+- **Animations:** [Motion design and animation requirements]
+```
+
+## Memory Actions During Process
+
+### Initial Context Retrieval
+```
+memory_search "design-system component-library ui-patterns" repository="[project-repo]"
+memory_store_chunk
+  content="Starting design analysis for [feature-name]. Design input: [input-type]. Context: [design system summary]"
+  tags=["design-analysis", "started", "feature-name", "input-type"]
+  session_id="[current-session]"
+  repository="[project-repo]"
+```
+
+### After Design Input Analysis
+```
+memory_store_chunk
+  content="Design input analysis for [feature-name]: [analysis summary]. Gaps identified: [gaps]. Questions for user: [questions]"
+  tags=["design-analysis", "input-processed", "design-gaps"]
+  session_id="[current-session]"  
+  repository="[project-repo]"
+```
+
+### After User Clarification
+```
+memory_store_chunk
+  content="User design clarification for [feature-name]: [user responses summary]. Design iterations: [changes made]"
+  tags=["design-analysis", "user-feedback", "design-iteration"]
+  session_id="[current-session]"
+  repository="[project-repo]"
+```
+
+### After Specification Creation
+```
+memory_store_decision
+  decision="Design specifications for [feature-name]"
+  rationale="Based on [input-type] and user clarifications. Key design choices: [choices]. Integration approach: [approach]"
+  context="Components needed: [count]. Responsive breakpoints: [list]. BFF integration points: [list]"
+  session_id="[current-session]"
+  repository="[project-repo]"
+```
+
+### After User Approval
+```
+memory_create_thread
+  name="Frontend Design Development: [feature-name]"
+  description="Complete frontend development from design analysis through implementation"
+  chunk_ids=["[all-relevant-chunk-ids]"]
+  repository="[project-repo]"
+```
+
+## Quality Validation
+
+Before finalizing design analysis, ensure:
+
+### Completeness Check
+- [ ] **Visual specifications are detailed enough for implementation**
+- [ ] **User flows are clearly documented**
+- [ ] **Responsive behavior is specified**
+- [ ] **Integration points are identified**
+- [ ] **Accessibility requirements are documented**
+
+### Consistency Check
+- [ ] **Aligns with existing design system**
+- [ ] **Compatible with current UI patterns**
+- [ ] **Follows established interaction patterns**
+- [ ] **Maintains brand consistency**
+
+### Feasibility Check
+- [ ] **Technical implementation is possible with current stack**
+- [ ] **Performance requirements are achievable**
+- [ ] **Scope is appropriate for available timeline**
+- [ ] **Dependencies are available or achievable**
+
+### Design System Impact
+- [ ] **New components are properly documented**
+- [ ] **Design system extensions are planned**
+- [ ] **Component reusability is considered**
+- [ ] **Future design system evolution is planned**
+
+## Integration with Technical Planning
+
+The design analysis provides foundation for:
+- **Component architecture strategy**
+- **State management planning**
+- **BFF API integration design**
+- **Performance optimization planning**
+- **Testing strategy development**
+
+## Final Instructions
+
+1. **Context First** - Always retrieve existing design system context before starting
+2. **Flexibility Focus** - Adapt analysis approach to available design input
+3. **User Collaboration** - Prioritize design iteration and user feedback
+4. **Integration Aware** - Consider how design fits with existing system
+5. **Quality Gates** - Validate completeness and technical feasibility
+6. **Memory Integration** - Store all design decisions and rationale for future reference
+
+This design analysis becomes the foundation for technical planning and systematic frontend implementation with design fidelity and user experience quality.

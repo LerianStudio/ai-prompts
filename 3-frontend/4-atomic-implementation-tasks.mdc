@@ -1,0 +1,828 @@
+---
+description: Break component architecture into atomic, human-reviewable implementation tasks
+globs: 
+alwaysApply: false
+---
+# Rule: Atomic Implementation Tasks
+
+## 🧠 Enhanced Analysis Tools - USE THESE!
+
+**CRITICAL:** Leverage these tools throughout the atomic task breakdown process:
+
+### 🧩 Memory MCP Integration
+- **Retrieve architecture context:** `memory_search` for component architecture, technical planning, and design specifications
+- **Store task logic:** `memory_store_decision` for task breakdown rationale, implementation sequencing, and git workflow strategies
+- **Reference implementation patterns:** `memory_search` for similar atomic task structures and successful implementation patterns
+- **Track task progress:** `memory_tasks` for atomic implementation workflow management
+- **Tags to use:** `["atomic-tasks", "implementation", "git-workflow", "feature-name", "human-ai-pairing"]`
+
+### 🔄 Sequential Thinking MCP
+- **Use for:** Complex task decomposition, dependency analysis, implementation sequencing optimization
+- **Pattern:** Component architecture → atomic boundaries → implementation steps → git workflow
+- **Benefit:** Ensures tasks are perfectly sized for human-AI pair programming and single-session completion
+- **When:** During task boundary analysis, dependency mapping, and git workflow planning
+
+**Pro tip:** Store every successful atomic task pattern to improve future task generation for similar components!
+
+## Goal
+
+To guide an AI assistant in analyzing component architecture and creating atomic, human-reviewable implementation tasks that enable effective human-AI pair programming with single-commit development sessions.
+
+## Process
+
+1. **Read Component Architecture:** Load component specifications and integration requirements from previous phase
+   - 🧩 **Memory Action:** `memory_search` to retrieve component architecture decisions and technical specifications
+
+2. **Analyze Implementation Scope:** Extract atomic implementation boundaries from component architecture  
+   - 🔄 **Sequential Thinking:** Map component architecture to implementable atomic units
+
+3. **Apply Atomic Task Principles:** Ensure each task follows human-AI pair programming requirements
+   - 🔄 **Sequential Thinking:** Validate task boundaries for 2-4 hour completion and single commit scope
+
+4. **Generate Atomic Tasks:** Create detailed task specifications with complete git workflow
+   - 🧩 **Memory Action:** `memory_store_decision` for task breakdown rationale and implementation approach
+
+5. **Optional Task Review:** Since tasks directly enable implementation, user review is optional:
+   - "I've created atomic implementation tasks. Would you like to review the breakdown, or shall I proceed with saving them?"
+   - If user wants to review, WAIT for feedback
+   - If user approves or skips review, proceed to save
+   - 🧩 **Memory Action:** `memory_store_chunk` with user feedback (if provided)
+
+6. **Save Atomic Tasks:** Create organized task files in `/docs/frontend-development/tasks/frontend-[feature-name]/`
+   - 🧩 **Memory Action:** `memory_create_thread` completing entire frontend development chain
+
+## Atomic Task Principles for Human-AI Pairing
+
+### Definition of "Atomic Frontend Task"
+Each task MUST be:
+- **Single Session:** Completable in 2-4 hours maximum for focused development
+- **Single Component Focus:** One component or integration point per task
+- **Human-Reviewable:** Clear scope that human can validate in 10-15 minutes
+- **Single Commit:** Complete, testable functionality in one git commit
+- **Rollback Safe:** If removed, doesn't break existing functionality
+- **Self-Contained:** Includes setup, implementation, testing, and cleanup
+
+### Human-AI Pair Programming Optimization
+- **Clear Acceptance Criteria:** Human knows exactly what to validate
+- **Explicit Integration Points:** How task connects with existing code
+- **Testing Requirements:** Unit and integration tests included
+- **Error Handling:** Complete error scenarios and user feedback
+- **Performance Considerations:** Built-in performance requirements
+
+### Task Validation Checklist
+Before finalizing each atomic task, ensure:
+- [ ] **Clear Deliverable:** Specific component, feature, or integration point
+- [ ] **Human Validation Path:** Clear way for human to test and approve
+- [ ] **Integration Specification:** Exact connection points with existing system
+- [ ] **Test Coverage:** Complete testing strategy for the task scope
+- [ ] **File Size Compliance:** Targets <300 lines, max 500 lines per file
+- [ ] **Git Workflow:** Complete branch/commit/PR process included
+- [ ] **Error Handling:** Comprehensive error scenarios covered
+
+## Atomic Task Structure
+
+Each generated atomic task should include these sections:
+
+### 1. Task Overview
+- **Task ID:** FE-[feature-id]-[number] (e.g., FE-001-001, FE-001-002)
+- **Task Name:** Clear, action-oriented name (e.g., "Implement FeatureHeader Component")
+- **Component Focus:** Specific component or integration this task addresses
+- **Estimated Duration:** 2-4 hours maximum
+- **Implementation Type:** Component/Integration/Testing/Styling/Optimization
+- **Human Review Scope:** What human should focus on when reviewing
+
+### 🔀 Git Workflow (REQUIRED FOR EVERY TASK)
+**BEFORE STARTING:**
+```bash
+git checkout main
+git pull origin main
+git checkout -b feature/FE-[feature-id]-[num]-[short-desc]
+# Example: git checkout -b feature/FE-001-001-feature-header
+```
+
+**DURING DEVELOPMENT:**
+```bash
+# Run tests frequently during development
+npm test -- --watch
+npm run lint
+npm run typecheck
+```
+
+**AFTER COMPLETING:**
+```bash
+# Final validation
+npm run build              # Ensure production build works
+npm test                   # All tests pass
+npm run lint              # Code quality check
+npm run a11y-test         # Accessibility validation (if available)
+
+# Commit with detailed message
+git add .
+git commit -m "feat(FE-[feature-id]-[num]): [brief description]
+
+Component: [component name and purpose]
+Implementation: [key functionality implemented]
+Integration: [how it connects with existing components]
+Testing: [test coverage and validation]
+Accessibility: [a11y considerations implemented]
+
+Files Modified:
+- [list of modified files]
+
+Files Added:
+- [list of new files]
+
+Human Review Focus:
+- [specific areas for human validation]"
+
+git push -u origin feature/FE-[feature-id]-[num]-[short-desc]
+```
+
+### 2. Component Implementation Specification
+
+#### Component Requirements
+- **Component Name:** [Exact component name and file location]
+- **Component Purpose:** [What this component does and why it exists]
+- **Props Interface:** [Complete TypeScript interface for component props]
+- **State Requirements:** [Local state management needs]
+- **Styling Strategy:** [CSS-in-JS, styled-components, or CSS modules approach]
+
+#### Implementation Details
+```typescript
+// Component interface example
+interface ComponentNameProps {
+  // Required props
+  data: ComponentData;
+  onAction: (action: ActionType) => void;
+  
+  // Optional props
+  loading?: boolean;
+  error?: string;
+  variant?: 'default' | 'compact' | 'expanded';
+  className?: string;
+  
+  // Event handlers
+  onClick?: (event: MouseEvent) => void;
+  onKeyDown?: (event: KeyboardEvent) => void;
+}
+
+// Component data structure
+interface ComponentData {
+  id: string;
+  title: string;
+  metadata: Record<string, any>;
+  status: 'active' | 'inactive' | 'pending';
+}
+```
+
+#### File Structure
+```
+src/components/[ComponentName]/
+├── index.ts                          # Barrel export
+├── [ComponentName].tsx               # Main component
+├── [ComponentName].styles.ts         # Styled components
+├── [ComponentName].types.ts          # TypeScript types
+├── [ComponentName].test.tsx          # Unit tests
+├── [ComponentName].stories.tsx       # Storybook stories
+└── hooks/
+    └── use[ComponentName].ts         # Custom hook (if needed)
+```
+
+### 3. Integration Points Specification
+
+#### Existing Code Integration
+- **Parent Components:** [Components that will use this component]
+- **Child Components:** [Existing components this component will use]
+- **State Management:** [How component integrates with global state]
+- **API Integration:** [BFF endpoints this component consumes]
+- **Event Handling:** [Events this component emits/consumes]
+
+#### BFF/API Integration
+```javascript
+// API integration example
+const useComponentData = (componentId) => {
+  return useQuery({
+    queryKey: ['component-data', componentId],
+    queryFn: () => ComponentAPI.getComponentData(componentId),
+    enabled: !!componentId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+};
+
+// Component with API integration
+const ComponentName = ({ componentId, onAction }) => {
+  const { data, loading, error } = useComponentData(componentId);
+  
+  if (loading) return <ComponentSkeleton />;
+  if (error) return <ComponentError error={error} />;
+  if (!data) return <ComponentEmpty />;
+  
+  return (
+    <ComponentContainer>
+      {/* Component implementation */}
+    </ComponentContainer>
+  );
+};
+```
+
+### 4. Testing Requirements
+
+#### Unit Test Specifications
+```javascript
+// Comprehensive test coverage
+describe('ComponentName', () => {
+  const defaultProps = {
+    data: mockComponentData,
+    onAction: jest.fn(),
+  };
+  
+  describe('Rendering', () => {
+    it('renders with required props', () => {
+      render(<ComponentName {...defaultProps} />);
+      expect(screen.getByRole('button')).toBeInTheDocument();
+    });
+    
+    it('applies variant styling correctly', () => {
+      render(<ComponentName {...defaultProps} variant="compact" />);
+      expect(screen.getByTestId('component-container')).toHaveClass('compact');
+    });
+    
+    it('handles loading state correctly', () => {
+      render(<ComponentName {...defaultProps} loading={true} />);
+      expect(screen.getByRole('progressbar')).toBeInTheDocument();
+    });
+    
+    it('handles error state correctly', () => {
+      const error = 'Test error message';
+      render(<ComponentName {...defaultProps} error={error} />);
+      expect(screen.getByRole('alert')).toHaveTextContent(error);
+    });
+  });
+  
+  describe('User Interactions', () => {
+    it('calls onAction when button is clicked', () => {
+      const mockOnAction = jest.fn();
+      render(<ComponentName {...defaultProps} onAction={mockOnAction} />);
+      
+      fireEvent.click(screen.getByRole('button'));
+      expect(mockOnAction).toHaveBeenCalledWith(expectedActionData);
+    });
+    
+    it('handles keyboard navigation correctly', () => {
+      render(<ComponentName {...defaultProps} />);
+      
+      const component = screen.getByRole('button');
+      fireEvent.keyDown(component, { key: 'Enter' });
+      expect(defaultProps.onAction).toHaveBeenCalled();
+    });
+  });
+  
+  describe('API Integration', () => {
+    it('fetches component data on mount', async () => {
+      const mockApiCall = jest.spyOn(ComponentAPI, 'getComponentData');
+      render(<ComponentName componentId="test-id" />);
+      
+      await waitFor(() => {
+        expect(mockApiCall).toHaveBeenCalledWith('test-id');
+      });
+    });
+    
+    it('handles API errors gracefully', async () => {
+      jest.spyOn(ComponentAPI, 'getComponentData').mockRejectedValue(new Error('API Error'));
+      
+      render(<ComponentName componentId="test-id" />);
+      
+      await waitFor(() => {
+        expect(screen.getByRole('alert')).toBeInTheDocument();
+      });
+    });
+  });
+});
+```
+
+#### Integration Test Requirements
+- **Component Integration:** Test with parent and child components
+- **State Management Integration:** Test with global state updates
+- **API Integration:** Test with real API responses (mocked)
+- **Event Flow:** Test complete user interaction flows
+
+### 5. Accessibility Implementation
+
+#### Accessibility Requirements
+```javascript
+// Accessibility implementation example
+const AccessibleComponent = ({ data, onAction }) => {
+  const componentId = `component-${data.id}`;
+  const titleId = `title-${data.id}`;
+  const descriptionId = `description-${data.id}`;
+  
+  return (
+    <div
+      role="article"
+      aria-labelledby={titleId}
+      aria-describedby={descriptionId}
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onAction(data);
+        }
+      }}
+    >
+      <h3 id={titleId}>{data.title}</h3>
+      <p id={descriptionId}>{data.description}</p>
+      <button
+        aria-label={`Action for ${data.title}`}
+        onClick={() => onAction(data)}
+      >
+        Take Action
+      </button>
+    </div>
+  );
+};
+```
+
+#### A11y Testing Requirements
+- **Screen Reader Testing:** NVDA/JAWS compatibility
+- **Keyboard Navigation:** Full keyboard accessibility
+- **Color Contrast:** WCAG 2.1 AA compliance
+- **Focus Management:** Proper focus indicators and management
+
+### 6. Performance Implementation
+
+#### Performance Requirements
+```javascript
+// Performance optimization example
+const OptimizedComponent = memo(({ data, onAction }) => {
+  // Memoize expensive calculations
+  const processedData = useMemo(() => {
+    return data.map(item => ({
+      ...item,
+      displayValue: formatDisplayValue(item.value)
+    }));
+  }, [data]);
+  
+  // Memoize event handlers
+  const handleAction = useCallback((actionData) => {
+    onAction(actionData);
+  }, [onAction]);
+  
+  // Virtualization for large lists
+  if (processedData.length > 100) {
+    return (
+      <VirtualizedList
+        data={processedData}
+        renderItem={({ item }) => (
+          <ComponentItem data={item} onAction={handleAction} />
+        )}
+        itemHeight={60}
+      />
+    );
+  }
+  
+  return (
+    <ComponentContainer>
+      {processedData.map(item => (
+        <ComponentItem
+          key={item.id}
+          data={item}
+          onAction={handleAction}
+        />
+      ))}
+    </ComponentContainer>
+  );
+});
+```
+
+#### Performance Validation
+- **Rendering Performance:** Component should render in <16ms
+- **Memory Usage:** No memory leaks in development tools
+- **Bundle Size:** Component should add <50KB to bundle
+- **Image Optimization:** All images properly optimized and lazy loaded
+
+### 7. Error Handling Implementation
+
+#### Error Boundary Integration
+```javascript
+// Component with error handling
+const ComponentWithErrorHandling = ({ data, onAction }) => {
+  const [error, setError] = useState(null);
+  
+  const handleError = (error) => {
+    setError(error);
+    // Log error for monitoring
+    errorTracker.captureException(error, {
+      component: 'ComponentName',
+      data: data.id,
+      user: user.id
+    });
+  };
+  
+  const retryAction = () => {
+    setError(null);
+    // Retry logic
+  };
+  
+  if (error) {
+    return (
+      <ErrorDisplay
+        error={error}
+        onRetry={retryAction}
+        context="ComponentName failed to load"
+      />
+    );
+  }
+  
+  return (
+    <ErrorBoundary onError={handleError}>
+      <ComponentImplementation data={data} onAction={onAction} />
+    </ErrorBoundary>
+  );
+};
+```
+
+### 8. Human Review Guidelines
+
+#### What Human Should Validate
+1. **Visual Design Fidelity:** Component matches design specifications
+2. **User Interaction:** All interactions work as expected
+3. **Data Integration:** Component displays and updates data correctly
+4. **Error Scenarios:** Error states display appropriately
+5. **Accessibility:** Component is usable with keyboard and screen reader
+6. **Performance:** Component renders smoothly without lag
+7. **Responsive Design:** Component works on mobile, tablet, desktop
+
+#### Human Review Checklist
+- [ ] **Component renders correctly in all specified variants**
+- [ ] **All user interactions trigger expected behaviors**
+- [ ] **Loading and error states display appropriately**
+- [ ] **Component integrates properly with existing components**
+- [ ] **Accessibility features work with keyboard and screen reader**
+- [ ] **Component is responsive across breakpoints**
+- [ ] **Performance is acceptable (no lag or memory leaks)**
+- [ ] **Tests pass and provide adequate coverage**
+
+### 🧠 Required Memory Actions During Implementation
+
+**CRITICAL:** Every atomic task implementation MUST include these Memory MCP actions:
+
+**Before Starting Implementation:**
+```
+memory_store_chunk
+  content="Starting FE-[ID]: [task-name]. Component: [component-name]. Integration context: [existing components involved]"
+  tags=["atomic-task", "started", "FE-[ID]", "component-name", "feature-name"]
+  session_id="[current-session]"
+  repository="[project-repo]"
+```
+
+**During Implementation (for complex decisions):**
+```
+memory_store_decision
+  decision="[key implementation or integration choice]"
+  rationale="[why this approach works with existing components and user requirements]"
+  alternatives="[other approaches considered and why this was chosen]"
+  session_id="[current-session]"
+  repository="[project-repo]"
+```
+
+**After Completion:**
+```
+memory_store_chunk
+  content="Completed FE-[ID]: [summary]. Integration success: [how it works with existing system]. Testing: [test coverage achieved]. Performance: [performance characteristics]. Human review notes: [areas for human focus]"
+  tags=["atomic-task", "completed", "FE-[ID]", "integration-success", "component-ready"]
+  session_id="[current-session]"
+  repository="[project-repo]"
+```
+
+### 🔄 Sequential Thinking for Complex Components
+**RECOMMENDED:** For complex component implementation decisions, use Sequential Thinking MCP:
+```
+mcp__sequential-thinking__sequentialthinking
+  thought="[complex component or integration challenge]"
+  thought_number=1
+  total_thoughts=3-5
+  next_thought_needed=true
+```
+Use when facing:
+- Complex component state management
+- Challenging integration with existing components
+- Performance optimization decisions
+- Accessibility implementation complexity
+
+## Atomic Task Examples
+
+### Example 1: Basic Component Implementation
+
+```markdown
+## FE-001-001: Implement FeatureHeader Component
+
+### 1. Task Overview
+- **Task ID:** FE-001-001
+- **Task Name:** Implement FeatureHeader Component
+- **Component Focus:** FeatureHeader - displays feature title, navigation, and primary actions
+- **Estimated Duration:** 3 hours
+- **Implementation Type:** Component (UI + Logic)
+- **Human Review Scope:** Visual design fidelity, responsive behavior, accessibility
+
+### 🔀 Git Workflow (REQUIRED)
+**BEFORE STARTING:**
+```bash
+git checkout main
+git pull origin main
+git checkout -b feature/FE-001-001-feature-header
+```
+
+**AFTER COMPLETING:**
+```bash
+npm run build && npm test && npm run lint
+git add .
+git commit -m "feat(FE-001-001): implement FeatureHeader component
+
+Component: Header component with title, navigation and actions
+Implementation: Responsive header with mobile collapsible menu
+Integration: Integrates with FeatureProvider for data and actions
+Testing: Unit tests for rendering, interactions, and responsive behavior
+Accessibility: Full keyboard navigation and screen reader support
+
+Files Added:
+- src/components/FeatureHeader/index.ts
+- src/components/FeatureHeader/FeatureHeader.tsx
+- src/components/FeatureHeader/FeatureHeader.styles.ts
+- src/components/FeatureHeader/FeatureHeader.test.tsx
+
+Human Review Focus:
+- Visual design matches mockups
+- Mobile menu works correctly
+- Keyboard navigation flows properly"
+
+git push -u origin feature/FE-001-001-feature-header
+```
+
+### 2. Component Implementation Specification
+
+#### Component Requirements
+- **Component Name:** FeatureHeader (src/components/FeatureHeader/FeatureHeader.tsx)
+- **Component Purpose:** Display feature title, navigation links, and primary actions
+- **Props Interface:**
+```typescript
+interface FeatureHeaderProps {
+  title: string;
+  subtitle?: string;
+  navigationItems: NavigationItem[];
+  primaryAction?: {
+    label: string;
+    onClick: () => void;
+    disabled?: boolean;
+  };
+  secondaryActions?: ActionItem[];
+  variant?: 'default' | 'compact';
+  className?: string;
+}
+```
+
+### 3. Integration Points Specification
+- **Parent Components:** FeatureLayout will use this as header
+- **Child Components:** Uses Button, Menu, and Icon from design system
+- **State Management:** Receives navigation state from FeatureProvider
+- **Event Handling:** Emits navigation and action events to parent
+
+### 4. Testing Requirements
+```javascript
+describe('FeatureHeader', () => {
+  it('renders title and subtitle correctly', () => {
+    render(<FeatureHeader title="Test Title" subtitle="Test Subtitle" />);
+    expect(screen.getByText('Test Title')).toBeInTheDocument();
+    expect(screen.getByText('Test Subtitle')).toBeInTheDocument();
+  });
+  
+  it('renders navigation items', () => {
+    const navItems = [{ label: 'Home', href: '/home' }];
+    render(<FeatureHeader title="Test" navigationItems={navItems} />);
+    expect(screen.getByText('Home')).toBeInTheDocument();
+  });
+  
+  it('handles primary action click', () => {
+    const mockAction = jest.fn();
+    const primaryAction = { label: 'Action', onClick: mockAction };
+    render(<FeatureHeader title="Test" primaryAction={primaryAction} />);
+    
+    fireEvent.click(screen.getByText('Action'));
+    expect(mockAction).toHaveBeenCalled();
+  });
+});
+```
+
+### 5. Human Review Guidelines
+**Focus Areas:**
+1. **Header Layout:** Title, subtitle, and actions are properly positioned
+2. **Navigation:** Navigation links work and highlight active state
+3. **Mobile Behavior:** Header collapses appropriately on mobile
+4. **Action Buttons:** Primary and secondary actions trigger correctly
+5. **Accessibility:** Can be navigated entirely with keyboard
+
+**Success Criteria:**
+- [ ] Header displays correctly on desktop, tablet, mobile
+- [ ] All navigation links are clickable and properly styled
+- [ ] Primary action button is prominent and functional
+- [ ] Mobile menu opens/closes smoothly
+- [ ] Component passes all automated tests
+```
+
+### Example 2: BFF Integration Task
+
+```markdown
+## FE-001-003: Implement FeatureDataList API Integration
+
+### 1. Task Overview
+- **Task ID:** FE-001-003
+- **Task Name:** Implement FeatureDataList API Integration
+- **Component Focus:** Data fetching, caching, and display for FeatureDataList
+- **Estimated Duration:** 4 hours
+- **Implementation Type:** Integration (API + State Management)
+- **Human Review Scope:** Data loading behavior, error handling, performance
+
+### 2. BFF Integration Specification
+```javascript
+// API service implementation
+const useFeatureDataList = (filters) => {
+  return useQuery({
+    queryKey: ['feature-data-list', filters],
+    queryFn: () => FeatureAPI.getDataList(filters),
+    staleTime: 5 * 60 * 1000,
+    onError: (error) => {
+      errorTracker.captureException(error);
+    }
+  });
+};
+
+// Component with API integration
+const FeatureDataList = ({ filters }) => {
+  const { data, loading, error, refetch } = useFeatureDataList(filters);
+  
+  if (loading) return <DataListSkeleton />;
+  if (error) return <DataListError error={error} onRetry={refetch} />;
+  if (!data?.items.length) return <DataListEmpty />;
+  
+  return (
+    <DataListContainer>
+      {data.items.map(item => (
+        <DataListItem key={item.id} data={item} />
+      ))}
+    </DataListContainer>
+  );
+};
+```
+
+### 3. Human Review Guidelines
+**Focus Areas:**
+1. **Data Loading:** List loads smoothly with appropriate loading states
+2. **Error Handling:** Network errors display helpful messages
+3. **Empty States:** Empty data shows appropriate messaging
+4. **Performance:** Large lists render without lag
+5. **Data Updates:** Updates from other components reflect correctly
+
+**Success Criteria:**
+- [ ] Data loads correctly from BFF endpoints
+- [ ] Loading states display during fetch operations
+- [ ] Error states provide clear user guidance
+- [ ] List performance is acceptable with 100+ items
+- [ ] Data updates in real-time when modified elsewhere
+```
+
+## Implementation Plan Structure
+
+Create organized implementation plan:
+
+```
+docs/frontend-development/tasks/frontend-[feature-name]/
+├── overview.md                           # Implementation overview
+├── FE-[feature-id]-001-[task-name].md    # Individual atomic tasks
+├── FE-[feature-id]-002-[task-name].md
+├── FE-[feature-id]-003-[task-name].md
+├── FE-[feature-id]-004-[task-name].md
+└── implementation-sequence.md             # Task execution order and dependencies
+```
+
+### Overview Document Structure
+
+```markdown
+# Frontend Implementation Plan: [Feature Name]
+
+## 🎯 Implementation Overview
+
+**Feature:** [Feature name]
+**Total Tasks:** [Number of atomic tasks]
+**Estimated Duration:** [Total development time across all tasks]
+**Human-AI Session Count:** [Number of pair programming sessions needed]
+
+## 📋 Atomic Task Summary
+
+| Task ID | Name | Duration | Type | Dependencies | Human Review Focus |
+|---------|------|----------|------|--------------|--------------------|
+| FE-001-001 | [Task name] | 3h | Component | None | Visual design, responsive |
+| FE-001-002 | [Task name] | 2h | Integration | FE-001-001 | API integration, error handling |
+| FE-001-003 | [Task name] | 4h | Testing | FE-001-002 | Test coverage, edge cases |
+
+## 🔗 Component Integration Map
+
+```mermaid
+graph TD
+    A[FE-001-001: FeatureHeader] -->|Used by| B[FE-001-004: FeatureLayout]
+    C[FE-001-002: DataList] -->|Used by| B
+    D[FE-001-003: API Integration] -->|Provides data to| C
+    B -->|Integrates with| E[Existing App Layout]
+```
+
+## 📅 Implementation Sequence
+
+### Week 1: Core Components
+- **Session 1 (3h):** FE-001-001 - FeatureHeader Component
+- **Session 2 (4h):** FE-001-002 - DataList Component
+- **Session 3 (2h):** FE-001-003 - API Integration
+
+### Week 2: Integration & Polish
+- **Session 4 (3h):** FE-001-004 - Layout Integration
+- **Session 5 (2h):** FE-001-005 - Performance Optimization
+- **Session 6 (3h):** FE-001-006 - Testing & Accessibility
+
+### Parallel Opportunities
+- **Styling tasks** can be done in parallel with component logic
+- **Testing tasks** can be started as soon as component logic is complete
+- **Accessibility implementation** can be done incrementally
+
+### Critical Path
+- **FE-001-001 → FE-001-004:** Header must exist before layout integration
+- **FE-001-002 → FE-001-003:** DataList component needed before API integration
+- **FE-001-003 → FE-001-006:** API integration must be complete before final testing
+```
+
+## Memory Actions During Process
+
+### Initial Context Retrieval
+```
+memory_search "component-architecture design-analysis technical-planning [feature-name]" repository="[project-repo]"
+memory_store_chunk
+  content="Starting atomic task breakdown for [feature-name]. Architecture context: [component summary]. Technical context: [integration summary]"
+  tags=["atomic-tasks", "started", "feature-name", "implementation-planning"]
+  session_id="[current-session]"
+  repository="[project-repo]"
+```
+
+### After Task Generation
+```
+memory_store_decision
+  decision="Atomic task breakdown for [feature-name]"
+  rationale="Task boundaries based on component architecture. Human-AI pairing optimized for 2-4 hour sessions. Integration approach: [approach]. Git workflow: single commit per task."
+  context="Total tasks: [count]. Component tasks: [count]. Integration tasks: [count]. Testing tasks: [count]. Critical path: [tasks]"
+  session_id="[current-session]"
+  repository="[project-repo]"
+```
+
+### After Plan Completion
+```
+memory_create_thread
+  name="Frontend Atomic Implementation: [feature-name]"
+  description="Complete frontend development from design analysis through atomic implementation tasks"
+  chunk_ids=["[design-analysis-chunks]", "[tech-planning-chunks]", "[component-architecture-chunks]", "[atomic-tasks-chunks]"]
+  repository="[project-repo]"
+```
+
+## Quality Validation
+
+Before finalizing atomic task breakdown, ensure:
+
+### Task Atomicity Validation
+- [ ] **Each task completable in single 2-4 hour session**
+- [ ] **Each task produces complete, testable functionality**
+- [ ] **Tasks are independent where possible**
+- [ ] **Dependencies are minimal and clearly defined**
+
+### Human-AI Pairing Optimization
+- [ ] **Clear acceptance criteria for human validation**
+- [ ] **Explicit integration points documented**
+- [ ] **Complete git workflow included**
+- [ ] **Error handling fully specified**
+
+### Implementation Quality
+- [ ] **All tasks follow established coding standards**
+- [ ] **Performance requirements built into each task**
+- [ ] **Accessibility requirements included**
+- [ ] **Testing coverage is comprehensive**
+
+### Development Workflow Integration
+- [ ] **Git workflow supports code review process**
+- [ ] **Task sequence optimizes development efficiency**
+- [ ] **Parallel work opportunities identified**
+- [ ] **Critical path clearly documented**
+
+## Final Instructions
+
+1. **Atomic Focus** - Every task must be completable in single development session
+2. **Human-Centric** - Design tasks for easy human review and validation
+3. **Git Discipline** - Every task includes complete git workflow
+4. **Integration First** - Prioritize clean integration with existing components
+5. **Quality Built-In** - Include testing, accessibility, and performance in every task
+6. **Memory Integration** - Store all task breakdown decisions and successful patterns
+7. **Performance Aware** - Consider performance implications in all task definitions
+
+This atomic task breakdown enables efficient human-AI pair programming with high-quality, reviewable output that integrates seamlessly with existing systems.
