@@ -89,6 +89,54 @@ If you want to suggest changes to our Cursor configuration:
 - These configurations are specifically tailored for our team's workflow
 - Regular updates will be made to improve and refine the rules
 - Feel free to suggest improvements or report issues
+- 
+
+## MCP-Interactive Feedback
+
+## Installation (Cursor)
+
+![Instalation on Cursor](https://github.com/noopstudios/interactive-feedback-mcp/blob/main/.github/cursor-example.jpg?raw=true)
+
+1.  **Prerequisites:**
+    *   Python 3.11 or newer.
+    *   [uv](https://github.com/astral-sh/uv) (Python package manager). Install it with:
+        *   Windows: `pip install uv`
+        *   Linux/Mac: `curl -LsSf https://astral.sh/uv/install.sh | sh`
+2.  **Get the code:**
+    *   Clone this repository:
+        `git clone https://github.com/noopstudios/interactive-feedback-mcp.git`
+    *   Or download the source code.
+3.  **Navigate to the directory:**
+    *   `cd path/to/interactive-feedback-mcp`
+4.  **Install dependencies:**
+    *   `uv sync` (this creates a virtual environment and installs packages)
+5.  **Run the MCP Server:**
+    *   `uv run server.py`
+6.  **Configure in Cursor:**
+    *   Cursor typically allows specifying custom MCP servers in its settings. You'll need to point Cursor to this running server. The exact mechanism might vary, so consult Cursor's documentation for adding custom MCPs.
+    *   **Manual Configuration (e.g., via `mcp.json`)**
+        **Remember to change the `/Users/fabioferreira/Dev/scripts/interactive-feedback-mcp` path to the actual path where you cloned the repository on your system.**
+
+        ```json
+        {
+          "mcpServers": {
+            "interactive-feedback-mcp": {
+              "command": "uv",
+              "args": [
+                "--directory",
+                "/Users/fabioferreira/Dev/scripts/interactive-feedback-mcp",
+                "run",
+                "server.py"
+              ],
+              "timeout": 600,
+              "autoApprove": [
+                "interactive_feedback"
+              ]
+            }
+          }
+        }
+        ```
+    *   You might use a server identifier like `interactive-feedback-mcp` when configuring it in Cursor.
 
 ## ⚠️ Important
 
