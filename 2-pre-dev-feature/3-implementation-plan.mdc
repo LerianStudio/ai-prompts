@@ -187,6 +187,309 @@ black .             # Code formatting
 3. Re-run checks to ensure resolution
 4. Only mark feature task as complete when ALL quality checks pass
 
+### 🚨 Pre-Emptive Quality Guidance (CRITICAL)
+
+**IMPORTANT:** Use these patterns to avoid common quality check failures in feature implementation:
+
+#### Go Language Anti-Patterns to Avoid in Features
+**Error Handling:**
+```go
+// ❌ WRONG - causes errcheck/staticcheck violations
+fmt.Errorf("feature not available")  // For static messages
+
+// ✅ CORRECT - use errors.New for static messages
+errors.New("feature not available")
+
+// ✅ CORRECT - use fmt.Errorf only with variables
+fmt.Errorf("feature %s not available", featureName)
+```
+
+**Feature Integration Patterns:**
+```go
+// ❌ WRONG - causes high complexity in feature integration
+func IntegrateFeature(feature Feature, system System) error {
+    if feature.Enabled {
+        if system.Ready {
+            if feature.Config != nil {
+                if len(feature.Config.Dependencies) > 0 {
+                    // Deep nesting in feature integration
+                }
+            }
+        }
+    }
+    return nil
+}
+
+// ✅ CORRECT - clean feature integration
+func IntegrateFeature(feature Feature, system System) error {
+    if !feature.Enabled {
+        return nil  // Early return for disabled features
+    }
+    if !system.Ready {
+        return errors.New("system not ready for feature integration")
+    }
+    if feature.Config == nil {
+        return errors.New("feature configuration required")
+    }
+    if len(feature.Config.Dependencies) == 0 {
+        return nil  // No dependencies to process
+    }
+    
+    // Clean integration logic
+    return system.IntegrateFeature(feature)
+}
+```
+
+**String Operations in Feature Code:**
+```go
+// ❌ WRONG - causes perfsprint violations
+featureID := fmt.Sprintf("%d", feature.ID)        // Use strconv.Itoa
+featureName := fmt.Sprintf("%s", feature.Name)    // Direct string conversion
+featureKey := fmt.Sprintf("feature_%s", name)     // Use concatenation
+
+// ✅ CORRECT - performance optimized feature code
+featureID := strconv.Itoa(feature.ID)             // Efficient integer conversion
+featureName := feature.Name                       // Direct assignment
+featureKey := "feature_" + name                   // Simple concatenation
+```
+
+**Feature Data Processing:**
+```go
+// ❌ WRONG - causes prealloc violations
+var featureData []FeatureData
+for _, item := range featureItems {
+    featureData = append(featureData, processItem(item))
+}
+
+// ✅ CORRECT - pre-allocate for feature data
+featureData := make([]FeatureData, 0, len(featureItems))
+for _, item := range featureItems {
+    featureData = append(featureData, processItem(item))
+}
+```
+
+#### TypeScript/JavaScript Feature Patterns
+```typescript
+// ❌ WRONG - common feature implementation issues
+const processFeature = (data: any) => {           // Avoid 'any' in features
+    let result = data.process();                  // Use const when possible
+    if (result == null) return null;              // Use strict equality
+}
+
+// ✅ CORRECT - type-safe feature implementation
+interface FeatureData {
+    id: string;
+    config: FeatureConfig;
+    process(): FeatureResult | null;
+}
+
+const processFeature = (data: FeatureData): FeatureResult | null => {
+    const result = data.process();                // const for immutable
+    if (result === null) return null;             // Strict equality
+    return result;
+}
+```
+
+#### Python Feature Patterns
+```python
+# ❌ WRONG - common feature violations
+def process_feature(data):                        # Missing type hints
+    if hasattr(data, 'process'):                  # Unsafe attribute check
+        return data.process()
+
+# ✅ CORRECT - type-safe feature patterns
+from typing import Protocol, Optional
+
+class FeatureData(Protocol):
+    def process(self) -> Optional[str]: ...
+
+def process_feature(data: FeatureData) -> Optional[str]:
+    return data.process()
+```
+
+### 🎯 Feature-Specific Quality Strategies
+
+**Keep Feature Functions Focused:**
+- **Target:** <25 lines per feature function
+- **Maximum:** 40 lines (split if larger)
+- **Strategy:** One feature responsibility per function
+
+**Feature Error Handling:**
+```go
+// ✅ RECOMMENDED pattern for feature error handling
+func ExecuteFeatureWithValidation(input FeatureInput) (*FeatureResult, error) {
+    // Validate feature prerequisites
+    if err := input.ValidateFeatureRequirements(); err != nil {
+        return nil, fmt.Errorf("feature requirements not met: %w", err)
+    }
+    
+    // Execute feature with proper error wrapping
+    result, err := input.ExecuteFeature()
+    if err != nil {
+        return nil, fmt.Errorf("feature execution failed: %w", err)
+    }
+    
+    // Validate feature integration
+    if err := result.ValidateIntegration(); err != nil {
+        return nil, fmt.Errorf("feature integration validation failed: %w", err)
+    }
+    
+    return result, nil
+}
+```
+
+**Avoid Common Feature Anti-Patterns:**
+```go
+// ❌ WRONG - complex feature processing
+func ProcessFeatureList(features []Feature) error {
+    for i := 0; i < len(features); i++ {          // Use range instead
+        if features[i].Type == "critical" {
+            if features[i].Dependencies != nil {
+                if len(features[i].Dependencies) > 0 {
+                    // Deep nesting in feature processing
+                }
+            }
+        }
+    }
+    return nil
+}
+
+// ✅ CORRECT - clean feature processing
+func ProcessFeatureList(features []Feature) error {
+    for _, feature := range features {            // Clean iteration
+        if err := processIndividualFeature(feature); err != nil {
+            return fmt.Errorf("feature %s processing failed: %w", feature.ID, err)
+        }
+    }
+    return nil
+}
+
+func processIndividualFeature(feature Feature) error {
+    if feature.Type != "critical" {
+        return nil  // Early return for non-critical features
+    }
+    if feature.Dependencies == nil || len(feature.Dependencies) == 0 {
+        return nil  // Guard clause prevents nesting
+    }
+    
+    // Process critical feature with dependencies
+    return feature.ProcessWithDependencies()
+}
+```
+
+### 📏 Feature File Size Guidelines
+
+**Optimal Feature File Sizes:**
+- **Go feature files:** <250 lines target, 400 lines maximum
+- **TypeScript feature files:** <200 lines target, 350 lines maximum
+- **Python feature files:** <150 lines target, 250 lines maximum
+
+**Feature Decomposition Strategy:**
+1. **Separate by concern** - Feature logic, integration, validation in different files
+2. **Extract utilities** - Common feature operations in utility modules
+3. **Interface-driven** - Clear contracts between feature components
+4. **Testable units** - Each feature component easily testable
+
+### 🔍 Feature Pre-Implementation Quality Checklist
+
+Before implementing any feature task, ensure specification includes:
+- [ ] **Integration points** - Clear connection with existing system
+- [ ] **Backward compatibility** - Existing functionality preserved
+- [ ] **Error propagation** - Proper error handling and reporting
+- [ ] **Performance impact** - Feature doesn't degrade system performance
+- [ ] **Testing strategy** - Unit and integration tests for feature
+- [ ] **Configuration management** - Feature flags and settings handled properly
+- [ ] **Security considerations** - Feature doesn't introduce vulnerabilities
+- [ ] **Type safety** - Strong typing throughout feature implementation
+
+### 🔄 Quality-First Feature Implementation Flow
+
+**For each feature task implementation:**
+1. **Design integration first** - Define how feature connects with existing system
+2. **Write integration tests** - Test feature works with existing components
+3. **Implement with quality patterns** - Use proven patterns from the start
+4. **Test backward compatibility** - Ensure existing features still work
+5. **Validate performance** - Feature doesn't impact system performance
+
+**Feature Implementation Template:**
+```go
+// ✅ RECOMMENDED feature implementation template
+package feature
+
+import (
+    "context"
+    "errors"
+    "fmt"
+)
+
+// FeatureInput defines the input contract for this feature
+type FeatureInput struct {
+    ID               string            `json:"id" validate:"required"`
+    Config           FeatureConfig     `json:"config" validate:"required"`
+    ExistingSystem   SystemInterface   `json:"-"`
+    Dependencies     []string          `json:"dependencies"`
+}
+
+// FeatureResult defines the output contract for this feature
+type FeatureResult struct {
+    ID               string            `json:"id"`
+    Status           string            `json:"status"`
+    IntegrationData  map[string]any    `json:"integration_data"`
+    Errors           []string          `json:"errors,omitempty"`
+}
+
+// Execute implements the feature with proper integration
+func (input *FeatureInput) Execute(ctx context.Context) (*FeatureResult, error) {
+    // Validate feature can be integrated
+    if err := input.ValidateIntegration(); err != nil {
+        return nil, fmt.Errorf("integration validation failed: %w", err)
+    }
+    
+    // Check context cancellation
+    select {
+    case <-ctx.Done():
+        return nil, ctx.Err()
+    default:
+    }
+    
+    // Initialize feature result
+    result := &FeatureResult{
+        ID:              input.ID,
+        Status:          "integrating",
+        IntegrationData: make(map[string]any),
+    }
+    
+    // Execute feature integration
+    if err := input.integrateWithSystem(result); err != nil {
+        return nil, fmt.Errorf("system integration failed: %w", err)
+    }
+    
+    result.Status = "integrated"
+    return result, nil
+}
+
+// ValidateIntegration ensures feature can be safely integrated
+func (input *FeatureInput) ValidateIntegration() error {
+    if input.ID == "" {
+        return errors.New("feature ID is required")
+    }
+    if input.ExistingSystem == nil {
+        return errors.New("existing system reference is required")
+    }
+    if !input.ExistingSystem.CanIntegrateFeature(input.ID) {
+        return errors.New("system cannot integrate this feature")
+    }
+    return nil
+}
+
+// integrateWithSystem handles the core feature integration logic
+func (input *FeatureInput) integrateWithSystem(result *FeatureResult) error {
+    // Implementation specific to this feature
+    // Keep this function focused on integration
+    return input.ExistingSystem.IntegrateFeature(input.Config)
+}
+```
+
 ### 🧠 Required Memory Actions During Implementation
 **CRITICAL:** Every feature task implementation MUST include these Memory MCP actions:
 

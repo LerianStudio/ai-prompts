@@ -516,6 +516,488 @@ Each atomic task must pass ALL quality gates before completion:
 4. Only mark atomic task as complete when ALL quality checks pass
 5. Include quality validation in commit message
 
+### 🚨 Pre-Emptive Quality Guidance (CRITICAL)
+
+**IMPORTANT:** Use these patterns to avoid common quality check failures in frontend atomic tasks:
+
+#### TypeScript/JavaScript Anti-Patterns to Avoid
+**Type Safety:**
+```typescript
+// ❌ WRONG - causes TypeScript violations
+const data: any = fetchData();                    // Avoid 'any' type
+let config = getConfig();                         // Use const when possible
+if (value == null) return;                       // Use strict equality
+
+// ✅ CORRECT - type-safe patterns
+interface ComponentData {
+    id: string;
+    status: 'active' | 'inactive';
+    metadata: Record<string, unknown>;
+}
+
+const data: ComponentData = await fetchData();   // Explicit typing
+const config = getConfig();                      // const for immutable
+if (value === null) return;                      // Strict equality
+```
+
+**React Component Patterns:**
+```typescript
+// ❌ WRONG - causes lint violations and performance issues
+const Component = (props: any) => {              // Avoid any props
+    let [state, setState] = useState(null);      // Use const for destructuring
+    
+    useEffect(() => {
+        fetchData().then(data => setState(data)); // Missing dependency
+    }, []);
+    
+    return <div>{state?.value}</div>;
+}
+
+// ✅ CORRECT - optimized React patterns
+interface ComponentProps {
+    id: string;
+    onUpdate: (value: string) => void;
+    className?: string;
+}
+
+const Component: React.FC<ComponentProps> = ({ id, onUpdate, className }) => {
+    const [state, setState] = useState<ComponentData | null>(null);
+    
+    const fetchAndSetData = useCallback(async () => {
+        try {
+            const data = await fetchData(id);
+            setState(data);
+        } catch (error) {
+            console.error('Failed to fetch data:', error);
+        }
+    }, [id]);
+    
+    useEffect(() => {
+        fetchAndSetData();
+    }, [fetchAndSetData]);
+    
+    return (
+        <div className={className}>
+            {state?.value}
+        </div>
+    );
+};
+```
+
+**Performance Optimization:**
+```typescript
+// ❌ WRONG - causes performance violations
+const ComponentList = ({ items }) => {
+    return (
+        <div>
+            {items.map(item => (
+                <ExpensiveComponent 
+                    key={item.id} 
+                    data={item}
+                    onUpdate={() => updateItem(item.id)} // New function every render
+                />
+            ))}
+        </div>
+    );
+};
+
+// ✅ CORRECT - performance optimized
+const ComponentList = React.memo(({ items }: { items: ItemData[] }) => {
+    const handleUpdate = useCallback((itemId: string) => {
+        updateItem(itemId);
+    }, []);
+    
+    return (
+        <div>
+            {items.map(item => (
+                <ExpensiveComponent 
+                    key={item.id} 
+                    data={item}
+                    onUpdate={handleUpdate}
+                />
+            ))}
+        </div>
+    );
+});
+```
+
+#### CSS/Styling Anti-Patterns
+```typescript
+// ❌ WRONG - causes styling violations
+const StyledComponent = styled.div`
+    color: #333;                                 // Use CSS variables
+    font-size: 16px;                            // Use rem units
+    margin: 10px;                               // Use spacing system
+`;
+
+// ✅ CORRECT - design system compliant
+const StyledComponent = styled.div`
+    color: var(--color-text-primary);          // CSS variables
+    font-size: var(--font-size-base);          // Design system tokens
+    margin: var(--spacing-md);                 // Spacing system
+`;
+```
+
+#### Accessibility Anti-Patterns
+```typescript
+// ❌ WRONG - causes a11y violations
+const Button = ({ onClick, children }) => (
+    <div onClick={onClick}>{children}</div>     // Use semantic HTML
+);
+
+const Modal = ({ isOpen, children }) => (
+    <div style={{ display: isOpen ? 'block' : 'none' }}>
+        {children}                              // Missing focus management
+    </div>
+);
+
+// ✅ CORRECT - accessible patterns
+const Button = ({ onClick, children, disabled, ...props }) => (
+    <button 
+        type="button"
+        onClick={onClick}
+        disabled={disabled}
+        {...props}
+    >
+        {children}
+    </button>
+);
+
+const Modal = ({ isOpen, onClose, children, title }) => {
+    const modalRef = useRef<HTMLDivElement>(null);
+    
+    useEffect(() => {
+        if (isOpen && modalRef.current) {
+            modalRef.current.focus();
+        }
+    }, [isOpen]);
+    
+    if (!isOpen) return null;
+    
+    return (
+        <div
+            ref={modalRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-title"
+            tabIndex={-1}
+        >
+            <h2 id="modal-title">{title}</h2>
+            {children}
+            <button onClick={onClose}>Close</button>
+        </div>
+    );
+};
+```
+
+### 🎯 Frontend-Specific Quality Strategies
+
+**Keep Components Focused:**
+- **Target:** <100 lines per component
+- **Maximum:** 150 lines (split if larger)
+- **Strategy:** Single responsibility per component
+
+**Component Error Handling:**
+```typescript
+// ✅ RECOMMENDED pattern for component error handling
+const ComponentWithErrorHandling: React.FC<ComponentProps> = (props) => {
+    const [error, setError] = useState<Error | null>(null);
+    
+    if (error) {
+        return (
+            <ErrorBoundary 
+                error={error} 
+                onReset={() => setError(null)}
+                fallback={<ComponentErrorFallback />}
+            />
+        );
+    }
+    
+    try {
+        return <ComponentImplementation {...props} />;
+    } catch (err) {
+        setError(err instanceof Error ? err : new Error('Unknown error'));
+        return null;
+    }
+};
+```
+
+**State Management Patterns:**
+```typescript
+// ❌ WRONG - state management violations
+const Component = () => {
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    
+    // Multiple state updates in different places
+    useEffect(() => {
+        setLoading(true);
+        fetchData().then(result => {
+            setData(result);
+            setLoading(false);
+        }).catch(err => {
+            setError(err);
+            setLoading(false);
+        });
+    }, []);
+    
+    return <div>{/* render logic */}</div>;
+};
+
+// ✅ CORRECT - consolidated state management
+interface AsyncState<T> {
+    data: T | null;
+    loading: boolean;
+    error: Error | null;
+}
+
+const useAsyncData = <T>(fetcher: () => Promise<T>) => {
+    const [state, setState] = useState<AsyncState<T>>({
+        data: null,
+        loading: false,
+        error: null
+    });
+    
+    const fetchData = useCallback(async () => {
+        setState(prev => ({ ...prev, loading: true, error: null }));
+        
+        try {
+            const data = await fetcher();
+            setState({ data, loading: false, error: null });
+        } catch (error) {
+            setState({ 
+                data: null, 
+                loading: false, 
+                error: error instanceof Error ? error : new Error('Unknown error')
+            });
+        }
+    }, [fetcher]);
+    
+    return { ...state, refetch: fetchData };
+};
+```
+
+### 📏 Frontend File Size Guidelines
+
+**Optimal Frontend File Sizes:**
+- **React components:** <150 lines target, 200 lines maximum
+- **Custom hooks:** <100 lines target, 150 lines maximum
+- **Utility files:** <200 lines target, 300 lines maximum
+- **Style files:** <100 lines target, 150 lines maximum
+
+**Component Decomposition Strategy:**
+1. **Split by responsibility** - Logic, presentation, and styling in appropriate files
+2. **Extract custom hooks** - Reusable logic in custom hooks
+3. **Component composition** - Build complex components from simple ones
+4. **Utility extraction** - Common operations in utility functions
+
+### 🔍 Frontend Pre-Implementation Quality Checklist
+
+Before implementing any atomic frontend task, ensure specification includes:
+- [ ] **Type safety** - All props, state, and data properly typed
+- [ ] **Performance considerations** - Memoization, virtualization, lazy loading
+- [ ] **Accessibility requirements** - WCAG 2.1 AA compliance
+- [ ] **Error boundaries** - Proper error handling and user feedback
+- [ ] **Testing strategy** - Unit, integration, and accessibility tests
+- [ ] **Responsive design** - Mobile, tablet, desktop compatibility
+- [ ] **Design system compliance** - Use of design tokens and components
+- [ ] **Bundle size impact** - Minimize impact on application bundle
+
+### 🔄 Quality-First Frontend Implementation Flow
+
+**For each atomic frontend task:**
+1. **Type interfaces first** - Define all TypeScript interfaces
+2. **Write tests before implementation** - TDD approach for better quality
+3. **Implement with accessibility** - Build a11y from the start
+4. **Test across devices** - Ensure responsive behavior
+5. **Validate performance** - Check bundle size and render performance
+
+**Frontend Component Template:**
+```typescript
+// ✅ RECOMMENDED frontend component template
+import React, { useState, useCallback, useEffect } from 'react';
+import styled from 'styled-components';
+
+// Type definitions
+interface ComponentProps {
+    id: string;
+    data: ComponentData;
+    onUpdate: (id: string, data: ComponentData) => void;
+    variant?: 'default' | 'compact' | 'expanded';
+    className?: string;
+    'data-testid'?: string;
+}
+
+interface ComponentData {
+    title: string;
+    status: 'active' | 'inactive' | 'pending';
+    metadata: Record<string, unknown>;
+}
+
+// Styled components
+const ComponentContainer = styled.div<{ variant: string }>`
+    display: flex;
+    flex-direction: column;
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    background-color: var(--color-background-primary);
+    
+    ${({ variant }) => variant === 'compact' && `
+        padding: var(--spacing-sm);
+    `}
+    
+    ${({ variant }) => variant === 'expanded' && `
+        padding: var(--spacing-lg);
+    `}
+`;
+
+// Main component
+const Component: React.FC<ComponentProps> = ({
+    id,
+    data,
+    onUpdate,
+    variant = 'default',
+    className,
+    'data-testid': testId = 'component'
+}) => {
+    const [isProcessing, setIsProcessing] = useState(false);
+    
+    const handleUpdate = useCallback(async () => {
+        setIsProcessing(true);
+        
+        try {
+            await onUpdate(id, data);
+        } catch (error) {
+            console.error('Update failed:', error);
+        } finally {
+            setIsProcessing(false);
+        }
+    }, [id, data, onUpdate]);
+    
+    return (
+        <ComponentContainer 
+            variant={variant}
+            className={className}
+            data-testid={testId}
+            role="article"
+            aria-busy={isProcessing}
+        >
+            <h3>{data.title}</h3>
+            <p>Status: {data.status}</p>
+            <button 
+                type="button"
+                onClick={handleUpdate}
+                disabled={isProcessing}
+                aria-label={`Update ${data.title}`}
+            >
+                {isProcessing ? 'Updating...' : 'Update'}
+            </button>
+        </ComponentContainer>
+    );
+};
+
+export default React.memo(Component);
+export type { ComponentProps, ComponentData };
+```
+
+### 🧪 Frontend Testing Template
+```typescript
+// ✅ RECOMMENDED frontend test template
+import React from 'react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { axe, toHaveNoViolations } from 'jest-axe';
+
+import Component from './Component';
+import type { ComponentProps } from './Component';
+
+expect.extend(toHaveNoViolations);
+
+const defaultProps: ComponentProps = {
+    id: 'test-id',
+    data: {
+        title: 'Test Component',
+        status: 'active',
+        metadata: {}
+    },
+    onUpdate: jest.fn()
+};
+
+describe('Component', () => {
+    describe('Rendering', () => {
+        it('renders with required props', () => {
+            render(<Component {...defaultProps} />);
+            
+            expect(screen.getByText('Test Component')).toBeInTheDocument();
+            expect(screen.getByText('Status: active')).toBeInTheDocument();
+        });
+        
+        it('applies variant styling correctly', () => {
+            render(<Component {...defaultProps} variant="compact" />);
+            
+            const container = screen.getByTestId('component');
+            expect(container).toHaveClass('compact');
+        });
+    });
+    
+    describe('User Interactions', () => {
+        it('calls onUpdate when update button is clicked', async () => {
+            const mockOnUpdate = jest.fn();
+            render(<Component {...defaultProps} onUpdate={mockOnUpdate} />);
+            
+            const updateButton = screen.getByRole('button', { name: /update test component/i });
+            fireEvent.click(updateButton);
+            
+            await waitFor(() => {
+                expect(mockOnUpdate).toHaveBeenCalledWith('test-id', defaultProps.data);
+            });
+        });
+        
+        it('handles keyboard navigation correctly', async () => {
+            const user = userEvent.setup();
+            render(<Component {...defaultProps} />);
+            
+            const updateButton = screen.getByRole('button');
+            await user.tab();
+            expect(updateButton).toHaveFocus();
+            
+            await user.keyboard('{Enter}');
+            expect(defaultProps.onUpdate).toHaveBeenCalled();
+        });
+    });
+    
+    describe('Accessibility', () => {
+        it('has no accessibility violations', async () => {
+            const { container } = render(<Component {...defaultProps} />);
+            const results = await axe(container);
+            expect(results).toHaveNoViolations();
+        });
+        
+        it('provides proper ARIA labels', () => {
+            render(<Component {...defaultProps} />);
+            
+            expect(screen.getByRole('article')).toBeInTheDocument();
+            expect(screen.getByRole('button')).toHaveAccessibleName('Update Test Component');
+        });
+    });
+    
+    describe('Error States', () => {
+        it('handles update errors gracefully', async () => {
+            const mockOnUpdate = jest.fn().mockRejectedValue(new Error('Update failed'));
+            render(<Component {...defaultProps} onUpdate={mockOnUpdate} />);
+            
+            const updateButton = screen.getByRole('button');
+            fireEvent.click(updateButton);
+            
+            await waitFor(() => {
+                expect(updateButton).not.toBeDisabled();
+            });
+        });
+    });
+});
+```
+
 ### 🧠 Required Memory Actions During Implementation
 
 **CRITICAL:** Every atomic task implementation MUST include these Memory MCP actions:

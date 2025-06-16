@@ -209,6 +209,318 @@ black .             # Code formatting
 3. Re-run checks to ensure resolution
 4. Only mark sub-task as complete when ALL quality checks pass
 
+### 🚨 Pre-Emptive Quality Guidance (CRITICAL)
+
+**IMPORTANT:** Use these patterns to avoid common quality check failures from the start:
+
+#### Go Language Anti-Patterns to Avoid
+**Error Handling:**
+```go
+// ❌ WRONG - causes errcheck/staticcheck violations
+fmt.Errorf("user not found")  // For static messages
+
+// ✅ CORRECT - use errors.New for static messages
+errors.New("user not found")
+
+// ✅ CORRECT - use fmt.Errorf only with variables
+fmt.Errorf("user %s not found", userID)
+```
+
+**String Operations:**
+```go
+// ❌ WRONG - causes perfsprint violations
+fmt.Sprintf("%d", number)     // Use strconv.Itoa(number)
+fmt.Sprintf("%s", variable)   // Use string(variable) or direct concatenation
+fmt.Sprintf("prefix%s", var)  // Use "prefix"+var
+
+// ✅ CORRECT - performance optimized
+strconv.Itoa(number)          // For integer to string
+"prefix" + variable           // For simple concatenation
+```
+
+**Function Complexity (Prevent gocyclo/nestif violations):**
+```go
+// ❌ WRONG - high complexity, deep nesting
+func ProcessSubTask(data SubTaskData) error {
+    if data.Valid {
+        if data.Type == "implementation" {
+            if data.Dependencies != nil {
+                if len(data.Dependencies) > 0 {
+                    // Deep nesting causes nestif violations
+                }
+            }
+        }
+    }
+    return nil
+}
+
+// ✅ CORRECT - early returns, guard clauses
+func ProcessSubTask(data SubTaskData) error {
+    if !data.Valid {
+        return errors.New("invalid sub-task data")
+    }
+    if data.Type != "implementation" {
+        return nil  // Early return reduces complexity
+    }
+    if data.Dependencies == nil || len(data.Dependencies) == 0 {
+        return nil  // Guard clause prevents nesting
+    }
+    
+    // Main logic here - minimal nesting
+    return data.Process()
+}
+```
+
+**Preallocation and Efficiency:**
+```go
+// ❌ WRONG - causes prealloc violations
+var results []SubTaskResult
+for _, task := range subTasks {
+    results = append(results, processSubTask(task))
+}
+
+// ✅ CORRECT - pre-allocate slices
+results := make([]SubTaskResult, 0, len(subTasks))
+for _, task := range subTasks {
+    results = append(results, processSubTask(task))
+}
+```
+
+**Context Usage in Sub-Tasks:**
+```go
+// ❌ WRONG - causes unparam violations
+func ExecuteSubTask(ctx context.Context, task SubTask, metadata string) error {
+    // ctx and metadata never used - unparam violations
+    return task.Run()
+}
+
+// ✅ CORRECT - use all parameters or remove them
+func ExecuteSubTask(task SubTask) error {
+    return task.Run()
+}
+
+// ✅ OR use context properly for cancellation
+func ExecuteSubTask(ctx context.Context, task SubTask) error {
+    select {
+    case <-ctx.Done():
+        return ctx.Err()
+    default:
+        return task.RunWithContext(ctx)
+    }
+}
+```
+
+#### TypeScript/JavaScript Sub-Task Patterns
+```typescript
+// ❌ WRONG - common sub-task implementation issues
+const processSubTask = (data: any) => {              // Avoid 'any'
+    let result = data.process();                     // Use const when possible
+    if (result == null) return null;                 // Use === for strict equality
+}
+
+// ✅ CORRECT - type-safe sub-task implementation
+const processSubTask = (data: SubTaskData): SubTaskResult | null => {
+    const result = data.process();                   // const for immutable
+    if (result === null) return null;                // Strict equality
+    return result;
+}
+```
+
+#### Python Sub-Task Patterns
+```python
+# ❌ WRONG - common sub-task violations
+def execute_sub_task(data):                         # Missing type hints
+    if hasattr(data, 'process'):                    # Unsafe attribute check
+        return data.process()
+
+# ✅ CORRECT - type-safe sub-task patterns
+from typing import Protocol, Optional
+
+class SubTaskData(Protocol):
+    def process(self) -> Optional[str]: ...
+
+def execute_sub_task(data: SubTaskData) -> Optional[str]:
+    return data.process()
+```
+
+### 🎯 Sub-Task Specific Quality Strategies
+
+**Keep Sub-Task Functions Focused:**
+- **Target:** <15 lines per sub-task function
+- **Maximum:** 30 lines (split if larger)
+- **Strategy:** One responsibility per sub-task function
+
+**Sub-Task Error Handling:**
+```go
+// ✅ RECOMMENDED pattern for sub-task error handling
+func ExecuteSubTaskWithValidation(input SubTaskInput) (*SubTaskResult, error) {
+    // Validate sub-task prerequisites
+    if err := input.ValidatePrerequisites(); err != nil {
+        return nil, fmt.Errorf("sub-task prerequisites not met: %w", err)
+    }
+    
+    // Execute sub-task with proper error wrapping
+    result, err := input.Execute()
+    if err != nil {
+        return nil, fmt.Errorf("sub-task execution failed: %w", err)
+    }
+    
+    // Validate sub-task output
+    if err := result.Validate(); err != nil {
+        return nil, fmt.Errorf("sub-task output validation failed: %w", err)
+    }
+    
+    return result, nil
+}
+```
+
+**Avoid Common Sub-Task Anti-Patterns:**
+```go
+// ❌ WRONG - common sub-task implementation issues
+func ProcessMultipleSubTasks(tasks []SubTask) error {
+    for i := 0; i < len(tasks); i++ {               // Use range instead
+        if tasks[i].Type == "critical" {
+            if tasks[i].Dependencies != nil {
+                if len(tasks[i].Dependencies) > 0 {  // Nested conditions
+                    // Complex nested logic
+                }
+            }
+        }
+    }
+    return nil
+}
+
+// ✅ CORRECT - clean sub-task processing
+func ProcessMultipleSubTasks(tasks []SubTask) error {
+    for _, task := range tasks {                    // Use range for cleaner iteration
+        if err := processIndividualSubTask(task); err != nil {
+            return fmt.Errorf("sub-task %s failed: %w", task.ID, err)
+        }
+    }
+    return nil
+}
+
+func processIndividualSubTask(task SubTask) error {
+    if task.Type != "critical" {
+        return nil  // Early return for non-critical tasks
+    }
+    if task.Dependencies == nil || len(task.Dependencies) == 0 {
+        return nil  // Guard clause prevents nesting
+    }
+    
+    // Process critical task with dependencies
+    return task.ProcessWithDependencies()
+}
+```
+
+### 📏 Sub-Task File Size Guidelines
+
+**Optimal Sub-Task File Sizes:**
+- **Go sub-task files:** <200 lines target, 300 lines maximum
+- **TypeScript sub-task files:** <150 lines target, 250 lines maximum
+- **Python sub-task files:** <120 lines target, 200 lines maximum
+
+**Sub-Task Decomposition Strategy:**
+1. **Split by responsibility** - Each file handles one sub-task type
+2. **Extract common utilities** - Shared logic goes to utility files
+3. **Separate concerns** - Data processing, validation, and I/O in different files
+4. **Use interfaces** - Define clear contracts between sub-task components
+
+### 🔍 Sub-Task Pre-Implementation Quality Checklist
+
+Before implementing any sub-task, ensure specification includes:
+- [ ] **Single responsibility** - Each sub-task does one thing well
+- [ ] **Clear input/output** - Well-defined interfaces and data structures
+- [ ] **Error handling strategy** - Proper error propagation and context
+- [ ] **Dependency management** - Clear prerequisite handling
+- [ ] **Testing strategy** - Unit tests for each sub-task function
+- [ ] **Performance considerations** - Efficient algorithms and data structures
+- [ ] **Memory management** - Proper resource cleanup and lifecycle
+- [ ] **Type safety** - Strong typing throughout sub-task implementation
+
+### 🔄 Quality-First Sub-Task Implementation Flow
+
+**For each sub-task implementation:**
+1. **Design interfaces first** - Define clear input/output contracts
+2. **Write tests before code** - TDD approach for better quality
+3. **Implement with quality patterns** - Use proven patterns from the start
+4. **Run quality checks frequently** - Check early and often
+5. **Refactor immediately** - Fix quality issues as soon as they appear
+
+**Sub-Task Implementation Template:**
+```go
+// ✅ RECOMMENDED sub-task implementation template
+package subtask
+
+import (
+    "context"
+    "errors"
+    "fmt"
+)
+
+// SubTaskInput defines the input contract for this sub-task
+type SubTaskInput struct {
+    ID           string            `json:"id" validate:"required"`
+    Data         map[string]any    `json:"data" validate:"required"`
+    Dependencies []string          `json:"dependencies"`
+}
+
+// SubTaskResult defines the output contract for this sub-task
+type SubTaskResult struct {
+    ID      string         `json:"id"`
+    Status  string         `json:"status"`
+    Output  map[string]any `json:"output"`
+    Errors  []string       `json:"errors,omitempty"`
+}
+
+// Execute implements the sub-task with proper error handling
+func (input *SubTaskInput) Execute(ctx context.Context) (*SubTaskResult, error) {
+    // Early validation
+    if err := input.Validate(); err != nil {
+        return nil, fmt.Errorf("input validation failed: %w", err)
+    }
+    
+    // Check context cancellation
+    select {
+    case <-ctx.Done():
+        return nil, ctx.Err()
+    default:
+    }
+    
+    // Main sub-task logic
+    result := &SubTaskResult{
+        ID:     input.ID,
+        Status: "processing",
+        Output: make(map[string]any),
+    }
+    
+    if err := input.processData(result); err != nil {
+        return nil, fmt.Errorf("data processing failed: %w", err)
+    }
+    
+    result.Status = "completed"
+    return result, nil
+}
+
+// Validate ensures input meets requirements
+func (input *SubTaskInput) Validate() error {
+    if input.ID == "" {
+        return errors.New("sub-task ID is required")
+    }
+    if input.Data == nil {
+        return errors.New("sub-task data is required")
+    }
+    return nil
+}
+
+// processData handles the core sub-task logic
+func (input *SubTaskInput) processData(result *SubTaskResult) error {
+    // Implementation specific to this sub-task
+    // Keep this function focused and small
+    return nil
+}
+```
+
 ### 🧠 Required Memory Actions During Implementation
 **CRITICAL:** Every sub-task implementation MUST include these Memory MCP actions:
 

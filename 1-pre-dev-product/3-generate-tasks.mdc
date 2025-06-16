@@ -241,6 +241,190 @@ black .             # Code formatting
 3. Re-run checks to ensure resolution
 4. Only mark task as complete when ALL quality checks pass
 
+### 🚨 Pre-Emptive Quality Guidance (CRITICAL)
+
+**IMPORTANT:** Use these patterns to avoid common quality check failures from the start:
+
+#### Go Language Anti-Patterns to Avoid
+**Error Handling:**
+```go
+// ❌ WRONG - causes errcheck/staticcheck violations
+fmt.Errorf("user not found")  // For static messages
+
+// ✅ CORRECT - use errors.New for static messages
+errors.New("user not found")
+
+// ✅ CORRECT - use fmt.Errorf only with variables
+fmt.Errorf("user %s not found", userID)
+```
+
+**String Operations:**
+```go
+// ❌ WRONG - causes perfsprint violations
+fmt.Sprintf("%d", number)     // Use strconv.Itoa(number)
+fmt.Sprintf("%s", variable)   // Use string(variable) or direct concatenation
+fmt.Sprintf("prefix%s", var)  // Use "prefix"+var
+
+// ✅ CORRECT - performance optimized
+strconv.Itoa(number)          // For integer to string
+"prefix" + variable           // For simple concatenation
+```
+
+**Function Complexity (Prevent gocyclo/nestif violations):**
+```go
+// ❌ WRONG - high complexity, deep nesting
+func ProcessTask(task Task) error {
+    if task.Valid {
+        if task.Type == "important" {
+            if task.Priority > 5 {
+                if task.Assignee != "" {
+                    // Deep nesting causes nestif violations
+                    // Complex logic causes gocyclo violations
+                }
+            }
+        }
+    }
+    return nil
+}
+
+// ✅ CORRECT - early returns, guard clauses
+func ProcessTask(task Task) error {
+    if !task.Valid {
+        return errors.New("invalid task")
+    }
+    if task.Type != "important" {
+        return nil  // Early return reduces complexity
+    }
+    if task.Priority <= 5 {
+        return nil  // Guard clause prevents nesting
+    }
+    if task.Assignee == "" {
+        return errors.New("task requires assignee")
+    }
+    
+    // Main logic here - minimal nesting
+    return task.Process()
+}
+```
+
+**Preallocation (Prevent performance issues):**
+```go
+// ❌ WRONG - causes prealloc violations
+var items []Item
+for i := 0; i < count; i++ {
+    items = append(items, createItem(i))
+}
+
+// ✅ CORRECT - pre-allocate slices
+items := make([]Item, 0, count)  // Pre-allocate capacity
+for i := 0; i < count; i++ {
+    items = append(items, createItem(i))
+}
+```
+
+**Unused Code Prevention:**
+```go
+// ❌ WRONG - causes unparam/unused violations
+func ProcessData(ctx context.Context, data []byte, unused string) error {
+    // ctx never used - unparam violation
+    // unused parameter - unparam violation
+    return processBytes(data)
+}
+
+// ✅ CORRECT - use all parameters or remove them
+func ProcessData(data []byte) error {
+    return processBytes(data)
+}
+
+// ✅ OR use context explicitly
+func ProcessData(ctx context.Context, data []byte) error {
+    select {
+    case <-ctx.Done():
+        return ctx.Err()
+    default:
+        return processBytes(data)
+    }
+}
+```
+
+#### TypeScript/JavaScript Anti-Patterns
+```typescript
+// ❌ WRONG - common linting violations
+const data: any = fetchData();              // Avoid 'any' type
+let variable = "test";                      // Use const when possible
+if (condition == true)                      // Use === instead of ==
+
+// ✅ CORRECT - lint-compliant patterns
+const data: UserData = await fetchData();  // Explicit typing
+const variable = "test";                    // const for immutable
+if (condition === true)                     // Strict equality
+```
+
+#### Python Anti-Patterns
+```python
+# ❌ WRONG - common ruff/mypy violations
+def process_data(data):                     # Missing type hints
+    return data.get("value")                # Unsafe dict access
+
+# ✅ CORRECT - type-safe patterns
+def process_data(data: Dict[str, Any]) -> Optional[str]:
+    return data.get("value")
+```
+
+### 🎯 Complexity Management Strategies
+
+**Keep Functions Small:**
+- **Target:** <20 lines per function
+- **Maximum:** 50 lines (split if larger)
+- **Strategy:** Extract helper functions for complex logic
+
+**Reduce Cognitive Complexity:**
+- **Use early returns** instead of nested if statements
+- **Extract validation logic** into separate functions
+- **Use guard clauses** to handle edge cases first
+- **Limit nesting depth** to maximum 3 levels
+
+**Error Handling Patterns:**
+```go
+// ✅ RECOMMENDED pattern for Go error handling
+func ProcessWithValidation(input Input) (*Result, error) {
+    if err := input.Validate(); err != nil {
+        return nil, fmt.Errorf("validation failed: %w", err)
+    }
+    
+    result, err := input.Process()
+    if err != nil {
+        return nil, fmt.Errorf("processing failed: %w", err)
+    }
+    
+    return result, nil
+}
+```
+
+### 📏 File Size Guidelines for Quality
+
+**Optimal File Sizes:**
+- **Go files:** <300 lines target, 500 lines maximum
+- **TypeScript:** <250 lines target, 400 lines maximum  
+- **Python:** <200 lines target, 350 lines maximum
+
+**When approaching limits:**
+1. Extract separate modules/packages
+2. Split into logical components
+3. Create helper/utility files
+4. Use composition over inheritance
+
+### 🔍 Pre-Implementation Quality Checklist
+
+Before writing any code, ensure tasks specify:
+- [ ] **Error handling strategy** - Use proper error patterns
+- [ ] **Function complexity limits** - Maximum 3 levels of nesting
+- [ ] **Parameter usage** - All parameters must be used or explicitly ignored
+- [ ] **String operation efficiency** - Use appropriate string functions
+- [ ] **Slice preallocation** - Pre-allocate when size is known
+- [ ] **Type safety** - Explicit types in TypeScript, type hints in Python
+- [ ] **Security considerations** - Input validation, output sanitization
+
 ## Example Task Format
 
 ```markdown

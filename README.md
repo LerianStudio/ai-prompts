@@ -16,7 +16,7 @@ This repository provides integrated systems that work together to support the en
 
 ## 📚 Documentation
 
-- **[ORCHESTRATORS.md](ORCHESTRATORS.md)** - Comprehensive guide to all orchestrators and workflow integration
+- **[CLAUDE.md](CLAUDE.md)** - Complete orchestrator architecture and execution patterns for AI assistants
 - **[Memory Management README](0-memory-system/README.md)** - Detailed memory system documentation
 - **[Pre-Development README](1-pre-dev-product/README.md)** - Interactive planning workflow guide
 - **[Frontend Development README](3-frontend/README.md)** - Complete frontend development workflow
@@ -87,23 +87,23 @@ graph LR
 
 ## 🎯 Key Features
 
-### 🔗 Integrated Systems
-- **Memory First**: Every workflow starts with context retrieval and ends with knowledge storage
-- **Interactive Planning**: User feedback loops ensure alignment at every stage
-- **Systematic Analysis**: 18-point code review covers all engineering disciplines
-- **Continuous Learning**: Patterns and decisions persist across projects
+### 🔗 Orchestrator Architecture
+- **Phase-Based Execution**: 5 systematic workflows with mandatory checkpoints (✓ = user approval required)
+- **Memory MCP Integration**: Context retrieval, decision storage, pattern analysis across sessions
+- **Sequential Thinking**: Complex analysis through structured reasoning and hypothesis validation
+- **Cross-System Dependencies**: Workflows feed into each other with validation gates
 
-### 📋 Todo Generation
-- Consolidated todo lists from all code review analyses
-- Priority-based organization (CRITICAL → HIGH → MEDIUM → LOW)
-- Developer comment extraction (`///AUTHOR` tags)
-- Actionable tasks with effort estimates
+### 📋 User Interaction Patterns
+- **Structured Feedback Loops**: Draft → User feedback → AI incorporation → Approval
+- **Context Acknowledgment**: AI confirms understanding before proceeding to next phase
+- **Iterative Refinement**: Multiple feedback rounds until user satisfaction
+- **Flexible Design Inputs**: iPad sketches, Figma designs, written specs, reference apps
 
 ### 🚀 Workflow Features
-- **Atomic Tasks**: Each task delivers complete, working software
+- **Atomic Tasks**: Each task delivers complete, working software with git workflow
 - **Validation Gates**: Consistency checks prevent flawed implementations
-- **Architecture Patterns**: Built-in best practices and standards
-- **Language Agnostic**: Supports all major programming languages
+- **File Size Optimization**: <300 lines target, 500 max for LLM processing efficiency
+- **Priority-Based Todos**: 🔴 CRITICAL → 🟡 HIGH → 🟢 MEDIUM → 🔵 LOW organization
 
 ## 📦 Output Organization
 
@@ -128,13 +128,22 @@ docs/code-review/
 └── 18-COMPREHENSIVE_TODO_LIST.md # Final synthesis
 ```
 
-## 🏆 Best Practices
+## 🏆 Orchestrator Best Practices
 
-1. **Start with Memory**: Always check for existing patterns before beginning new work
-2. **Interactive Planning**: Engage with feedback loops during pre-development
-3. **Systematic Review**: Follow the phased approach for comprehensive analysis
-4. **Store Learnings**: Capture decisions and patterns back to memory
-5. **Use Orchestrators**: Let the orchestrators guide you through complex workflows
+### Execution Order Guidelines
+1. **Memory First**: Always start with `memory_search` and `memory_get_context` before any workflow
+2. **Follow Phase Dependencies**: 
+   - Pre-Development: PRD✓ → TRD✓ → Tasks✓ → Validation✓ → Sub-tasks
+   - Code Review: Foundation → Security → Quality → Documentation → Production → Synthesis
+   - Frontend: Design✓ → Tech✓ → Architecture → Tasks → Validation
+3. **Respect Checkpoints**: Mandatory user approval (✓) required before proceeding to next phase
+4. **Store All Decisions**: Use `memory_store_decision` for architectural choices and `memory_store_chunk` for insights
+
+### Integration Patterns
+- **New Product**: Memory → Pre-Development Product → Frontend → Code Review → Memory
+- **Feature Enhancement**: Memory → Pre-Development Feature → Implementation → Code Review → Memory  
+- **Existing Analysis**: Memory → Code Review → Memory
+- **Security Focus**: Memory → Code Review (phases 1,7,8,9) → Memory
 
 ## 🏗️ Integration with LerianStudio
 
@@ -162,20 +171,28 @@ repository="github.com/lerianstudio/monorepo"
 
 ## 🔧 Getting Started
 
-1. **Choose Your Workflow**:
-   - New project? Start with Pre-Development
-   - Existing code? Begin with Code Review
-   - Need context? Check Memory first
+### For AI Assistants
+1. **Read CLAUDE.md First**: Complete orchestrator architecture and execution patterns
+2. **Choose Your Workflow**:
+   - New project? Start with Pre-Development Product (5-phase linear)
+   - Existing code? Begin with Code Review (6-phase systematic)
+   - Frontend focus? Use Frontend Development (5-phase flexible)
+   - Quick feature? Use Pre-Development Feature (3-phase streamlined)
 
-2. **Use the Orchestrators**:
-   - Each system has an orchestrator file
-   - Follow the guided workflows
-   - Provide feedback when requested
+### For Developers
+1. **Start with Orchestrators**: Each system has a `0-*-orchestrator.mdc` entry point
+2. **Follow Phase Dependencies**: Respect mandatory checkpoints and user feedback loops
+3. **Leverage Memory**: Check context before starting, store learnings after completion
+4. **Use Integration Patterns**: Connect workflows for complete development lifecycle
 
-3. **Store Your Learning**:
-   - Capture decisions in memory
-   - Build on previous patterns
-   - Share knowledge across projects
+### Command Examples
+```bash
+# Complete new feature workflow
+claude 0-memory-system/m0-memory-orchestrator.mdc
+claude 1-pre-dev-product/0-pre-dev-orchestrator.mdc  
+claude 3-frontend/0-frontend-orchestrator.mdc
+claude 4-code-review/00-code-review-orchestrator.mdc
+```
 
 ## 📄 License
 
