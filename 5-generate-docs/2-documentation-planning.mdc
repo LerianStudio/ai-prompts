@@ -1,0 +1,309 @@
+# Phase 2: Documentation Planning
+
+## Objective
+Create a comprehensive documentation strategy based on discovery phase findings. Define scope, priorities, audience mapping, and resource allocation for documentation generation.
+
+## Memory Integration - Start
+
+**Retrieve Discovery Context:**
+```bash
+# Get previous discovery findings
+{memory_search, query: "documentation audit discovery gaps", repository: [current_repo], session_id: "docs-generation"}
+
+# Check for related planning patterns
+{memory_search, query: "documentation planning strategy", repository: [current_repo]}
+
+# Get project-specific context
+{memory_get_context, repository: [current_repo]}
+```
+
+## Planning Framework
+
+### Documentation Strategy Development
+
+#### Strategy Dimensions
+
+**1. Audience-Priority Matrix**
+Map documentation needs against audience impact:
+
+| Audience | Impact Level | Current Coverage | Gap Severity | Priority |
+|----------|--------------|------------------|--------------|----------|
+| Product Teams | High/Medium/Low | Good/Fair/Poor | Critical/High/Medium/Low | 1-5 |
+| Technical Teams | High/Medium/Low | Good/Fair/Poor | Critical/High/Medium/Low | 1-5 |
+| Integration Teams | High/Medium/Low | Good/Fair/Poor | Critical/High/Medium/Low | 1-5 |
+| Operations Teams | High/Medium/Low | Good/Fair/Poor | Critical/High/Medium/Low | 1-5 |
+
+**2. Documentation Type Classification**
+
+**Foundational Documentation** (Must-have):
+- System architecture overview
+- API specifications (OpenAPI)
+- Core business logic maps
+- Getting started guides
+
+**Enhancement Documentation** (Should-have):
+- Detailed integration guides
+- Advanced use case examples
+- Performance optimization guides
+- Troubleshooting documentation
+
+**Specialized Documentation** (Nice-to-have):
+- Video tutorials
+- Interactive API explorers
+- Detailed sequence diagrams
+- Historical decision context
+
+**3. Effort vs. Impact Assessment**
+
+| Documentation Type | Effort Level | Business Impact | Technical Impact | Maintenance Burden |
+|--------------------|--------------|-----------------|------------------|--------------------|
+| OpenAPI Spec | Medium | High | High | Low |
+| Business Logic Maps | High | High | Medium | Medium |
+| Integration Guides | Medium | Medium | High | Medium |
+| Sequence Diagrams | High | Medium | High | High |
+
+## Planning Phases
+
+### Phase 2A: Scope Definition
+
+**Documentation Scope Matrix:**
+
+**Business Documentation Scope:**
+- [ ] **Business Logic Maps** - Visual representation of core business rules
+  - Priority: Critical/High/Medium/Low
+  - Audience: Product, Business, New Developers
+  - Effort: Days/Weeks
+  - Dependencies: Domain expert interviews
+
+- [ ] **User Journey Documentation** - End-to-end user workflows
+  - Priority: Critical/High/Medium/Low
+  - Audience: Product, UX, Support
+  - Effort: Days/Weeks
+  - Dependencies: User research, analytics
+
+- [ ] **Feature Matrices** - Capabilities, limitations, use cases
+  - Priority: Critical/High/Medium/Low
+  - Audience: Sales, Product, Partners
+  - Effort: Days/Weeks
+  - Dependencies: Feature audits
+
+**Technical Documentation Scope:**
+- [ ] **OpenAPI Specifications** - Complete API documentation
+  - Priority: Critical/High/Medium/Low
+  - Audience: Developers, Integrators
+  - Effort: Days/Weeks
+  - Dependencies: Code analysis, testing
+
+- [ ] **Architecture Decision Records** - Historical context for choices
+  - Priority: Critical/High/Medium/Low
+  - Audience: Technical Teams, New Hires
+  - Effort: Days/Weeks
+  - Dependencies: Stakeholder interviews
+
+- [ ] **Database Schema Documentation** - Data model and relationships
+  - Priority: Critical/High/Medium/Low
+  - Audience: Developers, Data Teams
+  - Effort: Days/Weeks
+  - Dependencies: Schema analysis
+
+**Integration Documentation Scope:**
+- [ ] **SDK Documentation** - Language-specific guides and examples
+  - Priority: Critical/High/Medium/Low
+  - Audience: External Developers
+  - Effort: Days/Weeks
+  - Dependencies: SDK development
+
+- [ ] **Webhook Documentation** - Event schemas and delivery patterns
+  - Priority: Critical/High/Medium/Low
+  - Audience: Integration Partners
+  - Effort: Days/Weeks
+  - Dependencies: Event system analysis
+
+**Operations Documentation Scope:**
+- [ ] **Deployment Guides** - Environment setup and configuration
+  - Priority: Critical/High/Medium/Low
+  - Audience: DevOps, SRE Teams
+  - Effort: Days/Weeks
+  - Dependencies: Infrastructure knowledge
+
+### Phase 2B: Resource Planning
+
+#### Time and Effort Estimation
+
+**Documentation Generation Time Matrix:**
+
+| Documentation Type | Research Time | Writing Time | Review Time | Total Time |
+|--------------------|---------------|--------------|-------------|------------|
+| OpenAPI Spec | 4-8 hours | 8-16 hours | 4-8 hours | 16-32 hours |
+| Business Logic Maps | 8-16 hours | 16-24 hours | 8-12 hours | 32-52 hours |
+| User Journey Docs | 6-12 hours | 12-20 hours | 6-10 hours | 24-42 hours |
+| Architecture Docs | 12-20 hours | 20-32 hours | 10-16 hours | 42-68 hours |
+
+**Resource Requirements:**
+- **Subject Matter Experts** - Domain knowledge, technical details
+- **Technical Writers** - Documentation structure and clarity
+- **Reviewers** - Accuracy validation and feedback
+- **Tools and Automation** - Documentation generation and maintenance
+
+#### Priority Sequencing
+
+**Phase 1 - Foundation (Weeks 1-2):**
+1. OpenAPI Specifications
+2. System Architecture Overview
+3. Getting Started Guide
+4. Core Business Logic Maps
+
+**Phase 2 - Enhancement (Weeks 3-4):**
+1. Integration Guides
+2. User Journey Documentation
+3. Database Schema Documentation
+4. Deployment Guides
+
+**Phase 3 - Specialization (Weeks 5-6):**
+1. Advanced Use Cases
+2. Troubleshooting Guides
+3. Performance Documentation
+4. Security Compliance Docs
+
+### Phase 2C: Quality Standards Definition
+
+#### Documentation Quality Framework
+
+**Content Quality Standards:**
+- **Accuracy** - Information is correct and up-to-date
+- **Completeness** - Covers all necessary aspects for target audience
+- **Clarity** - Written in clear, accessible language
+- **Actionability** - Includes concrete steps and examples
+- **Maintainability** - Structured for easy updates
+
+**Technical Standards:**
+- **Format Consistency** - Standardized markdown, diagrams, code examples
+- **Version Control** - Documentation versioned with code
+- **Automation** - Automated generation where possible
+- **Testing** - Documentation examples are tested and verified
+- **Accessibility** - Follows accessibility guidelines
+
+**Review Process:**
+1. **Technical Review** - Accuracy and completeness by SMEs
+2. **Editorial Review** - Clarity and consistency by technical writers
+3. **User Testing** - Usability validation with target audiences
+4. **Maintenance Planning** - Update procedures and responsibilities
+
+### Phase 2D: Tool and Process Selection
+
+#### Documentation Tools Stack
+
+**Authoring Tools:**
+- **Markdown** - Primary format for text documentation
+- **Mermaid** - Diagrams and flowcharts
+- **OpenAPI 3.1+** - API specifications
+- **Draw.io/Lucidchart** - Complex architectural diagrams
+
+**Generation Tools:**
+- **Automated API Docs** - From code annotations
+- **Schema Documentation** - From database definitions
+- **Code Example Testing** - Automated validation of examples
+- **Multi-format Output** - HTML, PDF, static sites
+
+**Distribution Platforms:**
+- **Developer Portal** - API documentation and guides
+- **Internal Wiki** - Team documentation and processes
+- **Public Documentation Site** - User-facing guides
+- **PDF/Offline Formats** - Downloadable references
+
+## Planning Output Deliverables
+
+### Documentation Plan Document
+
+Create comprehensive planning document:
+```
+docs/documentation/documentation-plan.md
+```
+
+**Plan Structure:**
+1. **Executive Summary**
+   - Documentation strategy overview
+   - Resource requirements and timeline
+   - Success metrics and milestones
+
+2. **Scope and Priorities**
+   - Complete documentation scope matrix
+   - Priority sequencing and rationale
+   - Audience mapping and requirements
+
+3. **Resource Allocation**
+   - Time and effort estimates
+   - Required expertise and roles
+   - Budget considerations
+
+4. **Quality Framework**
+   - Content and technical standards
+   - Review and approval processes
+   - Maintenance and update procedures
+
+5. **Implementation Plan**
+   - Phase-by-phase execution timeline
+   - Dependencies and risk mitigation
+   - Success metrics and checkpoints
+
+### Audience-Specific Documentation Plans
+
+**Create targeted plans for each audience:**
+
+**Product/Business Team Plan:**
+- Business logic maps and user journeys
+- Feature capabilities and limitations
+- Integration possibilities and constraints
+
+**Technical Team Plan:**
+- Architecture documentation and ADRs
+- API specifications and code examples
+- Development guides and best practices
+
+**Integration Team Plan:**
+- SDK documentation and examples
+- API usage patterns and error handling
+- Webhook and event documentation
+
+**Operations Team Plan:**
+- Deployment and configuration guides
+- Monitoring and troubleshooting documentation
+- Security and compliance procedures
+
+## Memory Integration - Planning
+
+**Store Planning Decisions:**
+```bash
+# Store documentation strategy
+{memory_store_decision, decision: "Documentation strategy: [summary of approach]", rationale: "Based on audience needs and resource constraints", repository: [current_repo], session_id: "docs-generation"}
+
+# Store priority framework
+{memory_store_chunk, content: "Documentation priority matrix: [priority decisions]", repository: [current_repo], session_id: "docs-generation", tags: ["documentation", "planning", "priorities"]}
+
+# Store resource estimates
+{memory_store_chunk, content: "Documentation resource requirements: [time/effort estimates]", repository: [current_repo], session_id: "docs-generation", tags: ["documentation", "planning", "resources"]}
+```
+
+## User Checkpoint ✓
+
+Before proceeding to Phase 3 (Documentation Generation), please review:
+
+1. **Strategy Alignment**: Does the documentation strategy align with your business objectives?
+2. **Priority Validation**: Are the priorities and sequencing appropriate for your team's needs?
+3. **Resource Feasibility**: Are the time and resource estimates realistic for your organization?
+4. **Quality Standards**: Do the proposed quality standards meet your requirements?
+5. **Tool Selection**: Are the recommended tools compatible with your existing workflow?
+
+**Required Decisions:**
+- Which documentation categories should be prioritized first?
+- What level of detail is appropriate for each audience?
+- Are there any resource constraints or timeline requirements?
+- Do you have preferences for documentation tools or formats?
+- Who will be involved in the review and approval process?
+
+**Optional Considerations:**
+- Any specific compliance or regulatory requirements for documentation?
+- Integration requirements with existing documentation systems?
+- Preferences for automated vs. manual documentation generation?
+
+Once you've reviewed the plan and provided feedback, I'll proceed to Phase 3: Documentation Generation.

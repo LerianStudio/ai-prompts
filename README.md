@@ -13,6 +13,7 @@ This repository provides integrated systems that work together to support the en
 | **Feature Development** | Streamlined feature addition to existing products | [`2-pre-dev-feature/`](2-pre-dev-feature/) | `claude 2-pre-dev-feature/0-feature-orchestrator.mdc` |
 | **Frontend Development** | Complete frontend development with flexible design inputs | [`3-frontend/`](3-frontend/) | `claude 3-frontend/0-frontend-orchestrator.mdc` |
 | **Code Review** | 18-point systematic code analysis | [`4-code-review/`](4-code-review/) | `claude 4-code-review/00-code-review-orchestrator.mdc` |
+| **Documentation Generation** | Comprehensive documentation generation and distribution | [`5-generate-docs/`](5-generate-docs/) | `claude 5-generate-docs/0-docs-orchestrator.mdc` |
 
 ## 📚 Documentation
 
@@ -21,6 +22,7 @@ This repository provides integrated systems that work together to support the en
 - **[Pre-Development README](1-pre-dev-product/README.md)** - Interactive planning workflow guide
 - **[Frontend Development README](3-frontend/README.md)** - Complete frontend development workflow
 - **[Code Review README](4-code-review/README.md)** - Systematic analysis documentation
+- **[Documentation Generation README](5-generate-docs/README.md)** - Comprehensive documentation workflow guide
 
 ## 🚀 Quick Start Workflows
 
@@ -57,7 +59,16 @@ claude 4-code-review/00-code-review-orchestrator.mdc
 claude 0-memory-system/m4-memory-workflow.md
 ```
 
-### 4. Quick Security Check
+### 4. Documentation Generation
+```bash
+# Comprehensive documentation suite
+claude 5-generate-docs/0-docs-orchestrator.mdc
+
+# Store documentation patterns
+claude 0-memory-system/m4-memory-workflow.md
+```
+
+### 5. Quick Security Check
 ```bash
 # Security-focused analysis
 claude 4-code-review/01-codebase-overview.md
@@ -74,8 +85,9 @@ graph LR
     B --> C[Frontend Development]
     C --> D[Implementation]
     D --> E[Code Review]
-    E --> F[Memory Storage]
-    F --> A
+    E --> F[Documentation Generation]
+    F --> G[Memory Storage]
+    G --> A
 ```
 
 1. **Initialize**: Start with memory context to leverage existing patterns
@@ -83,12 +95,13 @@ graph LR
 3. **Frontend**: Design and implement frontend with systematic precision
 4. **Implement**: Follow generated tasks and sub-tasks
 5. **Review**: Comprehensive code analysis and validation
-6. **Learn**: Store insights back to memory for future projects
+6. **Document**: Generate comprehensive documentation for all audiences
+7. **Learn**: Store insights back to memory for future projects
 
 ## 🎯 Key Features
 
 ### 🔗 Orchestrator Architecture
-- **Phase-Based Execution**: 5 systematic workflows with mandatory checkpoints (✓ = user approval required)
+- **Phase-Based Execution**: 6 systematic workflows with mandatory checkpoints (✓ = user approval required)
 - **Memory MCP Integration**: Context retrieval, decision storage, pattern analysis across sessions
 - **Sequential Thinking**: Complex analysis through structured reasoning and hypothesis validation
 - **Cross-System Dependencies**: Workflows feed into each other with validation gates
@@ -128,6 +141,20 @@ docs/code-review/
 └── 18-COMPREHENSIVE_TODO_LIST.md # Final synthesis
 ```
 
+### Documentation Generation Outputs
+```
+docs/documentation/
+├── documentation-audit.md        # Discovery phase audit
+├── documentation-plan.md         # Strategic planning
+├── validation-report.md          # Quality validation
+├── distribution-strategy.md      # Multi-channel distribution
+└── content/
+    ├── business/                 # Product team docs
+    ├── technical/                # Developer docs
+    ├── integration/              # API consumer docs
+    └── operations/               # DevOps docs
+```
+
 ## 🏆 Orchestrator Best Practices
 
 ### Execution Order Guidelines
@@ -136,13 +163,15 @@ docs/code-review/
    - Pre-Development: PRD✓ → TRD✓ → Tasks✓ → Validation✓ → Sub-tasks
    - Code Review: Foundation → Security → Quality → Documentation → Production → Synthesis
    - Frontend: Design✓ → Tech✓ → Architecture → Tasks → Validation
+   - Documentation: Discovery✓ → Planning✓ → Generation✓ → Validation✓ → Distribution
 3. **Respect Checkpoints**: Mandatory user approval (✓) required before proceeding to next phase
 4. **Store All Decisions**: Use `memory_store_decision` for architectural choices and `memory_store_chunk` for insights
 
 ### Integration Patterns
-- **New Product**: Memory → Pre-Development Product → Frontend → Code Review → Memory
-- **Feature Enhancement**: Memory → Pre-Development Feature → Implementation → Code Review → Memory  
+- **New Product**: Memory → Pre-Development Product → Frontend → Code Review → Documentation → Memory
+- **Feature Enhancement**: Memory → Pre-Development Feature → Implementation → Code Review → Documentation → Memory  
 - **Existing Analysis**: Memory → Code Review → Memory
+- **Documentation Focus**: Memory → Documentation Generation → Distribution → Memory
 - **Security Focus**: Memory → Code Review (phases 1,7,8,9) → Memory
 
 ## 🏗️ Integration with LerianStudio
@@ -192,6 +221,7 @@ claude 0-memory-system/m0-memory-orchestrator.mdc
 claude 1-pre-dev-product/0-pre-dev-orchestrator.mdc  
 claude 3-frontend/0-frontend-orchestrator.mdc
 claude 4-code-review/00-code-review-orchestrator.mdc
+claude 5-generate-docs/0-docs-orchestrator.mdc
 ```
 
 ## 📄 License

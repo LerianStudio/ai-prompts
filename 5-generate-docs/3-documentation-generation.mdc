@@ -1,0 +1,471 @@
+# Phase 3: Documentation Generation
+
+## Objective
+Generate comprehensive documentation artifacts based on the approved documentation plan. Create audience-specific, high-quality documentation that serves real user needs.
+
+## Memory Integration - Start
+
+**Retrieve Planning Context:**
+```bash
+# Get approved documentation plan
+{memory_search, query: "documentation strategy priorities planning", repository: [current_repo], session_id: "docs-generation"}
+
+# Get discovery findings for reference
+{memory_search, query: "documentation audit gaps", repository: [current_repo], session_id: "docs-generation"}
+
+# Check for existing documentation patterns
+{memory_search, query: "documentation examples templates", repository: [current_repo]}
+```
+
+## Generation Framework
+
+### Multi-Audience Documentation Strategy
+
+**Generation Principles:**
+- **Audience-First**: Each document optimized for specific user needs
+- **Context-Rich**: Includes practical examples and real-world scenarios
+- **Actionable**: Provides concrete steps and implementation guidance
+- **Maintainable**: Structured for easy updates and versioning
+- **Interconnected**: Cross-references between related documentation
+
+### Documentation Generation Pipeline
+
+#### Phase 3A: Business Documentation Generation
+
+**Business Logic Maps**
+```markdown
+**Purpose**: Visual representation of core business rules and decision flows
+**Audience**: Product teams, business analysts, new developers
+**Format**: Mermaid flowcharts with detailed annotations
+
+**Generation Process:**
+1. Analyze business rules from code and configuration
+2. Identify decision points and business constraints
+3. Create visual flowcharts with Mermaid syntax
+4. Add detailed annotations explaining business context
+5. Include edge cases and exception handling
+
+**Template Structure:**
+- Overview and scope
+- Core business entities and relationships
+- Decision flow diagrams
+- Business rule catalog
+- Edge cases and exceptions
+- Compliance and regulatory considerations
+```
+
+**User Journey Documentation**
+```markdown
+**Purpose**: End-to-end user workflows and experience mapping
+**Audience**: Product teams, UX designers, customer support
+**Format**: Narrative with sequence diagrams and screenshots
+
+**Generation Process:**
+1. Map user personas and their goals
+2. Trace user interactions through the system
+3. Document happy path and error scenarios
+4. Create sequence diagrams for complex flows
+5. Include performance and usability considerations
+
+**Template Structure:**
+- User persona definitions
+- Journey overview and goals
+- Step-by-step workflow documentation
+- System interactions and API calls
+- Error handling and recovery paths
+- Performance expectations and monitoring
+```
+
+**Feature Matrices**
+```markdown
+**Purpose**: Comprehensive feature capabilities and limitations
+**Audience**: Sales teams, product managers, integration partners
+**Format**: Structured tables with detailed explanations
+
+**Generation Process:**
+1. Catalog all system features and capabilities
+2. Document limitations and constraints
+3. Map features to user personas and use cases
+4. Include configuration and customization options
+5. Add competitive analysis and positioning
+
+**Template Structure:**
+- Feature overview and categorization
+- Capability matrix by user type
+- Configuration options and flexibility
+- Integration capabilities and limitations
+- Roadmap and future enhancements
+- Competitive positioning
+```
+
+#### Phase 3B: Technical Documentation Generation
+
+**OpenAPI Specifications**
+```yaml
+**Purpose**: Complete API documentation with examples and schemas
+**Audience**: Developers, integration teams, QA engineers
+**Format**: OpenAPI 3.1+ specification with rich examples
+
+**Generation Process:**
+1. Analyze API endpoints and methods
+2. Extract request/response schemas
+3. Document authentication and authorization
+4. Generate comprehensive examples
+5. Include error response documentation
+
+**Template Structure:**
+openapi: 3.1.0
+info:
+  title: [System Name] API
+  description: Comprehensive API documentation
+  version: 1.0.0
+servers:
+  - url: https://api.example.com/v1
+paths:
+  /resource:
+    get:
+      summary: Get resource
+      description: Detailed operation description
+      parameters: [...]
+      responses: [...]
+      examples: [...]
+components:
+  schemas: [...]
+  securitySchemes: [...]
+```
+
+**Architecture Decision Records (ADRs)**
+```markdown
+**Purpose**: Historical context for technical decisions
+**Audience**: Technical teams, architects, new team members
+**Format**: Structured markdown with consistent template
+
+**Generation Process:**
+1. Interview stakeholders about key decisions
+2. Research decision context and alternatives considered
+3. Document rationale and trade-offs
+4. Include consequences and lessons learned
+5. Update with current status and evolution
+
+**Template Structure:**
+# ADR-001: [Decision Title]
+## Status
+[Proposed | Accepted | Deprecated | Superseded]
+
+## Context
+[What is the issue that we're seeing that is motivating this decision or change?]
+
+## Decision
+[What is the change that we're proposing or have agreed to implement?]
+
+## Consequences
+[What becomes easier or more difficult to do and any risks introduced by the change?]
+```
+
+**Database Schema Documentation**
+```markdown
+**Purpose**: Data model relationships and constraints
+**Audience**: Developers, data engineers, business analysts
+**Format**: Entity relationship diagrams with detailed descriptions
+
+**Generation Process:**
+1. Analyze database schema and relationships
+2. Generate entity relationship diagrams
+3. Document constraints and business rules
+4. Include data flow and lifecycle information
+5. Add performance and indexing considerations
+
+**Template Structure:**
+- Database overview and architecture
+- Entity relationship diagrams
+- Table definitions and constraints
+- Data lifecycle and flow patterns
+- Indexing and performance considerations
+- Backup and recovery procedures
+```
+
+#### Phase 3C: Integration Documentation Generation
+
+**SDK Documentation**
+```markdown
+**Purpose**: Language-specific guides and code examples
+**Audience**: External developers, integration partners
+**Format**: Multi-language documentation with executable examples
+
+**Generation Process:**
+1. Analyze SDK structure and capabilities
+2. Create language-specific examples
+3. Document authentication and configuration
+4. Include error handling patterns
+5. Provide complete working examples
+
+**Template Structure:**
+- Getting started and installation
+- Authentication and configuration
+- Core concepts and patterns
+- Method reference with examples
+- Error handling and troubleshooting
+- Advanced usage and best practices
+```
+
+**Webhook Documentation**
+```markdown
+**Purpose**: Event schemas and delivery patterns
+**Audience**: Integration teams, system integrators
+**Format**: Event catalog with JSON schemas and examples
+
+**Generation Process:**
+1. Catalog all webhook events and payloads
+2. Document delivery mechanisms and retry logic
+3. Create JSON schemas for all events
+4. Include security and verification procedures
+5. Provide testing and debugging guidance
+
+**Template Structure:**
+- Webhook overview and concepts
+- Event catalog with schemas
+- Delivery and retry mechanisms
+- Security and verification
+- Testing and debugging tools
+- Integration patterns and examples
+```
+
+#### Phase 3D: Operations Documentation Generation
+
+**Deployment Guides**
+```markdown
+**Purpose**: Environment setup and configuration procedures
+**Audience**: DevOps teams, system administrators
+**Format**: Step-by-step procedures with configuration examples
+
+**Generation Process:**
+1. Document deployment architecture and requirements
+2. Create environment-specific configuration guides
+3. Include scaling and performance considerations
+4. Document security and compliance procedures
+5. Provide troubleshooting and maintenance guidance
+
+**Template Structure:**
+- Architecture overview and requirements
+- Environment setup procedures
+- Configuration management
+- Scaling and performance tuning
+- Security and compliance procedures
+- Monitoring and maintenance
+```
+
+**Monitoring and Alerting Documentation**
+```markdown
+**Purpose**: Observability setup and operational procedures
+**Audience**: SRE teams, operations engineers
+**Format**: Configuration guides with monitoring playbooks
+
+**Generation Process:**
+1. Document monitoring architecture and metrics
+2. Create alerting rules and escalation procedures
+3. Include dashboard configurations
+4. Document incident response procedures
+5. Provide capacity planning guidance
+
+**Template Structure:**
+- Monitoring architecture and tools
+- Key metrics and SLIs/SLOs
+- Dashboard configurations
+- Alerting rules and escalation
+- Incident response procedures
+- Capacity planning and scaling
+```
+
+## Documentation Generation Workflow
+
+### Step 1: Content Research and Analysis
+
+**Automated Analysis:**
+```bash
+# Analyze codebase structure
+find . -type f -name "*.go" -o -name "*.js" -o -name "*.py" -o -name "*.java" | head -50
+
+# Extract API endpoints
+grep -r "route\|endpoint\|@app.route\|@GetMapping" . --include="*.go" --include="*.js" --include="*.py" --include="*.java" | head -20
+
+# Find configuration files
+find . -name "*.yaml" -o -name "*.yml" -o -name "*.json" -o -name "*.toml" | grep -v node_modules | head -20
+
+# Identify database schemas
+find . -name "*.sql" -o -name "*migration*" -o -name "*schema*" | head -20
+```
+
+**Manual Research Points:**
+1. **Stakeholder Interviews**: Domain experts, architects, product owners
+2. **Code Review**: Critical business logic and integration points
+3. **Configuration Analysis**: Environment setup and deployment procedures
+4. **Testing Analysis**: Test cases for behavior understanding
+5. **Documentation Review**: Existing documentation and specifications
+
+### Step 2: Content Generation
+
+**Business Documentation Generation:**
+
+**Business Logic Maps Creation:**
+```mermaid
+graph TD
+    A[User Request] --> B{Authentication}
+    B -->|Valid| C[Process Request]
+    B -->|Invalid| D[Return Error]
+    C --> E{Business Rules}
+    E -->|Pass| F[Execute Operation]
+    E -->|Fail| G[Validation Error]
+    F --> H[Update State]
+    H --> I[Return Response]
+```
+
+**Technical Documentation Generation:**
+
+**OpenAPI Generation Process:**
+1. Extract API endpoints from route definitions
+2. Analyze request/response models
+3. Generate JSON schemas for all data types
+4. Create comprehensive examples with realistic data
+5. Document error responses with appropriate HTTP codes
+
+**Integration Documentation Generation:**
+
+**SDK Example Generation:**
+```javascript
+// JavaScript SDK Example
+const client = new ApiClient({
+  apiKey: 'your-api-key',
+  baseUrl: 'https://api.example.com'
+});
+
+try {
+  const result = await client.users.create({
+    name: 'John Doe',
+    email: 'john@example.com'
+  });
+  console.log('User created:', result);
+} catch (error) {
+  console.error('Error creating user:', error.message);
+}
+```
+
+### Step 3: Quality Assurance During Generation
+
+**Content Quality Checklist:**
+- [ ] **Accuracy**: Information verified against current implementation
+- [ ] **Completeness**: All planned content sections included
+- [ ] **Consistency**: Terminology and style consistent throughout
+- [ ] **Examples**: Working code examples tested and verified
+- [ ] **Cross-references**: Links between related documentation work
+
+**Technical Quality Checklist:**
+- [ ] **Format Validation**: Markdown, YAML, JSON syntax correct
+- [ ] **Link Validation**: All internal and external links functional
+- [ ] **Code Testing**: All code examples execute successfully
+- [ ] **Schema Validation**: API schemas match actual implementation
+- [ ] **Accessibility**: Documentation follows accessibility guidelines
+
+## Output Structure and Organization
+
+### Documentation Directory Structure
+
+```
+docs/
+├── documentation/
+│   ├── business/
+│   │   ├── business-logic-maps.md
+│   │   ├── user-journeys.md
+│   │   ├── feature-matrices.md
+│   │   └── compliance-requirements.md
+│   ├── technical/
+│   │   ├── api/
+│   │   │   ├── openapi-spec.yaml
+│   │   │   └── api-design-guidelines.md
+│   │   ├── architecture/
+│   │   │   ├── system-overview.md
+│   │   │   ├── adrs/
+│   │   │   └── sequence-diagrams/
+│   │   └── database/
+│   │       ├── schema-documentation.md
+│   │       └── er-diagrams/
+│   ├── integration/
+│   │   ├── sdk/
+│   │   │   ├── javascript-sdk.md
+│   │   │   ├── python-sdk.md
+│   │   │   └── go-sdk.md
+│   │   ├── webhooks/
+│   │   │   ├── webhook-reference.md
+│   │   │   └── event-schemas/
+│   │   └── third-party/
+│   │       └── integration-patterns.md
+│   └── operations/
+│       ├── deployment/
+│       │   ├── deployment-guide.md
+│       │   └── environment-configs/
+│       ├── monitoring/
+│       │   ├── monitoring-setup.md
+│       │   └── alerting-rules.md
+│       └── security/
+│           ├── security-procedures.md
+│           └── compliance-guides.md
+```
+
+### Generated Documentation Artifacts
+
+**Primary Deliverables:**
+1. **Business Documentation Suite** - Complete business logic and user journey documentation
+2. **Technical Reference** - API specifications, architecture docs, database schemas
+3. **Integration Guides** - SDK documentation, webhook references, examples
+4. **Operations Manuals** - Deployment, monitoring, security procedures
+
+**Supporting Deliverables:**
+1. **Documentation Index** - Navigation and cross-reference guide
+2. **Glossary and Terminology** - Consistent terminology across all documentation
+3. **FAQ and Troubleshooting** - Common questions and solutions
+4. **Quick Reference Cards** - Essential information for each audience
+
+## Memory Integration - Generation
+
+**Store Generated Content:**
+```bash
+# Store documentation generation decisions
+{memory_store_decision, decision: "Documentation generation approach: [methodology used]", rationale: "Based on audience needs and content analysis", repository: [current_repo], session_id: "docs-generation"}
+
+# Store content patterns and templates
+{memory_store_chunk, content: "Documentation templates and patterns: [successful patterns]", repository: [current_repo], session_id: "docs-generation", tags: ["documentation", "templates", "patterns"]}
+
+# Store quality insights
+{memory_store_chunk, content: "Documentation quality insights: [lessons learned]", repository: [current_repo], session_id: "docs-generation", tags: ["documentation", "quality", "lessons"]}
+```
+
+## User Checkpoint ✓
+
+Before proceeding to Phase 4 (Documentation Validation), please review:
+
+1. **Content Quality**: Does the generated documentation accurately represent your system?
+2. **Audience Appropriateness**: Is the content suitable for each target audience?
+3. **Completeness**: Are all planned documentation artifacts included?
+4. **Examples and Code**: Do the code examples work and demonstrate proper usage?
+5. **Organization**: Is the documentation structure logical and navigable?
+
+**Required Review Items:**
+- Sample sections from each documentation category
+- Code examples and their accuracy
+- Business logic representations
+- API documentation completeness
+- Cross-references and navigation
+
+**Feedback Needed:**
+- Which sections need refinement or additional detail?
+- Are there any inaccuracies or outdated information?
+- Do the examples cover the most important use cases?
+- Is the technical depth appropriate for each audience?
+- Are there missing sections or topics?
+
+**Optional Enhancements:**
+- Additional diagrams or visual elements
+- More comprehensive examples
+- Integration with existing documentation systems
+- Automated generation and maintenance procedures
+
+Once you've reviewed the generated documentation and provided feedback, I'll proceed to Phase 4: Documentation Validation.

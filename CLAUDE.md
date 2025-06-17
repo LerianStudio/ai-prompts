@@ -17,6 +17,7 @@ The repository is organized into numbered directories representing the complete 
 2-pre-dev-feature/   → Streamlined feature addition to existing products
 3-frontend/          → Complete frontend development with flexible design inputs
 4-code-review/       → 18-point systematic code analysis
+5-generate-docs/     → Comprehensive documentation generation and distribution
 ```
 
 ### Orchestrator Pattern Architecture
@@ -28,6 +29,7 @@ Each system uses an orchestrator file (numbered `0-*-orchestrator.mdc`) that imp
 - Feature Development: 3 phases optimized for speed (Brief✓→Approach✓→Plan)
 - Frontend Development: 5 phases with flexible design inputs (Design✓→Tech✓→Architecture→Tasks→Validation)
 - Code Review: 6 phases with systematic analysis (Foundation→Security→Quality→Documentation→Production→Synthesis)
+- Documentation Generation: 5 phases with validation gates (Discovery✓→Planning✓→Generation✓→Validation✓→Distribution)
 
 **User Interaction Patterns:**
 - **Mandatory Checkpoints**: ✓ = User approval required before next phase
@@ -133,6 +135,29 @@ claude 3-frontend/4-atomic-implementation-tasks.mdc
 claude 3-frontend/5-design-validation-integration.mdc
 ```
 
+**Documentation Generation (5-phase systematic):**
+```bash
+# Phase 1: Documentation Discovery (REQUIRED user feedback)
+claude 5-generate-docs/1-documentation-discovery.mdc
+# → User reviews documentation audit and prioritizes gaps
+
+# Phase 2: Documentation Planning (REQUIRED user feedback)
+claude 5-generate-docs/2-documentation-planning.mdc
+# → User approves documentation strategy and resource allocation
+
+# Phase 3: Documentation Generation (REQUIRED user feedback)
+claude 5-generate-docs/3-documentation-generation.mdc
+# → User reviews generated documentation quality
+
+# Phase 4: Documentation Validation (REQUIRED user feedback)
+claude 5-generate-docs/4-documentation-validation.mdc
+# → User approves validation results and improvement plan
+
+# Phase 5: Documentation Distribution (REQUIRED user feedback)
+claude 5-generate-docs/5-documentation-distribution.mdc
+# → User confirms distribution channels and launch readiness
+```
+
 ## Common Development Commands
 
 ### Quick Start Workflows
@@ -175,6 +200,15 @@ claude 0-memory-system/m4-memory-workflow.md
 claude 4-code-review/01-codebase-overview.md
 claude 4-code-review/07-security-vulnerability-analysis.md
 claude 4-code-review/08-dependency-security-analysis.md
+```
+
+**Documentation Generation:**
+```bash
+# Comprehensive documentation suite generation
+claude 5-generate-docs/0-docs-orchestrator.mdc
+
+# Store documentation patterns
+claude 0-memory-system/m4-memory-workflow.md
 ```
 
 ### Memory Operations
@@ -233,6 +267,15 @@ Tech Plan → Architecture → docs/frontend-development/component-integration-[
 Architecture → Tasks → docs/frontend-development/tasks/frontend-[feature]/FE-[XX]-[task].md
 ```
 
+**Documentation Generation:**
+```
+Discovery → Audit Report → docs/documentation/documentation-audit.md
+Planning → Strategy → docs/documentation/documentation-plan.md
+Generation → Content Suite → docs/documentation/[business|technical|integration|operations]/
+Validation → Quality Report → docs/documentation/validation-report.md
+Distribution → Multi-Channel → docs/documentation/distribution-strategy.md
+```
+
 ### Naming Conventions & File Size Guidelines
 - **Features**: `[type]-[feature-name].md` (kebab-case)
 - **Tasks**: `[prefix]-[XX]-[task-name].md` with numeric ordering
@@ -253,14 +296,17 @@ Pre-Development (Planning) ← → Feature Development (Incremental)
 Frontend Development (UI) ← → Code Review (Validation)
     ↓                              ↓
 Implementation (Git Tasks) → Quality Assurance (Systematic)
+    ↓                              ↓
+Documentation Generation → Distribution & Maintenance
     ↓
 Memory Storage (Learning)
 ```
 
 **Workflow Transition Points:**
-- **New Product**: Memory → Pre-Development Product → Frontend → Code Review → Memory
-- **Feature Enhancement**: Memory → Pre-Development Feature → Implementation → Code Review → Memory
+- **New Product**: Memory → Pre-Development Product → Frontend → Code Review → Documentation → Memory
+- **Feature Enhancement**: Memory → Pre-Development Feature → Implementation → Code Review → Documentation → Memory
 - **Existing Analysis**: Memory → Code Review → Memory
+- **Documentation Focus**: Memory → Documentation Generation → Distribution → Memory
 - **Quick Security Check**: Memory → Code Review (phases 1,7,8,9) → Memory
 
 **Cross-Orchestrator Dependencies:**

@@ -1,0 +1,168 @@
+# 5-Generate-Docs Orchestrator
+
+This orchestrator guides you through the complete documentation generation workflow for software projects. The system creates comprehensive, multi-audience documentation through 5 sequential phases.
+
+## Architecture Overview
+
+**5-Phase Documentation Pipeline:**
+```
+Discovery → Planning → Generation → Validation → Distribution
+```
+
+**Target Audiences:**
+- Product/Business Teams (functional understanding)
+- Technical Teams (implementation details)  
+- Integration Teams (API usage)
+- DevOps/Operations (deployment & monitoring)
+
+**Memory Integration:**
+- Start: `memory_search` for existing documentation patterns
+- Process: `memory_store_decision` for documentation choices
+- End: `memory_store_chunk` for documentation insights
+
+## Phase Execution Sequence
+
+### Phase 1: Documentation Discovery ✓
+**File:** `1-documentation-discovery.mdc`
+**Purpose:** Analyze codebase to identify documentation needs
+**Output:** Documentation audit and requirements matrix
+**User Checkpoint:** Review and prioritize documentation gaps
+
+### Phase 2: Documentation Planning ✓  
+**File:** `2-documentation-planning.mdc`
+**Purpose:** Create comprehensive documentation strategy
+**Output:** Documentation plan with audience mapping
+**User Checkpoint:** Approve documentation scope and priorities
+
+### Phase 3: Documentation Generation ✓
+**File:** `3-documentation-generation.mdc` 
+**Purpose:** Generate all planned documentation artifacts
+**Output:** Complete documentation suite
+**User Checkpoint:** Review generated documentation quality
+
+### Phase 4: Documentation Validation ✓
+**File:** `4-documentation-validation.mdc`
+**Purpose:** Validate accuracy, completeness, and usability
+**Output:** Validation report with improvement recommendations
+**User Checkpoint:** Approve documentation for distribution
+
+### Phase 5: Documentation Distribution ✓
+**File:** `5-documentation-distribution.mdc`
+**Purpose:** Format and distribute documentation to target audiences
+**Output:** Ready-to-publish documentation in multiple formats
+**User Checkpoint:** Confirm distribution channels and formats
+
+## Quick Start Commands
+
+**Complete Documentation Workflow:**
+```bash
+# Full 5-phase documentation generation
+claude 5-generate-docs/0-docs-orchestrator.mdc
+```
+
+**Individual Phase Execution:**
+```bash
+# Analyze what needs documenting
+claude 5-generate-docs/1-documentation-discovery.mdc
+
+# Plan documentation strategy
+claude 5-generate-docs/2-documentation-planning.mdc
+
+# Generate documentation
+claude 5-generate-docs/3-documentation-generation.mdc
+
+# Validate documentation quality
+claude 5-generate-docs/4-documentation-validation.mdc
+
+# Prepare for distribution
+claude 5-generate-docs/5-documentation-distribution.mdc
+```
+
+## Integration with Other Systems
+
+**Pre-Development Integration:**
+- Use after Phase 4 (Validation) of pre-development workflows
+- Input: PRD, TRD, and implementation plans
+
+**Code Review Integration:**
+- Execute after comprehensive code review
+- Input: Architecture analysis and quality assessments
+
+**Frontend Integration:**
+- Document component architecture and design systems
+- Input: Component specifications and integration patterns
+
+**Memory System Integration:**
+- Leverage existing architectural decisions
+- Store documentation patterns for future reuse
+
+## Output Structure
+
+**Primary Documentation:**
+```
+docs/documentation/
+├── business/                    # Product team documentation
+│   ├── business-logic-maps.md
+│   ├── user-journeys.md
+│   └── feature-matrices.md
+├── technical/                   # Developer documentation
+│   ├── openapi-spec.yaml
+│   ├── sequence-diagrams/
+│   ├── architecture-decisions/
+│   └── database-schemas.md
+├── integration/                 # API consumer documentation
+│   ├── sdk-examples/
+│   ├── webhook-documentation.md
+│   └── error-reference.md
+└── operations/                  # DevOps documentation
+    ├── deployment-guides.md
+    ├── monitoring-setup.md
+    └── security-compliance.md
+```
+
+**Meta Documentation:**
+```
+docs/documentation/
+├── documentation-audit.md       # Phase 1 output
+├── documentation-plan.md        # Phase 2 output
+├── validation-report.md         # Phase 4 output
+└── distribution-strategy.md     # Phase 5 output
+```
+
+## Quality Standards
+
+**Documentation Principles:**
+- **Audience-First**: Tailored to specific user needs
+- **Actionable**: Includes concrete steps and examples
+- **Maintainable**: Easy to update as code evolves
+- **Discoverable**: Organized for easy navigation
+- **Testable**: Documentation that can be validated
+
+**Technical Standards:**
+- OpenAPI 3.1+ for API documentation
+- Mermaid diagrams for visual documentation
+- Markdown with consistent formatting
+- Code examples in multiple languages
+- Automated validation where possible
+
+## Execution Instructions
+
+1. **Start with Memory Context**: Always begin with `memory_search` to check for existing documentation patterns
+
+2. **Follow Phase Sequence**: Execute phases in order, respecting user checkpoints (✓)
+
+3. **User Interaction**: Each checkpoint requires user feedback before proceeding
+
+4. **Quality Focus**: Prioritize accuracy and usefulness over comprehensive coverage
+
+5. **Store Learnings**: Capture documentation decisions and patterns in memory
+
+6. **Integration Awareness**: Consider how documentation fits with existing workflows
+
+## Ready to Begin?
+
+To start the documentation generation workflow, I'll execute Phase 1: Documentation Discovery.
+
+This will analyze your codebase and create a comprehensive audit of documentation needs across all target audiences.
+
+Would you like to proceed with the complete workflow, or would you prefer to start with a specific phase?

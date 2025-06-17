@@ -1,0 +1,262 @@
+# Phase 1: Documentation Discovery
+
+## Objective
+Analyze the codebase to identify comprehensive documentation needs across all target audiences. Create a documentation audit that prioritizes gaps and opportunities.
+
+## Memory Integration - Start
+
+Before beginning discovery, let me gather existing context:
+
+**Memory Context Retrieval:**
+```bash
+# Search for existing documentation patterns
+{memory_search, query: "documentation patterns API specs business logic", repository: [current_repo]}
+
+# Check for previous documentation decisions  
+{memory_search, query: "documentation decisions technical writing", repository: [current_repo]}
+
+# Look for documentation quality standards
+{memory_get_context, repository: [current_repo]}
+```
+
+## Discovery Framework
+
+### Audience-Driven Analysis
+
+**Target Audiences:**
+1. **Product/Business Teams** - Need functional understanding
+2. **Technical Teams** - Need implementation details  
+3. **Integration Teams** - Need API usage guidance
+4. **DevOps/Operations** - Need deployment & monitoring info
+
+### Discovery Phases
+
+#### Phase 1A: Codebase Structure Analysis
+
+**Examine Project Architecture:**
+- Repository structure and organization
+- Main components and modules
+- Technology stack and frameworks
+- External dependencies and integrations
+- Configuration and environment setup
+
+**Analysis Commands:**
+```bash
+# Get project overview
+find . -type f -name "*.md" -o -name "*.json" -o -name "*.yaml" -o -name "*.yml" | head -20
+
+# Identify main source directories
+ls -la | grep "^d"
+
+# Check for existing documentation
+find . -name "docs" -o -name "documentation" -o -name "README*" -type f
+
+# Analyze package/dependency files
+find . -name "package.json" -o -name "requirements.txt" -o -name "go.mod" -o -name "Cargo.toml" -o -name "pom.xml"
+```
+
+#### Phase 1B: API Surface Analysis
+
+**Identify APIs and Interfaces:**
+- REST API endpoints and methods
+- GraphQL schemas and operations  
+- gRPC services and methods
+- Database schemas and relationships
+- Event schemas and message formats
+- Configuration interfaces
+
+**API Discovery Questions:**
+1. What public APIs does this system expose?
+2. What are the main data models and their relationships?
+3. What authentication/authorization mechanisms are used?
+4. What are the key integration points?
+5. What events or webhooks are available?
+
+#### Phase 1C: Business Logic Discovery
+
+**Identify Core Business Concepts:**
+- Domain models and entities
+- Business rules and constraints
+- Workflow processes and state machines
+- User roles and permissions
+- Feature flags and configuration
+- Business metrics and KPIs
+
+**Business Logic Questions:**
+1. What are the main business entities and their lifecycle?
+2. What business rules govern system behavior?
+3. What are the critical user journeys?
+4. What compliance or regulatory requirements exist?
+5. What are the success metrics and monitoring points?
+
+#### Phase 1D: Technical Infrastructure Discovery
+
+**System Architecture Elements:**
+- Deployment architecture and environments
+- Database design and data flow
+- Security implementation and policies
+- Monitoring and observability setup
+- Error handling and recovery mechanisms
+- Performance characteristics and bottlenecks
+
+**Infrastructure Questions:**
+1. How is the system deployed and scaled?
+2. What monitoring and alerting is in place?
+3. How are errors handled and logged?
+4. What are the backup and recovery procedures?
+5. What security measures are implemented?
+
+## Documentation Audit Matrix
+
+### Current State Assessment
+
+For each documentation category, assess:
+- **Exists** (✅/❌) - Does this documentation exist?
+- **Quality** (🔴/🟡/🟢) - What's the current quality?
+- **Completeness** (0-100%) - How complete is coverage?
+- **Freshness** (🔴/🟡/🟢) - How up-to-date is it?
+- **Audience Fit** (🔴/🟡/🟢) - Does it serve target audience?
+
+**Business Documentation Audit:**
+- [ ] Business Logic Maps
+- [ ] User Journey Documentation  
+- [ ] Feature Matrices
+- [ ] Integration Capabilities
+- [ ] Compliance Documentation
+- [ ] Business Glossary
+
+**Technical Documentation Audit:**
+- [ ] OpenAPI Specifications
+- [ ] Database Schema Documentation
+- [ ] Architecture Decision Records (ADRs)
+- [ ] Sequence Diagrams
+- [ ] Component Documentation
+- [ ] API Design Guidelines
+
+**Integration Documentation Audit:**
+- [ ] SDK Documentation & Examples
+- [ ] Webhook Documentation
+- [ ] Error Code Reference
+- [ ] Rate Limiting Guidelines
+- [ ] Authentication Guides
+- [ ] Integration Patterns
+
+**Operations Documentation Audit:**
+- [ ] Deployment Guides
+- [ ] Monitoring & Alerting Setup
+- [ ] Disaster Recovery Procedures
+- [ ] Security Compliance Guides
+- [ ] Performance Tuning
+- [ ] Troubleshooting Guides
+
+## Discovery Execution
+
+### Step 1: Automated Analysis
+
+**Repository Structure:**
+```bash
+# Analyze project structure
+tree -L 3 -I 'node_modules|.git|build|dist' . || find . -type d -not -path '*/\.*' | head -20
+
+# Check existing documentation
+find . -name "*.md" -type f | grep -v node_modules | head -20
+
+# Identify API definitions
+find . -name "*.yaml" -o -name "*.yml" -o -name "*.json" | grep -i -E "(api|spec|schema|swagger|openapi)" | head -10
+```
+
+**Code Analysis:**
+```bash
+# Find main entry points
+find . -name "main.*" -o -name "index.*" -o -name "app.*" | head -10
+
+# Look for configuration files
+find . -name "config.*" -o -name "*.config.*" -o -name ".env*" | head -10
+
+# Identify test files for understanding behavior
+find . -name "*test*" -o -name "*spec*" -type f | head -10
+```
+
+### Step 2: Manual Review Points
+
+**Key Files to Examine:**
+1. README files and project documentation
+2. Package.json/requirements/go.mod for dependencies
+3. Main application entry points
+4. Configuration files and environment setup
+5. API route definitions and controllers
+6. Database migration files and schemas
+7. Test files for behavior understanding
+8. CI/CD configuration files
+
+### Step 3: Gap Analysis
+
+**Critical Questions to Answer:**
+1. What documentation exists vs. what should exist?
+2. Which audiences are underserved by current documentation?
+3. What are the highest-impact documentation gaps?
+4. Which documentation requires immediate attention?
+5. What documentation can be automated vs. manually created?
+
+## Output Deliverables
+
+### Documentation Audit Report
+
+Create comprehensive audit document:
+```
+docs/documentation/documentation-audit.md
+```
+
+**Report Structure:**
+1. **Executive Summary**
+   - Current documentation maturity level
+   - Critical gaps requiring immediate attention
+   - Recommended priority order for documentation work
+
+2. **Audience Analysis**
+   - Documentation needs by target audience
+   - Current coverage gaps per audience
+   - Priority recommendations
+
+3. **Documentation Inventory**
+   - Complete audit matrix with current state
+   - Quality assessments and improvement needs
+   - Missing documentation categories
+
+4. **Technical Infrastructure Assessment**
+   - System architecture documentation status
+   - API documentation completeness
+   - Integration guide availability
+
+5. **Recommendations**
+   - High-priority documentation work
+   - Quick wins vs. long-term projects
+   - Resource requirements and timeline estimates
+
+## Memory Integration - End
+
+**Store Discovery Insights:**
+```bash
+# Store documentation audit findings
+{memory_store_chunk, content: "Documentation Discovery Results: [summary of key findings]", repository: [current_repo], session_id: "docs-generation", tags: ["documentation", "audit", "discovery"]}
+
+# Store critical documentation gaps
+{memory_store_decision, decision: "Priority documentation gaps: [list]", rationale: "Based on audience needs and system complexity", repository: [current_repo], session_id: "docs-generation"}
+```
+
+## User Checkpoint ✓
+
+Before proceeding to Phase 2 (Documentation Planning), please review:
+
+1. **Audit Results**: Does the documentation audit accurately reflect your system?
+2. **Gap Priorities**: Do the identified gaps align with your team's needs?
+3. **Audience Focus**: Are the target audiences correctly identified?
+4. **Scope Validation**: Is the recommended documentation scope appropriate?
+
+**Required Feedback:**
+- Which documentation gaps are most critical for your team?
+- Are there specific audiences or use cases we should prioritize?
+- Any existing documentation we missed or incorrectly assessed?
+- Budget/timeline constraints for documentation work?
+
+Once you've reviewed and provided feedback, I'll proceed to Phase 2: Documentation Planning.
