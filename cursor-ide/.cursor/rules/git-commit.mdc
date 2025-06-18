@@ -3,18 +3,64 @@ description: Guidelines for writing clear and consistent git commit messages fol
 globs: src/**/*.{ts,tsx}
 alwaysApply: false
 ---
+## 🚨 ABSOLUTE MANDATORY COMMIT PROCESS
 
-## ⚠️ MANDATORY COMMIT PROCESS
+**⚠️ ZERO TOLERANCE POLICY - VIOLATION = IMMEDIATE REJECTION**
 
-ALL commits MUST use a temporary file. Direct commits with -m flag are FORBIDDEN.
+ALL commits **MUST** use a temporary file. Direct commits with -m flag are **ABSOLUTELY FORBIDDEN**.
 
-1. Create a temporary commit message file:
+### 🔒 MANDATORY WORKFLOW - NO EXCEPTIONS
+
+**STEP 1: CREATE EMPTY TEMPORARY FILE - ALWAYS REQUIRED**
 ```bash
+# MANDATORY: Create empty temporary file first
 git_msg=$(mktemp)
+echo "COMMIT_MESSAGE_PLACEHOLDER" > "$git_msg"
 ```
 
-2. Write your commit message to the file:
+**STEP 2: EDIT THE TEMPORARY FILE WITH YOUR MESSAGE**
 ```bash
+# MANDATORY: Use your preferred editor to write the commit message
+nano "$git_msg"
+# OR
+vim "$git_msg"
+# OR
+code "$git_msg"
+```
+
+**STEP 3: VERIFY FILE FORMAT**
+```bash
+# MANDATORY: Check the file exists and has content
+cat "$git_msg"
+```
+
+**STEP 4: COMMIT USING THE FILE**
+```bash
+# MANDATORY: Commit using the temporary file
+git commit -F "$git_msg"
+```
+
+**STEP 5: CLEANUP**
+```bash
+# MANDATORY: Remove temporary file
+rm "$git_msg"
+```
+
+### 🚫 ABSOLUTE VIOLATIONS - NEVER ALLOWED
+
+❌ **FORBIDDEN**: `git commit -m "message"`
+❌ **FORBIDDEN**: `git commit -m "line1" -m "line2"`
+❌ **FORBIDDEN**: Direct inline multiline messages
+❌ **FORBIDDEN**: Committing without creating a temporary file first
+❌ **FORBIDDEN**: Using echo with pipes directly to git commit
+❌ **FORBIDDEN**: Any commit method that bypasses file creation
+
+### ✅ MANDATORY ALTERNATIVE METHODS
+
+**Method 1: Using cat with EOF (PREFERRED)**
+```bash
+# MANDATORY: Create empty file first, then populate
+git_msg=$(mktemp)
 cat > "$git_msg" << 'EOF'
 feat(scope): short description
 
@@ -24,27 +70,37 @@ feat(scope): short description
 
 BREAKING CHANGE: description of breaking changes
 EOF
-```
 
-3. Commit using the file:
-```bash
 git commit -F "$git_msg"
-rm "$git_msg"  # Clean up
+rm "$git_msg"
 ```
 
-VIOLATIONS:
-❌ NEVER use git commit -m
-❌ NEVER use multiple -m flags
-❌ NEVER use inline multiline messages
-❌ NEVER commit directly without a temporary file
+**Method 2: Using printf (ACCEPTABLE)**
+```bash
+# MANDATORY: Create empty file first, then populate
+git_msg=$(mktemp)
+printf "feat(scope): short description\n\n- Bullet point 1\n- Bullet point 2\n\nBREAKING CHANGE: description" > "$git_msg"
+git commit -F "$git_msg"
+rm "$git_msg"
+```
 
-## 🚀 Conventional Commits Guidelines
+**Method 3: Using editor (ACCEPTABLE)**
+```bash
+# MANDATORY: Create empty file first, then edit
+git_msg=$(mktemp)
+touch "$git_msg"  # Ensure file exists
+$EDITOR "$git_msg"
+git commit -F "$git_msg"
+rm "$git_msg"
+```
+
+## 🚀 Conventional Commits Guidelines - ENFORCED
 
 This project uses **Conventional Commits** to automate changelogs and versioning via `semantic-release`.
 
 Only `feat`, `fix`, or `BREAKING CHANGE` will trigger version bumps. All types are parsed for changelogs.
 
-### ✅ Format
+### ✅ MANDATORY Format
 
 <type>(<optional-scope>): <short description>
 
@@ -52,20 +108,30 @@ Only `feat`, `fix`, or `BREAKING CHANGE` will trigger version bumps. All types a
 
 [optional footer(s)]
 
-### 🎯 Examples
+### 🎯 MANDATORY Examples
 
+**ALL EXAMPLES MUST USE TEMPORARY FILES:**
+
+```bash
+# MANDATORY: Feature example
+git_msg=$(mktemp)
+cat > "$git_msg" << 'EOF'
 feat(auth): enable biometric login support
-fix(api): resolve timeout on /users
-docs(readme): improve setup guide
-chore(deps): update lodash to v4.17.21
-refactor(core): simplify loop logic
-style(css): fix button padding
-test(utils): add unit tests for parser
-ci(github): fix node version in workflow
-revert: feat(auth): add biometric login
+EOF
+git commit -F "$git_msg"
+rm "$git_msg"
 
-**Multi-line example with bullet points:**
-```text
+# MANDATORY: Fix example
+git_msg=$(mktemp)
+cat > "$git_msg" << 'EOF'
+fix(api): resolve timeout on /users
+EOF
+git commit -F "$git_msg"
+rm "$git_msg"
+
+# MANDATORY: Multi-line example
+git_msg=$(mktemp)
+cat > "$git_msg" << 'EOF'
 feat(applications): implement application management API
 
 - Add CRUD operations for applications management
@@ -74,9 +140,12 @@ feat(applications): implement application management API
 - Extract security alert to a separate component
 - Add application options environment variable
 - Update forms to use real API data instead of mocks
+EOF
+git commit -F "$git_msg"
+rm "$git_msg"
 ```
 
-### 🧠 Version Bumps
+### 🧠 Version Bumps - REFERENCE
 
 | Type              | Triggers Version?  | Notes                                 |
 |-------------------|--------------------|----------------------------------------|
@@ -85,53 +154,121 @@ feat(applications): implement application management API
 | `BREAKING CHANGE` | **Major** bump     | Any type with breaking footer          |
 | Others            | No bump            | Still included in changelog            |
 
-### 🔥 Breaking Change Example
+### 🔥 MANDATORY Breaking Change Example
 
+```bash
+# MANDATORY: Breaking change must use temporary file
+git_msg=$(mktemp)
+cat > "$git_msg" << 'EOF'
 feat(auth): switch to OAuth2
 
 BREAKING CHANGE: legacy auth removed, update login flow
+EOF
+git commit -F "$git_msg"
+rm "$git_msg"
+```
 
-### 🛑 Common Mistakes
+### 🛑 Common Mistakes - FORBIDDEN
 
 - `fix:` ← ❌ too vague (needs a subject)
 - `feature:` ← ❌ invalid type
 - `Update login screen` ← ❌ no type prefix
+- **ANY use of `git commit -m`** ← ❌ **ABSOLUTELY FORBIDDEN**
 
 ### 🧪 Test Your Commits
 
+```bash
 npx commitlint --from=HEAD~5 --to=HEAD
+```
 
 ### 📚 Reference
 
 - https://www.conventionalcommits.org/en/v1.0.0/
 - https://semantic-release.gitbook.io
 
-### 📝 Commit Message Best Practices
+## 🔧 AUTOMATION SCRIPTS - RECOMMENDED
 
-To ensure proper multiline formatting, ALWAYS use a text file for commit messages:
-
-1. Create a temporary commit message file:
+### Bash Function for Safe Commits
 ```bash
-git_msg=$(mktemp)
+# Add to your ~/.bashrc or ~/.zshrc
+safe_commit() {
+    local git_msg=$(mktemp)
+    echo "# Write your commit message below (delete this line)" > "$git_msg"
+    echo "" >> "$git_msg"
+    echo "# Example: feat(scope): description" >> "$git_msg"
+    echo "# " >> "$git_msg"
+    echo "# - Bullet point 1" >> "$git_msg"
+    echo "# - Bullet point 2" >> "$git_msg"
+    
+    $EDITOR "$git_msg"
+    
+    # Remove comment lines
+    sed -i '/^#/d' "$git_msg"
+    
+    # Check if file has content after removing comments
+    if [[ -s "$git_msg" ]]; then
+        echo "Commit message:"
+        cat "$git_msg"
+        echo ""
+        read -p "Proceed with commit? (y/N): " -n 1 -r
+        echo
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            git commit -F "$git_msg"
+        else
+            echo "Commit cancelled"
+        fi
+    else
+        echo "Empty commit message, cancelled"
+    fi
+    
+    rm "$git_msg"
+}
 ```
 
-2. Write your commit message to the file:
+### Git Alias for Safe Commits
 ```bash
-cat > "$git_msg" << 'EOF'
-feat(scope): short description
-
-- Bullet point 1
-- Bullet point 2
-- Bullet point 3
-
-BREAKING CHANGE: description of breaking changes
-EOF
+# Add to your ~/.gitconfig
+[alias]
+    cm = "!f() { \
+        local git_msg=$(mktemp); \
+        printf '%s\n\n%s\n' \"$1\" \"${@:2}\" > \"$git_msg\"; \
+        git commit -F \"$git_msg\"; \
+        rm \"$git_msg\"; \
+    }; f"
 ```
 
-3. Commit using the file:
-```bash
-git commit -F "$git_msg"
-rm "$git_msg"  # Clean up
-```
+## 🚨 VIOLATION CONSEQUENCES
 
-NEVER use multiple -m flags or inline multiline messages as they may not preserve proper formatting.
+**ANY VIOLATION OF THESE MANDATORY COMMIT RULES WILL RESULT IN:**
+
+### Immediate Actions:
+- ❌ **COMMIT REJECTION** - Commit will be blocked/reverted
+- ❌ **PULL REQUEST FAILURE** - Automated checks will fail
+- ❌ **CI/CD PIPELINE FAILURE** - Builds will be blocked
+- ❌ **CODE REVIEW REJECTION** - Manual review will fail
+
+### Corrective Actions Required:
+- 🔄 **MANDATORY COMMIT REWRITE** - Must redo commit properly
+- 🔄 **FORCE PUSH REQUIRED** - History must be corrected
+- 🔄 **WORKFLOW EDUCATION** - Team training required
+- 🔄 **PROCESS VERIFICATION** - Must demonstrate proper workflow
+
+### Escalation:
+- 📈 **REPEATED VIOLATIONS** - Management escalation
+- 📈 **TEAM IMPACT** - Process improvement required
+- 📈 **PROJECT DELAYS** - Additional oversight implemented
+
+## 🔍 COMMIT VERIFICATION CHECKLIST
+
+Before every commit, verify:
+
+- [ ] ✅ Created temporary file using `mktemp`
+- [ ] ✅ File exists and is writable
+- [ ] ✅ Message follows conventional commit format
+- [ ] ✅ Used `git commit -F "$file"` command
+- [ ] ✅ Cleaned up temporary file with `rm`
+- [ ] ✅ Never used `git commit -m` flag
+- [ ] ✅ Message has proper format and content
+- [ ] ✅ Breaking changes are documented if applicable
+
+**NO EXCEPTIONS. NO SHORTCUTS. NO COMPROMISES.**
