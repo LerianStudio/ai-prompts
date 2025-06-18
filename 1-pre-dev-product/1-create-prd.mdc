@@ -290,7 +290,7 @@ src/
 **REQUIRED**: Use established boilerplate repositories for new plugins.
 
 **Standard Repositories:**
-- `@plugin-boilerplate-go`: For Go-based transactional plugins
+- `@plugin-boilerplate-golang`: For Go-based transactional plugins
 
 **Boilerplate Requirements:**
 - [ ] **Hexagonal Structure**: Pre-configured directory structure
