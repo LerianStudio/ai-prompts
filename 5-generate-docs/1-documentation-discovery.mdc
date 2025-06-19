@@ -1,5 +1,30 @@
 # Phase 1: Documentation Discovery
 
+## 🧠 Enhanced Analysis Tools - USE THESE!
+
+### 🧩 Memory MCP Integration
+- **Retrieve documentation context:** Use `mcp__lerian-memory__memory_read` with `operation="search"` for existing documentation patterns and standards
+- **Store discovery findings:** Use `mcp__lerian-memory__memory_create` with `operation="store_chunk"` for identified gaps and opportunities
+- **Reference similar projects:** Use `mcp__lerian-memory__memory_read` with `operation="search"` for successful documentation strategies
+- **Track discovery process:** Use `mcp__lerian-memory__memory_tasks` with `operation="todo_write"` for documentation audit workflow
+- **Tags to use:** `["documentation-discovery", "audit", "gaps", "opportunities", "project-name"]`
+
+### 🔄 Sequential Thinking MCP
+- **Tool:** Use `mcp__sequential-thinking__sequentialthinking` for complex documentation analysis
+- **Use for:** Gap analysis, audience mapping, priority assessment, coverage evaluation
+- **Pattern:** Current state → audience needs → documentation gaps → priority ranking
+- **Example Usage:**
+  ```
+  mcp__sequential-thinking__sequentialthinking
+    thought="Analyzing documentation needs for [project]. Current docs: [existing]. Need to evaluate: 1) Audience coverage, 2) Technical depth, 3) Integration clarity."
+    nextThoughtNeeded=true
+    thoughtNumber=1
+    totalThoughts=5
+  ```
+- **When:** During documentation audit and gap identification
+
+**Pro tip:** Reference documentation patterns from successful projects to establish quality benchmarks!
+
 ## Objective
 Analyze the codebase to identify comprehensive documentation needs across all target audiences. Create a documentation audit that prioritizes gaps and opportunities.
 
@@ -8,15 +33,29 @@ Analyze the codebase to identify comprehensive documentation needs across all ta
 Before beginning discovery, let me gather existing context:
 
 **Memory Context Retrieval:**
-```bash
+```
 # Search for existing documentation patterns
-{memory_search, query: "documentation patterns API specs business logic", repository: [current_repo]}
+mcp__lerian-memory__memory_read
+  operation="search"
+  options={
+    "query": "documentation patterns API specs business logic",
+    "repository": "github.com/[org]/[repo]"
+  }
 
 # Check for previous documentation decisions  
-{memory_search, query: "documentation decisions technical writing", repository: [current_repo]}
+mcp__lerian-memory__memory_read
+  operation="search"
+  options={
+    "query": "documentation decisions technical writing",
+    "repository": "github.com/[org]/[repo]"
+  }
 
 # Look for documentation quality standards
-{memory_get_context, repository: [current_repo]}
+mcp__lerian-memory__memory_read
+  operation="get_context"
+  options={
+    "repository": "github.com/[org]/[repo]"
+  }
 ```
 
 ## Discovery Framework

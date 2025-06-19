@@ -35,6 +35,7 @@ To guide an AI assistant in analyzing tasks and breaking them down into detailed
 
 1. **Read Tasks Document:** The AI must first read the tasks-[feature-name].md document to understand the atomic phases from `/docs/pre-development/tasks/`
    - 🧩 **Memory Action:** `memory_search` to retrieve all related context from PRD, TRD, and validation steps
+   - 🧩 **Memory Action:** `memory_tasks` to track sub-task generation workflow with session_id
 
 2. **Verify Chain Validation:** Ensure validation-report-[feature-name].md shows PASS status and tasks are validated
    - 🧩 **Memory Action:** `memory_search` for validation patterns and any documented risks
@@ -152,6 +153,8 @@ git push -u origin feature/ST-T-[task-id]-[num]-[short-desc]
 
 ### 5. Testing Requirements
 - **Unit Tests:** Specific test cases to write
+  - **Go Projects:** Test files must be alongside implementation (e.g., `task.go` → `task_test.go`)
+  - **Test Package:** Use same package for white-box testing or `_test` suffix for black-box
 - **Integration Tests:** Integration points to test
 - **Manual Testing:** Manual validation steps
 - **Test Data:** Required test fixtures or data
@@ -177,7 +180,12 @@ make fmt              # Code formatting
 make vet              # Static analysis
 gosec ./...          # Security analysis
 govulncheck ./...    # Vulnerability check
+perfsprint ./...     # Performance analysis
+make lint            # Comprehensive linting
 go test ./...        # Test execution
+
+# After quality checks pass, build to ensure compilation
+go build ./...       # Build verification
 ```
 
 #### TypeScript/JavaScript Projects

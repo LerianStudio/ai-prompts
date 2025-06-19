@@ -14,10 +14,10 @@ To guide an AI assistant through a streamlined feature development process that 
 **IMPORTANT**: Use both Memory MCP and Sequential Thinking MCP for enhanced analysis:
 
 ### Memory MCP Integration
-- Retrieve existing product context, architecture patterns, and design decisions
-- Reference established tech stack and development patterns
-- Store feature decisions and implementation approaches for future features
-- Tag entries appropriately for feature-level organization
+- Retrieve existing product context using `mcp__lerian-memory__memory_read` with `operation="search"`
+- Reference established tech stack using `mcp__lerian-memory__memory_read` with `operation="get_context"`
+- Store feature decisions using `mcp__lerian-memory__memory_create` with `operation="store_decision"`
+- Tag entries appropriately using feature-specific tags like `["feature", "feature-name", "architecture"]`
 
 ### Sequential Thinking MCP Usage
 - Use `mcp__sequential-thinking__sequentialthinking` for feature complexity analysis

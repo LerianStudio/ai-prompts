@@ -38,10 +38,10 @@ Each system uses an orchestrator file (numbered `0-*-orchestrator.mdc`) that imp
 - **Iterative Refinement**: Multiple feedback rounds until user satisfaction
 
 **Memory MCP Integration:**
-- **Phase Start**: `memory_search` for existing patterns, `memory_get_context` for project background
-- **During Execution**: `memory_store_decision` for choices, `memory_store_chunk` for insights
-- **Phase End**: `memory_create_thread` for linking, `memory_tasks` for progress tracking
-- **Cross-Session**: `memory_export_project`/`memory_import_context` for continuity
+- **Phase Start**: Use `mcp__lerian-memory__memory_read` with `operation="search"` for existing patterns, `operation="get_context"` for project background
+- **During Execution**: Use `mcp__lerian-memory__memory_create` with `operation="store_decision"` for choices, `operation="store_chunk"` for insights
+- **Phase End**: Use `mcp__lerian-memory__memory_create` with `operation="create_thread"` for linking, `mcp__lerian-memory__memory_tasks` with `operation="todo_write"` for progress tracking
+- **Cross-Session**: Use `mcp__lerian-memory__memory_transfer` with `operation="export_project"`/`operation="import_context"` for continuity
 
 **Sequential Thinking MCP Usage:**
 - Complex requirement analysis and feature prioritization
@@ -353,6 +353,72 @@ The 18-point code review system covers:
 - Integration with `///AUTHOR` comment extraction
 - Memory-backed task tracking across sessions
 
+## Memory MCP Usage Guide
+
+### Correct Tool Names and Operations
+
+**Store Content:**
+```
+mcp__lerian-memory__memory_create
+  operation="store_chunk"
+  options={
+    "content": "[content to store]",
+    "repository": "github.com/[org]/[repo]",
+    "session_id": "[current-session]"
+  }
+```
+
+**Store Decisions:**
+```
+mcp__lerian-memory__memory_create
+  operation="store_decision"
+  options={
+    "decision": "[decision made]",
+    "rationale": "[why this decision]",
+    "repository": "github.com/[org]/[repo]",
+    "session_id": "[current-session]"
+  }
+```
+
+**Search Memory:**
+```
+mcp__lerian-memory__memory_read
+  operation="search"
+  options={
+    "query": "[search query]",
+    "repository": "github.com/[org]/[repo]"
+  }
+```
+
+**Create Thread:**
+```
+mcp__lerian-memory__memory_create
+  operation="create_thread"
+  options={
+    "name": "[thread name]",
+    "description": "[thread description]",
+    "chunk_ids": ["[chunk-id-1]", "[chunk-id-2]"],
+    "repository": "github.com/[org]/[repo]"
+  }
+```
+
+**Task Management:**
+```
+mcp__lerian-memory__memory_tasks
+  operation="todo_write"
+  options={
+    "todos": [
+      {"content": "[task]", "status": "pending|in_progress|completed", "priority": "high|medium|low"}
+    ],
+    "repository": "github.com/[org]/[repo]"
+  }
+```
+
+### Important Parameters
+- **repository**: Always use full GitHub URL format (e.g., "github.com/lerianstudio/midaz")
+- **session_id**: Maintain consistent session ID throughout a workflow
+- **chunk_ids**: Capture returned chunk IDs from store operations for threading
+
 ## Best Practices
 
 1. **Always Start with Memory**: Check for existing patterns before beginning new work
@@ -362,6 +428,7 @@ The 18-point code review system covers:
 5. **Store Learnings**: Capture decisions and patterns back to memory for future use
 6. **Maintain Context**: Use consistent repository and session identifiers
 7. **Follow Output Structure**: Respect the documented directory and naming conventions
+8. **Use Correct Memory MCP Tools**: Always use the full tool names with proper operations
 
 ## Integration with LerianStudio Development
 

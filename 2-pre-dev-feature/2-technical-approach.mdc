@@ -10,16 +10,26 @@ alwaysApply: false
 **CRITICAL:** Leverage these tools throughout the technical approach creation process:
 
 ### 🧩 Memory MCP Integration
-- **Retrieve architecture context:** `memory_search` for existing architecture, tech stack, and implementation patterns
-- **Store technical decisions:** `memory_store_decision` for implementation strategy, technology choices, and integration approaches
-- **Reference similar implementations:** `memory_search` for comparable technical solutions from past features
-- **Link to feature brief:** `memory_search` for feature requirements and constraints from previous phase
+- **Retrieve architecture context:** Use `mcp__lerian-memory__memory_read` with `operation="search"` for existing architecture, tech stack, and implementation patterns
+- **Store technical decisions:** Use `mcp__lerian-memory__memory_create` with `operation="store_decision"` for implementation strategy, technology choices, and integration approaches
+- **Reference similar implementations:** Use `mcp__lerian-memory__memory_read` with `operation="search"` for comparable technical solutions from past features
+- **Link to feature brief:** Use `mcp__lerian-memory__memory_read` with `operation="search"` for feature requirements and constraints from previous phase
+- **Session tracking:** Use `mcp__lerian-memory__memory_tasks` with `operation="todo_write"` for technical approach workflow management
 - **Tags to use:** `["tech-approach", "implementation", "architecture", "feature-name", "integration"]`
 
 ### 🔄 Sequential Thinking MCP
+- **Tool:** Use `mcp__sequential-thinking__sequentialthinking` for complex technical analysis
 - **Use for:** Architecture integration analysis, technology evaluation, implementation path validation
 - **Pattern:** Feature requirements → existing architecture → integration points → implementation strategy
 - **Benefit:** Ensures technical approach aligns with existing system and minimizes architectural risk
+- **Example Usage:**
+  ```
+  mcp__sequential-thinking__sequentialthinking
+    thought="Analyzing integration points for [feature]. Current architecture uses [patterns]. Need to evaluate: 1) Component integration, 2) Data flow, 3) Performance impact."
+    nextThoughtNeeded=true
+    thoughtNumber=1
+    totalThoughts=4
+  ```
 - **When:** During architecture analysis and implementation strategy development
 
 **Pro tip:** Always reference existing architecture decisions to ensure consistency and avoid reinventing solutions!
@@ -31,31 +41,94 @@ To guide an AI assistant in creating a focused Technical Approach that defines i
 ## Process
 
 1. **Read Feature Brief:** Load approved feature brief from previous phase
-   - 🧩 **Memory Action:** `memory_search` to retrieve feature brief decisions and requirements
+   - 🧩 **Memory Action:** Use `mcp__lerian-memory__memory_read` with:
+     ```
+     operation="search"
+     options={
+       "query": "feature-brief [feature-name] requirements user-stories",
+       "repository": "github.com/[org]/[repo]"
+     }
+     ```
+   - 🧩 **Memory Action:** Use `mcp__lerian-memory__memory_tasks` with:
+     ```
+     operation="todo_write"
+     options={
+       "todos": [{"content": "Create technical approach for [feature-name]", "status": "in_progress", "priority": "high"}],
+       "repository": "github.com/[org]/[repo]"
+     }
+     ```
 
 2. **Retrieve Architecture Context:** Use Memory MCP to understand existing system architecture
-   - 🧩 **Memory Action:** `memory_search` for architecture patterns, tech stack, and integration points
+   - 🧩 **Memory Action:** Use `mcp__lerian-memory__memory_read` with:
+     ```
+     operation="search"
+     options={
+       "query": "architecture patterns tech-stack integration-points",
+       "repository": "github.com/[org]/[repo]"
+     }
+     ```
 
 3. **Analyze Integration Points:** Identify how feature integrates with existing system
-   - 🔄 **Sequential Thinking:** Map feature requirements to existing architecture components
+   - 🔄 **Sequential Thinking:** Use `mcp__sequential-thinking__sequentialthinking`:
+     ```
+     thought="Analyzing integration for [feature]. Current system has: [components]. Feature needs to: [requirements]. Let me evaluate integration options."
+     nextThoughtNeeded=true
+     thoughtNumber=1
+     totalThoughts=4
+     ```
 
 4. **Ask Technical Questions:** Gather specific technical preferences and constraints
    - **IMPORTANT:** WAIT for user responses before proceeding
    - Focus on implementation strategy within existing constraints
 
 5. **Generate Technical Approach:** Create comprehensive implementation strategy
-   - 🧩 **Memory Action:** `memory_store_decision` for key technical choices and rationale
+   - 🧩 **Memory Action:** Use `mcp__lerian-memory__memory_create` with:
+     ```
+     operation="store_decision"
+     options={
+       "decision": "Technical implementation approach for [feature-name]",
+       "rationale": "[key technical reasoning]",
+       "repository": "github.com/[org]/[repo]",
+       "session_id": "[current-session]"
+     }
+     ```
 
 6. **Request Technical Review:** Present approach and ask for feedback:
    - "Please review this technical approach. Are there any technical decisions you'd like to adjust?"
    - **WAIT for user approval or feedback**
-   - 🧩 **Memory Action:** `memory_store_chunk` with user technical feedback
+   - 🧩 **Memory Action:** Use `mcp__lerian-memory__memory_create` with:
+     ```
+     operation="store_chunk"
+     options={
+       "content": "User technical feedback: [feedback details]",
+       "repository": "github.com/[org]/[repo]",
+       "session_id": "[current-session]"
+     }
+     ```
 
 7. **Incorporate Feedback:** Update approach based on user's technical preferences
-   - 🧩 **Memory Action:** `memory_store_decision` documenting technical changes and rationale
+   - 🧩 **Memory Action:** Use `mcp__lerian-memory__memory_create` with:
+     ```
+     operation="store_decision"
+     options={
+       "decision": "Technical approach adjustments",
+       "rationale": "[changes based on feedback]",
+       "repository": "github.com/[org]/[repo]",
+       "session_id": "[current-session]"
+     }
+     ```
 
 8. **Save Technical Approach:** After approval, save as `tech-approach-[feature-name].md` in `/docs/pre-development/`
-   - 🧩 **Memory Action:** Link feature brief and technical approach in memory thread
+   - 🧩 **Memory Action:** Use `mcp__lerian-memory__memory_create` with:
+     ```
+     operation="create_thread"
+     options={
+       "name": "Feature Development: [feature-name]",
+       "description": "Feature brief through technical approach",
+       "chunk_ids": ["[previous-chunk-ids]"],
+       "repository": "github.com/[org]/[repo]"
+     }
+     ```
 
 ## User Interaction Guidelines
 
@@ -194,6 +267,9 @@ ALTER TABLE [existing_table] ADD COLUMN [feature_column] [type];
 ### Data Migration Strategy
 - **Backward Compatibility:** [How to maintain existing data integrity]
 - **Migration Scripts:** [Database changes needed]
+  - **Go Projects:** Implement migrations as separate service (e.g., `cmd/migrate/main.go`)
+  - **Migration Tool:** Use existing migration framework (e.g., golang-migrate, goose)
+  - **Version Control:** Track migrations with sequential versioning
 - **Data Validation:** [How to ensure data quality during transition]
 
 ## 🔒 Security and Authentication
@@ -242,6 +318,48 @@ ALTER TABLE [existing_table] ADD COLUMN [feature_column] [type];
 - **Testing Checklist:** [Key testing criteria]
 - **Performance Testing:** [Load and performance validation]
 
+### Quality Checks Requirements
+**CRITICAL:** Each implementation must include language-specific quality validation:
+
+#### Go Projects
+```bash
+# Run after each implementation task
+make fmt              # Code formatting
+make vet              # Static analysis
+gosec ./...          # Security analysis
+govulncheck ./...    # Vulnerability check
+perfsprint ./...     # Performance analysis
+make lint            # Comprehensive linting
+go test ./...        # Test execution
+
+# After quality checks pass, build to ensure compilation
+go build ./...       # Build verification
+```
+
+#### TypeScript/JavaScript Projects
+```bash
+# Run after each implementation task
+npm run lint         # ESLint code quality
+npm run typecheck    # TypeScript validation
+npm test            # Test execution
+npm run build       # Production build verification
+```
+
+#### Python Projects
+```bash
+# Run after each implementation task
+ruff check .         # Linting and formatting
+mypy .              # Type checking
+pytest              # Test execution
+black .             # Code formatting
+```
+
+**FAILURE PROTOCOL:** If quality checks fail:
+1. Fix issues immediately before proceeding
+2. Document quality violations in memory: `memory_store_chunk` with tag `quality-violation`
+3. Re-run checks to ensure resolution
+4. Only proceed when ALL quality checks pass
+
 ## 🚀 Deployment Strategy
 
 ### Deployment Approach
@@ -256,8 +374,12 @@ ALTER TABLE [existing_table] ADD COLUMN [feature_column] [type];
 
 ### Configuration Management
 - **Feature Configuration:** [What settings are configurable]
-- **Environment Variables:** [Environment-specific configuration]
-- **Feature Toggles:** [How to enable/disable feature]
+- **Environment Variables:** [Environment-specific configuration using .env files]
+  - **Development:** Use `.env` files for local configuration
+  - **Production:** Use environment variables for deployment
+  - **Template:** Provide `.env.example` with all required variables
+  - **Preference:** Avoid YAML/TOML config files when possible
+- **Feature Toggles:** [How to enable/disable feature via environment variables]
 
 ## 📏 Implementation Constraints
 

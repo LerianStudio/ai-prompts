@@ -10,10 +10,10 @@ alwaysApply: false
 **CRITICAL:** Leverage these tools throughout the TRD creation process:
 
 ### 🧩 Memory MCP Integration
-- **Retrieve PRD context:** `memory_search` for related requirements and design decisions
-- **Store technical choices:** `memory_store_decision` for architecture, technology stack, and patterns
-- **Reference best practices:** `memory_search` for proven technical approaches from past projects
-- **Session tracking:** `memory_tasks` for TRD development workflow
+- **Retrieve PRD context:** Use `mcp__lerian-memory__memory_read` with `operation="search"` for related requirements and design decisions
+- **Store technical choices:** Use `mcp__lerian-memory__memory_create` with `operation="store_decision"` for architecture, technology stack, and patterns
+- **Reference best practices:** Use `mcp__lerian-memory__memory_read` with `operation="search"` for proven technical approaches from past projects
+- **Session tracking:** Use `mcp__lerian-memory__memory_tasks` with `operation="todo_write"` for TRD development workflow
 - **Tags to use:** `["trd", "technical", "architecture", "feature-name", "technology-stack"]`
 
 ### 🔄 Sequential Thinking MCP
@@ -32,6 +32,7 @@ To guide an AI assistant in creating a detailed Technical Requirements Document 
 
 1. **Read Existing PRD:** The AI must first read the PRD document (`prd-[feature-name].md` in `/docs/pre-development/`)
    - 🧩 **Memory Action:** `memory_search` to retrieve PRD decisions and context
+   - 🧩 **Memory Action:** `memory_tasks` to track TRD creation workflow with session_id
    
 2. **Reference PRD Architecture:** Build upon PRD architecture patterns rather than duplicating them
    - 🔄 **Sequential Thinking:** Analyze business requirements to identify technical implications
@@ -99,7 +100,7 @@ The AI should ask targeted technical questions based on the PRD analysis and onl
 - **Environment:** "What environments will this run in (development, staging, production)?"
 - **Deployment:** "How will this be deployed (Docker, Kubernetes, bare metal)?"
 - **Scaling:** "What are the expected load patterns and scaling requirements?"
-- **Configuration:** "How should configuration be managed (env vars, config files, secrets)?"
+- **Configuration:** "How should configuration be managed? (Preferred: environment variables via .env/.env.example, Alternative: config files)"
 
 ### Technology Stack
 - **Language/Framework:** "What programming language and frameworks should be used?"
@@ -263,6 +264,25 @@ The generated TRD should include the following sections (strictly using this num
   | Throughput | 1000 req/s | Load test results |
   | Database Query Time | <50ms p95 | Query profiler |
   | Cache Hit Rate | >90% | Redis metrics |
+  ```
+
+### Development Standards Guidelines
+- **Configuration Management:** Prefer environment variables via .env files
+- **Code Organization:** Follow clean architecture principles
+- **Error Handling:** Comprehensive error handling with proper logging
+- **Security Practices:** Input validation, output sanitization
+- **Example Format:**
+  ```
+  Configuration Management:
+  - Use .env files for local development
+  - Use .env.example for configuration template
+  - Environment variables for production
+  - Avoid YAML/TOML config files when possible
+  
+  Go-Specific Standards:
+  - Test files alongside implementation (*_test.go)
+  - Migrations as separate service (cmd/migrate/main.go)
+  - Use standard library over third-party when possible
   ```
 
 ### Testing Strategy Guidelines

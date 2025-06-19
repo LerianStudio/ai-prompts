@@ -14,10 +14,18 @@ To guide an AI assistant through effective memory management workflows that enha
 - Create searchable, tagged information architecture
 
 ### Sequential Thinking MCP Support
-- Use for complex pattern analysis
-- Break down memory search strategies
+- Use `mcp__sequential-thinking__sequentialthinking` for complex pattern analysis
+- Break down memory search strategies systematically
 - Develop hypotheses about stored patterns
 - Validate insights through structured reasoning
+- **Example Usage:**
+  ```
+  mcp__sequential-thinking__sequentialthinking
+    thought="Analyzing memory patterns across projects. I see: [patterns]. Need to understand: 1) Common decisions, 2) Repeated problems, 3) Successful solutions."
+    nextThoughtNeeded=true
+    thoughtNumber=1
+    totalThoughts=4
+  ```
 
 ## Process Overview
 

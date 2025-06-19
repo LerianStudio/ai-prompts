@@ -5,17 +5,25 @@
 **CRITICAL:** Leverage these tools throughout the PRD creation process:
 
 ### 🧩 Memory MCP Integration
-- **Store insights:** `memory_store_chunk` for key requirements, user preferences, and design decisions
-- **Reference patterns:** `memory_search` for similar features from past projects
-- **Build knowledge:** `memory_store_decision` for rationale behind feature choices
-- **Session tracking:** `memory_tasks` for PRD creation workflow management
+- **Store insights:** Use `mcp__lerian-memory__memory_create` with `operation="store_chunk"` for key requirements, user preferences, and design decisions
+- **Reference patterns:** Use `mcp__lerian-memory__memory_read` with `operation="search"` for similar features from past projects
+- **Build knowledge:** Use `mcp__lerian-memory__memory_create` with `operation="store_decision"` for rationale behind feature choices
+- **Session tracking:** Use `mcp__lerian-memory__memory_tasks` with `operation="todo_write"` for PRD creation workflow management
 - **Tags to use:** `["prd", "requirements", "feature-name", "user-research"]`
 
 ### 🔄 Sequential Thinking MCP
-- **Use for:** Complex requirement analysis, user journey mapping, feature prioritization
-- **Pattern:** Break down user needs → business objectives → feature requirements → success metrics
-- **Benefit:** Ensures thorough analysis of requirements from multiple perspectives
-- **When:** During clarifying questions formulation and requirement synthesis
+- **Tool:** Use `mcp__sequential-thinking__sequentialthinking` for complex requirement analysis
+- **Use for:** Breaking down vague requests, user journey mapping, feature prioritization, finding hidden complexity
+- **Pattern:** Initial understanding → User needs analysis → Business mapping → Technical constraints → Synthesis
+- **Example Usage:**
+  ```
+  mcp__sequential-thinking__sequentialthinking
+    thought="The user wants [feature]. Let me break this down: 1) Core functionality needed, 2) User personas affected, 3) Business value. I need to explore each aspect."
+    nextThoughtNeeded=true
+    thoughtNumber=1
+    totalThoughts=5
+  ```
+- **When:** During clarifying questions formulation, requirement analysis, and complexity assessment
 
 **Pro tip:** Store every user answer and design decision in memory for future reference!
 
@@ -26,29 +34,87 @@ To guide an AI assistant in creating a detailed Product Requirements Document (P
 ## Process
 
 1.  **Receive Initial Prompt:** The user provides a brief description or request for a new feature or functionality.
-    - 🧩 **Memory Action:** `memory_store_chunk` with initial request and context
+    - 🧩 **Memory Action:** Use `mcp__lerian-memory__memory_create` with:
+      ```
+      operation="store_chunk"
+      options={
+        "content": "[initial user request]",
+        "repository": "github.com/[org]/[repo]",
+        "session_id": "[current-session]"
+      }
+      ```
+    - 🧩 **Memory Action:** Use `mcp__lerian-memory__memory_tasks` with:
+      ```
+      operation="todo_write"
+      options={
+        "todos": [{"content": "Create PRD for [feature-name]", "status": "in_progress", "priority": "high"}],
+        "repository": "github.com/[org]/[repo]"
+      }
+      ```
     - 🔄 **Sequential Thinking:** Analyze initial request complexity and scope
 
 2.  **Ask Clarifying Questions:** Before writing the PRD, the AI *must* ask clarifying questions to gather sufficient detail. The goal is to understand the "what" and "why" of the feature, not necessarily the "how" (which the developer will figure out).
-    - 🧩 **Memory Action:** `memory_search` for similar features and common pitfalls
+    - 🧩 **Memory Action:** Use `mcp__lerian-memory__memory_read` with:
+      ```
+      operation="search"
+      options={
+        "query": "similar features PRD requirements [feature-type]",
+        "repository": "github.com/[org]/[repo]"
+      }
+      ```
     - 🔄 **Sequential Thinking:** Structure questions by user journey, business impact, technical constraints
     - **IMPORTANT:** WAIT for user responses before proceeding to the next step
     - Present questions in a clear, organized manner
     - Allow user to answer all questions before generating PRD
 3.  **Generate PRD Draft:** Based on the initial prompt and the user's answers to the clarifying questions, generate a PRD using the structure outlined below.
-    - 🧩 **Memory Action:** `memory_store_decision` for key design choices and trade-offs
+    - 🧩 **Memory Action:** Use `mcp__lerian-memory__memory_create` with:
+      ```
+      operation="store_decision"
+      options={
+        "decision": "[key design choice]",
+        "rationale": "[why this approach was chosen]",
+        "repository": "github.com/[org]/[repo]",
+        "session_id": "[current-session]"
+      }
+      ```
     - 🔄 **Sequential Thinking:** Validate requirements flow from user needs to business value
 
 4.  **Request User Review:** Present the PRD draft to the user and explicitly ask for feedback:
     - "Please review this PRD draft. What would you like to change or add?"
     - **WAIT for user approval or feedback**
-    - 🧩 **Memory Action:** `memory_store_chunk` with user feedback and iteration notes
+    - 🧩 **Memory Action:** Use `mcp__lerian-memory__memory_create` with:
+      ```
+      operation="store_chunk"
+      options={
+        "content": "User feedback: [feedback details]",
+        "repository": "github.com/[org]/[repo]",
+        "session_id": "[current-session]"
+      }
+      ```
 
 5.  **Incorporate Feedback:** If user requests changes, update the PRD accordingly and present the revised version
-    - 🧩 **Memory Action:** `memory_store_decision` documenting why changes were made
+    - 🧩 **Memory Action:** Use `mcp__lerian-memory__memory_create` with:
+      ```
+      operation="store_decision"
+      options={
+        "decision": "PRD changes based on feedback",
+        "rationale": "[specific changes and why]",
+        "repository": "github.com/[org]/[repo]",
+        "session_id": "[current-session]"
+      }
+      ```
 
 6.  **Save PRD:** Only after user approval, save the generated document as `prd-[feature-name].md` inside the `/docs/pre-development/` directory.
-    - 🧩 **Memory Action:** `memory_create_thread` linking all PRD-related decisions and insights
+    - 🧩 **Memory Action:** Use `mcp__lerian-memory__memory_create` with:
+      ```
+      operation="create_thread"
+      options={
+        "name": "PRD: [feature-name]",
+        "description": "Complete PRD development for [feature-name]",
+        "chunk_ids": ["[previous-chunk-ids]"],
+        "repository": "github.com/[org]/[repo]"
+      }
+      ```
 
 ## User Interaction Guidelines
 

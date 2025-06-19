@@ -14,9 +14,9 @@ To guide an AI assistant through a comprehensive pre-development planning proces
 **IMPORTANT**: Use both Memory MCP and Sequential Thinking MCP for enhanced analysis:
 
 ### Memory MCP Integration
-- Store requirements, decisions, and architectural patterns for cross-session learning
-- Reference previous projects and established patterns
-- Tag entries appropriately for organization and retrieval
+- Store requirements and decisions using `mcp__lerian-memory__memory_create` with `operation="store_decision"`
+- Reference previous projects using `mcp__lerian-memory__memory_read` with `operation="search"`
+- Tag entries appropriately using tags like `["prd", "trd", "architecture", "project-name"]`
 
 ### Sequential Thinking MCP Usage
 - Use `mcp__sequential-thinking__sequentialthinking` for complex requirement analysis

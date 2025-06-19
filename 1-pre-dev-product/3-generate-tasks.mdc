@@ -32,6 +32,7 @@ To guide an AI assistant in analyzing both Product Requirements Document (PRD) a
 
 1. **Read Both Documents:** The AI must first read both the PRD and TRD documents for comprehensive understanding from `/docs/pre-development/`
    - 🧩 **Memory Action:** `memory_search` to retrieve related PRD and TRD decisions
+   - 🧩 **Memory Action:** `memory_tasks` to track task generation workflow with session_id
 
 2. **Verify Chain Validation:** Ensure validation-report-[feature-name].md shows PASS status before proceeding (if exists)
    - 🧩 **Memory Action:** `memory_search` for validation patterns and common issues
@@ -209,7 +210,12 @@ make fmt              # Code formatting
 make vet              # Static analysis
 gosec ./...          # Security analysis
 govulncheck ./...    # Vulnerability check
+perfsprint ./...     # Performance analysis
+make lint            # Comprehensive linting
 go test ./...        # Test execution
+
+# After quality checks pass, build to ensure compilation
+go build ./...       # Build verification
 ```
 
 #### TypeScript/JavaScript Projects

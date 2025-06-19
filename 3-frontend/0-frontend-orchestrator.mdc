@@ -5,6 +5,27 @@ alwaysApply: false
 ---
 # Frontend Development Orchestrator
 
+## 🧠 Enhanced Analysis Tools - USE THESE!
+
+### 🧩 Memory MCP Integration
+- Retrieve design systems using `mcp__lerian-memory__memory_read` with `operation="search"`
+- Store design decisions using `mcp__lerian-memory__memory_create` with `operation="store_decision"`
+- Reference similar UI implementations using `mcp__lerian-memory__memory_read` with `operation="find_similar"`
+- Tag entries with `["frontend", "design", "ui-components", "feature-name"]`
+
+### 🔄 Sequential Thinking MCP
+- Use `mcp__sequential-thinking__sequentialthinking` for design interpretation
+- Break down complex UI flows into technical components
+- Analyze responsive design strategies systematically
+- **Example Usage:**
+  ```
+  mcp__sequential-thinking__sequentialthinking
+    thought="Analyzing frontend requirements. Design input: [type]. Need to evaluate: 1) Component architecture, 2) State management, 3) BFF integration."
+    nextThoughtNeeded=true
+    thoughtNumber=1
+    totalThoughts=5
+  ```
+
 ## 🚀 Frontend Development Workflow
 
 Welcome to the **3-frontend** workflow - a systematic approach to frontend development that handles flexible design inputs (from iPad sketches to Figma designs) and creates atomic, human-reviewable implementation tasks.

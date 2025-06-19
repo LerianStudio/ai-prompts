@@ -10,16 +10,25 @@ alwaysApply: false
 **CRITICAL:** Leverage these tools throughout the design analysis process:
 
 ### 🧩 Memory MCP Integration
-- **Retrieve design context:** `memory_search` for existing design systems, component patterns, and UI conventions
-- **Store design decisions:** `memory_store_decision` for design choices, responsive strategies, and user experience patterns
-- **Reference similar designs:** `memory_search` for comparable UI implementations and successful patterns
-- **Track design process:** `memory_tasks` for design analysis workflow management
+- **Retrieve design context:** Use `mcp__lerian-memory__memory_read` with `operation="search"` for existing design systems, component patterns, and UI conventions
+- **Store design decisions:** Use `mcp__lerian-memory__memory_create` with `operation="store_decision"` for design choices, responsive strategies, and user experience patterns
+- **Reference similar designs:** Use `mcp__lerian-memory__memory_read` with `operation="search"` for comparable UI implementations and successful patterns
+- **Track design process:** Use `mcp__lerian-memory__memory_tasks` with `operation="todo_write"` for design analysis workflow management
 - **Tags to use:** `["design-analysis", "ui-ux", "frontend-design", "feature-name", "design-input"]`
 
 ### 🔄 Sequential Thinking MCP
+- **Tool:** Use `mcp__sequential-thinking__sequentialthinking` for complex design analysis
 - **Use for:** Complex design interpretation, user flow analysis, responsive design strategy
 - **Pattern:** Design input → user intent → technical requirements → implementation specifications
 - **Benefit:** Ensures design analysis captures user needs and technical feasibility
+- **Example Usage:**
+  ```
+  mcp__sequential-thinking__sequentialthinking
+    thought="Analyzing [design-type] for [feature]. I see: [elements]. Need to understand: 1) User flow, 2) Visual hierarchy, 3) Technical feasibility."
+    nextThoughtNeeded=true
+    thoughtNumber=1
+    totalThoughts=5
+  ```
 - **When:** During design interpretation and gap analysis
 
 **Pro tip:** Always reference existing design systems to ensure consistency and avoid reinventing UI patterns!
@@ -31,31 +40,85 @@ To guide an AI assistant in analyzing any form of design input (iPad sketches, F
 ## Process
 
 1. **Retrieve Design Context:** Use Memory MCP to understand existing design systems and UI patterns
-   - 🧩 **Memory Action:** `memory_search` for design systems, component libraries, and UI conventions
+   - 🧩 **Memory Action:** Use `mcp__lerian-memory__memory_read` with:
+     ```
+     operation="search"
+     options={
+       "query": "design-system component-library ui-patterns",
+       "repository": "github.com/[org]/[repo]"
+     }
+     ```
 
 2. **Analyze Design Input:** Process whatever design materials are provided
-   - 🔄 **Sequential Thinking:** Interpret design intent and extract technical requirements
+   - 🔄 **Sequential Thinking:** Use `mcp__sequential-thinking__sequentialthinking`:
+     ```
+     thought="Analyzing [design-input-type]. I can see: [elements]. Need to interpret: user intent, technical requirements, missing specs."
+     nextThoughtNeeded=true
+     thoughtNumber=1
+     totalThoughts=4
+     ```
 
 3. **Identify Design Gaps:** Determine what specifications are missing or unclear
-   - 🔄 **Sequential Thinking:** Analyze completeness and identify areas needing clarification
+   - 🔄 **Sequential Thinking:** Continue analysis:
+     ```
+     thought="Design gaps identified: [missing-specs]. Need clarification on: [unclear-areas]. Will ask user about: [questions]."
+     nextThoughtNeeded=true
+     thoughtNumber=2
+     totalThoughts=4
+     ```
 
 4. **Ask Design Questions:** Gather specific details about user experience and visual design
    - **IMPORTANT:** WAIT for user responses before proceeding
    - Focus on design intent, user flows, and visual specifications
 
 5. **Generate Design Specifications:** Create comprehensive design requirements
-   - 🧩 **Memory Action:** `memory_store_decision` for key design choices and rationale
+   - 🧩 **Memory Action:** Use `mcp__lerian-memory__memory_create` with:
+     ```
+     operation="store_decision"
+     options={
+       "decision": "Design specifications for [feature-name]",
+       "rationale": "[key design reasoning]",
+       "repository": "github.com/[org]/[repo]",
+       "session_id": "[current-session]"
+     }
+     ```
 
 6. **Request Design Review:** Present specifications and ask for feedback:
    - "Please review these design specifications. What would you like to adjust or clarify?"
    - **WAIT for user approval or feedback**
-   - 🧩 **Memory Action:** `memory_store_chunk` with user design feedback
+   - 🧩 **Memory Action:** Use `mcp__lerian-memory__memory_create` with:
+     ```
+     operation="store_chunk"
+     options={
+       "content": "User design feedback: [feedback details]",
+       "repository": "github.com/[org]/[repo]",
+       "session_id": "[current-session]"
+     }
+     ```
 
 7. **Iterate on Design:** Update specifications based on user input
-   - 🧩 **Memory Action:** `memory_store_decision` documenting design changes and rationale
+   - 🧩 **Memory Action:** Use `mcp__lerian-memory__memory_create` with:
+     ```
+     operation="store_decision"
+     options={
+       "decision": "Design iterations based on feedback",
+       "rationale": "[changes and why]",
+       "repository": "github.com/[org]/[repo]",
+       "session_id": "[current-session]"
+     }
+     ```
 
 8. **Save Design Analysis:** After approval, save as `design-analysis-[feature-name].md` in `/docs/frontend-development/`
-   - 🧩 **Memory Action:** Create design analysis thread for future reference
+   - 🧩 **Memory Action:** Use `mcp__lerian-memory__memory_create` with:
+     ```
+     operation="create_thread"
+     options={
+       "name": "Frontend Design: [feature-name]",
+       "description": "Design analysis and specifications",
+       "chunk_ids": ["[previous-chunk-ids]"],
+       "repository": "github.com/[org]/[repo]"
+     }
+     ```
 
 ## Design Input Types
 

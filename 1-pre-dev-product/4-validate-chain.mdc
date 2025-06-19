@@ -32,6 +32,7 @@ To guide an AI assistant in validating that the Product Requirements Document (P
 
 1. **Read All Chain Documents:** Load PRD, TRD, and main tasks documents from `/docs/pre-development/`
    - 🧩 **Memory Action:** `memory_search` to retrieve all related decisions from the development chain
+   - 🧩 **Memory Action:** `memory_tasks` to track validation workflow with session_id
 
 2. **Cross-Reference Analysis:** Validate alignment between documents
    - 🔄 **Sequential Thinking:** Systematically trace each requirement through all documents

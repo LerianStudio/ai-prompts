@@ -10,10 +10,10 @@ alwaysApply: false
 **CRITICAL:** Leverage these tools throughout the feature brief creation process:
 
 ### 🧩 Memory MCP Integration
-- **Retrieve product context:** `memory_search` for existing product architecture, features, and user patterns
-- **Store feature insights:** `memory_store_chunk` for user requirements, feature rationale, and design decisions
-- **Reference similar features:** `memory_search` for comparable features from this or other projects
-- **Session tracking:** `memory_tasks` for feature brief workflow management
+- **Retrieve product context:** Use `mcp__lerian-memory__memory_read` with `operation="search"` for existing product architecture, features, and user patterns
+- **Store feature insights:** Use `mcp__lerian-memory__memory_create` with `operation="store_chunk"` for user requirements, feature rationale, and design decisions
+- **Reference similar features:** Use `mcp__lerian-memory__memory_read` with `operation="search"` for comparable features from this or other projects
+- **Session tracking:** Use `mcp__lerian-memory__memory_tasks` with `operation="todo_write"` for feature brief workflow management
 - **Tags to use:** `["feature-brief", "requirements", "user-stories", "feature-name"]`
 
 ### 🔄 Sequential Thinking MCP
@@ -31,10 +31,14 @@ To guide an AI assistant in creating a focused Feature Brief that captures requi
 ## Process
 
 1. **Retrieve Product Context:** Use Memory MCP to understand existing product and architecture
+   - 🧩 **Memory Action:** `memory_search` for existing product architecture and related features
+   - 🧩 **Memory Action:** `memory_tasks` to track feature brief workflow with session_id
 2. **Receive Feature Request:** The user provides initial feature description
+   - 🧩 **Memory Action:** `memory_store_chunk` with initial feature request and context
 3. **Ask Focused Questions:** Gather specific details about user needs and business value
    - **IMPORTANT:** WAIT for user responses before proceeding
    - Focus on integration points and user value
+   - 🧩 **Memory Action:** `memory_search` for similar features and integration patterns
 4. **Generate Feature Brief:** Create comprehensive feature specification
 5. **Request User Review:** Present brief and ask for feedback:
    - "Please review this feature brief. What would you like to change or clarify?"

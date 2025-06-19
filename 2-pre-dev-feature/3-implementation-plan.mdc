@@ -33,6 +33,7 @@ To guide an AI assistant in analyzing feature brief and technical approach to ge
 
 1. **Read Context Documents:** Load feature brief and technical approach from previous phases
    - 🧩 **Memory Action:** `memory_search` to retrieve all related feature decisions and context
+   - 🧩 **Memory Action:** `memory_tasks` to track implementation planning workflow with session_id
 
 2. **Analyze Implementation Scope:** Extract implementation requirements and integration points
    - 🔄 **Sequential Thinking:** Map technical approach to implementation components and dependencies
@@ -132,6 +133,8 @@ git push -u origin feature/FT-[feature-id]-[num]-[short-desc]
 
 ### 5. Testing Requirements
 - **Unit Tests:** Specific test cases for new functionality
+  - **Go Projects:** Test files must be alongside implementation (e.g., `feature.go` → `feature_test.go`)
+  - **Test Package:** Use same package for white-box testing or `_test` suffix for black-box
 - **Integration Tests:** Tests for interaction with existing components
 - **Manual Testing:** Manual validation steps
 - **Regression Testing:** Ensuring existing functionality still works
@@ -155,7 +158,12 @@ make fmt              # Code formatting
 make vet              # Static analysis
 gosec ./...          # Security analysis
 govulncheck ./...    # Vulnerability check
+perfsprint ./...     # Performance analysis
+make lint            # Comprehensive linting
 go test ./...        # Test execution
+
+# After quality checks pass, build to ensure compilation
+go build ./...       # Build verification
 ```
 
 #### TypeScript/JavaScript Projects

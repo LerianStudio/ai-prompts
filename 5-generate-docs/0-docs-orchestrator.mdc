@@ -16,9 +16,14 @@ Discovery → Planning → Generation → Validation → Distribution
 - DevOps/Operations (deployment & monitoring)
 
 **Memory Integration:**
-- Start: `memory_search` for existing documentation patterns
-- Process: `memory_store_decision` for documentation choices
-- End: `memory_store_chunk` for documentation insights
+- Start: Use `mcp__lerian-memory__memory_read` with `operation="search"` for existing documentation patterns
+- Process: Use `mcp__lerian-memory__memory_create` with `operation="store_decision"` for documentation choices
+- End: Use `mcp__lerian-memory__memory_create` with `operation="store_chunk"` for documentation insights
+
+**Sequential Thinking Integration:**
+- Use `mcp__sequential-thinking__sequentialthinking` for documentation gap analysis
+- Systematically evaluate audience needs and coverage priorities
+- Break down complex documentation requirements into phases
 
 ## Phase Execution Sequence
 
