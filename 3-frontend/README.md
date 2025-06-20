@@ -43,7 +43,7 @@ The **3-frontend** workflow is a comprehensive system for frontend development t
 
 ## Workflow Phases
 
-The workflow consists of **5 progressive phases** with strategic user interaction:
+The workflow consists of **6 progressive phases** with strategic user interaction:
 
 ```mermaid
 graph TD
@@ -51,13 +51,14 @@ graph TD
     B --> C[Phase 3: Component Integration Architecture]
     C --> D[Phase 4: Atomic Implementation Tasks]
     D --> E[Phase 5: Design Validation Integration]
+    E --> G[Phase 6: Frontend Test Strategy]
     
     A1[iPad Sketches] --> A
     A2[Figma Designs] --> A
     A3[Written Specs] --> A
     A4[Reference Apps] --> A
     
-    E --> F[Production Ready Frontend]
+    G --> F[Production Ready Frontend]
 ```
 
 ### 🎨 Phase 1: Design Input Analysis (DIA)
@@ -157,6 +158,23 @@ graph TD
 - **Performance benchmarking** and optimization verification
 - **Production readiness checklist** and deployment preparation
 
+---
+
+### 🧪 Phase 6: Frontend Test Strategy (FTS)
+**File:** `6-test-strategy.mdc`  
+**Duration:** 2-3 hours  
+**User Interaction:** **REQUIRED** - Test priorities and approach
+
+**Purpose:** Define comprehensive test coverage for frontend components
+
+**Key Outputs:**
+- **Component unit test strategy** with coverage targets
+- **Visual regression test plan** for design fidelity
+- **Integration test scenarios** for API and state management
+- **E2E user journey tests** for critical paths
+- **Performance test criteria** and benchmarks
+- **Accessibility test automation** and manual validation
+
 ## Quick Start Options
 
 ### Option 1: Complete Orchestrated Workflow (Recommended for First-Time Users)
@@ -181,6 +199,9 @@ claude 3-frontend/4-atomic-implementation-tasks.mdc
 
 # Phase 5: Validate design fidelity and integration
 claude 3-frontend/5-design-validation-integration.mdc
+
+# Phase 6: Define comprehensive test strategy
+claude 3-frontend/6-test-strategy.mdc
 ```
 
 ### Option 3: Express Mode (Skip Orchestrator)
@@ -200,6 +221,7 @@ docs/frontend-development/
 ├── frontend-tech-plan-[feature].md       # Phase 2: Technical strategy
 ├── component-integration-[feature].md     # Phase 3: Component architecture
 ├── validation-checklist-[feature].md     # Phase 5: Quality validation
+├── test-strategy-[feature].md            # Phase 6: Test strategy
 └── tasks/
     └── frontend-[feature]/               # Phase 4: Implementation tasks
         ├── overview.md                   # Task overview and sequencing

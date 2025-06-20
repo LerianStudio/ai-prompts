@@ -27,7 +27,7 @@ To guide an AI assistant through a comprehensive pre-development planning proces
 
 ## Process Overview
 
-This orchestrator manages a **5-phase pre-development workflow** with mandatory user feedback checkpoints:
+This orchestrator manages a **6-phase pre-development workflow** with mandatory user feedback checkpoints:
 
 ### Phase 1: Product Requirements Document (PRD)
 **Objective**: Transform user ideas into clear business requirements
@@ -48,6 +48,10 @@ This orchestrator manages a **5-phase pre-development workflow** with mandatory 
 ### Phase 5: Sub-Task Generation
 **Objective**: Create detailed implementation plans
 **User Interaction**: Optional - review granular breakdown
+
+### Phase 6: Test Strategy Development
+**Objective**: Define comprehensive test coverage for the product
+**User Interaction**: Required - test priorities and constraints
 
 ## Execution Phases
 
@@ -181,6 +185,34 @@ claude 1-pre-development/5-generate-sub-tasks.mdc
 
 **Output**: `docs/pre-development/tasks/MT-*/` (organized by main task)
 
+### 🧪 Phase 6: Test Strategy Development
+
+**Create comprehensive test strategy tailored to the product:**
+
+```bash
+# Generate test strategy based on all previous documents
+claude 1-pre-development/6-test-strategy.mdc
+
+# Process flow:
+# 1. AI analyzes PRD, TRD, and task breakdown
+# 2. AI identifies testing requirements
+# 3. AI proposes test coverage breakdown (WAIT FOR USER INPUT)
+# 4. User provides test priorities and constraints
+# 5. AI generates comprehensive test strategy
+# 6. User reviews and approves test approach (WAIT FOR APPROVAL)
+# 7. AI finalizes test plan with specific scenarios
+```
+
+**Key User Interactions:**
+- Test coverage targets for different test types
+- Performance and quality SLAs
+- Testing tool preferences
+- Resource constraints and timeline
+- Compliance and security requirements
+- Review and approval of test strategy
+
+**Output**: `docs/pre-development/test-strategy-[feature-name].md`
+
 ## User Feedback Integration
 
 ### Mandatory Checkpoints
@@ -191,6 +223,7 @@ claude 1-pre-development/5-generate-sub-tasks.mdc
 4. **TRD Approval** - User must approve technical approach
 5. **Task Review** - User must review and approve task breakdown
 6. **Validation Acknowledgment** - User must review validation results
+7. **Test Strategy Review** - User must provide test priorities and approve approach
 
 ### Feedback Incorporation Process
 
@@ -229,6 +262,10 @@ claude 1-pre-development/4-validate-chain.mdc
 # Phase 5: Generate detailed sub-tasks (optional)
 claude 1-pre-development/5-generate-sub-tasks.mdc
 # [User optionally reviews sub-task granularity]
+
+# Phase 6: Create comprehensive test strategy
+claude 1-pre-development/6-test-strategy.mdc
+# [User provides test priorities and approves strategy]
 ```
 
 ### Minimal Workflow (Essential documents only)
@@ -256,6 +293,7 @@ docs/pre-development/
 ├── prd-[feature-name].md              # Product Requirements Document
 ├── trd-[feature-name].md              # Technical Requirements Document
 ├── validation-report-[feature-name].md # Consistency validation report
+├── test-strategy-[feature-name].md    # Comprehensive test strategy
 └── tasks/
     ├── tasks-[feature-name].md        # Main atomic tasks
     └── MT-[XX]-[task-name]/           # Sub-tasks for each main task
@@ -271,6 +309,7 @@ Store planning decisions and patterns with appropriate tags:
 - `["pre-dev", "tasks", "breakdown", "feature-name"]` for task organization
 - `["pre-dev", "validation", "consistency"]` for validation findings
 - `["pre-dev", "feedback", "user-decisions"]` for user preferences
+- `["pre-dev", "testing", "strategy", "feature-name"]` for test approach
 
 ## Success Criteria
 
@@ -280,6 +319,7 @@ Store planning decisions and patterns with appropriate tags:
 - **Phase 3**: Tasks reviewed and prioritization confirmed
 - **Phase 4**: Validation shows PASS or issues acknowledged
 - **Phase 5**: Sub-tasks generated (if needed) with implementation clarity
+- **Phase 6**: Test strategy approved with coverage targets defined
 
 ### Overall Success Metrics
 - All documents maintain consistency

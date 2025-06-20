@@ -394,8 +394,16 @@ This validation step sits between main task generation and sub-task creation:
 
 1. **create-prd.mdc** → PRD created
 2. **create-trd.mdc** → TRD created
-3. **generate-main-tasks.mdc** → Main tasks created
+3. **generate-tasks.mdc** → Main tasks created
 4. **validate-chain.mdc** → Validation performed ← **YOU ARE HERE**
 5. **generate-sub-tasks.mdc** → Sub-tasks created (only after PASS validation)
+6. **test-strategy.mdc** → Test strategy defined
+
+## Next Steps
+
+After successful validation (PASS):
+1. **Proceed to Sub-Tasks:** Run `5-generate-sub-tasks.mdc` to create detailed implementation tasks
+2. **Then Test Strategy:** Run `6-test-strategy.mdc` to define comprehensive test coverage
+3. **Begin Implementation:** With validated documents and clear test strategy
 
 The validation ensures quality and consistency before detailed implementation planning begins.

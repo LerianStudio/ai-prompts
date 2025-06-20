@@ -2,7 +2,7 @@
 
 ## Overview
 
-The **2-pre-dev-feature** workflow is designed for rapid feature development within existing products. This streamlined 3-phase process assumes established architecture and focuses on efficient integration rather than foundational design.
+The **2-pre-dev-feature** workflow is designed for rapid feature development within existing products. This streamlined 4-phase process assumes established architecture and focuses on efficient integration rather than foundational design.
 
 ## When to Use This Workflow
 
@@ -61,10 +61,23 @@ The **2-pre-dev-feature** workflow is designed for rapid feature development wit
 
 **User Interaction:** Optional - review task breakdown
 
+### 🧪 Phase 4: Test Strategy (1-2 hours)
+**File:** `4-test-strategy.mdc`
+
+**Purpose:** Define focused test coverage for the feature
+
+**Key Outputs:**
+- Feature-specific test coverage targets
+- Integration test scenarios
+- Performance impact testing approach
+- Security testing considerations
+
+**User Interaction:** Required - test priorities and approach
+
 ## Key Advantages
 
 ### ⚡ Speed
-- **3 phases** vs 5 phases (product workflow)
+- **4 phases** vs 6 phases (product workflow)
 - **1-2 days** vs 1-2 weeks planning time
 - **Focused feedback** loops with minimal overhead
 
@@ -123,6 +136,9 @@ claude 2-pre-dev-feature/2-technical-approach.mdc
 
 # 3. Implementation Plan (Optional user review)
 claude 2-pre-dev-feature/3-implementation-plan.mdc
+
+# 4. Test Strategy (Required user interaction)
+claude 2-pre-dev-feature/4-test-strategy.mdc
 ```
 
 ### Full Workflow with Orchestrator
@@ -136,7 +152,9 @@ claude 2-pre-dev-feature/0-feature-orchestrator.mdc
 ```
 docs/pre-development/
 ├── feature-brief-[feature-name].md       # Feature requirements
-├── tech-approach-[feature-name].md       # Implementation strategy  
+├── tech-approach-[feature-name].md       # Implementation strategy
+├── features/
+│   └── test-plan-[feature-name].md      # Feature-specific test strategy  
 └── tasks/
     └── feature-[feature-name]/           # Implementation tasks
         ├── overview.md                   # Implementation overview
@@ -189,7 +207,7 @@ claude 0-memory-related/m0-memory-orchestrator.mdc
 
 | Aspect | 2-pre-dev-feature | 1-pre-dev-product |
 |--------|-------------------|-------------------|
-| **Phases** | 3 | 5 |
+| **Phases** | 4 | 6 |
 | **Planning Time** | 1 day | 1-2 weeks |
 | **Documentation** | Focused | Comprehensive |
 | **User Interaction** | Targeted | Extensive |

@@ -46,7 +46,7 @@ Welcome to the **3-frontend** workflow - a systematic approach to frontend devel
 
 ## 📋 Workflow Overview
 
-This workflow consists of **5 progressive phases** with mandatory user feedback loops:
+This workflow consists of **6 progressive phases** with mandatory user feedback loops:
 
 ```mermaid
 graph TD
@@ -54,13 +54,14 @@ graph TD
     B --> C[Phase 3: Component Integration Architecture]
     C --> D[Phase 4: Atomic Implementation Tasks]
     D --> E[Phase 5: Design Validation Integration]
+    E --> G[Phase 6: Test Strategy]
     
     A1[iPad Sketches] --> A
     A2[Figma Designs] --> A
     A3[Written Specs] --> A
     A4[Reference Apps] --> A
     
-    E --> F[Implementation Ready]
+    G --> F[Implementation Ready]
 ```
 
 ## 🛠️ Phase-by-Phase Execution
@@ -150,6 +151,22 @@ graph TD
 - Accessibility compliance validation
 - Performance benchmarking plan
 
+---
+
+### 🧪 Phase 6: Frontend Test Strategy (FTS)
+**File:** `6-test-strategy.mdc`  
+**Duration:** 2-3 hours  
+**User Interaction:** **REQUIRED** - Test priorities and approach
+
+**Purpose:** Define comprehensive test coverage for frontend components
+
+**Key Outputs:**
+- Component unit test strategy
+- Visual regression test plan
+- Integration test scenarios
+- E2E user journey tests
+- Performance and accessibility test criteria
+
 ## 🚀 Quick Start Options
 
 ### Option 1: Complete Orchestrated Workflow
@@ -174,6 +191,9 @@ claude 3-frontend/4-atomic-implementation-tasks.mdc
 
 # Phase 5: Validate and integrate
 claude 3-frontend/5-design-validation-integration.mdc
+
+# Phase 6: Define test strategy
+claude 3-frontend/6-test-strategy.mdc
 ```
 
 ### Option 3: Express Mode (Experienced Users)
@@ -191,6 +211,7 @@ docs/frontend-development/
 ├── frontend-tech-plan-[feature].md       # Phase 2 output  
 ├── component-integration-[feature].md     # Phase 3 output
 ├── validation-checklist-[feature].md     # Phase 5 output
+├── test-strategy-[feature].md            # Phase 6 output
 └── tasks/
     └── frontend-[feature]/               # Phase 4 outputs
         ├── overview.md                   # Task overview
@@ -279,6 +300,7 @@ git push -u origin feature/FE-[feature-id]-[num]-[desc]
 - Architecture design: <3 hours
 - Task breakdown: <2 hours
 - Validation planning: <2 hours
+- Test strategy: <3 hours
 - **Total planning: <2 days**
 
 ### Quality Metrics

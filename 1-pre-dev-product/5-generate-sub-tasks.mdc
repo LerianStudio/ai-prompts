@@ -995,10 +995,19 @@ Before finalizing sub-tasks:
 
 ## Relationship to Chain
 
-This rule completes the development chain:
+This rule is part of the comprehensive development chain:
 1. **create-prd.mdc** → Defines business requirements and high-level phases
 2. **create-trd.mdc** → Translates to technical specifications and implementation roadmap  
 3. **generate-tasks.mdc** → Creates atomic, functional development phases
-4. **generate-sub-tasks.mdc** → Breaks down each task into implementable sub-tasks ← **YOU ARE HERE**
+4. **validate-chain.mdc** → Ensures consistency across all documents
+5. **generate-sub-tasks.mdc** → Breaks down each task into implementable sub-tasks ← **YOU ARE HERE**
+6. **test-strategy.mdc** → Defines comprehensive test coverage for quality assurance
+
+## Next Steps
+
+After completing sub-task generation:
+1. **Proceed to Test Strategy:** Run `6-test-strategy.mdc` to define comprehensive test coverage
+2. **Begin Implementation:** Teams can start sprint planning with clear sub-tasks
+3. **Track Progress:** Use generated tasks and sub-tasks for project management
 
 The output of this rule provides the final level of detail needed for development teams to begin implementation, with each sub-task representing a concrete, actionable work item that contributes to completing the overall system defined in the PRD.

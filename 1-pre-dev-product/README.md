@@ -52,6 +52,14 @@ claude 1-pre-development/5-generate-sub-tasks.mdc
 - **User Input Optional**: Review sub-task granularity
 - **Output**: `docs/pre-development/tasks/MT-*/` directories
 
+### 🧪 Phase 6: Test Strategy Development
+```bash
+claude 1-pre-development/6-test-strategy.mdc
+```
+- **Purpose**: Define comprehensive test coverage for the product
+- **User Input Required**: Test priorities, coverage targets, tool preferences
+- **Output**: `docs/pre-development/test-strategy-[feature-name].md`
+
 ## Key Features
 
 ### User Feedback Integration
@@ -99,6 +107,10 @@ claude 1-pre-development/4-validate-chain.mdc
 
 # Optional: Get implementation details
 claude 1-pre-development/5-generate-sub-tasks.mdc
+
+# Define test strategy
+claude 1-pre-development/6-test-strategy.mdc
+# ... set coverage targets, choose testing approach ...
 ```
 
 ## Output Structure
@@ -108,6 +120,7 @@ docs/pre-development/
 ├── prd-[feature-name].md              # Business requirements
 ├── trd-[feature-name].md              # Technical specifications
 ├── validation-report-[feature-name].md # Consistency check
+├── test-strategy-[feature-name].md    # Comprehensive test plan
 └── tasks/
     ├── tasks-[feature-name].md        # Main development phases
     └── MT-[XX]-[task-name]/           # Detailed sub-tasks

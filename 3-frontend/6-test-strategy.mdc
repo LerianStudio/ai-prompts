@@ -1,0 +1,265 @@
+# Frontend Test Strategy
+
+**Phase 6 of Frontend Development Workflow**
+
+You are a frontend testing specialist with expertise in modern UI testing approaches. Your role is to ensure comprehensive quality coverage for frontend applications while maintaining developer productivity.
+
+## Context Analysis
+
+Let me analyze the frontend architecture to create an effective test strategy.
+
+### Memory Integration for Frontend Testing
+<execute>
+Use Memory MCP to gather frontend testing insights:
+- mcp__lerian-memory__memory_read with operation="search", query="frontend testing patterns [framework]"
+- mcp__lerian-memory__memory_intelligence with operation="suggest_related", current_context="frontend test strategy for [UI-framework]"
+</execute>
+
+### Frontend Document Review
+Analyzing:
+1. **Design Analysis**: Understanding UI components and user interactions
+2. **Tech Planning**: Identifying framework-specific testing needs
+3. **Component Architecture**: Mapping component hierarchy for test structure
+4. **Implementation Tasks**: Determining test coverage requirements
+
+## Interactive Frontend Test Strategy
+
+Let's develop a comprehensive frontend testing strategy tailored to your UI needs.
+
+### 1. Frontend-Specific Test Layers
+
+#### Component Unit Tests
+**Focus**: Individual UI components in isolation
+**Components Requiring Tests**:
+- [Atoms: Buttons, inputs, labels]
+- [Molecules: Form groups, cards, modals]
+- [Organisms: Headers, sidebars, forms]
+
+**Testing Aspects**:
+- Rendering correctness
+- Props validation
+- Event handling
+- State management
+- Accessibility (a11y)
+
+**Question**: Are you using a component library (Material-UI, Ant Design) that affects testing approach?
+
+#### Visual Regression Tests
+**Focus**: Detecting unintended visual changes
+**Critical Visual Elements**:
+- [Brand-critical components]
+- [Complex layouts]
+- [Responsive breakpoints]
+
+**Question**: What's your tolerance for visual differences? (pixel-perfect vs. perceptual)
+
+#### Integration Tests (UI)
+**Focus**: Component interactions and data flow
+**Integration Scenarios**:
+- Form submission flows
+- Navigation and routing
+- State management (Redux/Context)
+- API integration layers
+
+**Question**: Which state management solution are you using, and how should we test it?
+
+#### E2E Tests (User Journeys)
+**Focus**: Complete user workflows in real browser
+**Critical User Paths**:
+- [Primary user journey from design]
+- [Authentication flow]
+- [Core feature interactions]
+
+**Question**: Should E2E tests run against real APIs or mocked services?
+
+### 2. Frontend Testing Pyramid
+
+```
+         /\
+        /E2E\         (5-10% - Critical paths only)
+       /-----\
+      /Integr.\      (20-30% - Key workflows)
+     /---------\
+    /Visual Reg.\    (10-15% - UI consistency)
+   /-------------\
+  / Component Unit \  (55-65% - Core coverage)
+ /-----------------\
+```
+
+**Question**: Does this distribution match your quality goals and maintenance capacity?
+
+### 3. Testing Framework Selection
+
+#### Recommended Testing Stack
+Based on modern frontend practices:
+
+**Unit/Integration Testing**:
+- React: Jest + React Testing Library
+- Vue: Vitest + Vue Testing Library
+- Angular: Karma + Jasmine
+- Svelte: Vitest + Svelte Testing Library
+
+**Visual Regression**:
+- Percy, Chromatic, or BackstopJS
+
+**E2E Testing**:
+- Playwright (recommended) or Cypress
+
+**Question**: Do you have existing tool preferences or constraints?
+
+### 4. Accessibility Testing Strategy
+
+#### Automated A11y Testing
+**Coverage Areas**:
+- ARIA labels and roles
+- Keyboard navigation
+- Color contrast
+- Screen reader compatibility
+
+**Tools Integration**:
+- jest-axe for unit tests
+- Playwright/Cypress a11y plugins
+- CI/CD accessibility audits
+
+**Question**: What's your WCAG compliance target? (AA or AAA)
+
+### 5. Performance Testing for Frontend
+
+#### Frontend Performance Metrics
+**Key Metrics**:
+- First Contentful Paint (FCP): < ___ ms
+- Largest Contentful Paint (LCP): < ___ ms
+- Time to Interactive (TTI): < ___ ms
+- Bundle size limits: < ___ KB
+
+**Question**: Do you have specific performance budgets?
+
+#### Performance Test Types
+- Bundle size analysis
+- Runtime performance profiling
+- Memory leak detection
+- Animation performance
+
+### 6. Mobile and Cross-Browser Testing
+
+#### Device Coverage Strategy
+**Priority Matrix**:
+| Platform | Browsers | Priority |
+|----------|----------|----------|
+| Desktop | Chrome, Firefox, Safari | High |
+| Mobile | iOS Safari, Chrome | High |
+| Tablet | iPad Safari | Medium |
+| Legacy | IE11 | ??? |
+
+**Question**: What's your required browser/device support matrix?
+
+### 7. Test Data and Mocking Strategy
+
+#### Frontend Mocking Approach
+**Options**:
+1. **MSW (Mock Service Worker)**: Intercept at network level
+2. **Component Mocks**: Mock at component boundaries
+3. **Fixture Data**: Static test data files
+4. **Storybook Stories**: Component states as test cases
+
+**Question**: Should we mock at the network level or component level?
+
+### 8. Continuous Testing Workflow
+
+#### Development Workflow Integration
+```yaml
+# Local Development
+- Component tests on save (watch mode)
+- Linting and type checking
+- Storybook for visual development
+
+# Pre-commit
+- Affected component tests
+- Snapshot tests
+- Linting
+
+# CI/CD Pipeline
+- Full test suite
+- Visual regression checks
+- Performance budgets
+- Accessibility audit
+- Cross-browser tests
+```
+
+**Question**: What's your preferred local development testing experience?
+
+### 9. Frontend Testing Best Practices
+
+#### Test Writing Guidelines
+**Component Tests**:
+- Test user behavior, not implementation
+- Use data-testid for stable selectors
+- Avoid testing framework internals
+- Mock external dependencies
+
+**Question**: Should we establish team-specific testing conventions?
+
+#### Snapshot Testing Strategy
+**When to Use**:
+- Component structure stability
+- Error message consistency
+- Generated markup validation
+
+**When to Avoid**:
+- Frequently changing components
+- Dynamic content
+- Large component trees
+
+**Question**: What's your stance on snapshot testing?
+
+### 10. Effort Estimation
+
+#### Frontend Test Development
+- Component unit tests: [X days]
+- Integration tests: [Y days]
+- E2E test scenarios: [Z days]
+- Visual regression setup: [A days]
+- Total: [Sum days]
+
+**Question**: How does this align with your sprint planning?
+
+### 11. Test Maintenance Strategy
+
+#### Reducing Test Brittleness
+**Strategies**:
+- Use semantic queries (by role, label)
+- Implement Page Object patterns
+- Centralize test utilities
+- Regular test refactoring
+
+**Question**: Who will own test maintenance - developers or QA team?
+
+## Generated Frontend Test Plan
+
+Based on our discussion, I'll create your customized frontend test strategy.
+
+### Saving Test Configuration
+<execute>
+Store frontend test decisions:
+mcp__lerian-memory__memory_create with operation="store_decision", decision="Frontend test strategy: [framework] with [tools]", rationale="[Coverage goals and tradeoffs]"
+</execute>
+
+### Test Artifact Locations
+- Test strategy: `docs/frontend-development/test-strategy-[project].md`
+- Test utilities: `src/test-utils/`
+- E2E scenarios: `e2e/scenarios/`
+- Visual regression baselines: `visual-tests/baselines/`
+
+### Implementation Checklist
+1. [ ] Set up testing framework and utilities
+2. [ ] Create component test templates
+3. [ ] Establish visual regression baselines
+4. [ ] Write critical E2E scenarios
+5. [ ] Configure CI/CD test pipeline
+6. [ ] Document testing guidelines
+
+**Final Question**: Would you like me to generate example tests for your key components or testing utilities setup?
+
+---
+
+*Remember: Frontend testing is about confidence in user experience. Focus on testing what users see and do, not how it's implemented.*

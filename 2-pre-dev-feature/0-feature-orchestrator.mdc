@@ -7,7 +7,7 @@ alwaysApply: false
 
 ## Goal
 
-To guide an AI assistant through a streamlined feature development process that transforms feature requests into implementable tasks quickly. This orchestrator manages a **3-phase feature workflow** optimized for speed while maintaining quality and integration with existing systems.
+To guide an AI assistant through a streamlined feature development process that transforms feature requests into implementable tasks quickly. This orchestrator manages a **4-phase feature workflow** optimized for speed while maintaining quality and integration with existing systems.
 
 ## 🧠 Enhanced Reasoning Integration
 
@@ -27,7 +27,7 @@ To guide an AI assistant through a streamlined feature development process that 
 
 ## Process Overview
 
-This orchestrator manages a **3-phase feature workflow** with focused user feedback:
+This orchestrator manages a **4-phase feature workflow** with focused user feedback:
 
 ### Phase 1: Feature Brief
 **Objective**: Capture feature requirements and user stories quickly
@@ -43,6 +43,11 @@ This orchestrator manages a **3-phase feature workflow** with focused user feedb
 **Objective**: Break down into atomic, implementable tasks with git workflow
 **User Interaction**: Optional - review task breakdown
 **Output**: `docs/pre-development/tasks/feature-[feature-name]/`
+
+### Phase 4: Test Strategy
+**Objective**: Define focused test coverage for the feature
+**User Interaction**: Required - test priorities and approach
+**Output**: `docs/pre-development/features/test-plan-[feature-name].md`
 
 ## Execution Phases
 
@@ -126,6 +131,33 @@ claude 2-pre-dev-feature/3-implementation-plan.mdc
 
 **Output**: `docs/pre-development/tasks/feature-[feature-name]/`
 
+### 🧪 Phase 4: Test Strategy
+
+**Create focused test strategy for the feature:**
+
+```bash
+# Generate test strategy based on feature requirements
+claude 2-pre-dev-feature/4-test-strategy.mdc
+
+# Process flow:
+# 1. AI analyzes feature brief, technical approach, and tasks
+# 2. AI identifies feature-specific testing needs
+# 3. AI proposes targeted test coverage (WAIT FOR USER INPUT)
+# 4. User provides test priorities and constraints
+# 5. AI generates focused test strategy
+# 6. User reviews and approves test approach (WAIT FOR APPROVAL)
+# 7. AI finalizes test plan with scenarios
+```
+
+**Key User Interactions:**
+- Feature-specific test coverage targets
+- Integration testing priorities
+- Performance impact thresholds
+- Security considerations
+- Review and approval of test strategy
+
+**Output**: `docs/pre-development/features/test-plan-[feature-name].md`
+
 ## Key Differences from Product Workflow
 
 ### **Assumptions Made**
@@ -145,7 +177,7 @@ claude 2-pre-dev-feature/3-implementation-plan.mdc
 - **No PRD**: Feature brief replaces full product requirements
 - **No TRD**: Technical approach focuses on implementation strategy
 - **No Validation**: Assumes existing architecture validation
-- **Faster Feedback**: 3 phases vs 5 phases
+- **Faster Feedback**: 4 phases vs 6 phases
 
 ## Quick Execution Commands
 
@@ -162,6 +194,10 @@ claude 2-pre-dev-feature/2-technical-approach.mdc
 # Phase 3: Implementation Plan with task breakdown
 claude 2-pre-dev-feature/3-implementation-plan.mdc
 # [User optionally reviews task breakdown]
+
+# Phase 4: Test Strategy for the feature
+claude 2-pre-dev-feature/4-test-strategy.mdc
+# [User provides test priorities and approves strategy]
 ```
 
 ### Express Workflow (Minimal user interaction)
@@ -182,6 +218,8 @@ All feature development outputs are systematically organized:
 docs/pre-development/
 ├── feature-brief-[feature-name].md       # Feature requirements and user stories
 ├── tech-approach-[feature-name].md       # Implementation strategy
+├── features/
+│   └── test-plan-[feature-name].md      # Feature-specific test strategy
 └── tasks/
     └── feature-[feature-name]/           # Implementation tasks
         ├── overview.md                   # Feature implementation overview
@@ -195,6 +233,7 @@ Store feature decisions and patterns with appropriate tags:
 - `["feature", "technical", "implementation", "feature-name"]` for technical choices
 - `["feature", "tasks", "breakdown", "feature-name"]` for task organization
 - `["feature", "integration", "existing-system"]` for integration patterns
+- `["feature", "testing", "strategy", "feature-name"]` for test approach
 
 ## Success Criteria
 
@@ -202,6 +241,7 @@ Store feature decisions and patterns with appropriate tags:
 - **Phase 1**: Feature brief approved with clear requirements and acceptance criteria
 - **Phase 2**: Technical approach approved with implementation strategy defined
 - **Phase 3**: Implementation plan generated with atomic tasks and git workflow
+- **Phase 4**: Test strategy approved with focused coverage targets
 
 ### Overall Success Metrics
 - Features integrated smoothly with existing system
