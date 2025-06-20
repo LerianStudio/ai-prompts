@@ -57,10 +57,11 @@ To guide an AI assistant in analyzing feature brief and technical approach to ge
 
 ### Definition of "Atomic Feature Task"
 Each task MUST be:
-- **Single Session:** Completable in 2-4 hours maximum
-- **Specific:** Clear implementation requirements within existing system
-- **Testable:** Can be validated independently
-- **Integrable:** Fits cleanly with existing codebase
+- **Senior Engineer Scope:** Designed for very senior, highly skilled engineers
+- **Full Day Session:** Approximately 6 hours of focused work
+- **Comprehensive:** Includes implementation, tests, integration, and documentation
+- **Self-Contained:** Complete feature slice with all necessary components
+- **Production-Ready:** Ready for deployment after completion
 - **Git-Ready:** Includes complete git workflow
 
 ### Task Validation Checklist
@@ -77,11 +78,11 @@ Each generated feature task should include these sections:
 
 ### 1. Feature Task Overview
 - **Task ID:** FT-[feature-id]-[number] (e.g., FT-001-001, FT-001-002)
-- **Task Name:** Clear, action-oriented name (e.g., "Add Priority Field to Task Model")
+- **Task Name:** Clear, comprehensive name (e.g., "Implement Complete Task Priority Management System")
 - **Parent Feature:** Reference to feature (e.g., "Feature: Task Priority Management")
-- **Estimated Duration:** 2-4 hours maximum
-- **Implementation Type:** Code, Configuration, Testing, Integration
-- **Integration Points:** Existing components this task touches
+- **Estimated Duration:** ~6 hours (full day for senior engineer)
+- **Implementation Type:** Full Stack (combines Backend, Frontend, Tests, Documentation)
+- **Integration Points:** All existing components this comprehensive task touches
 
 ### 🔀 Git Workflow (REQUIRED)
 **BEFORE STARTING:**
@@ -610,15 +611,15 @@ graph TD
 ## Example Feature Task
 
 ```markdown
-## FT-001-001: Add Priority Field to Task Model
+## FT-001-001: Implement Complete Task Priority Management System
 
 ### 1. Feature Task Overview
 - **Task ID:** FT-001-001
-- **Task Name:** Add Priority Field to Task Model
+- **Task Name:** Implement Complete Task Priority Management System
 - **Parent Feature:** Task Priority Management
-- **Estimated Duration:** 3 hours
-- **Implementation Type:** Code (Backend Model Extension)
-- **Integration Points:** Task model, Task API, Task database schema
+- **Estimated Duration:** ~6 hours (full day for senior engineer)
+- **Implementation Type:** Full Stack (Model, API, UI, Tests, Migration)
+- **Integration Points:** Task model, Task API, Task UI components, Database schema, Test suites
 
 ### 🔀 Git Workflow (REQUIRED)
 **BEFORE STARTING:**
@@ -629,43 +630,94 @@ git checkout -b feature/FT-001-001-priority-field
 **AFTER COMPLETING:**
 ```bash
 git add .
-git commit -m "feat(FT-001-001): add priority field to task model
+git commit -m "feat(FT-001-001): implement complete task priority management system
 
 Implemented:
-- Added priority enum to task model
-- Updated database schema with migration
-- Extended task API to handle priority
+- Added priority enum to task model with full validation
+- Created database migration for priority field
+- Extended task API endpoints for priority operations
+- Added priority filter/sort to task list UI
+- Implemented priority badge component
+- Created comprehensive test suite
 
 Integration:
 - Maintains backward compatibility with existing tasks
 - Default priority set to 'medium' for existing tasks
+- UI gracefully handles tasks without priority
+- API supports both old and new task formats
+
+Tests:
+- Unit tests for model validation
+- API integration tests for all endpoints
+- UI component tests with RTL
+- E2E tests for priority workflows
 
 Notes:
 - Used existing validation patterns
-- Followed established model structure"
+- Followed established architecture
+- Performance optimized for large task lists"
 
-git push -u origin feature/FT-001-001-priority-field
+git push -u origin feature/FT-001-001-priority-management
 ```
 
 ### 2. Integration Specification
 - **Existing Components:** 
-  - `models/task.js` - Extend with priority field
-  - `routes/tasks.js` - Update API endpoints
-  - `controllers/taskController.js` - Add priority handling
+  - `models/task.js` - Extend with priority field and validation
+  - `routes/tasks.js` - Update all CRUD endpoints for priority
+  - `controllers/taskController.js` - Add priority filtering, sorting, validation
+  - `components/TaskList.jsx` - Add priority display and filtering
+  - `components/TaskForm.jsx` - Add priority selection
+  - `services/taskService.js` - Update service layer for priority logic
 - **New Components:** 
   - `migrations/add_task_priority.sql` - Database migration
-- **File Size Guidelines:** All modified files stay under 300 lines
-- **API Integration:** Extend existing task endpoints with priority parameter
-- **Data Integration:** Add priority column to tasks table with default value
+  - `components/PriorityBadge.jsx` - Reusable priority display component
+  - `utils/priorityHelpers.js` - Priority utility functions
+  - `tests/priority.test.js` - Comprehensive test suite
+- **File Size Guidelines:** All files stay under 300 lines through modular design
+- **API Integration:** 
+  - GET /tasks - Add priority filter and sort parameters
+  - POST /tasks - Accept priority in request body
+  - PUT /tasks/:id - Allow priority updates
+  - GET /tasks/priorities - New endpoint for priority options
+- **Data Integration:** 
+  - Add priority column with migration
+  - Update all queries to include priority
+  - Add indexes for priority-based queries
+- **UI Integration:**
+  - Task list shows color-coded priority badges
+  - Filter dropdown includes priority options
+  - Sort options include priority ordering
 
 ### 3. Implementation Details
 **Step-by-Step Approach:**
-1. Create database migration for priority field
-2. Update Task model with priority enum
-3. Modify task controller to handle priority in CRUD operations
-4. Update API routes to accept priority parameter
-5. Add validation for priority values
-6. Update existing tests to include priority scenarios
+1. **Backend Implementation (2 hours):**
+   - Create and run database migration for priority field
+   - Update Task model with priority enum and validation
+   - Extend TaskService with priority business logic
+   - Update TaskController for all CRUD operations
+   - Modify API routes with new parameters
+   - Add comprehensive backend tests
+
+2. **Frontend Implementation (2 hours):**
+   - Create PriorityBadge component with styling
+   - Update TaskList to display and filter by priority
+   - Enhance TaskForm with priority selector
+   - Add priority to task service layer
+   - Implement sorting by priority
+   - Add frontend component tests
+
+3. **Integration & Testing (1.5 hours):**
+   - Write integration tests for API endpoints
+   - Create E2E tests for priority workflows
+   - Test migration rollback scenarios
+   - Verify backward compatibility
+   - Performance test with large datasets
+
+4. **Documentation & Polish (0.5 hours):**
+   - Update API documentation
+   - Add JSDoc comments
+   - Update README with priority feature
+   - Create migration guide for existing data
 
 **Code Examples:**
 ```javascript
@@ -695,45 +747,82 @@ CHECK (priority IN ('low', 'medium', 'high'));
 
 ### 4. Acceptance Criteria
 - **Functional Criteria:**
-  - Task model includes priority field with enum validation
-  - API accepts priority in create/update operations
-  - Default priority is set for existing tasks
-  - Priority is returned in all task responses
+  - Complete priority system works end-to-end (model → API → UI)
+  - Users can create tasks with priority
+  - Users can update task priority
+  - Users can filter tasks by priority
+  - Users can sort tasks by priority
+  - Default priority applied to existing tasks
   
 - **Integration Criteria:**
-  - Existing task functionality remains unchanged
+  - All existing functionality remains intact
+  - Backward compatibility maintained
+  - No breaking changes to API contracts
+  - UI gracefully handles legacy data
   - All existing tests continue to pass
-  - New priority field is properly validated
   
 - **Performance Criteria:**
-  - Database queries perform within existing benchmarks
-  - API response times remain under 200ms
+  - Task list loads in <200ms with 1000+ tasks
+  - Priority filtering/sorting adds <50ms overhead
+  - Database queries use proper indexes
+  - No memory leaks in UI components
+  
+- **Quality Criteria:**
+  - >90% test coverage for new code
+  - All quality checks pass (lint, type, security)
+  - Code follows established patterns
+  - Comprehensive error handling
 
 ### 5. Testing Requirements
-- **Unit Tests:**
-  - Task model validates priority values correctly
-  - Task model rejects invalid priority values
-  - Task controller handles priority in CRUD operations
-  - Default priority is applied correctly
+- **Backend Unit Tests:**
+  - Task model validation for all priority values
+  - Service layer business logic for priority
+  - Controller handling of priority operations
+  - Migration rollback scenarios
+  - Error handling for invalid priorities
+  
+- **Frontend Unit Tests:**
+  - PriorityBadge component rendering
+  - TaskList filtering by priority
+  - TaskForm priority selection
+  - Priority sorting logic
+  - Accessibility of priority features
   
 - **Integration Tests:**
-  - Task API accepts priority in requests
-  - Task API returns priority in responses
-  - Database migration applies successfully
+  - Full API CRUD operations with priority
+  - Database migration and rollback
+  - Concurrent priority updates
+  - Large dataset performance
+  - Legacy data compatibility
   
-- **Manual Testing:**
-  - Create task with each priority level
-  - Update task priority
-  - Verify existing tasks have default priority
+- **E2E Tests:**
+  - Complete user workflow for priority management
+  - Filter and sort combinations
+  - Priority updates reflect immediately
+  - Keyboard navigation for priority features
+  - Mobile responsiveness of priority UI
+  
+- **Performance Tests:**
+  - Load test with 10,000+ tasks
+  - Concurrent user operations
+  - Memory usage profiling
+  - Query optimization validation
 
 ### 6. Definition of Done
-- [ ] Task model includes priority field with validation
-- [ ] Database migration creates priority column
-- [ ] API endpoints handle priority parameter
-- [ ] All tests pass including new priority tests
-- [ ] Existing functionality remains unaffected
-- [ ] Code follows existing style and patterns
-- [ ] Git workflow completed with detailed commit
+- [ ] Complete backend implementation with model, service, controller
+- [ ] Database migration applied and tested
+- [ ] All API endpoints support priority operations
+- [ ] Frontend components implemented and styled
+- [ ] Filter and sort functionality working
+- [ ] All unit tests passing (>90% coverage)
+- [ ] Integration tests validating full stack
+- [ ] E2E tests confirming user workflows
+- [ ] Performance benchmarks met
+- [ ] Accessibility standards met (WCAG 2.1 AA)
+- [ ] API documentation updated
+- [ ] Code passes all quality checks
+- [ ] Git workflow completed with comprehensive commit
+- [ ] PR created and ready for review
 - [ ] 🧩 Memory actions completed
 
 ### 7. Dependencies and Integration

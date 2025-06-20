@@ -43,8 +43,8 @@ To guide an AI assistant in analyzing tasks and breaking them down into detailed
 3. **Analyze Task Structure:** Extract and understand each task's scope, dependencies, and deliverables
    - 🔄 **Sequential Thinking:** Map task boundaries to implementation components and dependencies
 
-4. **Apply Granular Breakdown:** Ensure each sub-task is specific and implementable
-   - 🔄 **Sequential Thinking:** Validate each sub-task is atomic and can be completed in 2-4 hours
+4. **Apply Senior Engineer Breakdown:** Ensure each sub-task is comprehensive yet focused
+   - 🔄 **Sequential Thinking:** Validate each sub-task represents a full day's work (~6 hours) for a senior engineer
 
 5. **Generate Sub-Tasks:** Create detailed sub-task specifications using the structure below
    - 🧩 **Memory Action:** `memory_store_decision` for sub-task breakdown rationale and implementation approach
@@ -77,11 +77,11 @@ To guide an AI assistant in analyzing tasks and breaking them down into detailed
 
 ### Definition of "Implementable Sub-Task"
 Each sub-task MUST be:
-- **Single Session:** Can be completed in 2-4 hours maximum
-- **Specific:** Has clear, unambiguous requirements
-- **Testable:** Can be validated independently
-- **Incremental:** Builds toward task completion
-- **Technical:** Includes specific implementation details
+- **Senior Engineer Scope:** Designed for very senior, highly skilled engineers who can work efficiently
+- **Full Day Session:** Approximately 6 hours of focused work (not 2-4 hours)
+- **Comprehensive:** Includes multiple related components, tests, and integration
+- **Self-Contained:** Complete feature slice with all necessary parts
+- **Production-Ready:** Includes implementation, tests, documentation, and quality checks
 
 ### Sub-Task Validation Checklist
 Before finalizing each sub-task, ensure:
@@ -97,10 +97,10 @@ Each generated sub-task should include these sections (strictly follow this stru
 
 ### 1. Sub-Task Overview
 - **Sub-Task ID:** ST-T-[task-id]-[number] (e.g., ST-T-001-001, ST-T-001-002)
-- **Sub-Task Name:** Clear, action-oriented name (e.g., "Create Task Entity with Validation")
+- **Sub-Task Name:** Clear, comprehensive name (e.g., "Implement Complete Task Management Domain Layer")
 - **Parent Task:** Reference to task (e.g., "T-001: CLI Foundation with Local Storage")
-- **Estimated Duration:** 2-4 hours maximum
-- **Implementation Type:** Code, Configuration, Testing, Documentation, Research
+- **Estimated Duration:** ~6 hours (full day for senior engineer)
+- **Implementation Type:** Full Stack (combines Code, Tests, Integration, Documentation)
 
 ### 🔀 Git Workflow (REQUIRED)
 **BEFORE STARTING:**
@@ -590,22 +590,21 @@ Since sub-tasks are implementation details, user review is optional but availabl
 
 ### Example Interaction Flow
 ```
-AI: "I've broken down the main tasks into detailed sub-tasks:
+AI: "I've broken down the main tasks into comprehensive sub-tasks for senior engineers:
 
-**MT-001: Foundation Phase** → 8 sub-tasks
-- ST-001: Project setup and configuration (2h)
-- ST-002: Database schema creation (3h)
-- ST-003: Basic authentication implementation (4h)
-- ... (5 more sub-tasks)
+**MT-001: Foundation Phase** → 3 sub-tasks
+- ST-001: Complete Task Domain Layer with Repository Pattern (6h)
+- ST-002: CLI Command Framework with Full Test Coverage (6h)
+- ST-003: Local Storage Implementation with Migration Support (6h)
 
-**MT-002: Core Features** → 12 sub-tasks
-**MT-003: Enhancements** → 6 sub-tasks
+**MT-002: Core Features** → 4 sub-tasks
+**MT-003: Enhancements** → 2 sub-tasks
 
-Total: 26 implementation sub-tasks
+Total: 9 implementation sub-tasks (optimized for senior engineers)
 
 Would you like to:
 1. Review the detailed breakdown
-2. Adjust the granularity (more/fewer sub-tasks)
+2. Adjust the scope (more comprehensive or more granular)
 3. Proceed with saving these sub-tasks
 
 What's your preference?"
@@ -659,90 +658,143 @@ AI: "Great! I'll save all sub-tasks in the organized structure..."
 ## Example Sub-Task Format
 
 ```markdown
-## ST-T-001-001: Create Task Entity with Validation
+## ST-T-001-001: Implement Complete Task Management Domain Layer
 
 ### 1. Sub-Task Overview
 - **Sub-Task ID:** ST-T-001-001
-- **Sub-Task Name:** Create Task Entity with Validation
+- **Sub-Task Name:** Implement Complete Task Management Domain Layer
 - **Parent Task:** T-001: CLI Foundation with Local Storage
-- **Estimated Duration:** 3 hours
-- **Implementation Type:** Code
+- **Estimated Duration:** ~6 hours (full day for senior engineer)
+- **Implementation Type:** Full Stack (Domain Models, Repository, Service Layer, Tests)
 
 ### 2. Deliverable Specification
-- **Primary Output:** Task entity struct with validation methods
-- **Code Location:** `cli/internal/domain/entities/task.go`
-- **Technical Requirements:** Go structs with validation tags, error handling
-- **Interface Definition:** Task struct with Create, Update, Validate methods
+- **Primary Output:** Complete domain layer including entities, repositories, services, and full test coverage
+- **Code Locations:** 
+  - `cli/internal/domain/entities/task.go` - Task entity with validation
+  - `cli/internal/domain/repositories/task_repository.go` - Repository interface
+  - `cli/internal/domain/services/task_service.go` - Business logic service
+  - `cli/internal/infrastructure/storage/local_task_repository.go` - Local storage implementation
+  - All corresponding `*_test.go` files with >90% coverage
+- **Technical Requirements:** Repository pattern, service layer, comprehensive validation, error handling
+- **Interface Definitions:** Task entity, TaskRepository interface, TaskService with full CRUD operations
 
 ### 3. Implementation Details
 - **Step-by-Step Approach:**
-  1. Create `cli/internal/domain/entities/` directory
-  2. Define Task struct with all required fields
-  3. Add validation tags using go-playground/validator
-  4. Implement validation methods
-  5. Add custom validation for business rules
-  6. Create constructor function with validation
-  7. Add error handling for validation failures
+  1. Create complete domain structure (`entities/`, `repositories/`, `services/`, `infrastructure/storage/`)
+  2. Implement Task entity with full validation, business rules, and state management
+  3. Define TaskRepository interface with all CRUD operations and query methods
+  4. Implement TaskService with business logic, validation, and transaction handling
+  5. Create LocalTaskRepository with file-based storage, atomic operations, and migration support
+  6. Write comprehensive unit tests for all components (>90% coverage)
+  7. Add integration tests for the complete domain layer
+  8. Create benchmark tests for performance validation
 
 - **Code Examples:**
   ```go
+  // Task entity with full functionality
   type Task struct {
       ID          string    `json:"id" validate:"required,uuid"`
       Content     string    `json:"content" validate:"required,min=1,max=1000"`
       Status      Status    `json:"status" validate:"required,oneof=pending in_progress completed cancelled"`
       Priority    Priority  `json:"priority" validate:"required,oneof=low medium high"`
       Repository  string    `json:"repository" validate:"required"`
+      Tags        []string  `json:"tags"`
+      Metadata    map[string]interface{} `json:"metadata"`
       CreatedAt   time.Time `json:"created_at"`
       UpdatedAt   time.Time `json:"updated_at"`
+      CompletedAt *time.Time `json:"completed_at,omitempty"`
   }
   
-  func NewTask(content, repository string) (*Task, error) {
-      // Implementation with validation
+  // Repository interface with comprehensive operations
+  type TaskRepository interface {
+      Create(ctx context.Context, task *Task) error
+      GetByID(ctx context.Context, id string) (*Task, error)
+      List(ctx context.Context, filter TaskFilter) ([]*Task, error)
+      Update(ctx context.Context, task *Task) error
+      Delete(ctx context.Context, id string) error
+      Count(ctx context.Context, filter TaskFilter) (int, error)
+      BeginTransaction(ctx context.Context) (Transaction, error)
+  }
+  
+  // Service layer with business logic
+  type TaskService struct {
+      repo TaskRepository
+      validator *validator.Validate
+      eventBus EventBus
   }
   ```
 
-- **Configuration Changes:** None required
+- **Configuration Changes:** Setup for local storage paths, file permissions, migration settings
 - **Dependencies:** 
   - `github.com/go-playground/validator/v10`
   - `github.com/google/uuid`
+  - `github.com/stretchr/testify`
+  - `github.com/spf13/afero` (for file system abstraction in tests)
 
 ### 4. Acceptance Criteria
 - **Functional Criteria:**
-  - Task struct contains all required fields from PRD
-  - Validation prevents invalid tasks from being created
-  - Constructor function enforces business rules
+  - Complete domain layer implements all PRD requirements
+  - Task lifecycle (create, update, status transitions) fully supported
+  - Repository pattern provides clean data access abstraction
+  - Service layer enforces all business rules and validations
+  - Local storage provides persistent, atomic data operations
   
 - **Technical Criteria:**
-  - Code follows Go conventions and project style
-  - All public methods have documentation
-  - Error messages are user-friendly
+  - Code follows Go conventions, SOLID principles, and clean architecture
+  - All public APIs have comprehensive documentation
+  - Error handling provides context and recovery options
+  - Performance meets requirements (<10ms for single operations)
+  - Memory usage is optimized (no leaks, efficient data structures)
   
 - **Integration Criteria:**
-  - Can be imported by other domain services
-  - JSON serialization works correctly
+  - Domain layer can be used by CLI, API, or other interfaces
+  - Repository interface allows easy swapping of storage implementations
+  - Service layer provides transaction support
+  - Event system allows for future extensions
   
 - **Test Criteria:**
-  - All validation scenarios covered by tests
-  - Constructor edge cases tested
+  - Unit test coverage >90% for all components
+  - Integration tests verify complete workflows
+  - Benchmark tests validate performance requirements
+  - Test fixtures cover edge cases and error scenarios
 
 ### 5. Testing Requirements
-- **Unit Tests:**
-  - Valid task creation succeeds
-  - Invalid content (empty, too long) fails validation
-  - Invalid status/priority values fail validation
-  - Invalid repository format fails validation
-  - Constructor generates correct timestamps
+- **Unit Tests (per component):**
+  - Task Entity: validation rules, state transitions, business logic
+  - TaskRepository Interface: mock implementations for testing
+  - TaskService: business logic, validation, error handling
+  - LocalTaskRepository: CRUD operations, transactions, migrations
+  - Coverage requirement: >90% per file
 
-- **Integration Tests:** None required (domain entity)
-- **Manual Testing:** Verify JSON serialization in CLI output
-- **Test Data:** Create test fixtures for valid/invalid task data
+- **Integration Tests:**
+  - Complete task lifecycle (create → update → complete → delete)
+  - Concurrent operations handling
+  - Transaction rollback scenarios
+  - Data persistence and recovery
+  - Migration from older versions
+
+- **Performance Tests:**
+  - Benchmark CRUD operations
+  - Stress test with 10,000+ tasks
+  - Concurrent access patterns
+  - Memory usage profiling
+
+- **Test Data:**
+  - Fixtures for all task states and priorities
+  - Edge cases (max length content, special characters)
+  - Invalid data for error testing
+  - Large datasets for performance testing
 
 ### 6. Definition of Done
-- **Code Complete:** Task entity fully implemented with validation
-- **Tests Passing:** All unit tests written and passing (≥90% coverage)
-- **Documentation Updated:** Godoc comments on all public methods
-- **Integration Verified:** Can be used by TaskService
-- **Review Approved:** Code review completed by team lead
+- **Code Complete:** Complete domain layer implemented (entities, repositories, services, storage)
+- **Tests Passing:** All unit, integration, and benchmark tests passing (>90% coverage)
+- **Documentation Updated:** Comprehensive godoc for all public APIs, README for domain layer
+- **Integration Verified:** Domain layer successfully integrated with CLI or test harness
+- **Performance Validated:** All operations meet performance requirements
+- **Quality Checks Pass:** All Go quality tools pass (fmt, vet, lint, gosec, etc.)
+- **Git Workflow Complete:** Feature branch with clean commit history, PR created
+- **Review Approved:** Code review completed with all feedback addressed
+- **Memory Actions Complete:** Implementation decisions and patterns stored
 
 ### 7. Dependencies and Blockers
 - **Required Sub-Tasks:** None (foundational task)
@@ -825,13 +877,11 @@ Create `docs/pre-development/tasks/task-index.md` to maintain an overview of all
 ## Sub-Tasks by Task
 
 ### T-001: CLI Foundation
-- [x] [ST-T-001-001](mdc:T-001/ST-T-001-001.md): Task Entity (3h) - ✅ Complete
-- [ ] [ST-T-001-002](mdc:T-001/ST-T-001-002.md): Task Service (4h) - 🔄 In Progress
-- [ ] [ST-T-001-003](mdc:T-001/ST-T-001-003.md): Local Storage (3h) - ⏳ Pending
-- [ ] [ST-T-001-004](mdc:T-001/ST-T-001-004.md): CLI Commands (4h) - ⏳ Pending
-- [ ] [ST-T-001-005](mdc:T-001/ST-T-001-005.md): Integration Tests (2h) - ⏳ Pending
+- [x] [ST-T-001-001](mdc:T-001/ST-T-001-001.md): Complete Task Domain Layer (6h) - ✅ Complete
+- [ ] [ST-T-001-002](mdc:T-001/ST-T-001-002.md): CLI Command Framework with Tests (6h) - 🔄 In Progress
+- [ ] [ST-T-001-003](mdc:T-001/ST-T-001-003.md): Local Storage & Migration System (6h) - ⏳ Pending
 
-**Progress:** 1/5 Complete (20%)
+**Progress:** 1/3 Complete (33%)
 ```
 
 **Status Icons:**
@@ -856,13 +906,14 @@ graph TD
 Provide recommended implementation order:
 ```
 Week 1:
-- ST-T-001-001: Task Entity (Day 1)
-- ST-T-001-002: Task Service (Day 2)
-- ST-T-001-003: Local Storage (Day 3)
+- ST-T-001-001: Complete Task Domain Layer (Day 1)
+- ST-T-001-002: CLI Command Framework with Tests (Day 2)
+- ST-T-001-003: Local Storage & Migration System (Day 3)
 
 Week 2:
-- ST-T-001-004: CLI Commands (Day 1-2)
-- ST-T-001-005: Integration Tests (Day 3)
+- ST-T-002-001: API Layer with Authentication (Day 1)
+- ST-T-002-002: Advanced Features & Integration (Day 2)
+- ST-T-002-003: Performance Optimization & Polish (Day 3)
 ```
 
 ## Integration with Development Chain
@@ -888,7 +939,7 @@ Before finalizing sub-tasks:
 - [ ] **Implementation Clarity:** Each sub-task is unambiguous
 - [ ] **Test Strategy:** Testing approach is comprehensive
 - [ ] **Integration Points:** Clear how sub-tasks connect
-- [ ] **Time Estimates:** Realistic 2-4 hour estimates
+- [ ] **Time Estimates:** Realistic ~6 hour estimates for senior engineers
 - [ ] **Definition of Done:** Clear completion criteria
 - [ ] **Quality Standards:** Code quality requirements defined
 
@@ -932,12 +983,12 @@ Before finalizing sub-tasks:
 ## Final Instructions
 
 1. **Analyze Thoroughly:** Read tasks document completely before starting
-2. **Think Granularly:** Break down into implementable chunks
-3. **Be Specific:** Provide concrete implementation guidance
+2. **Think Comprehensively:** Create full-stack sub-tasks that deliver complete functionality
+3. **Be Specific:** Provide concrete implementation guidance for senior engineers
 4. **Consider Dependencies:** Map sub-task relationships carefully
-5. **Include Testing:** Every code sub-task needs testing sub-tasks
-6. **Define Completion:** Clear definition of done for each sub-task
-7. **Estimate Realistically:** 2-4 hours per sub-task maximum
+5. **Include Everything:** Each sub-task includes implementation, tests, docs, and quality checks
+6. **Define Completion:** Clear definition of done for each comprehensive sub-task
+7. **Estimate for Seniors:** ~6 hours per sub-task for very senior, highly skilled engineers
 8. **Create Individual Files:** Save each task and sub-task in separate files
 9. **Update Index:** Maintain task-index.md with links to all task files
 10. **Next Step:** After completing sub-tasks, teams can begin sprint planning and implementation
