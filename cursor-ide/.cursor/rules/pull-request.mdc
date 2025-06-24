@@ -1,9 +1,4 @@
 ---
-description: 
-globs: 
-alwaysApply: false
----
----
 description: Guidelines for writing clear and consistent pull request
 globs: ["**/*"]
 ---

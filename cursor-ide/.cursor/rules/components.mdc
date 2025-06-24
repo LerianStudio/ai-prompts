@@ -1,9 +1,4 @@
 ---
-description: Standards for building reusable React components, including component structure, props management, and styling practices
-globs: 
-alwaysApply: true
----
----
 description: Component architecture guidelines, design system patterns, and UI component best practices
 globs: ["src/components/**/*", "src/app/**/*.tsx"]
 ---

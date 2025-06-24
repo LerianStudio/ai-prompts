@@ -1,9 +1,4 @@
 ---
-description: Best practices for managing application state, including Redux implementation, data flow patterns, and state organization
-globs: ["src/providers/**/*", "src/hooks/**/*", "src/**/*.tsx", "src/**/*.ts"]
-alwaysApply: true
----
----
 description: React Context and React Query state management patterns for global and server state
 globs: ["src/providers/**/*", "src/hooks/**/*", "src/client/**/*", "src/**/*.tsx"]
 ---

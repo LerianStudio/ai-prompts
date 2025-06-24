@@ -1,9 +1,4 @@
 ---
-description: 
-globs: 
-alwaysApply: false
----
----
 description: Documentation of the technology stack, dependencies, versions, and integration guidelines for the project
 globs: ["package.json", "*.config.*", "*.json", "src/**/*"]
 ---

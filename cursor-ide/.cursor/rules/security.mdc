@@ -1,9 +1,4 @@
 ---
-description: Security best practices and guidelines for protecting sensitive data, implementing authentication, and preventing common vulnerabilities
-globs: ["src/**/*.ts", "src/**/*.tsx", "src/app/api/**/*"]
-alwaysApply: true
----
----
 description: Security best practices for Next.js applications including authentication, authorization, and data protection
 globs: ["src/app/api/**/*", "src/lib/**/*", "src/**/*.ts", "src/**/*.tsx"]
 ---

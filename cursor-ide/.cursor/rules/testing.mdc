@@ -1,9 +1,4 @@
 ---
-description: 
-globs: 
-alwaysApply: true
----
----
 description: Comprehensive testing strategy and guidelines covering unit, integration, and end-to-end testing approaches
 globs: ["src/**/*.test.*", "src/**/*.spec.*", "tests/**/*", "**/*.test.*"]
 ---

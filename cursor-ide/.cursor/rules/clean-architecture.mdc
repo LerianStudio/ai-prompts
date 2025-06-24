@@ -1,9 +1,4 @@
 ---
-description: 
-globs: 
-alwaysApply: true
----
----
 description: Implementation guide for clean architecture principles, including layer separation, dependency rules, and code organization
 globs: ["src/core/**/*", "src/app/api/**/*"]
 ---

@@ -1,9 +1,4 @@
 ---
-description: Internationalization implementation guide using React Intl with translation management workflows
-globs: 
-alwaysApply: true
----
----
 description: Internationalization (i18n) guidelines for supporting multiple languages with proper message management
 globs: ["locales/**/*", "src/lib/intl/**/*", "src/**/*.tsx", "src/**/*.ts"]
 ---

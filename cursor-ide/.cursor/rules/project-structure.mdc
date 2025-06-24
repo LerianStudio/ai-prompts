@@ -1,9 +1,4 @@
 ---
-description: 
-globs: 
-alwaysApply: true
----
----
 description: Guidelines for organizing project files, directories, and modules following clean architecture principles
 globs: ["**/*"]
 ---

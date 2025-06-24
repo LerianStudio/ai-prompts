@@ -1,9 +1,4 @@
 ---
-description: 
-globs: 
-alwaysApply: true
----
----
 description: Accessibility standards and WCAG compliance guidelines for inclusive UI development
 globs: ["src/components/**/*", "src/app/**/*", "src/**/*.tsx", "src/**/*.jsx"]
 ---

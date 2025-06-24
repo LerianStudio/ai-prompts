@@ -1,9 +1,4 @@
 ---
-description: 
-globs: 
-alwaysApply: true
----
----
 description: Comprehensive observability using OpenTelemetry, structured logging, and performance monitoring
 globs: ["src/core/infrastructure/logger/**/*", "src/core/infrastructure/observability/**/*", "src/**/*.ts"]
 ---

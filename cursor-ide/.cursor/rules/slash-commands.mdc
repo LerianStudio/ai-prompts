@@ -1,9 +1,4 @@
 ---
-description: 
-globs: 
-alwaysApply: false
----
----
 description: Cursor slash commands for git operations and project utilities
 globs: ["**/*"]
 ---
