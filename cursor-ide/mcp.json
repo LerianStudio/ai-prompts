@@ -36,7 +36,16 @@
       "browser-tools": {
         "command": "npx",
         "args": ["-y", "npx @agentdeskai/browser-tools-mcp@latest"]
-      }
+      },
+      "Framelink Figma MCP": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "figma-developer-mcp",
+        "--figma-api-key=xxxxx",
+        "--stdio"
+      ]
+    }
     }
   }
   

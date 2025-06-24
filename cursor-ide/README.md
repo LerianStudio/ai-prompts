@@ -10,6 +10,7 @@ cursor-ide/
 │   ├── rules/          # Custom rules and coding standards
 │   └── mcp.json        # Model Context Protocol server configurations
 ├── .cursorignore       # Files/patterns to be ignored by Cursor
+├── user-rules.txt      # User rules to be manually added to Cursor settings
 └── README.md           # This documentation
 ```
 
@@ -23,6 +24,17 @@ This configuration is designed to:
 5. Provide unified MCP server configurations
 
 ## 🔧 Configuration Components
+
+### User Rules (user-rules.txt)
+
+The `user-rules.txt` file contains our guidelines that need to be **manually added to Cursor's user rules settings**. This file includes:
+
+- Front-end development standards (ReactJS, NextJS, TypeScript, etc.)
+- Code implementation guidelines
+- Architecture rules and best practices
+- Memory and feedback handling instructions
+
+**⚠️ Important**: These rules must be manually copied and pasted into Cursor's user rules settings as they cannot be automatically applied through configuration files.
 
 ### MCP Servers (.cursor/mcp.json)
 
@@ -70,10 +82,58 @@ The `.cursorignore` file specifies which files and directories should be ignored
 
 ## 🚀 Getting Started
 
-1. Install [Cursor IDE](https://cursor.sh/)
-2. Clone this repository
-3. Copy the `.cursor` and `.cursorignore` files to your project root
-4. Restart Cursor IDE to apply the configurations
+1. **Install [Cursor IDE](https://cursor.sh/)**
+
+2. **Clone this repository**
+   ```bash
+   git clone [repository-url]
+   ```
+
+3. **Set up User Rules (Manual Step)**
+
+4. **Apply Configuration Files**
+   - Copy the `.cursor` and `.cursorignore` files to your project root
+   - Restart Cursor IDE to apply the configurations
+
+5. **Verify Setup**
+   - Check that MCP servers are loaded (you should see them in Cursor's status)
+   - Test that user rules are active by asking Cursor to follow the coding guidelines
+
+## 📋 User Rules Setup Guide
+
+Since Cursor doesn't support automatic user rules import, you need to manually add our team rules:
+
+### Step-by-Step Instructions for Cursor v1+:
+
+**Method 1 (Menu Navigation):**
+1. **Open Cursor Settings**
+   - Go to `File` → `Preferences` → `Cursor Settings`
+   - Navigate to the **`Rules`** tab
+
+2. **Add User Rules**
+   - In the **`User Rules`** section
+   - Open the `user-rules.txt` file from this repository
+   - Copy each section and paste it into the User Rules text area
+   - Save the settings
+
+**Method 2 (Quick Command):**
+1. **Open User Rules Directly**
+   - Press `Ctrl + Shift + P` (or `Cmd + Shift + P` on Mac)
+   - Type and select **"View User Rules"**
+
+2. **Add User Rules**
+   - Open the `user-rules.txt` file from this repository
+   - Copy each section and paste it into the User Rules text area
+   - Save the settings
+
+### Verification:
+Ask Cursor to write a React component and verify it follows our guidelines (uses TypeScript, Tailwind, proper naming conventions, etc.).
+
+### Important Notes:
+- User Rules are **global** and apply to all your projects
+- These rules are stored locally on your machine
+- Team members need to set up these rules individually on their own Cursor installations
+- User Rules are always active and included in the AI context
 
 ## 🤝 Contributing
 
@@ -87,9 +147,10 @@ If you want to suggest changes to our Cursor configuration:
 ## 📝 Notes
 
 - These configurations are specifically tailored for our team's workflow
+- **User rules must be manually added** - they cannot be automatically imported
 - Regular updates will be made to improve and refine the rules
 - Feel free to suggest improvements or report issues
-- 
+- Make sure to pull the latest changes regularly and update your user rules accordingly
 
 ## MCP-Interactive Feedback
 
