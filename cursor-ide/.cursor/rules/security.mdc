@@ -5,8 +5,7 @@ alwaysApply: true
 ---
 ---
 description: Security best practices for Next.js applications including authentication, authorization, and data protection
-globs: ["src/app/api/**/*", "src/middleware.ts", "src/**/*.ts", "src/**/*.tsx"]
-alwaysApply: true
+globs: ["src/app/api/**/*", "src/lib/**/*", "src/**/*.ts", "src/**/*.tsx"]
 ---
 
 # Security Best Practices

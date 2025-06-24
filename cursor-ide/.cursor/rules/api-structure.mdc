@@ -1,12 +1,11 @@
 ---
 description: Guidelines for organizing and implementing Next.js API routes, including route structure, error handling, authentication, and testing standards
-globs: ["src/app/api/**/*", "src/**/*.ts"]
+globs: 
 alwaysApply: true
 ---
 ---
 description: Best practices for implementing Next.js API Routes and React Query integration
 globs: ["src/app/api/**/*", "src/client/**/*", "src/lib/fetcher/**/*"]
-alwaysApply: true
 ---
 
 # API Routes & Client Integration Guidelines

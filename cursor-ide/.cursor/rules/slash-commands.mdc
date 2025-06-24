@@ -1,12 +1,11 @@
 ---
-description: Documentation of available slash commands for quick actions and development workflow automation
-globs: ["**/*"]
+description: 
+globs: 
 alwaysApply: false
 ---
 ---
-description: Documentation of available slash commands for quick actions and development workflow automation
+description: Cursor slash commands for git operations and project utilities
 globs: ["**/*"]
-alwaysApply: false
 ---
 
 # Slash Commands

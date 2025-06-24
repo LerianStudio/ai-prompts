@@ -1,12 +1,11 @@
 ---
-description: Guidelines for writing clear and consistent git commit messages following conventional commits specification
-globs: ["**/*"]
+description: 
+globs: 
 alwaysApply: false
 ---
 ---
 description: Guidelines for writing clear and consistent git commit messages following conventional commits specification
 globs: ["**/*"]
-alwaysApply: true
 ---
 
 ## 🚨 ABSOLUTE MANDATORY COMMIT PROCESS

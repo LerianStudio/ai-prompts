@@ -1,12 +1,11 @@
 ---
-description: Documentation of the technology stack, dependencies, versions, and integration guidelines for the project
-globs: ["package.json", "src/**/*", "*.config.*"]
+description: 
+globs: 
 alwaysApply: false
 ---
 ---
 description: Documentation of the technology stack, dependencies, versions, and integration guidelines for the project
-globs: ["package.json", "*.config.*", "**/*.ts", "**/*.tsx"]
-alwaysApply: false
+globs: ["package.json", "*.config.*", "*.json", "src/**/*"]
 ---
 
 # Midaz Console Technology Stack

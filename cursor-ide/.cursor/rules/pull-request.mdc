@@ -1,12 +1,11 @@
 ---
-description: Standards for creating, reviewing, and managing pull requests, including templates and review processes
-globs: ["**/*"]
+description: 
+globs: 
 alwaysApply: false
 ---
 ---
-description: Standards for creating, reviewing, and managing pull requests, including templates and review processes
+description: Guidelines for writing clear and consistent pull request
 globs: ["**/*"]
-alwaysApply: false
 ---
 
 # Pull Request Guidelines

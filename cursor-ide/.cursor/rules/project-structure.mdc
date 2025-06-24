@@ -1,12 +1,11 @@
 ---
-description: Guidelines for organizing project files, directories, and modules following clean architecture principles
-globs: ["src/**/*", "**/*"]
-alwaysApply: false
+description: 
+globs: 
+alwaysApply: true
 ---
 ---
 description: Guidelines for organizing project files, directories, and modules following clean architecture principles
 globs: ["**/*"]
-alwaysApply: true
 ---
 
 # Project Structure Guide

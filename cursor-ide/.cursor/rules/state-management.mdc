@@ -5,8 +5,7 @@ alwaysApply: true
 ---
 ---
 description: React Context and React Query state management patterns for global and server state
-globs: ["src/providers/**/*", "src/client/**/*", "src/hooks/**/*"]
-alwaysApply: true
+globs: ["src/providers/**/*", "src/hooks/**/*", "src/client/**/*", "src/**/*.tsx"]
 ---
 
 # State Management Guidelines
