@@ -1,6 +1,11 @@
 ---
-description: Comprehensive coding standards and best practices for maintaining code quality, including formatting, naming conventions, and code organization principles - ALWAYS APPLY
-globs: 
+description: TypeScript, React, and Next.js coding standards including naming conventions, formatting rules, and best practices
+globs: ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.jsx"]
+alwaysApply: true
+---
+---
+description: TypeScript, React, Next.js coding standards, patterns, and best practices
+globs: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"]
 alwaysApply: true
 ---
 
@@ -52,8 +57,7 @@ alwaysApply: true
 - Use proper route grouping with `(group-name)` syntax
 - Implement loading, error, and not-found pages appropriately
 - Use parallel routes for complex layouts with independent navigation
-- Don't use server actions for form submissions and data mutations, use react-query instead to perform query and mutations
-- Implement intercepting routes for modal patterns
+- Use intercepting routes for modal patterns
 
 ### API Route Patterns
 ```typescript
@@ -146,6 +150,140 @@ export function ClientComponent({ prop1, prop2 }: ComponentProps) {
 }
 ```
 
+### Server vs. Client Component Patterns
+
+#### Server Component Patterns
+Server components are used for:
+- Rendering static or infrequently changing UI
+- SEO-critical content
+- Layout structures and page shells
+
+#### Client Component Patterns
+Client components are used for:
+- Interactive UI elements
+- Event listeners and user interactions
+- State management and effects
+- Browser APIs that are unavailable on the server
+- Custom hooks that use React state or effects
+
+```typescript
+// Client component pattern
+'use client';
+
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { createAccount } from '@/actions/accounts';
+
+interface AccountActionsProps {
+  accountId: string;
+}
+
+export function AccountActions({ accountId }: AccountActionsProps) {
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    try {
+      await deleteAccount(accountId);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  return (
+    <div className="flex gap-2">
+      <Button variant="outline" asChild>
+        <Link href={`/accounts/${accountId}/edit`}>Edit</Link>
+      </Button>
+      <Button
+        variant="destructive"
+        onClick={handleDelete}
+        disabled={isDeleting}
+      >
+        {isDeleting ? 'Deleting...' : 'Delete'}
+      </Button>
+    </div>
+  );
+}
+```
+
+#### Hybrid Component Patterns
+Combining server and client components effectively:
+
+```typescript
+// src/app/(routes)/accounts/page.tsx
+// Server component with client component children
+export default async function AccountsPage() {
+  // Server-side data fetching
+  const accounts = await getAccountsUseCase.execute();
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <PageHeader title="Accounts" />
+        {/* Client component for interactions */}
+        <CreateAccountButton />
+      </div>
+
+      {/* Server component with data */}
+      <AccountsList accounts={accounts} />
+    </div>
+  );
+}
+```
+
+### Streaming and Suspense Patterns
+
+#### Suspense Boundaries
+Using Suspense for progressive loading:
+
+```typescript
+// src/app/(routes)/dashboard/page.tsx
+export default function DashboardPage() {
+  return (
+    <div className="grid grid-cols-12 gap-6">
+      {/* Critical UI loads first */}
+      <UserWelcome />
+
+      {/* Less critical UI streams in */}
+      <Suspense fallback={<AccountsSkeleton />}>
+        <AccountsSummary />
+      </Suspense>
+
+      <Suspense fallback={<TransactionsSkeleton />}>
+        <RecentTransactions />
+      </Suspense>
+
+      <Suspense fallback={<AssetsSkeleton />}>
+        <AssetAllocation />
+      </Suspense>
+    </div>
+  );
+}
+```
+
+#### Loading UI Pattern
+Using loading.tsx for route segment loading:
+
+```typescript
+// src/app/(routes)/accounts/loading.tsx
+export default function AccountsLoading() {
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <Skeleton className="h-10 w-40" />
+        <Skeleton className="h-10 w-32" />
+      </div>
+      <div className="space-y-4">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Skeleton key={i} className="h-24 w-full" />
+        ))}
+      </div>
+    </div>
+  );
+}
+```
+
 ### Hooks Usage
 - Use custom hooks for shared logic in [src/hooks](mdc:src/hooks)
 - Try to use hooks that already exists in the project on new features
@@ -161,7 +299,121 @@ export function ClientComponent({ prop1, prop2 }: ComponentProps) {
 - Leverage `useState` for local component state
 - Use `useReducer` for complex state logic
 - Consider external state management (Zustand) for complex scenarios
-- Use `useOptimistic` for optimistic UI updates with server actions
+- Use React Query for server state management and caching
+
+## Data Fetching and Mutations
+
+### React Query (TanStack Query) Integration
+- Use React Query for all server state management, data fetching, and mutations
+- Leverage the centralized QueryProvider in [src/providers/query-provider.tsx](mdc:src/providers/query-provider.tsx)
+- Use custom fetcher functions from [src/lib/fetcher](mdc:src/lib/fetcher) for API calls
+- Implement proper error handling through the QueryProvider's MutationCache
+
+### Query Patterns
+```typescript
+// Custom query hook pattern
+export const useAccounts = ({ organizationId, ledgerId, ...options }) => {
+  return useQuery<AccountDto[]>({
+    queryKey: ['accounts', organizationId, ledgerId],
+    queryFn: getFetcher(`/api/organizations/${organizationId}/ledgers/${ledgerId}/accounts`),
+    enabled: !!organizationId && !!ledgerId,
+    ...options
+  });
+};
+
+// Paginated query pattern
+export const useListTransactions = ({ 
+  organizationId, 
+  ledgerId, 
+  limit = 10, 
+  cursor,
+  ...options 
+}) => {
+  return useQuery<PaginationDto<TransactionDto>>({
+    queryKey: ['transactions', organizationId, ledgerId, { limit, cursor }],
+    queryFn: getPaginatedFetcher(
+      `/api/organizations/${organizationId}/ledgers/${ledgerId}/transactions`,
+      { limit, cursor }
+    ),
+    keepPreviousData: true,
+    ...options
+  });
+};
+```
+
+### Mutation Patterns
+```typescript
+// Mutation with cache invalidation
+export const useCreateAccount = ({ organizationId, ledgerId, ...options }) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ['accounts', 'create'],
+    mutationFn: postFetcher(`/api/organizations/${organizationId}/ledgers/${ledgerId}/accounts`),
+    onSuccess: (...args) => {
+      queryClient.invalidateQueries({
+        queryKey: ['accounts', organizationId, ledgerId]
+      });
+      options.onSuccess?.(...args);
+    },
+    ...options
+  });
+};
+
+// Optimistic update pattern
+export const useUpdateAccount = ({ organizationId, ledgerId, accountId, ...options }) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ['accounts', 'update'],
+    mutationFn: patchFetcher(`/api/organizations/${organizationId}/ledgers/${ledgerId}/accounts/${accountId}`),
+    onMutate: async (newData) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries(['accounts', organizationId, ledgerId]);
+
+      // Snapshot previous value
+      const previousAccounts = queryClient.getQueryData(['accounts', organizationId, ledgerId]);
+
+      // Optimistically update
+      queryClient.setQueryData(['accounts', organizationId, ledgerId], (old: AccountDto[]) =>
+        old?.map(account => account.id === accountId ? { ...account, ...newData } : account)
+      );
+
+      return { previousAccounts };
+    },
+    onError: (err, newData, context) => {
+      // Rollback on error
+      queryClient.setQueryData(['accounts', organizationId, ledgerId], context?.previousAccounts);
+    },
+    onSettled: () => {
+      // Refetch after success or error
+      queryClient.invalidateQueries(['accounts', organizationId, ledgerId]);
+    },
+    ...options
+  });
+};
+```
+
+### Fetcher Function Usage
+```typescript
+// Use standardized fetcher functions from src/lib/fetcher
+import { getFetcher, postFetcher, patchFetcher, deleteFetcher, getPaginatedFetcher } from '@/lib/fetcher';
+
+// GET requests
+const fetchData = getFetcher('/api/endpoint');
+
+// POST requests
+const createData = postFetcher('/api/endpoint');
+
+// PATCH requests  
+const updateData = patchFetcher('/api/endpoint');
+
+// DELETE requests
+const deleteData = deleteFetcher('/api/endpoint');
+
+// Paginated GET requests
+const fetchPaginatedData = getPaginatedFetcher('/api/endpoint', { limit: 10, cursor: 'abc' });
+```
 
 ## Form Handling
 
@@ -171,16 +423,17 @@ export function ClientComponent({ prop1, prop2 }: ComponentProps) {
 - Integrate with Zod for validation schemas
 - Implement proper error handling and display
 - Use controlled components for form inputs
-- Consider server-side form validation with server actions for critical forms
+- Use React Query mutations for form submissions
 - Avoid using the native form html tag, instead use the Form component
 
 ### Form Component Pattern
 ```typescript
-// Example form component
+// Example form component with React Query mutation
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { InputField } from '@/components/form/input-field
+import { InputField } from '@/components/form/input-field';
+import { useCreateAccount } from '@/client/accounts';
 
 const schema = z.object({
   name: z.string().min(2),
@@ -189,13 +442,21 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-export function ExampleForm() {
-  const { control, register, handleSubmit, formState: { errors } } = useForm<FormData>({
+export function ExampleForm({ organizationId, ledgerId }: { organizationId: string, ledgerId: string }) {
+  const { control, handleSubmit, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
 
+  const createAccountMutation = useCreateAccount({ 
+    organizationId, 
+    ledgerId,
+    onSuccess: () => {
+      // Handle success (e.g., show toast, redirect)
+    }
+  });
+
   const onSubmit = (data: FormData) => {
-    // handle form submission
+    createAccountMutation.mutate(data);
   };
 
   return (
@@ -208,7 +469,44 @@ export function ExampleForm() {
         name='email'
         control={control}
       />
-    </form>
+      <Button 
+        type="submit" 
+        disabled={createAccountMutation.isPending}
+      >
+        {createAccountMutation.isPending ? 'Creating...' : 'Create Account'}
+      </Button>
+    </Form>
+  );
+}
+```
+
+### Form Field Pattern
+```typescript
+// src/components/form/form-field.tsx
+interface FormFieldProps<T extends Record<string, any>> {
+  name: Path<T>;
+  label: string;
+  description?: string;
+  required?: boolean;
+  children: React.ReactNode;
+}
+
+export function FormField<T extends Record<string, any>>({
+  name,
+  label,
+  description,
+  required = false,
+  children,
+}: FormFieldProps<T>) {
+  return (
+    <FormItem>
+      <FormLabel htmlFor={name} required={required}>
+        {label}
+      </FormLabel>
+      {description && <FormDescription>{description}</FormDescription>}
+      {children}
+      <FormMessage />
+    </FormItem>
   );
 }
 ```
@@ -269,6 +567,14 @@ describe('ComponentName', () => {
 - Use appropriate fetching patterns (static, dynamic, streaming)
 - Implement progressive loading with Suspense boundaries
 
+### Component Optimization Techniques
+- Use dynamic imports for code splitting
+- Implement proper key props for list rendering
+- Memoize expensive calculations with useMemo
+- Avoid layout shifts with proper skeleton loading
+- Use image optimization with Next.js Image component
+- Implement virtualization for long lists
+
 ## Security Standards
 
 ### Input Validation
@@ -321,6 +627,18 @@ describe('ComponentName', () => {
 - Implement focus management
 - Support reduced motion preferences
 - Ensure proper text contrast ratios
+
+### Component Accessibility Implementation
+- Ensure proper ARIA attributes for all interactive components
+- Implement keyboard navigation support
+- Use semantic HTML elements
+- Test with screen readers
+- Support dark mode and high contrast themes
+- Implement focus management for modals and dialogs
+- Ensure proper color contrast ratios (WCAG AA compliance minimum)
+- Add screen reader announcements for dynamic content
+- Implement reduced motion support
+- Use proper heading hierarchy
 
 ### Semantic HTML
 - Use appropriate HTML elements for content structure

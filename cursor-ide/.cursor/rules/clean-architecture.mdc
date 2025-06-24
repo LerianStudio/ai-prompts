@@ -3,6 +3,11 @@ description: Implementation guide for clean architecture principles, including l
 globs: src/**/*.{ts,tsx}
 alwaysApply: false
 ---
+---
+description: Implementation guide for clean architecture principles, including layer separation, dependency rules, and code organization
+globs: ["src/core/**/*", "src/app/api/**/*", "src/**/*.ts", "src/**/*.tsx"]
+alwaysApply: true
+---
 
 # Clean Architecture Guidelines
 

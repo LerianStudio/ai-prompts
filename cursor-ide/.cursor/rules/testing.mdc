@@ -1,7 +1,12 @@
 ---
 description: Comprehensive testing strategy and guidelines covering unit, integration, and end-to-end testing approaches
-globs: src/**/*.{ts,tsx}
+globs: ["src/**/*.test.ts", "src/**/*.test.tsx", "tests/**/*", "**/*.spec.ts"]
 alwaysApply: false
+---
+---
+description: Comprehensive testing strategy and guidelines covering unit, integration, and end-to-end testing approaches
+globs: ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "tests/**/*"]
+alwaysApply: true
 ---
 
 # Testing Guidelines

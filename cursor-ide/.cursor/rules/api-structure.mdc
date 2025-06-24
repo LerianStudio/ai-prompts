@@ -1,10 +1,17 @@
 ---
 description: Guidelines for organizing and implementing Next.js API routes, including route structure, error handling, authentication, and testing standards
-globs: src/**/*.{ts,tsx}
-alwaysApply: false
+globs: ["src/app/api/**/*", "src/**/*.ts"]
+alwaysApply: true
+---
+---
+description: Best practices for implementing Next.js API Routes and React Query integration
+globs: ["src/app/api/**/*", "src/client/**/*", "src/lib/fetcher/**/*"]
+alwaysApply: true
 ---
 
-# API Structure Guidelines
+# API Routes & Client Integration Guidelines
+
+This document covers best practices for implementing Next.js API Routes and React Query integration in our application.
 
 ## Next.js API Routes
 
@@ -34,12 +41,6 @@ API routes are organized in the [src/app/api](mdc:src/app/api) directory, follow
   - POST: Create new group
   - `[groupId]/` - Individual group operations (GET, PUT, DELETE)
 
-#### Onboarding Process ([src/app/api/onboarding](mdc:src/app/api/onboarding))
-- GET: List onboarding flows
-- POST: Create new onboarding flow
-- `[id]/` - Specific onboarding flow management
-- `[id]/complete/` - Complete onboarding process (POST)
-
 #### Organization Management ([src/app/api/organizations](mdc:src/app/api/organizations))
 - GET: List organizations with pagination
 - POST: Create new organization
@@ -55,50 +56,91 @@ Complex nested resource structure for financial entities:
   - POST: Create new account
   - `[accountId]/` - Individual account operations (GET, PATCH, DELETE)
 - **Assets**: `[ledgerId]/assets/` - Asset management
-  - GET: List assets
-  - POST: Create new asset
-  - `[assetId]/` - Individual asset operations (GET, PUT, DELETE)
 - **Portfolios**: `[ledgerId]/portfolios/` - Portfolio management
-  - GET: List portfolios
-  - POST: Create new portfolio
-  - `[portfolioId]/` - Individual portfolio operations (GET, PUT, DELETE)
 - **Segments**: `[ledgerId]/segments/` - Segment management
-  - GET: List segments
-  - POST: Create new segment
-  - `[segmentId]/` - Individual segment operations (GET, PUT, DELETE)
 - **Transactions**: `[ledgerId]/transactions/` - Transaction management
-  - GET: List transactions with pagination
-  - `[transactionId]/` - Individual transaction operations (GET, PATCH)
-  - `json/` - JSON-based transaction creation (POST)
 
-#### Relationship Endpoints
-- `accounts-portfolios/` - Account-portfolio relationships (GET)
-- `portfolios-accounts/` - Portfolio-account relationships (GET)
-- `ledgers-assets/` - Cross-ledger asset relationships (GET)
+### Route Implementation Patterns
 
-#### Utility Endpoints ([src/app/api/utils](mdc:src/app/api/utils))
-- Centralized error handling utilities
-- Common API response formatters
-
-## API Implementation Pattern
-
-### 1. Route Handler Structure
+#### Standard Route Handler Structure
 ```typescript
-// Standard route handler implementation
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+// app/api/accounts/[accountId]/route.ts
+import { NextRequest } from 'next/server';
+import { getAccountById } from '@/core/application/use-cases/accounts';
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { accountId: string } }
+) {
   try {
     // 1. Validate authentication and authorization
     // 2. Parse and validate request parameters
     // 3. Map request data to DTOs
     // 4. Call appropriate use case
     // 5. Format and return response
+    const account = await getAccountById(params.accountId);
+
+    if (!account) {
+      return Response.json(
+        { error: 'Account not found' },
+        { status: 404 }
+      );
+    }
+
+    return Response.json(account);
   } catch (error) {
-    // 6. Handle errors consistently
+    return handleApiError(error);
   }
 }
 ```
 
-### 2. Use Case Integration ([src/core/application/use-cases](mdc:src/core/application/use-cases))
+#### Request Validation Pattern
+```typescript
+// app/api/accounts/route.ts
+import { NextRequest } from 'next/server';
+import { z } from 'zod';
+import { createAccount } from '@/core/application/use-cases/accounts';
+
+const createAccountSchema = z.object({
+  name: z.string().min(2).max(100),
+  type: z.enum(['checking', 'savings', 'investment']),
+  currency: z.string().length(3),
+  balance: z.number().optional(),
+});
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const result = createAccountSchema.safeParse(body);
+
+    if (!result.success) {
+      return Response.json(
+        {
+          error: 'Validation error',
+          details: result.error.format()
+        },
+        { status: 400 }
+      );
+    }
+
+    const account = await createAccount(result.data);
+
+    return Response.json(
+      account,
+      {
+        status: 201,
+        headers: {
+          'Location': `/api/accounts/${account.id}`
+        }
+      }
+    );
+  } catch (error) {
+    return handleApiError(error);
+  }
+}
+```
+
+### Use Case Integration ([src/core/application/use-cases](mdc:src/core/application/use-cases))
 - Route handlers delegate business logic to use cases
 - Use cases are organized by domain entities:
   - `accounts/`, `assets/`, `ledgers/`, `portfolios/`, `segments/`, `transactions/`
@@ -106,15 +148,211 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 - Use cases communicate with repositories to retrieve or persist data
 - Return DTOs to maintain clean separation between layers
 
-### 3. Repository Layer ([src/core/infrastructure](mdc:src/core/infrastructure))
+### Repository Layer ([src/core/infrastructure](mdc:src/core/infrastructure))
 - Repository implementations handle data access logic
 - Midaz API integration in `midaz/repositories/`
 - External service communication and data mapping
 - Transform external data to domain entities
 
-## Error Handling Standards
+## Client Integration with APIs
 
-### Consistent Error Responses
+### Client Hook Organization ([src/client](mdc:src/client))
+
+Client hooks are organized by domain to maintain clear separation of concerns:
+- `accounts.ts` - Account management API calls
+- `assets.ts` - Asset management API calls  
+- `applications.ts` - Application management API calls
+- `groups.ts` - Group management API calls
+- `ledgers.ts` - Ledger management API calls
+- `onboarding.ts` - Onboarding flow API calls
+- `organizations.ts` - Organization management API calls
+- `portfolios.ts` - Portfolio management API calls
+- `segments.ts` - Segment management API calls
+- `transactions.ts` - Transaction management API calls
+- `users.ts` - User management API calls
+
+### API Client Integration Patterns
+
+Client hooks delegate to API routes using standardized fetcher functions. For comprehensive React Query patterns, see [coding-standards.mdc](mdc:.cursor/rules/coding-standards.mdc).
+
+#### Basic API Integration
+```typescript
+// src/client/organizations.ts
+import { useQuery } from '@tanstack/react-query';
+import { getFetcher } from '@/lib/fetcher';
+
+export const useListOrganizations = ({ ...options }) => {
+  return useQuery<PaginationDto<OrganizationDto>>({
+    queryKey: ['organizations'],
+    queryFn: getFetcher(`/api/organizations`), // Delegates to API route
+    ...options
+  });
+};
+```
+
+### HTTP Client Configuration ([src/lib/fetcher](mdc:src/lib/fetcher))
+
+Standardized HTTP client functions that integrate with API routes:
+
+```typescript
+// Core fetcher implementation
+const responseHandler = async (response: Response) => {
+  if (!response.ok) {
+    if (response.status === 401) {
+      signOut({ callbackUrl: '/login' });
+      return;
+    }
+
+    const errorMessage = await response.json();
+    throw new Error(errorMessage.message);
+  }
+
+  return await response.json();
+};
+
+export const getFetcher = (url: string) => {
+  return async () => {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    return responseHandler(response);
+  };
+};
+```
+
+**Note**: For complete React Query hook patterns, mutations, and optimistic updates, refer to [coding-standards.mdc Data Fetching section](mdc:.cursor/rules/coding-standards.mdc#data-fetching-and-mutations).
+
+## Authentication and Authorization
+
+### Route Protection Middleware
+```typescript
+// middleware.ts
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { getToken } from 'next-auth/jwt';
+
+export const config = {
+  matcher: ['/api/((?!auth/signin).*)'],
+};
+
+export async function middleware(request: NextRequest) {
+  const token = await getToken({ req: request });
+
+  if (!token) {
+    return NextResponse.json(
+      { error: 'Unauthorized' },
+      { status: 401 }
+    );
+  }
+
+  return NextResponse.next();
+}
+```
+
+## Performance Optimization
+
+### Caching Strategies
+
+```typescript
+// app/api/accounts/route.ts
+export async function GET() {
+  const accounts = await getAccounts();
+
+  return Response.json(
+    accounts,
+    {
+      headers: {
+        'Cache-Control': 'max-age=60, stale-while-revalidate=600',
+      },
+    }
+  );
+}
+
+// Data fetching in server component
+async function getAccounts() {
+  const accounts = await fetch('https://api.example.com/accounts', {
+    next: {
+      revalidate: 60, // Revalidate every 60 seconds
+      tags: ['accounts'],
+    },
+  });
+
+  return accounts.json();
+}
+```
+
+### Edge Runtime
+
+```typescript
+// app/api/status/route.ts
+export const runtime = 'edge';
+
+export async function GET() {
+  const status = {
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    region: process.env.VERCEL_REGION || 'unknown',
+  };
+
+  return Response.json(status);
+}
+```
+
+## Error Handling
+
+### Centralized Error Handler
+```typescript
+// app/lib/api-error.ts
+export class ApiError extends Error {
+  public readonly statusCode: number;
+  public readonly details?: any;
+
+  constructor(message: string, statusCode: number, details?: any) {
+    super(message);
+    this.statusCode = statusCode;
+    this.details = details;
+  }
+
+  static badRequest(message: string, details?: any) {
+    return new ApiError(message, 400, details);
+  }
+
+  static notFound(message: string, details?: any) {
+    return new ApiError(message, 404, details);
+  }
+
+  static unauthorized(message: string, details?: any) {
+    return new ApiError(message, 401, details);
+  }
+
+  static forbidden(message: string, details?: any) {
+    return new ApiError(message, 403, details);
+  }
+
+  static internal(message: string, details?: any) {
+    return new ApiError(message, 500, details);
+  }
+}
+
+export function handleApiError(error: unknown) {
+  console.error('API error:', error);
+
+  if (error instanceof ApiError) {
+    return Response.json(
+      { error: error.message, details: error.details },
+      { status: error.statusCode }
+    );
+  }
+
+  return Response.json(
+    { error: 'Internal server error' },
+    { status: 500 }
+  );
+}
+```
+
+### Structured Error Responses
 - Use standardized error response format across all endpoints
 - Leverage [src/exceptions](mdc:src/exceptions) for custom error types
 - Implement proper HTTP status codes:
@@ -127,32 +365,152 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   - `409` - Conflict
   - `500` - Internal Server Error
 
-### Error Handler Integration
-- Centralized error handling in [src/app/api/utils/api-error-handler.ts](mdc:src/app/api/utils/api-error-handler.ts)
-- Consistent error logging and monitoring
-- Proper error message sanitization for client responses
+## Testing Strategies
 
-## Authentication and Authorization
+### API Route Testing
+```typescript
+import { createMocks } from 'node-mocks-http';
+import { GET, POST } from './route';
 
-### NextAuth Integration
-- Authentication handled through NextAuth.js
-- Session management and token validation
-- Role-based access control integration
+describe('/api/organizations', () => {
+  describe('GET', () => {
+    it('should return organizations list', async () => {
+      const { req, res } = createMocks({
+        method: 'GET',
+        query: { limit: '10' },
+      });
 
-### Request Validation
-- Input validation using Zod schemas
-- Parameter sanitization and type checking
-- Rate limiting and request throttling where appropriate
+      const response = await GET(req);
+      const data = await response.json();
 
-## API Documentation and Testing
+      expect(response.status).toBe(200);
+      expect(data).toHaveProperty('organizations');
+      expect(Array.isArray(data.organizations)).toBe(true);
+    });
+  });
 
-### OpenAPI/Swagger Documentation
-- Document all endpoints with proper schemas
-- Include request/response examples
-- Maintain up-to-date API documentation
+  describe('POST', () => {
+    it('should create new organization', async () => {
+      const { req } = createMocks({
+        method: 'POST',
+        body: { name: 'Test Org' },
+      });
 
-### Testing Strategy
-- Unit tests for use cases and repositories
-- Integration tests for API endpoints
-- End-to-end tests using Playwright
-- Mock external service dependencies
+      const response = await POST(req);
+      const data = await response.json();
+
+      expect(response.status).toBe(201);
+      expect(data).toHaveProperty('id');
+      expect(data.name).toBe('Test Org');
+    });
+  });
+});
+```
+
+### React Query Hook Testing
+```typescript
+import { renderHook, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useCreateAccount } from '@/client/accounts';
+
+const createWrapper = () => {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: { retry: false },
+      mutations: { retry: false },
+    },
+  });
+
+  return ({ children }: { children: React.ReactNode }) => (
+    <QueryClientProvider client={queryClient}>
+      {children}
+    </QueryClientProvider>
+  );
+};
+
+describe('useCreateAccount', () => {
+  it('should create an account and invalidate cache', async () => {
+    const { result } = renderHook(() => 
+      useCreateAccount({ organizationId: 'org-1', ledgerId: 'ledger-1' }), 
+      { wrapper: createWrapper() }
+    );
+
+    result.current.mutate({ name: 'Test Account', type: 'checking' });
+
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBe(true);
+    });
+
+    expect(result.current.data).toEqual(
+      expect.objectContaining({ name: 'Test Account' })
+    );
+  });
+});
+```
+
+## Security Best Practices
+
+### Input Validation
+- Validate all user inputs with Zod schemas
+- Sanitize data before processing
+- Implement proper XSS protection
+- Use CSRF protection for forms
+- Validate file uploads thoroughly
+
+### Rate Limiting
+```typescript
+// app/middleware.ts
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { Ratelimit } from '@upstash/ratelimit';
+import { Redis } from '@upstash/redis';
+
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_URL,
+  token: process.env.UPSTASH_REDIS_TOKEN,
+});
+
+const ratelimit = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(10, '10 s'),
+});
+
+export async function middleware(request: NextRequest) {
+  if (!request.nextUrl.pathname.startsWith('/api')) {
+    return NextResponse.next();
+  }
+
+  const ip = request.ip || 'anonymous';
+  const { success, limit, reset, remaining } = await ratelimit.limit(ip);
+
+  if (!success) {
+    return NextResponse.json(
+      { error: 'Too Many Requests' },
+      {
+        status: 429,
+        headers: {
+          'X-RateLimit-Limit': limit.toString(),
+          'X-RateLimit-Remaining': remaining.toString(),
+          'X-RateLimit-Reset': reset.toString(),
+        },
+      }
+    );
+  }
+
+  return NextResponse.next();
+}
+```
+
+## Deployment Considerations
+
+### Environment Configuration
+- Use environment variables for configuration
+- Implement environment-specific settings
+- Validate environment variables at startup
+- Use feature flags for controlled rollouts
+
+### Monitoring and Observability
+- Implement proper logging and monitoring
+- Use transaction tracing across serverless functions
+- Monitor function performance and execution time
+- Set up alerts for errors and performance issues

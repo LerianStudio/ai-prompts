@@ -1,7 +1,12 @@
 ---
 description: Guidelines for implementing internationalization (i18n) and localization (l10n), including translation management and language support
-globs: src/**/*.{ts,tsx}
-alwaysApply: false
+globs: ["src/**/*.tsx", "src/**/*.ts", "locales/**/*"]
+alwaysApply: true
+---
+---
+description: Internationalization implementation guide using React Intl with translation management workflows
+globs: ["src/**/*.tsx", "src/**/*.ts", "locales/**/*", "scripts/i18n-extract.ts"]
+alwaysApply: true
 ---
 
 # Internationalization (i18n) Guidelines

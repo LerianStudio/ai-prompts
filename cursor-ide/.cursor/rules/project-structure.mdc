@@ -1,8 +1,14 @@
 ---
 description: Guidelines for organizing project files, directories, and modules following clean architecture principles
-globs: src/**/*.{ts,tsx}
+globs: ["src/**/*", "**/*"]
 alwaysApply: false
 ---
+---
+description: Guidelines for organizing project files, directories, and modules following clean architecture principles
+globs: ["**/*"]
+alwaysApply: true
+---
+
 # Project Structure Guide
 
 This is a Next.js 15+ application following Clean Architecture principles with TypeScript 5+, TailwindCSS 4+, and React 19 patterns. The project implements a comprehensive financial ledger management system (Midaz Console).

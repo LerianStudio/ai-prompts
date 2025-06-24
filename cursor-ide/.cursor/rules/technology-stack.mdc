@@ -1,8 +1,14 @@
 ---
-description:
-globs:
+description: Documentation of the technology stack, dependencies, versions, and integration guidelines for the project
+globs: ["package.json", "src/**/*", "*.config.*"]
 alwaysApply: false
 ---
+---
+description: Documentation of the technology stack, dependencies, versions, and integration guidelines for the project
+globs: ["package.json", "*.config.*", "**/*.ts", "**/*.tsx"]
+alwaysApply: false
+---
+
 # Midaz Console Technology Stack
 
 This document outlines the major dependencies, versions, and best practices for the Midaz Console application.

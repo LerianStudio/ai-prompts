@@ -1,7 +1,12 @@
 ---
 description: Guidelines for implementing web accessibility (a11y) features, ensuring compliance with WCAG standards and best practices
-globs: src/**/*.{ts,tsx}
-alwaysApply: false
+globs: ["src/components/**/*", "src/app/**/*", "src/**/*.tsx", "src/**/*.ts"]
+alwaysApply: true
+---
+---
+description: Accessibility standards and WCAG compliance guidelines for inclusive UI development
+globs: ["src/components/**/*", "src/app/**/*", "*.tsx", "*.ts"]
+alwaysApply: true
 ---
 
 # Accessibility Guidelines

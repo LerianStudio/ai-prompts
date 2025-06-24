@@ -1,7 +1,12 @@
 ---
 description: Standards for implementing logging, monitoring, and tracing to ensure application observability and performance tracking
-globs: src/**/*.{ts,tsx}
-alwaysApply: false
+globs: ["src/**/*.ts", "src/**/*.tsx", "src/instrumentation.ts"]
+alwaysApply: true
+---
+---
+description: Comprehensive observability using OpenTelemetry, structured logging, and performance monitoring
+globs: ["src/core/infrastructure/observability/**/*", "src/core/infrastructure/logger/**/*", "src/instrumentation.ts"]
+alwaysApply: true
 ---
 
 # Observability Guidelines

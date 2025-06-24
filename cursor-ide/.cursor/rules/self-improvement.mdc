@@ -3,6 +3,12 @@ description: Guidelines for continuously improving Cursor rules based on emergin
 globs: **/*
 alwaysApply: true
 ---
+---
+description: Guidelines for continuously improving Cursor rules based on emerging code patterns and best practices.
+globs: **/*
+alwaysApply: true
+---
+
 ## Rule Improvement Triggers
 
 - New code patterns not covered by existing rules
@@ -41,7 +47,7 @@ alwaysApply: true
     where: { status: 'ACTIVE' }
   });
 
-  // Consider adding to [prisma.mdc](mdc:shipixen/.cursor/rules/prisma.mdc):
+  // Consider adding to a new database rules file:
   // - Standard select fields
   // - Common where conditions
   // - Performance optimization patterns
@@ -75,5 +81,5 @@ alwaysApply: true
 - Maintain links between related rules
 - Document breaking changes
 
-Follow [cursor-rules.mdc](mdc:.cursor/rules/curs or-rules.mdc) for proper rule formatting and structure.
+Follow [cursor-rules.mdc](mdc:.cursor/rules/cursor-rules.mdc) for proper rule formatting and structure.
 
