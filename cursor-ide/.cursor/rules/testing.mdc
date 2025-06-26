@@ -1,0 +1,397 @@
+---
+description: Comprehensive testing strategy and guidelines covering unit, integration, and end-to-end testing approaches
+globs: ["src/**/*.test.*", "src/**/*.spec.*", "tests/**/*", "**/*.test.*"]
+---
+
+# Testing Guidelines
+
+## Testing Strategy
+
+### Testing Pyramid
+Our testing approach follows the testing pyramid with emphasis on:
+
+1. **Unit Tests** (70%) - Fast, isolated tests for individual functions and components
+2. **Integration Tests** (20%) - Test interactions between modules and services
+3. **End-to-End Tests** (10%) - Full user workflow testing
+
+### Test Types and Tools
+
+#### Unit and Integration Tests
+- **Framework**: Jest with jsdom environment
+- **React Testing**: React Testing Library
+- **Location**: Colocated with source files (`*.test.ts`, `*.test.tsx`)
+- **Configuration**: [jest.config.ts](mdc:jest.config.ts)
+
+#### End-to-End Tests
+- **Framework**: Playwright
+- **Location**: [tests/e2e](mdc:tests/e2e)
+- **Configuration**: [playwright.config.ts](mdc:playwright.config.ts)
+
+#### Component Testing
+- **Framework**: Storybook with Storybook Test Runner
+- **Location**: [.storybook](mdc:.storybook)
+- **Purpose**: Visual regression and component behavior testing
+
+## Unit Testing Patterns
+
+### Component Testing
+```typescript
+import { render, screen, fireEvent } from '@testing-library/react';
+import { UserDropdown } from './user-dropdown';
+
+describe('UserDropdown', () => {
+  const defaultProps = {
+    user: { name: 'John Doe', email: 'john@example.com' },
+    onSignOut: jest.fn(),
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('when rendered', () => {
+    it('should display user name', () => {
+      render(<UserDropdown {...defaultProps} />);
+      expect(screen.getByText('John Doe')).toBeInTheDocument();
+    });
+  });
+
+  describe('when sign out button is clicked', () => {
+    it('should call onSignOut callback', () => {
+      render(<UserDropdown {...defaultProps} />);
+
+      fireEvent.click(screen.getByRole('button', { name: /sign out/i }));
+
+      expect(defaultProps.onSignOut).toHaveBeenCalledTimes(1);
+    });
+  });
+});
+```
+
+### Hook Testing
+```typescript
+import { renderHook, act } from '@testing-library/react';
+import { useLocalStorage } from './use-local-storage';
+
+describe('useLocalStorage', () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  it('should return initial value when no stored value exists', () => {
+    const { result } = renderHook(() => useLocalStorage('key', 'initial'));
+
+    expect(result.current[0]).toBe('initial');
+  });
+
+  it('should update stored value when setter is called', () => {
+    const { result } = renderHook(() => useLocalStorage('key', 'initial'));
+
+    act(() => {
+      result.current[1](mdc:'updated');
+    });
+
+    expect(result.current[0]).toBe('updated');
+    expect(localStorage.getItem('key')).toBe('"updated"');
+  });
+});
+```
+
+### Use Case Testing
+```typescript
+import { CreateAccountUseCase } from './create-account-use-case';
+import { IAccountRepository } from '../../domain/repositories/account-repository';
+
+describe('CreateAccountUseCase', () => {
+  let useCase: CreateAccountUseCase;
+  let mockRepository: jest.Mocked<IAccountRepository>;
+
+  beforeEach(() => {
+    mockRepository = {
+      create: jest.fn(),
+      findById: jest.fn(),
+      findByLedgerId: jest.fn(),
+    };
+    useCase = new CreateAccountUseCase(mockRepository);
+  });
+
+  describe('when creating an account', () => {
+    it('should create account with valid data', async () => {
+      const accountData = {
+        name: 'Test Account',
+        assetCode: 'USD',
+        type: 'DEPOSIT',
+      };
+
+      mockRepository.create.mockResolvedValue({ id: '123', ...accountData });
+
+      const result = await useCase.execute(accountData);
+
+      expect(mockRepository.create).toHaveBeenCalledWith(accountData);
+      expect(result.id).toBe('123');
+    });
+
+    it('should throw error when repository fails', async () => {
+      const accountData = { name: 'Test Account' };
+      const error = new Error('Repository error');
+
+      mockRepository.create.mockRejectedValue(error);
+
+      await expect(useCase.execute(accountData)).rejects.toThrow('Repository error');
+    });
+  });
+});
+```
+
+## Integration Testing
+
+### API Route Testing
+```typescript
+import { createMocks } from 'node-mocks-http';
+import { GET, POST } from './route';
+
+describe('/api/organizations', () => {
+  describe('GET', () => {
+    it('should return organizations list', async () => {
+      const { req, res } = createMocks({
+        method: 'GET',
+        query: { limit: '10' },
+      });
+
+      const response = await GET(req);
+      const data = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(data).toHaveProperty('organizations');
+      expect(Array.isArray(data.organizations)).toBe(true);
+    });
+  });
+
+  describe('POST', () => {
+    it('should create new organization', async () => {
+      const { req } = createMocks({
+        method: 'POST',
+        body: { name: 'Test Org' },
+      });
+
+      const response = await POST(req);
+      const data = await response.json();
+
+      expect(response.status).toBe(201);
+      expect(data).toHaveProperty('id');
+      expect(data.name).toBe('Test Org');
+    });
+  });
+});
+```
+
+### Database Integration Testing
+```typescript
+import { TestDatabase } from '../../tests/utils/test-database';
+import { AccountRepository } from './account-repository';
+
+describe('AccountRepository Integration', () => {
+  let testDb: TestDatabase;
+  let repository: AccountRepository;
+
+  beforeAll(async () => {
+    testDb = new TestDatabase();
+    await testDb.setup();
+  });
+
+  afterAll(async () => {
+    await testDb.teardown();
+  });
+
+  beforeEach(async () => {
+    await testDb.clear();
+    repository = new AccountRepository(testDb.connection);
+  });
+
+  describe('when creating an account', () => {
+    it('should persist account data', async () => {
+      const accountData = {
+        name: 'Test Account',
+        ledgerId: 'ledger-123',
+        assetCode: 'USD',
+      };
+
+      const created = await repository.create(accountData);
+      const retrieved = await repository.findById(created.id);
+
+      expect(retrieved).toEqual(expect.objectContaining(accountData));
+    });
+  });
+});
+```
+
+## End-to-End Testing
+
+### Page Object Pattern
+```typescript
+// tests/e2e/pages/accounts-page.ts
+import { Page, Locator } from '@playwright/test';
+
+export class AccountsPage {
+  readonly page: Page;
+  readonly createButton: Locator;
+  readonly accountsList: Locator;
+  readonly searchInput: Locator;
+
+  constructor(page: Page) {
+    this.page = page;
+    this.createButton = page.getByRole('button', { name: 'Create Account' });
+    this.accountsList = page.getByTestId('accounts-list');
+    this.searchInput = page.getByPlaceholder('Search accounts...');
+  }
+
+  async goto() {
+    await this.page.goto('/accounts');
+  }
+
+  async createAccount(accountData: { name: string; assetCode: string }) {
+    await this.createButton.click();
+    await this.page.getByLabel('Account Name').fill(accountData.name);
+    await this.page.getByLabel('Asset Code').fill(accountData.assetCode);
+    await this.page.getByRole('button', { name: 'Create' }).click();
+  }
+
+  async searchAccounts(query: string) {
+    await this.searchInput.fill(query);
+    await this.searchInput.press('Enter');
+  }
+}
+```
+
+### E2E Test Implementation
+```typescript
+// tests/e2e/accounts.spec.ts
+import { test, expect } from '@playwright/test';
+import { AccountsPage } from './pages/accounts-page';
+
+test.describe('Accounts Management', () => {
+  let accountsPage: AccountsPage;
+
+  test.beforeEach(async ({ page }) => {
+    accountsPage = new AccountsPage(page);
+    await accountsPage.goto();
+  });
+
+  test('should create new account', async () => {
+    const accountData = {
+      name: 'Test Account',
+      assetCode: 'USD',
+    };
+
+    await accountsPage.createAccount(accountData);
+
+    await expect(accountsPage.accountsList).toContainText(accountData.name);
+  });
+
+  test('should search accounts', async () => {
+    await accountsPage.searchAccounts('Cash');
+
+    await expect(accountsPage.accountsList).toBeVisible();
+    // Add more specific assertions based on search results
+  });
+});
+```
+
+## Testing Best Practices
+
+### General Principles
+- **Test Behavior, Not Implementation**: Focus on what the code does, not how it does it
+- **Arrange-Act-Assert**: Structure tests with clear setup, execution, and verification phases
+- **Single Responsibility**: Each test should verify one specific behavior
+- **Descriptive Names**: Use clear, descriptive test names that explain the scenario
+
+### Mock Management
+```typescript
+// Good: Create reusable mock factories
+export const createMockUser = (overrides = {}) => ({
+  id: '123',
+  name: 'John Doe',
+  email: 'john@example.com',
+  ...overrides,
+});
+
+// Good: Use dependency injection for easier testing
+export class UserService {
+  constructor(private userRepository: IUserRepository) {}
+}
+
+// Good: Mock external dependencies
+jest.mock('../services/api-client', () => ({
+  ApiClient: jest.fn().mockImplementation(() => ({
+    get: jest.fn(),
+    post: jest.fn(),
+  })),
+}));
+```
+
+### Test Data Management
+- Use factories for creating test data
+- Keep test data minimal and focused
+- Use realistic but predictable test data
+- Clean up test data after each test
+
+### Accessibility Testing
+```typescript
+import { axe, toHaveNoViolations } from 'jest-axe';
+
+expect.extend(toHaveNoViolations);
+
+describe('AccountForm accessibility', () => {
+  it('should not have accessibility violations', async () => {
+    const { container } = render(<AccountForm />);
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
+  });
+});
+```
+
+## Test Configuration
+
+### Jest Configuration Highlights
+- **Environment**: jsdom for DOM testing
+- **Coverage**: 80% minimum threshold
+- **Setup**: [setupJest.ts](mdc:setupJest.ts) for global test configuration
+- **Mocks**: Automatic mocking of CSS and image imports
+
+### Playwright Configuration
+- **Browsers**: Chromium, Firefox, WebKit
+- **Parallel Execution**: Enabled for faster test runs
+- **Screenshots**: On failure for debugging
+- **Video**: On first retry for complex failures
+
+### CI/CD Integration
+- Tests run on every pull request
+- Coverage reports generated and tracked
+- E2E tests run against staging environment
+- Performance regression testing with Lighthouse CI
+
+## Debugging Tests
+
+### Jest Debugging
+```bash
+# Run tests in watch mode
+npm run test -- --watch
+
+# Run specific test file
+npm run test -- accounts.test.ts
+
+# Run tests with debugging
+node --inspect-brk node_modules/.bin/jest --runInBand
+```
+
+### Playwright Debugging
+```bash
+# Run tests in UI mode
+npm run test:e2e
+
+# Run with debugging
+npx playwright test --debug
+
+# Generate test reports
+npx playwright show-report
+```

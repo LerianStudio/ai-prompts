@@ -1,0 +1,61 @@
+---
+description: Guidelines for writing clear and consistent pull request
+globs: ["**/*"]
+---
+
+# Pull Request Guidelines
+
+## Pull Request Template
+
+Use the following template when creating pull requests:
+
+```markdown
+# Pull Request
+
+## 🔍 Changes Made
+[Describe the changes made in this PR]
+
+## 💡 Why This Change Was Necessary
+[Explain the motivation behind these changes]
+
+## 📝 Notes for Reviewers
+[Any special instructions or context for reviewers]
+
+## 🧪 Testing Done
+[Describe how the changes were tested]
+
+## 📚 Related Issues
+[Link to related issues, if any]
+
+## 📷 Screenshots/Videos (if applicable)
+[Include visual evidence of changes, if relevant]
+
+## ⚠️ Breaking Changes (if any)
+[Document any breaking changes]
+
+## 🚀 Deployment Instructions
+[Special deployment considerations]
+```
+
+## Review Process
+
+### Before Creating a PR
+- [ ] Code follows the project's coding standards
+- [ ] All tests pass locally
+- [ ] Documentation is updated if needed
+- [ ] Commit messages follow conventional commits format
+- [ ] Branch is up to date with main branch
+
+### Review Checklist
+- [ ] Code is well-structured and readable
+- [ ] Security considerations have been addressed
+- [ ] Performance impact is acceptable
+- [ ] Accessibility guidelines are followed
+- [ ] Changes are properly tested
+- [ ] Breaking changes are documented
+
+### Approval Requirements
+- At least one approval from a code owner
+- All automated checks pass
+- No unresolved review comments
+- Documentation is complete and accurate

@@ -1,0 +1,229 @@
+---
+description: Documentation of the technology stack, dependencies, versions, and integration guidelines for the project
+globs: ["package.json", "*.config.*", "*.json", "src/**/*"]
+---
+
+# Midaz Console Technology Stack
+
+This document outlines the major dependencies, versions, and best practices for the Midaz Console application.
+
+## 🚀 Core Framework Stack
+
+### Next.js & React
+- **Next.js**: `^15.3.3` (App Router)
+- **React**: `^19.1.0` 
+- **React DOM**: `^19.1.0`
+
+**Best Practices:**
+- ✅ Using latest stable versions with cutting-edge features
+- ✅ App Router is the recommended approach for new Next.js applications
+- ✅ React 19 includes built-in optimizations and new hooks
+- ⚠️ Monitor React 19 compatibility with third-party libraries
+- 🔧 Use Server Components by default, Client Components when needed
+- 🔧 Leverage React 19 features: `use()` hook, `useActionState()`, `useOptimistic()`
+
+### TypeScript
+- **TypeScript**: `^5.8.3`
+
+**Best Practices:**
+- ✅ Latest stable version with excellent type inference
+- 🔧 Enable strict mode for better type safety
+- 🔧 Use `satisfies` operator for type validation while preserving literals
+- 🔧 Leverage utility types (`Partial<T>`, `Pick<T>`, `Omit<T>`)
+
+## 🎨 UI & Styling Stack
+
+### CSS Framework
+- **TailwindCSS**: `^4.1.8` (Latest major version)
+- **@tailwindcss/postcss**: `^4.1.8`
+
+**Best Practices:**
+- ✅ Using Tailwind v4 with performance improvements
+- 🔧 Use `tailwind-merge` for conditional classes
+- 🔧 Leverage CSS-in-JS optimizations in v4
+- ⚠️ Tailwind v4 is still in beta - monitor for breaking changes
+
+### Component Library
+- **Radix UI**: Various components (`^1.x` - `^2.x`)
+  - `@radix-ui/react-dialog: ^1.1.14`
+  - `@radix-ui/react-dropdown-menu: ^2.1.15`
+  - `@radix-ui/react-select: ^2.2.5`
+  - And many more...
+
+**Best Practices:**
+- ✅ Radix provides unstyled, accessible primitives
+- 🔧 Build custom styled components on top of Radix primitives
+- 🔧 Always implement proper ARIA attributes
+- 🔧 Use compound components pattern for complex UI elements
+
+### Styling Utilities
+- **class-variance-authority**: `^0.7.1`
+- **tailwind-merge**: `^3.3.0`
+- **clsx**: `^2.1.1`
+
+**Best Practices:**
+- 🔧 Use CVA for component variants with type safety
+- 🔧 Use `tailwind-merge` to resolve class conflicts
+- 🔧 Use `clsx` for conditional class names
+
+### Icons & Animations
+- **lucide-react**: `^0.511.0`
+- **motion**: `^12.18.1` (formerly Framer Motion)
+- **lottie-react**: `^2.4.1`
+
+**Best Practices:**
+- ✅ Lucide provides consistent, lightweight SVG icons
+- 🔧 Use Motion for performant animations with layout transitions
+- 🔧 Use Lottie for complex animations exported from After Effects
+- ⚠️ Motion v12+ has breaking changes from Framer Motion
+
+## 📊 State Management & Data Fetching
+
+### Data Fetching
+- **@tanstack/react-query**: `^5.79.0`
+- **@tanstack/react-query-devtools**: `^5.79.0`
+
+**Best Practices:**
+- ✅ TanStack Query v5 is the gold standard for server state
+- 🔧 Use `useQuery` for data fetching, `useMutation` for data updates
+- 🔧 Implement proper error boundaries and loading states
+- 🔧 Use React Query DevTools in development
+
+### Table Management
+- **@tanstack/react-table**: `^8.21.3`
+
+**Best Practices:**
+- 🔧 Use headless table logic with custom UI components
+- 🔧 Implement sorting, filtering, and pagination server-side when possible
+- 🔧 Use column definitions with proper typing
+
+## 📝 Form Handling & Validation
+
+### Forms
+- **react-hook-form**: `^7.56.4`
+- **@hookform/resolvers**: `^5.0.1`
+
+### Validation
+- **zod**: `^3.25.42`
+
+**Best Practices:**
+- ✅ RHF provides excellent performance with minimal re-renders
+- 🔧 Use Zod for runtime validation and TypeScript type inference
+- 🔧 Combine RHF with Zod using `zodResolver`
+- 🔧 Use `useController` for complex form fields
+- 🔧 Implement proper error handling and display
+
+## 🔐 Authentication & Security
+
+### Authentication
+- **next-auth**: `^4.24.11`
+- **jsonwebtoken**: `^9.0.2`
+
+**Best Practices:**
+- ⚠️ NextAuth v4 is mature but consider migrating to Auth.js v5
+- 🔧 Use secure session strategies (JWT + database sessions)
+- 🔧 Implement proper CSRF protection
+- 🔧 Use secure cookie settings in production
+
+## 🗄️ Database & Backend
+
+### Database
+- **mongoose**: `^8.15.1`
+
+### Dependency Injection
+- **inversify**: `^7.5.1`
+- **reflect-metadata**: `^0.2.2`
+
+**Best Practices:**
+- ✅ Mongoose v8 provides excellent TypeScript support
+- 🔧 Use dependency injection for clean architecture
+- 🔧 Implement repository pattern with inversify
+- 🔧 Use discriminated unions for polymorphic schemas
+
+## 🌍 Internationalization
+
+### i18n Stack
+- **react-intl**: `^7.1.11`
+- **@formatjs/intl-localematcher**: `^0.6.1`
+- **@formatjs/cli**: `^6.7.1` (dev)
+
+**Best Practices:**
+- 🔧 Use ICU message format for complex pluralization
+- 🔧 Extract messages during build process
+- 🔧 Implement proper locale detection and fallbacks
+- 🔧 Use server-side internationalization when possible
+
+## 📊 Observability & Monitoring
+
+### OpenTelemetry Stack
+- **@opentelemetry/api**: `^1.9.0`
+- **@opentelemetry/sdk-node**: `^0.201.1`
+- **@opentelemetry/exporter-*-otlp-http**: `^0.201.1`
+- **@lerianstudio/lib-logs**: `^1.1.0`
+
+**Best Practices:**
+- ✅ Comprehensive observability setup with OTEL
+- 🔧 Use structured logging with proper correlation IDs
+- 🔧 Implement proper error tracking and alerting
+- 🔧 Monitor performance metrics and traces
+
+## 🛠️ Development & Testing
+
+### Testing Framework
+- **jest**: `^29.7.0`
+- **@testing-library/react**: `^16.3.0`
+- **@playwright/test**: `^1.52.0`
+
+### Development Tools
+- **eslint**: `^9`
+- **prettier**: `^3.5.3`
+- **storybook**: `^9.1.0-alpha.1`
+
+**Best Practices:**
+- ✅ Comprehensive testing strategy (unit, integration, e2e)
+- ⚠️ Storybook v9 is alpha - monitor for stability
+- 🔧 Use Testing Library best practices (test behavior, not implementation)
+- 🔧 Use Playwright for reliable e2e testing
+
+## 🔧 Utility Libraries
+
+### Date & Time
+- **dayjs**: `^1.11.13`
+
+### Utilities
+- **lodash**: `^4.17.21`
+
+**Best Practices:**
+- 🔧 DayJS is lightweight alternative to Moment.js
+- ⚠️ Use lodash sparingly - many functions available in modern JS
+- 🔧 Consider tree-shaking with individual lodash imports
+
+## ⚠️ Version Compatibility Notes
+
+1. **React 19 + Next.js 15**: Cutting-edge combination, monitor compatibility
+2. **Tailwind v4**: Still in beta, may have breaking changes
+3. **Storybook v9**: Alpha version, use with caution
+4. **NextAuth v4**: Consider migration path to Auth.js v5
+5. **Motion v12**: Breaking changes from Framer Motion, update animations accordingly
+
+## 🚨 Security Considerations
+
+- Keep JWT secrets secure and rotate regularly
+- Use HTTPS in production
+- Implement proper CORS policies
+- Sanitize user inputs
+- Use Content Security Policy headers
+- Regular dependency audits with `npm audit`
+
+## 📈 Performance Recommendations
+
+- Use Next.js Server Components for better performance
+- Implement proper caching strategies
+- Use React Query for efficient data fetching
+- Optimize images with Next.js Image component
+- Use proper code splitting and lazy loading
+- Monitor bundle size with `@next/bundle-analyzer`
+
+---
+
+*Last updated: Based on package.json analysis*

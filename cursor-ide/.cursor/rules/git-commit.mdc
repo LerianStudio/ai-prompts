@@ -1,0 +1,470 @@
+---
+description: Guidelines for writing clear and consistent git commit messages following conventional commits specification
+globs: ["**/*"]
+---
+
+## 🚨 ABSOLUTE MANDATORY COMMIT PROCESS
+
+**⚠️ ZERO TOLERANCE POLICY - VIOLATION = IMMEDIATE REJECTION**
+
+ALL commits **MUST** use a temporary file. Direct commits with -m flag are **ABSOLUTELY FORBIDDEN**.
+
+### 🔒 MANDATORY WORKFLOW - NO EXCEPTIONS
+
+**STEP 1: CREATE EMPTY TEMPORARY FILE - ALWAYS REQUIRED**
+```bash
+# MANDATORY: Create empty temporary file first
+git_msg=$(mktemp)
+echo "COMMIT_MESSAGE_PLACEHOLDER" > "$git_msg"
+```
+
+**STEP 2: EDIT THE TEMPORARY FILE WITH YOUR MESSAGE**
+```bash
+# MANDATORY: Use your preferred editor to write the commit message
+nano "$git_msg"
+# OR
+vim "$git_msg"
+# OR
+code "$git_msg"
+```
+
+**STEP 3: VERIFY FILE FORMAT**
+```bash
+# MANDATORY: Check the file exists and has content
+cat "$git_msg"
+```
+
+**STEP 4: COMMIT USING THE FILE**
+```bash
+# MANDATORY: Commit using the temporary file
+git commit -F "$git_msg"
+```
+
+**STEP 5: CLEANUP**
+```bash
+# MANDATORY: Remove temporary file
+rm "$git_msg"
+```
+
+### 🚫 ABSOLUTE VIOLATIONS - NEVER ALLOWED
+
+❌ **FORBIDDEN**: `git commit -m "message"`
+❌ **FORBIDDEN**: `git commit -m "line1" -m "line2"`
+❌ **FORBIDDEN**: Direct inline multiline messages
+❌ **FORBIDDEN**: Committing without creating a temporary file first
+❌ **FORBIDDEN**: Using echo with pipes directly to git commit
+❌ **FORBIDDEN**: Any commit method that bypasses file creation
+
+### ✅ MANDATORY ALTERNATIVE METHODS
+
+**Method 1: Using cat with EOF (PREFERRED)**
+```bash
+# MANDATORY: Create empty file first, then populate
+git_msg=$(mktemp)
+cat > "$git_msg" << 'EOF'
+feat(scope): short description
+
+- Bullet point 1
+- Bullet point 2
+- Bullet point 3
+
+BREAKING CHANGE: description of breaking changes
+EOF
+
+git commit -F "$git_msg"
+rm "$git_msg"
+```
+
+**Method 2: Using printf (ACCEPTABLE)**
+```bash
+# MANDATORY: Create empty file first, then populate
+git_msg=$(mktemp)
+printf "feat(scope): short description\n\n- Bullet point 1\n- Bullet point 2\n\nBREAKING CHANGE: description" > "$git_msg"
+git commit -F "$git_msg"
+rm "$git_msg"
+```
+
+**Method 3: Using editor (ACCEPTABLE)**
+```bash
+# MANDATORY: Create empty file first, then edit
+git_msg=$(mktemp)
+touch "$git_msg"  # Ensure file exists
+$EDITOR "$git_msg"
+git commit -F "$git_msg"
+rm "$git_msg"
+```
+
+## 🚀 Conventional Commits - REQUIRED
+
+This project uses **Conventional Commits** to automate changelogs and versioning via `semantic-release`.
+
+Only `feat`, `fix`, or `BREAKING CHANGE` will trigger version bumps. All types are parsed for changelogs.
+
+### ✅ MANDATORY Format
+
+```
+<type>(<optional-scope>): <short description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+### 📋 Commit Types
+
+| Type | Description | Example |
+|------|-------------|---------|
+| `feat` | New feature | `feat(auth): add biometric login` |
+| `fix` | Bug fix | `fix(api): resolve timeout on /users` |
+| `docs` | Documentation | `docs: update API documentation` |
+| `style` | Code style changes | `style: fix indentation in header` |
+| `refactor` | Code refactoring | `refactor(utils): simplify date helpers` |
+| `perf` | Performance improvements | `perf(queries): optimize user search` |
+| `test` | Testing | `test: add unit tests for auth flow` |
+| `chore` | Maintenance | `chore: update dependencies` |
+| `ci` | CI/CD changes | `ci: add automated testing workflow` |
+
+### 🧠 Version Bumps
+
+| Type | Triggers Version? | Notes |
+|------|-------------------|-------|
+| `feat` | **Minor** bump | Adds new feature (v1.2.0 → v1.3.0) |
+| `fix` | **Patch** bump | Bug fix (v1.2.3 → v1.2.4) |
+| `BREAKING CHANGE` | **Major** bump | Any type with breaking footer |
+| Others | No bump | Still included in changelog |
+
+## 📝 Commit Message Methods
+
+### Method 1: Simple Commits (RECOMMENDED)
+For straightforward commits, use the `-m` flag:
+
+```bash
+# ✅ Good: Simple single-line commits
+git commit -m "feat(auth): add login validation"
+git commit -m "fix(ui): resolve button alignment issue"
+git commit -m "docs: update installation guide"
+```
+
+### Method 2: Multi-line Commits
+For complex commits requiring detailed explanation:
+
+**Option A: Using Editor**
+```bash
+# Opens your default editor for multi-line messages
+git commit
+```
+
+**Option B: Multiple -m Flags**
+```bash
+# Use multiple -m flags for multi-line messages
+git commit -m "feat(applications): implement application management API" \
+          -m "" \
+          -m "- Add CRUD operations for applications management" \
+          -m "- Create application-related API endpoints" \
+          -m "- Implement React Query hooks for application data fetching" \
+          -m "- Extract security alert to a separate component"
+```
+
+**Option C: Temporary File (for complex commits)**
+```bash
+# For very complex commits that need careful crafting
+git_msg=$(mktemp)
+cat > "$git_msg" << 'EOF'
+feat(applications): implement application management API
+
+- Add CRUD operations for applications management
+- Create application-related API endpoints  
+- Implement React Query hooks for application data fetching
+- Extract security alert to a separate component
+- Add application options environment variable
+- Update forms to use real API data instead of mocks
+
+BREAKING CHANGE: application API endpoints now require authentication
+EOF
+
+git commit -F "$git_msg"
+rm "$git_msg"
+```
+
+## 🎯 Good Commit Examples
+
+### Feature Commits
+```bash
+git commit -m "feat(auth): enable biometric login support"
+
+git commit -m "feat(dashboard): add user analytics widget" \
+          -m "" \
+          -m "- Display user engagement metrics" \
+          -m "- Add real-time data updates" \
+          -m "- Include responsive design for mobile"
+```
+
+### Bug Fix Commits
+```bash
+git commit -m "fix(api): resolve timeout on /users endpoint"
+
+git commit -m "fix(ui): prevent form submission with invalid data" \
+          -m "" \
+          -m "- Add client-side validation before submit" \
+          -m "- Display error messages for invalid fields" \
+          -m "- Prevent multiple form submissions"
+```
+
+### Breaking Change Commits
+```bash
+git commit -m "feat(auth): switch to OAuth2" \
+          -m "" \
+          -m "BREAKING CHANGE: legacy auth removed, update login flow"
+```
+
+### Refactoring Commits
+```bash
+git commit -m "refactor(components): extract reusable Button component" \
+          -m "" \
+          -m "- Create shared Button component with variants" \
+          -m "- Update all pages to use new Button component" \
+          -m "- Remove duplicate button styles"
+```
+
+## ❌ Common Mistakes to Avoid
+
+```bash
+# ❌ Bad: No type prefix
+git commit -m "Update login screen"
+
+# ❌ Bad: Vague description
+git commit -m "fix: fixes"
+
+# ❌ Bad: Too technical/implementation focused
+git commit -m "feat: change getUserData function to use axios instead of fetch"
+
+# ❌ Bad: Present tense instead of imperative
+git commit -m "feat: adding new feature"
+
+# ✅ Good: Clear, imperative, meaningful
+git commit -m "feat(auth): add password reset functionality"
+```
+
+## 🔧 Commit Message Best Practices
+
+### Subject Line Guidelines
+- **Keep it under 50 characters** for better readability
+- **Use imperative mood**: "add" not "added" or "adding"
+- **Don't end with a period**
+- **Be specific but concise**
+
+### Body Guidelines (when needed)
+- **Wrap at 72 characters** for optimal readability
+- **Explain what and why, not how**
+- **Use bullet points** for multiple changes
+- **Reference issues** when applicable
+
+### Footer Guidelines
+- **Breaking changes**: Use `BREAKING CHANGE:` footer
+- **Issue references**: Use `Fixes #123` or `Closes #456`
+- **Co-authors**: Use `Co-authored-by: Name <email>`
+
+## 🧪 Testing Your Commits
+
+Validate your commit messages before pushing:
+
+```bash
+# Check last 5 commits
+npx commitlint --from=HEAD~5 --to=HEAD
+
+# Check specific commit
+npx commitlint --edit .git/COMMIT_EDITMSG
+```
+
+## 🔄 Amending Commits
+
+### Fix Last Commit Message
+```bash
+# Amend the most recent commit message
+git commit --amend -m "feat(auth): add proper password validation"
+```
+
+### Add Files to Last Commit
+```bash
+# Stage new files and add to last commit
+git add forgotten-file.ts
+git commit --amend --no-edit
+```
+
+## 📚 Integration with Tools
+
+### Semantic Release
+The project uses semantic-release to automatically:
+- Generate version numbers based on commit types
+- Create release notes from commit messages  
+- Publish releases to npm/GitHub
+- Update changelog files
+
+### Pre-commit Hooks
+The project may include pre-commit hooks that:
+- Validate commit message format
+- Run linting and formatting
+- Execute tests before commit
+- Prevent commits that break conventions
+
+### IDE Integration
+Configure your IDE/editor for better commit experience:
+
+**VS Code:**
+- Install "Conventional Commits" extension
+- Use Command Palette → "Conventional Commits"
+
+**JetBrains IDEs:**
+- Install "Git Commit Template" plugin
+- Configure conventional commit templates
+
+## 🚨 When Commit Guidelines Are Enforced
+
+The following scenarios will enforce commit message validation:
+
+### CI/CD Pipeline
+- All commits are validated during CI builds
+- Non-conforming commits will fail the build
+- Pull requests cannot be merged with invalid commits
+
+### Git Hooks
+- Pre-commit hooks validate message format
+- Commit is rejected if format is invalid
+- Developer must fix and re-commit
+
+### Manual Review
+- Code reviewers check commit message quality
+- Poor commit messages may result in change requests
+- Squash merges can fix commit message issues
+
+## 🔧 Helpful Aliases and Scripts
+
+### Git Aliases
+Add to your `~/.gitconfig`:
+
+```ini
+[alias]
+    # Conventional commit shortcuts
+    cf = "!f() { git commit -m \"feat: $1\"; }; f"
+    cx = "!f() { git commit -m \"fix: $1\"; }; f"
+    cd = "!f() { git commit -m \"docs: $1\"; }; f"
+    cr = "!f() { git commit -m \"refactor: $1\"; }; f"
+    
+    # Interactive conventional commit
+    cc = "!f() { \
+        echo 'Select commit type:'; \
+        echo '1) feat: A new feature'; \
+        echo '2) fix: A bug fix'; \
+        echo '3) docs: Documentation only changes'; \
+        echo '4) style: Changes that do not affect meaning'; \
+        echo '5) refactor: A code change that neither fixes a bug nor adds a feature'; \
+        echo '6) perf: A code change that improves performance'; \
+        echo '7) test: Adding missing tests'; \
+        echo '8) chore: Changes to the build process'; \
+        read -p 'Enter choice [1-8]: ' choice; \
+        case $choice in \
+            1) type='feat' ;; \
+            2) type='fix' ;; \
+            3) type='docs' ;; \
+            4) type='style' ;; \
+            5) type='refactor' ;; \
+            6) type='perf' ;; \
+            7) type='test' ;; \
+            8) type='chore' ;; \
+            *) echo 'Invalid choice' && exit 1 ;; \
+        esac; \
+        read -p 'Enter scope (optional): ' scope; \
+        read -p 'Enter description: ' desc; \
+        if [ -n \"$scope\" ]; then \
+            git commit -m \"$type($scope): $desc\"; \
+        else \
+            git commit -m \"$type: $desc\"; \
+        fi; \
+    }; f"
+```
+
+### Helper Scripts
+
+**Commit with Template** (`scripts/commit.sh`):
+```bash
+#!/bin/bash
+# Interactive commit helper
+
+echo "🚀 Conventional Commit Helper"
+echo ""
+
+# Get commit type
+echo "Select commit type:"
+echo "1) feat     - A new feature"
+echo "2) fix      - A bug fix"  
+echo "3) docs     - Documentation only changes"
+echo "4) style    - Formatting, missing semi colons, etc"
+echo "5) refactor - A code change that neither fixes a bug nor adds a feature"
+echo "6) perf     - A code change that improves performance"
+echo "7) test     - Adding missing tests or correcting existing tests"
+echo "8) chore    - Changes to the build process or auxiliary tools"
+
+read -p "Enter choice [1-8]: " choice
+
+case $choice in
+    1) type="feat" ;;
+    2) type="fix" ;;
+    3) type="docs" ;;
+    4) type="style" ;;
+    5) type="refactor" ;;
+    6) type="perf" ;;
+    7) type="test" ;;
+    8) type="chore" ;;
+    *) echo "❌ Invalid choice" && exit 1 ;;
+esac
+
+# Get scope
+read -p "Enter scope (optional): " scope
+
+# Get description
+read -p "Enter description: " description
+
+# Construct commit message
+if [ -n "$scope" ]; then
+    message="$type($scope): $description"
+else
+    message="$type: $description"
+fi
+
+# Confirm and commit
+echo ""
+echo "📝 Commit message: $message"
+read -p "Commit with this message? [y/N]: " confirm
+
+if [[ $confirm =~ ^[Yy]$ ]]; then
+    git commit -m "$message"
+    echo "✅ Commit successful!"
+else
+    echo "❌ Commit cancelled"
+fi
+```
+
+## 📖 References
+
+- [Conventional Commits Specification](mdc:https:/www.conventionalcommits.org/en/v1.0.0)
+- [Semantic Release Documentation](mdc:https:/semantic-release.gitbook.io)
+- [Git Commit Best Practices](mdc:https:/chris.beams.io/posts/git-commit)
+
+---
+
+*Remember: Good commit messages help your team understand changes quickly and make debugging easier. Take the time to write clear, descriptive commits.*
+
+## 🔍 COMMIT VERIFICATION CHECKLIST
+
+Before every commit, verify:
+
+- [ ] ✅ Created temporary file using `mktemp`
+- [ ] ✅ File exists and is writable
+- [ ] ✅ Message follows conventional commit format
+- [ ] ✅ Used `git commit -F "$file"` command
+- [ ] ✅ Cleaned up temporary file with `rm`
+- [ ] ✅ Never used `git commit -m` flag
+- [ ] ✅ Message has proper format and content
+- [ ] ✅ Breaking changes are documented if applicable
+
+**NO EXCEPTIONS. NO SHORTCUTS. NO COMPROMISES.**

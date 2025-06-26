@@ -1,0 +1,233 @@
+---
+description: React Context and React Query state management patterns for global and server state
+globs: ["src/providers/**/*", "src/hooks/**/*", "src/client/**/*", "src/**/*.tsx"]
+---
+
+# State Management Guidelines
+
+## Overview
+
+This project uses React Context for global state management with a provider-based architecture. The state management strategy emphasizes clean separation of concerns, predictable state updates, and efficient re-rendering patterns.
+
+## Architecture Patterns
+
+### Provider Structure
+State management is organized through specialized context providers in [src/providers](mdc:src/providers):
+
+- [organization-provider](mdc:src/providers/organization-provider) - Organization context and selection
+- [permission-provider](mdc:src/providers/permission-provider) - User permissions and access control
+
+### State Management Hierarchy
+```typescript
+// Application state hierarchy
+<I18nProvider>
+  <ThemeProvider>
+    <OrganizationProvider>
+      <PermissionProvider>
+        <App />
+      </PermissionProvider>
+    </OrganizationProvider>
+  </ThemeProvider>
+</I18nProvider>
+```
+
+## Data Fetching and Caching
+
+### React Query Integration
+```typescript
+// Custom hooks with React Query
+export function useOrganizations() {
+  return useQuery({
+    queryKey: ['organizations'],
+    queryFn: () => organizationService.getAll(),
+  });
+}
+
+export function useAccounts(organizationId: string, ledgerId: string) {
+  return useQuery({
+    queryKey: ['accounts', organizationId, ledgerId],
+    queryFn: () => accountService.getByLedger(organizationId, ledgerId),
+  });
+}
+
+// Mutations with optimistic updates
+export function useCreateAccount() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: accountService.create,
+    onMutate: async (newAccount) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries(['accounts']);
+
+      // Snapshot previous value
+      const previousAccounts = queryClient.getQueryData(['accounts']);
+
+      // Optimistically update
+      queryClient.setQueryData(['accounts'], (old: any[]) => [
+        ...old,
+        { ...newAccount, id: `temp-${Date.now()}` },
+      ]);
+
+      return { previousAccounts };
+    },
+    onError: (err, newAccount, context) => {
+      // Rollback on error
+      queryClient.setQueryData(['accounts'], context?.previousAccounts);
+    },
+    onSettled: () => {
+      // Refetch after success or error
+      queryClient.invalidateQueries(['accounts']);
+    },
+  });
+}
+```
+## State Persistence
+
+### Local Storage Integration
+```typescript
+// Persistent state hook
+export function usePersistentState<T>(
+  key: string,
+  defaultValue: T
+): [T, (value: T) => void] {
+  const [state, setState] = useState<T>(() => {
+    try {
+      const item = localStorage.getItem(key);
+      return item ? JSON.parse(item) : defaultValue;
+    } catch {
+      return defaultValue;
+    }
+  });
+
+  const setPersistentState = useCallback((value: T) => {
+    setState(value);
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {
+      console.error(`Failed to persist state for key "${key}":`, error);
+    }
+  }, [key]);
+
+  return [state, setPersistentState];
+}
+
+// Usage
+export function UserPreferences() {
+  const [theme, setTheme] = usePersistentState('theme', 'light');
+  const [language, setLanguage] = usePersistentState('language', 'en');
+
+  return (
+    <div>
+      <ThemeSelector value={theme} onChange={setTheme} />
+      <LanguageSelector value={language} onChange={setLanguage} />
+    </div>
+  );
+}
+```
+
+### Session Storage for Temporary State
+```typescript
+// Session-based state for temporary data
+export function useSessionState<T>(
+  key: string,
+  defaultValue: T
+): [T, (value: T) => void] {
+  const [state, setState] = useState<T>(() => {
+    try {
+      const item = sessionStorage.getItem(key);
+      return item ? JSON.parse(item) : defaultValue;
+    } catch {
+      return defaultValue;
+    }
+  });
+
+  const setSessionState = useCallback((value: T) => {
+    setState(value);
+    try {
+      sessionStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {
+      console.error(`Failed to save session state for key "${key}":`, error);
+    }
+  }, [key]);
+
+  return [state, setSessionState];
+}
+```
+
+## Performance Optimization
+
+### Memoization Strategies
+```typescript
+// Memoizing expensive computations
+export function ExpensiveComponent({ data, filters }) {
+  const filteredData = useMemo(() => {
+    return data.filter(item =>
+      Object.entries(filters).every(([key, value]) =>
+        item[key]?.toString().toLowerCase().includes(value.toLowerCase())
+      )
+    );
+  }, [data, filters]);
+
+  const sortedData = useMemo(() => {
+    return [...filteredData].sort((a, b) => a.name.localeCompare(b.name));
+  }, [filteredData]);
+
+  return (
+    <div>
+      {sortedData.map(item => (
+        <ItemComponent key={item.id} item={item} />
+      ))}
+    </div>
+  );
+}
+
+// Memoizing callback functions
+export function ParentComponent() {
+  const [count, setCount] = useState(0);
+  const [items, setItems] = useState([]);
+
+  const handleItemClick = useCallback((itemId: string) => {
+    setItems(prev => prev.map(item =>
+      item.id === itemId
+        ? { ...item, clicked: true }
+        : item
+    ));
+  }, []);
+
+  return (
+    <div>
+      <button onClick={() => setCount(c => c + 1)}>Count: {count}</button>
+      {items.map(item => (
+        <MemoizedItemComponent
+          key={item.id}
+          item={item}
+          onClick={handleItemClick}
+        />
+      ))}
+    </div>
+  );
+}
+
+const MemoizedItemComponent = React.memo(({ item, onClick }) => {
+  return (
+    <div onClick={() => onClick(item.id)}>
+      {item.name}
+    </div>
+  );
+});
+```
+
+## State Management Best Practices
+
+### Context Design Principles
+- **Single Responsibility**: Each context should manage one specific domain
+- **Granular Updates**: Minimize re-renders by splitting contexts appropriately
+- **Error Boundaries**: Wrap providers with error boundaries
+- **Type Safety**: Use TypeScript for all context definitions
+
+### Performance Guidelines
+- Use `useMemo` and `useCallback` to prevent unnecessary re-renders
+- Split large contexts into smaller, focused ones
+- Implement proper dependency arrays in hooks
+- Consider using React.memo for expensive child components

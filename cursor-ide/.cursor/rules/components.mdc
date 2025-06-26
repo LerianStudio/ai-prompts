@@ -1,0 +1,474 @@
+---
+description: Component architecture guidelines, design system patterns, and UI component best practices
+globs: ["src/components/**/*", "src/app/**/*.tsx"]
+---
+
+# Component Architecture & Design System
+
+## Component Hierarchy
+
+The UI components are organized in a hierarchical structure following atomic design principles:
+
+### 1. Base UI Components ([src/components/ui](mdc:src/components/ui))
+Low-level, reusable components based on Radix UI primitives with Tailwind styling:
+
+- **Form Controls**: `input`, `textarea`, `select`, `checkbox`, `switch`, `combobox`, `autocomplete`
+- **Navigation**: `button`, `dropdown-menu`, `breadcrumb`, `tabs`
+- **Layout**: `card`, `sheet`, `dialog`, `popover`, `separator`, `collapsible`
+- **Feedback**: `alert`, `toast`, `tooltip`, `progress`, `skeleton`, `loading-button`
+- **Data Display**: `table`, `badge`, `avatar`, `stepper`
+
+### 2. Composite Components ([src/components](mdc:src/components))
+Higher-level components composed from base UI components:
+
+- **Layout Components**: `page`, `page-header`, `page-footer`, `sidebar`, `header`
+- **Data Display**: `entity-data-table`, `entity-box`, `pagination`, `empty-resource`
+- **Navigation**: `breadcrumb`, `organization-switcher`, `user-dropdown`, `settings-dropdown`
+- **Forms**: Specialized form fields in `form/` directory
+- **Content**: `not-found-content`, `confirmation-dialog`
+
+### 3. Domain-Specific Components
+Components specific to business domains:
+
+- [src/components/transactions](mdc:src/components/transactions) - Transaction-related UI components
+- Domain-specific forms and data displays for entities like accounts, assets, ledgers
+
+### 4. Page-Level Components ([src/app](mdc:src/app))
+Components specific to particular pages or routes, composed of composite and base components.
+
+## Design System Patterns
+
+### Component Variants with CVA
+Use `class-variance-authority` for consistent component variants:
+
+```typescript
+// src/components/ui/button/button.tsx
+import { cva, type VariantProps } from 'class-variance-authority';
+
+const buttonVariants = cva(
+  // Base styles
+  'inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50',
+  {
+    variants: {
+      variant: {
+        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+        destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+        outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+        secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+        ghost: 'hover:bg-accent hover:text-accent-foreground',
+        link: 'text-primary underline-offset-4 hover:underline',
+      },
+      size: {
+        default: 'h-10 px-4 py-2',
+        sm: 'h-9 rounded-md px-3',
+        lg: 'h-11 rounded-md px-8',
+        icon: 'h-10 w-10',
+      },
+    },
+    defaultVariants: {
+      variant: 'default',
+      size: 'default',
+    },
+  }
+);
+
+interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
+  asChild?: boolean;
+}
+
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant, size, asChild = false, ...props }, ref) => {
+    const Comp = asChild ? Slot : 'button';
+    return (
+      <Comp
+        className={cn(buttonVariants({ variant, size, className }))}
+        ref={ref}
+        {...props}
+      />
+    );
+  }
+);
+```
+
+### Theme Integration
+Components should support theme switching and CSS variables:
+
+```typescript
+// Component supporting theme variables
+export function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cn(
+        'rounded-lg border bg-card text-card-foreground shadow-sm',
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+// Theme-aware data table
+export function DataTable<T>({ className, ...props }: DataTableProps<T>) {
+  return (
+    <div className={cn('rounded-md border bg-background', className)}>
+      <Table className="border-border">
+        {/* Table content */}
+      </Table>
+    </div>
+  );
+}
+```
+
+## Form Components Architecture
+
+### Specialized Form Components in [src/components/form](mdc:src/components/form)
+
+- **input-field/** - Text input with validation and label
+- **select-field/** - Dropdown selection with search
+- **combo-box-field/** - Searchable dropdown with custom options
+- **switch-field/** - Toggle switches with labels
+- **metadata-field/** - Key-value metadata inputs
+- **country-field/** - Country selection with flags
+- **state-field/** - State/province selection
+- **pagination-limit-field/** - Page size selection
+
+### Form Field Component Pattern
+```typescript
+// Base form field wrapper
+export function FormFieldWrapper({
+  label,
+  description,
+  error,
+  required,
+  children,
+  ...props
+}: FormFieldWrapperProps) {
+  return (
+    <div className="space-y-2">
+      <Label className={cn(required && "after:content-['*'] after:ml-0.5 after:text-destructive")}>
+        {label}
+      </Label>
+      {description && (
+        <p className="text-sm text-muted-foreground">{description}</p>
+      )}
+      {children}
+      {error && (
+        <p className="text-sm font-medium text-destructive">{error}</p>
+      )}
+    </div>
+  );
+}
+```
+
+## Data Display Patterns
+
+### Entity Data Table Pattern
+Standardized data table for entity listing:
+
+```typescript
+// src/components/entity-data-table/entity-data-table.tsx
+interface EntityDataTableProps<T> {
+  data: T[];
+  columns: ColumnDef<T>[];
+  entityName: string;
+  searchableColumns?: string[];
+  filterableColumns?: FilterColumn[];
+  pagination?: PaginationConfig;
+  actions?: {
+    create?: React.ComponentType;
+    bulk?: BulkAction[];
+  };
+}
+
+export function EntityDataTable<T>({
+  data,
+  columns,
+  entityName,
+  searchableColumns = [],
+  filterableColumns = [],
+  pagination,
+  actions,
+}: EntityDataTableProps<T>) {
+  return (
+    <div className="space-y-4">
+      <DataTableToolbar
+        searchableColumns={searchableColumns}
+        filterableColumns={filterableColumns}
+        actions={actions}
+      />
+      <DataTable
+        columns={columns}
+        data={data}
+        pagination={pagination}
+      />
+    </div>
+  );
+}
+```
+
+### Entity Box Pattern
+Consistent card layout for entity overviews:
+
+```typescript
+// src/components/entity-box/entity-box.tsx
+interface EntityBoxProps {
+  title: string;
+  description?: string;
+  status?: 'active' | 'inactive' | 'pending';
+  metadata?: Record<string, string>;
+  actions?: React.ReactNode;
+  children?: React.ReactNode;
+}
+
+export function EntityBox({
+  title,
+  description,
+  status,
+  metadata,
+  actions,
+  children,
+}: EntityBoxProps) {
+  return (
+    <Card className="p-6">
+      <CardHeader className="p-0 pb-4">
+        <div className="flex items-start justify-between">
+          <div>
+            <CardTitle className="text-lg">{title}</CardTitle>
+            {description && (
+              <CardDescription className="mt-1">{description}</CardDescription>
+            )}
+          </div>
+          {status && <Badge variant={status}>{status}</Badge>}
+        </div>
+      </CardHeader>
+      
+      {metadata && (
+        <CardContent className="p-0 pb-4">
+          <dl className="grid grid-cols-2 gap-2 text-sm">
+            {Object.entries(metadata).map(([key, value]) => (
+              <div key={key}>
+                <dt className="font-medium text-muted-foreground">{key}</dt>
+                <dd>{value}</dd>
+              </div>
+            ))}
+          </dl>
+        </CardContent>
+      )}
+      
+      {children && <CardContent className="p-0 pb-4">{children}</CardContent>}
+      
+      {actions && (
+        <CardFooter className="p-0 pt-4 border-t">
+          {actions}
+        </CardFooter>
+      )}
+    </Card>
+  );
+}
+```
+
+## Component Naming Conventions
+
+### File and Directory Structure
+- Use **PascalCase** for component names and file directories
+- Use **kebab-case** for file names (`user-dropdown.tsx`)
+- Use descriptive names that indicate the component's purpose
+- Group related components in folders with an `index.ts` export
+
+```typescript
+// Directory structure example
+src/components/
+├── ui/
+│   ├── button/
+│   │   ├── button.tsx
+│   │   └── index.ts
+│   └── card/
+│       ├── card.tsx
+│       └── index.ts
+├── form/
+│   ├── input-field/
+│   │   ├── input-field.tsx
+│   │   └── index.ts
+│   └── select-field/
+│       ├── select-field.tsx
+│       └── index.ts
+└── layout/
+    ├── page-header/
+    │   ├── page-header.tsx
+    │   └── index.ts
+    └── sidebar/
+        ├── sidebar.tsx
+        └── index.ts
+```
+
+### Component Naming Patterns
+- **Base Components**: Simple names (e.g., `Button`, `Input`, `Card`)
+- **Composite Components**: Descriptive compound names (e.g., `DataTable`, `PageHeader`)
+- **Domain Components**: Domain-prefixed names (e.g., `AccountCard`, `TransactionRow`)
+- **Form Components**: Field-suffixed names (e.g., `InputField`, `SelectField`)
+
+## Design Tokens and Styling
+
+### Consistent Design Tokens
+Use CSS variables for consistent theming:
+
+```css
+/* Design tokens */
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --muted: 210 40% 98%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --primary: 222.2 47.4% 11.2%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96%;
+  --secondary-foreground: 222.2 47.4% 11.2%;
+  --accent: 210 40% 96%;
+  --accent-foreground: 222.2 47.4% 11.2%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --ring: 222.2 84% 4.9%;
+}
+```
+
+### Responsive Design Patterns
+Components should support responsive design:
+
+```typescript
+// Responsive component example
+export function ResponsiveCard({ children, ...props }: CardProps) {
+  return (
+    <Card 
+      className={cn(
+        'w-full',
+        'sm:max-w-sm md:max-w-md lg:max-w-lg',
+        'p-4 sm:p-6',
+        props.className
+      )}
+      {...props}
+    >
+      {children}
+    </Card>
+  );
+}
+
+// Responsive data table
+export function ResponsiveDataTable<T>({ columns, ...props }: DataTableProps<T>) {
+  return (
+    <div className="rounded-md border">
+      <div className="overflow-x-auto">
+        <Table className="min-w-full">
+          {/* Table content */}
+        </Table>
+      </div>
+    </div>
+  );
+}
+```
+
+## Component Export Patterns
+
+### Index File Exports
+Each component directory should have a clean export:
+
+```typescript
+// src/components/ui/button/index.ts
+export { Button, buttonVariants } from './button';
+export type { ButtonProps } from './button';
+
+// src/components/form/input-field/index.ts
+export { InputField } from './input-field';  
+export type { InputFieldProps } from './input-field';
+
+// Main component index
+// src/components/index.ts
+export * from './ui';
+export * from './form';
+export * from './layout';
+```
+
+### Type Exports
+Export component prop types for external usage:
+
+```typescript
+// Component with exported types
+interface DataTableProps<T> {
+  data: T[];
+  columns: ColumnDef<T>[];
+  // ... other props
+}
+
+export function DataTable<T>(props: DataTableProps<T>) {
+  // Component implementation
+}
+
+export type { DataTableProps };
+```
+
+## Dependencies and Integration
+
+### Core Dependencies
+- **Radix UI**: Provides accessible, unstyled component primitives
+- **Tailwind CSS**: Utility-first CSS framework for styling
+- **class-variance-authority (CVA)**: Component variant management
+- **clsx/cn**: Conditional class name utility
+- **Framer Motion**: Animation library for smooth transitions
+- **Lucide React**: Icon library for consistent iconography
+
+### Design System Integration
+- **React Hook Form**: Form handling and validation
+- **Zod**: Schema validation for form inputs
+- **TanStack Table**: Headless table component with sorting, filtering, and pagination
+- **Sonner**: Toast notifications
+- **React Server Components**: Progressive and streaming rendering
+
+### Component Testing Patterns
+```typescript
+// Component testing example
+import { render, screen } from '@testing-library/react';
+import { Button } from './button';
+
+describe('Button', () => {
+  it('renders with default variant', () => {
+    render(<Button>Click me</Button>);
+    const button = screen.getByRole('button', { name: /click me/i });
+    expect(button).toHaveClass('bg-primary');
+  });
+
+  it('renders with destructive variant', () => {
+    render(<Button variant="destructive">Delete</Button>);
+    const button = screen.getByRole('button', { name: /delete/i });
+    expect(button).toHaveClass('bg-destructive');
+  });
+});
+```
+
+## Component Evolution Guidelines
+
+### Component Lifecycle Management
+- **Stable**: Production-ready components with consistent API
+- **Beta**: Components under active development with potential breaking changes
+- **Deprecated**: Components being phased out with migration paths
+- **Experimental**: New patterns being explored
+
+### Breaking Changes Protocol
+1. **Deprecation Warning**: Add deprecation warnings to components
+2. **Migration Guide**: Provide clear migration documentation
+3. **Codemods**: Create automated migration tools when possible
+4. **Gradual Migration**: Support both old and new APIs during transition
+5. **Final Removal**: Remove deprecated components after sufficient notice
+
+### Component Documentation
+- Document component purpose and use cases
+- Provide comprehensive prop documentation
+- Include accessibility considerations
+- Show responsive behavior examples
+- Document theme integration points

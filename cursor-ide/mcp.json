@@ -1,0 +1,51 @@
+{
+    "mcpServers": {
+      "midaz": {
+        "command": "npx",
+        "args": ["-y", "@lerianstudio/midaz-mcp-server@latest"]
+      },
+      "memory": {
+        "command": "docker",
+        "args": [
+          "exec",
+          "-i",
+          "lerian-mcp-memory-server",
+          "node",
+          "/app/mcp-proxy.js"
+        ]
+      },
+      "interactive-feedback-mcp": {
+        "command": "uv",
+        "args": [
+          "--directory",
+          "/home/hostname/folder/interactive-feedback-mcp",
+          "run",
+          "server.py"
+        ],
+        "timeout": 600,
+        "autoApprove": ["interactive_feedback"]
+      },
+      "context7": {
+        "command": "npx",
+        "args": ["-y", "@upstash/context7-mcp"]
+      },
+      "sequential-thinking": {
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+      },
+      "browser-tools": {
+        "command": "npx",
+        "args": ["-y", "npx @agentdeskai/browser-tools-mcp@latest"]
+      },
+      "Framelink Figma MCP": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "figma-developer-mcp",
+        "--figma-api-key=xxxxx",
+        "--stdio"
+      ]
+    }
+    }
+  }
+  

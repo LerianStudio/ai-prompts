@@ -1,0 +1,660 @@
+---
+description: TypeScript, React, Next.js coding standards, patterns, and best practices
+globs: ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.jsx"]
+---
+
+# Coding Standards
+
+## TypeScript Standards
+
+### Type Safety
+- Use TypeScript for all new code with strict mode enabled
+- Define proper interfaces and types for all components, functions, and variables
+- Avoid using `any` type - use `unknown` when type is genuinely unknown
+- Use type inference where appropriate, explicit types when clarity is needed
+- Leverage utility types (`Partial<T>`, `Pick<T>`, `Omit<T>`, etc.)
+- Use `satisfies` operator for type validation while preserving literal types
+- Implement branded types for type-safe identifiers
+- Use `const` assertions for literal types when appropriate
+
+### Type Definitions
+- Place shared types in [src/types](mdc:src/types) directory
+- Use Zod schemas for runtime validation in [src/schema](mdc:src/schema)
+- Export types from domain entities and DTOs
+- Use generic types for reusable components and functions
+- Consider using `infer` for complex type extractions
+
+## Code Style and Formatting
+
+### Formatting Rules
+- Follow the formatting rules defined in [.prettierrc](mdc:.prettierrc)
+- Adhere to linting rules in [.eslintrc.json](mdc:.eslintrc.json)
+- Use Prettier for code formatting with Tailwind CSS plugin
+- Configure your editor to format on save
+- Follow consistent import ordering using absolute imports
+
+### Naming Conventions
+- **Variables and Functions**: `camelCase` (e.g., `getUserData`, `isLoading`)
+- **Classes and Interfaces**: `PascalCase` (e.g., `UserEntity`, `IUserRepository`)
+- **Components**: `PascalCase` for names, `kebab-case` for files (e.g., `UserDropdown` → `user-dropdown.tsx`)
+- **Constants**: `SCREAMING_SNAKE_CASE` (e.g., `API_BASE_URL`, `MAX_RETRY_ATTEMPTS`)
+- **Files and Directories**: `kebab-case` (e.g., `user-settings.tsx`, `page-header/`)
+- **API Routes**: Follow RESTful conventions with proper HTTP methods
+- **Type Parameters**: Single uppercase letter or PascalCase prefixed with T (e.g., `T`, `TValue`, `TResponse`)
+
+## Next.js Patterns
+
+### App Router Conventions
+- Use Next.js 14+ App Router patterns
+- Implement Server Components by default, Client Components when needed
+- Mark client components with `'use client'` directive at the top of the file
+- Use proper route grouping with `(group-name)` syntax
+- Implement loading, error, and not-found pages appropriately
+- Use parallel routes for complex layouts with independent navigation
+- Use intercepting routes for modal patterns
+
+### API Route Patterns
+```typescript
+// Standard API route structure (App Router)
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    // Implementation
+  } catch (error) {
+    return handleApiError(error);
+  }
+}
+
+// With validation
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const parsed = schema.safeParse(body);
+
+    if (!parsed.success) {
+      return Response.json({ error: 'Validation failed', details: parsed.error.format() }, { status: 400 });
+    }
+
+    // Implementation with parsed.data
+  } catch (error) {
+    return handleApiError(error);
+  }
+}
+```
+
+### Environment Variables
+- Define environment variables with proper validation using Zod
+- Use `.env.local.example` for local development templates
+- Never commit sensitive credentials
+- Validate env vars at application startup
+- Differentiate between server-only and client-accessible variables
+- Use the `NEXT_PUBLIC_` prefix for client-accessible variables
+
+### Streaming and Suspense
+- Use React Suspense for progressively loading UI components
+- Implement streaming with appropriate fallbacks
+- Use `loading.tsx` for route segment loading states
+
+## React Patterns
+
+### Component Architecture
+- Use functional components with hooks exclusively
+- Follow the composition pattern over inheritance
+- Keep components small and focused on single responsibility
+- Separate UI logic from business logic
+- Use Client Components for interactive UI with state and effects
+
+### Server Component Structure
+```typescript
+// Standard server component structure
+type ComponentProps = {
+  // Props interface
+}
+
+export async function ServerComponent({ prop1, prop2 }: ComponentProps) {
+  // Data fetching logic
+  const data = await fetchData();
+
+  return (
+    // JSX with client components as needed
+    <ClientComponent data={data} />
+  );
+}
+```
+
+### Client Component Structure
+```typescript
+'use client';
+
+// Standard client component structure
+type ComponentProps = {
+  // Props interface
+}
+
+export function ClientComponent({ prop1, prop2 }: ComponentProps) {
+  // Hooks
+  // Event handlers
+  // Render logic
+
+  return (
+    // JSX
+  );
+}
+```
+
+### Server vs. Client Component Patterns
+
+#### Server Component Patterns
+Server components are used for:
+- Rendering static or infrequently changing UI
+- SEO-critical content
+- Layout structures and page shells
+
+#### Client Component Patterns
+Client components are used for:
+- Interactive UI elements
+- Event listeners and user interactions
+- State management and effects
+- Browser APIs that are unavailable on the server
+- Custom hooks that use React state or effects
+
+```typescript
+// Client component pattern
+'use client';
+
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { createAccount } from '@/actions/accounts';
+
+interface AccountActionsProps {
+  accountId: string;
+}
+
+export function AccountActions({ accountId }: AccountActionsProps) {
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    try {
+      await deleteAccount(accountId);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  return (
+    <div className="flex gap-2">
+      <Button variant="outline" asChild>
+        <Link href={`/accounts/${accountId}/edit`}>Edit</Link>
+      </Button>
+      <Button
+        variant="destructive"
+        onClick={handleDelete}
+        disabled={isDeleting}
+      >
+        {isDeleting ? 'Deleting...' : 'Delete'}
+      </Button>
+    </div>
+  );
+}
+```
+
+#### Hybrid Component Patterns
+Combining server and client components effectively:
+
+```typescript
+// src/app/(routes)/accounts/page.tsx
+// Server component with client component children
+export default async function AccountsPage() {
+  // Server-side data fetching
+  const accounts = await getAccountsUseCase.execute();
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <PageHeader title="Accounts" />
+        {/* Client component for interactions */}
+        <CreateAccountButton />
+      </div>
+
+      {/* Server component with data */}
+      <AccountsList accounts={accounts} />
+    </div>
+  );
+}
+```
+
+### Streaming and Suspense Patterns
+
+#### Suspense Boundaries
+Using Suspense for progressive loading:
+
+```typescript
+// src/app/(routes)/dashboard/page.tsx
+export default function DashboardPage() {
+  return (
+    <div className="grid grid-cols-12 gap-6">
+      {/* Critical UI loads first */}
+      <UserWelcome />
+
+      {/* Less critical UI streams in */}
+      <Suspense fallback={<AccountsSkeleton />}>
+        <AccountsSummary />
+      </Suspense>
+
+      <Suspense fallback={<TransactionsSkeleton />}>
+        <RecentTransactions />
+      </Suspense>
+
+      <Suspense fallback={<AssetsSkeleton />}>
+        <AssetAllocation />
+      </Suspense>
+    </div>
+  );
+}
+```
+
+#### Loading UI Pattern
+Using loading.tsx for route segment loading:
+
+```typescript
+// src/app/(routes)/accounts/loading.tsx
+export default function AccountsLoading() {
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <Skeleton className="h-10 w-40" />
+        <Skeleton className="h-10 w-32" />
+      </div>
+      <div className="space-y-4">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Skeleton key={i} className="h-24 w-full" />
+        ))}
+      </div>
+    </div>
+  );
+}
+```
+
+### Hooks Usage
+- Use custom hooks for shared logic in [src/hooks](mdc:src/hooks)
+- Try to use hooks that already exists in the project on new features
+- Follow hooks rules (only call at top level)
+- Use `useCallback` and `useMemo` for performance optimization when needed
+- Implement proper cleanup in `useEffect`
+- Use `use` hook for promise consumption in Client Components
+- Leverage React 18+ hooks like `useId`, `useDeferredValue`, and `useTransition`
+- Consider React 19 hooks when available (`useActionState`, `useFormState`, etc.)
+
+### State Management
+- Use React Context for global state ([src/providers](mdc:src/providers))
+- Leverage `useState` for local component state
+- Use `useReducer` for complex state logic
+- Consider external state management (Zustand) for complex scenarios
+- Use React Query for server state management and caching
+
+## Data Fetching and Mutations
+
+### React Query (TanStack Query) Integration
+- Use React Query for all server state management, data fetching, and mutations
+- Leverage the centralized QueryProvider in [src/providers/query-provider.tsx](mdc:src/providers/query-provider.tsx)
+- Use custom fetcher functions from [src/lib/fetcher](mdc:src/lib/fetcher) for API calls
+- Implement proper error handling through the QueryProvider's MutationCache
+
+### Query Patterns
+```typescript
+// Custom query hook pattern
+export const useAccounts = ({ organizationId, ledgerId, ...options }) => {
+  return useQuery<AccountDto[]>({
+    queryKey: ['accounts', organizationId, ledgerId],
+    queryFn: getFetcher(`/api/organizations/${organizationId}/ledgers/${ledgerId}/accounts`),
+    enabled: !!organizationId && !!ledgerId,
+    ...options
+  });
+};
+
+// Paginated query pattern
+export const useListTransactions = ({ 
+  organizationId, 
+  ledgerId, 
+  limit = 10, 
+  cursor,
+  ...options 
+}) => {
+  return useQuery<PaginationDto<TransactionDto>>({
+    queryKey: ['transactions', organizationId, ledgerId, { limit, cursor }],
+    queryFn: getPaginatedFetcher(
+      `/api/organizations/${organizationId}/ledgers/${ledgerId}/transactions`,
+      { limit, cursor }
+    ),
+    keepPreviousData: true,
+    ...options
+  });
+};
+```
+
+### Mutation Patterns
+```typescript
+// Mutation with cache invalidation
+export const useCreateAccount = ({ organizationId, ledgerId, ...options }) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ['accounts', 'create'],
+    mutationFn: postFetcher(`/api/organizations/${organizationId}/ledgers/${ledgerId}/accounts`),
+    onSuccess: (...args) => {
+      queryClient.invalidateQueries({
+        queryKey: ['accounts', organizationId, ledgerId]
+      });
+      options.onSuccess?.(...args);
+    },
+    ...options
+  });
+};
+
+// Optimistic update pattern
+export const useUpdateAccount = ({ organizationId, ledgerId, accountId, ...options }) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ['accounts', 'update'],
+    mutationFn: patchFetcher(`/api/organizations/${organizationId}/ledgers/${ledgerId}/accounts/${accountId}`),
+    onMutate: async (newData) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries(['accounts', organizationId, ledgerId]);
+
+      // Snapshot previous value
+      const previousAccounts = queryClient.getQueryData(['accounts', organizationId, ledgerId]);
+
+      // Optimistically update
+      queryClient.setQueryData(['accounts', organizationId, ledgerId], (old: AccountDto[]) =>
+        old?.map(account => account.id === accountId ? { ...account, ...newData } : account)
+      );
+
+      return { previousAccounts };
+    },
+    onError: (err, newData, context) => {
+      // Rollback on error
+      queryClient.setQueryData(['accounts', organizationId, ledgerId], context?.previousAccounts);
+    },
+    onSettled: () => {
+      // Refetch after success or error
+      queryClient.invalidateQueries(['accounts', organizationId, ledgerId]);
+    },
+    ...options
+  });
+};
+```
+
+### Fetcher Function Usage
+```typescript
+// Use standardized fetcher functions from src/lib/fetcher
+import { getFetcher, postFetcher, patchFetcher, deleteFetcher, getPaginatedFetcher } from '@/lib/fetcher';
+
+// GET requests
+const fetchData = getFetcher('/api/endpoint');
+
+// POST requests
+const createData = postFetcher('/api/endpoint');
+
+// PATCH requests  
+const updateData = patchFetcher('/api/endpoint');
+
+// DELETE requests
+const deleteData = deleteFetcher('/api/endpoint');
+
+// Paginated GET requests
+const fetchPaginatedData = getPaginatedFetcher('/api/endpoint', { limit: 10, cursor: 'abc' });
+```
+
+## Form Handling
+
+### React Hook Form Integration
+- For forms, use components found in [src/components/form](mdc:src/components/form)
+- Use React Hook Form for client-side form implementations
+- Integrate with Zod for validation schemas
+- Implement proper error handling and display
+- Use controlled components for form inputs
+- Use React Query mutations for form submissions
+- Avoid using the native form html tag, instead use the Form component
+
+### Form Component Pattern
+```typescript
+// Example form component with React Query mutation
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { InputField } from '@/components/form/input-field';
+import { useCreateAccount } from '@/client/accounts';
+
+const schema = z.object({
+  name: z.string().min(2),
+  email: z.string().email(),
+});
+
+type FormData = z.infer<typeof schema>;
+
+export function ExampleForm({ organizationId, ledgerId }: { organizationId: string, ledgerId: string }) {
+  const { control, handleSubmit, formState: { errors } } = useForm<FormData>({
+    resolver: zodResolver(schema),
+  });
+
+  const createAccountMutation = useCreateAccount({ 
+    organizationId, 
+    ledgerId,
+    onSuccess: () => {
+      // Handle success (e.g., show toast, redirect)
+    }
+  });
+
+  const onSubmit = (data: FormData) => {
+    createAccountMutation.mutate(data);
+  };
+
+  return (
+    <Form onSubmit={handleSubmit(onSubmit)}>
+      <InputField
+        name='name'
+        control={control}
+      />
+      <InputField
+        name='email'
+        control={control}
+      />
+      <Button 
+        type="submit" 
+        disabled={createAccountMutation.isPending}
+      >
+        {createAccountMutation.isPending ? 'Creating...' : 'Create Account'}
+      </Button>
+    </Form>
+  );
+}
+```
+
+### Form Field Pattern
+```typescript
+// src/components/form/form-field.tsx
+interface FormFieldProps<T extends Record<string, any>> {
+  name: Path<T>;
+  label: string;
+  description?: string;
+  required?: boolean;
+  children: React.ReactNode;
+}
+
+export function FormField<T extends Record<string, any>>({
+  name,
+  label,
+  description,
+  required = false,
+  children,
+}: FormFieldProps<T>) {
+  return (
+    <FormItem>
+      <FormLabel htmlFor={name} required={required}>
+        {label}
+      </FormLabel>
+      {description && <FormDescription>{description}</FormDescription>}
+      {children}
+      <FormMessage />
+    </FormItem>
+  );
+}
+```
+
+## API Integration
+
+### HTTP Client Patterns
+- Use centralized HTTP client configuration in [src/client](mdc:src/client)
+- Implement proper error handling and retry logic
+- Use React Query for data fetching and caching in Client Components
+- Follow repository pattern for API abstractions
+
+### Error Handling
+- Use custom exceptions in [src/exceptions](mdc:src/exceptions)
+- Implement consistent error response formats
+- Provide user-friendly error messages
+- Log errors appropriately for debugging
+- Implement error.tsx files for route error handling
+
+## Testing Standards
+
+### Testing Strategy
+- Write tests for all new code with minimum 80% coverage
+- Use Jest for unit and integration tests
+- Use Playwright for end-to-end tests
+- Mock external dependencies appropriately
+- Implement React Testing Library for component tests
+- Test Server Components with specialized tooling
+- Implement contract tests for API endpoints
+
+### Test Organization
+```typescript
+// Test file structure
+describe('ComponentName', () => {
+  describe('when condition', () => {
+    it('should perform expected behavior', () => {
+      // Test implementation
+    });
+  });
+});
+```
+
+### Testing Patterns
+- Test behavior, not implementation details
+- Use testing-library for React component tests
+- Mock external services and APIs
+- Test error conditions and edge cases
+- Implement proper test factories and fixtures
+- Use snapshots sparingly and intentionally
+
+## Performance Guidelines
+
+### Optimization Strategies
+- Use React.memo for expensive components
+- Optimize images and static assets with Next.js Image component
+- Implement proper caching strategies
+- Leverage React Server Components for reduced client bundle
+- Use appropriate fetching patterns (static, dynamic, streaming)
+- Implement progressive loading with Suspense boundaries
+
+### Component Optimization Techniques
+- Use dynamic imports for code splitting
+- Implement proper key props for list rendering
+- Memoize expensive calculations with useMemo
+- Avoid layout shifts with proper skeleton loading
+- Use image optimization with Next.js Image component
+- Implement virtualization for long lists
+
+## Security Standards
+
+### Input Validation
+- Validate all user inputs with Zod schemas
+- Sanitize data before processing
+- Implement proper XSS protection
+- Use CSRF protection for forms
+- Use HTTP Security Headers
+- Validate file uploads thoroughly
+
+### Authentication
+- Use NextAuth.js for authentication flows
+- Implement proper session management
+- Follow OAuth2/OIDC standards
+- Store sensitive data securely
+- Implement proper password policies
+- Use JWT with appropriate security measures
+
+### Authorization
+- Implement proper role-based access control
+- Validate permissions on both client and server
+- Implement API-level authorization checks
+- Log security-related events
+- Consider rate limiting for sensitive operations
+
+## Documentation Standards
+
+### Code Documentation
+- Code should be auto explicative
+- Write clear, descriptive comments for complex logic
+- Document public APIs and interfaces
+- Use JSDoc for function documentation
+- Maintain README files for complex modules
+- Document architectural decisions
+
+### Component Documentation
+- Use Storybook for component documentation
+- Provide usage examples and prop descriptions
+- Document component variations and states
+- Include accessibility guidelines
+- Implement component status (stable, beta, deprecated)
+
+## Accessibility Standards
+
+### WCAG Compliance
+- Follow WCAG 2.1 AA guidelines
+- Implement proper ARIA attributes
+- Ensure keyboard navigation support
+- Test with screen readers
+- Implement focus management
+- Support reduced motion preferences
+- Ensure proper text contrast ratios
+
+### Component Accessibility Implementation
+- Ensure proper ARIA attributes for all interactive components
+- Implement keyboard navigation support
+- Use semantic HTML elements
+- Test with screen readers
+- Support dark mode and high contrast themes
+- Implement focus management for modals and dialogs
+- Ensure proper color contrast ratios (WCAG AA compliance minimum)
+- Add screen reader announcements for dynamic content
+- Implement reduced motion support
+- Use proper heading hierarchy
+
+### Semantic HTML
+- Use appropriate HTML elements for content structure
+- Implement proper heading hierarchy
+- Use descriptive alt text for images
+- Ensure proper color contrast ratios
+- Implement proper form labels and descriptions
+- Use appropriate landmark regions
+
+## Internationalization
+
+### i18n Implementation
+- Use i18n for internationalization
+- Extract text strings to locale files in [locales](mdc:locales)
+- Format dates, numbers, and currencies appropriately
+- Format dates using day.js
+- Implement proper pluralization rules
+- Use server-side internationalization when possible
+
+### Text Handling
+- Never hardcode user-facing text
+- Use translation keys consistently
+- Support pluralization rules
+- Implement proper text interpolation
+- Handle dynamic content appropriately

@@ -1,0 +1,308 @@
+---
+description: Implementation guide for clean architecture principles, including layer separation, dependency rules, and code organization
+globs: ["src/core/**/*", "src/app/api/**/*"]
+---
+
+# Clean Architecture Guidelines
+
+This project follows Clean Architecture principles with a clear separation of concerns across well-defined layers:
+
+## Architecture Layers
+
+### 1. Domain Layer ([src/core/domain](mdc:src/core/domain))
+The innermost layer containing pure business logic:
+
+- **Entities** ([src/core/domain/entities](mdc:src/core/domain/entities))
+  - Pure business objects representing core concepts
+  - Contains business rules and domain logic
+  - Independent of any external frameworks or technologies
+  - Implements value objects for immutable concepts
+  - Uses domain events for cross-entity interactions
+
+- **Repository Interfaces** ([src/core/domain/repositories](mdc:src/core/domain/repositories))
+  - Defines contracts for data access
+  - Abstracts data persistence concerns from business logic
+  - Auth-specific repositories in `auth/` subdirectory
+  - Uses generics for type-safe repository operations
+
+- **Domain Services** ([src/core/domain/services](mdc:src/core/domain/services))
+  - Contains business logic that spans multiple entities
+  - Implements domain-specific rules and validations
+  - Remains framework-agnostic
+
+- **Domain Events** ([src/core/domain/events](mdc:src/core/domain/events))
+  - Defines event types for domain-level communication
+  - Implements event payloads and interfaces
+  - Enables loose coupling between domain components
+
+### 2. Application Layer ([src/core/application](mdc:src/core/application))
+Orchestrates business flows and coordinates between layers:
+
+- **Use Cases** ([src/core/application/use-cases](mdc:src/core/application/use-cases))
+  - Implements specific business scenarios
+  - Organized by domain entities:
+    - `accounts/`, `assets/`, `ledgers/`, `portfolios/`, `segments/`, `transactions/`
+    - `auth/`, `users/`, `groups/`, `organizations/`, `onboarding/`
+    - `accounts-with-portfolios/`, `portfolios-with-accounts/`, `ledgers-assets/`
+  - Coordinates between repositories and external services
+  - Implements command and query patterns (CQRS)
+
+- **DTOs** ([src/core/application/dto](mdc:src/core/application/dto))
+  - Data Transfer Objects for layer communication
+  - Input/output contracts for use cases
+  - Validation and serialization schemas
+  - Uses Zod for schema validation
+
+- **Mappers** ([src/core/application/mappers](mdc:src/core/application/mappers))
+  - Transform data between different representations
+  - Convert between domain entities, DTOs, and external formats
+  - Maintain data integrity across layer boundaries
+  - Implements bidirectional mapping methods
+
+- **Event Handlers** ([src/core/application/event-handlers](mdc:src/core/application/event-handlers))
+  - Processes domain events
+  - Coordinates cross-use-case activities
+  - Triggers side-effects based on domain events
+
+### 3. Infrastructure Layer ([src/core/infrastructure](mdc:src/core/infrastructure))
+Implements external concerns and technical details:
+
+- **Repository Implementations** ([src/core/infrastructure/midaz/repositories](mdc:src/core/infrastructure/midaz/repositories))
+  - Concrete implementations of domain repository interfaces
+  - Midaz API integration for data persistence
+  - Error handling and data transformation
+  - Implements caching strategies where appropriate
+
+- **External Service Integrations**
+  - **Midaz Services** ([src/core/infrastructure/midaz/services](mdc:src/core/infrastructure/midaz/services))
+  - **Authentication** ([src/core/infrastructure/next-auth](mdc:src/core/infrastructure/next-auth))
+  - **Midaz Plugins** ([src/core/infrastructure/midaz-plugins](mdc:src/core/infrastructure/midaz-plugins))
+    - `auth/` - Authentication plugin integration
+    - `identity/` - Identity management plugins
+
+- **Dependency Injection** ([src/core/infrastructure/container-registry](mdc:src/core/infrastructure/container-registry))
+  - IoC container configuration using Inversify
+  - Service registration and resolution
+  - Modular registration by concern:
+    - `logger/` - Logging service registration
+    - `midaz/` - Midaz service registration
+    - `midaz-plugins/` - Plugin registration
+    - `observability/` - Monitoring tools registration
+    - `use-cases/` - Use case registration
+
+- **Cross-Cutting Concerns**
+  - **Logging** ([src/core/infrastructure/logger](mdc:src/core/infrastructure/logger))
+    - Pino logger implementation with decorators
+    - Structured logging with observability integration
+    - Context-aware logging with correlation IDs
+  - **Observability** ([src/core/infrastructure/observability](mdc:src/core/infrastructure/observability))
+    - OpenTelemetry integration for monitoring
+    - Metrics, tracing, and logging correlation
+    - Service health monitoring
+
+- **Utilities** ([src/core/infrastructure/utils](mdc:src/core/infrastructure/utils))
+  - `di/` - Dependency injection utilities
+  - `avatar/`, `files/`, `svgs/` - Asset handling utilities
+  - `crypto/` - Cryptographic utilities
+  - `date/` - Date manipulation utilities
+
+- **Event Bus** ([src/core/infrastructure/event-bus](mdc:src/core/infrastructure/event-bus))
+  - Implements event publication and subscription
+  - Handles in-memory and distributed events
+  - Provides event serialization and deserialization
+
+### 4. UI Layer ([src/app](mdc:src/app) and [src/components](mdc:src/components))
+Handles user interactions and presentation:
+
+- **Pages and Routes** ([src/app](mdc:src/app))
+  - Next.js App Router implementation
+  - Page components and layouts
+  - API route handlers that delegate to use cases
+  - Server Components for data fetching and rendering
+
+- **UI Components** ([src/components](mdc:src/components))
+  - Presentation layer components
+  - Form handling and user interaction
+  - State management through React Context ([src/providers](mdc:src/providers))
+  - Client Components for interactive elements
+
+- **Server Actions** ([src/actions](mdc:src/actions))
+  - Implements server-side form processing
+  - Delegates to use cases for business logic
+  - Handles validation and error responses
+  - Provides optimistic updates
+
+## Dependency Rule
+
+Dependencies flow inward following the dependency rule:
+
+```
+UI Layer → Application Layer → Domain Layer
+Infrastructure Layer → Domain Layer
+```
+
+### Dependency Flow Principles
+
+1. **Inner layers are independent**: Domain and Application layers don't depend on outer layers
+2. **Abstractions over concretions**: Use interfaces and abstract classes
+3. **Dependency injection**: Use IoC container for dependency resolution
+4. **Interface segregation**: Small, focused interfaces rather than large ones
+5. **High cohesion, low coupling**: Related functionality grouped together, minimal dependencies between modules
+6. **Pure domain core**: Domain layer remains free of framework dependencies
+7. **Ports and adapters**: Well-defined entry and exit points between layers
+
+## Server Components Architecture
+
+Server Components follow clean architecture principles while leveraging Next.js features:
+
+1. **Data Access Layer**:
+   - Server Components interact with repositories via use cases
+   - Use cases handle business logic and validation
+   - Repository interfaces remain in the domain layer
+
+2. **Component Hierarchy**:
+   - Layout components define structure (layouts, templates)
+   - Container components fetch data via use cases
+   - Presentational components render UI without business logic
+
+3. **State Management**:
+   - Server-side state handled via use cases and repositories
+   - Client-side state managed through React Context and hooks
+   - State revalidation through appropriate caching strategies
+
+4. **Dependency Injection**:
+   - Server Component factories for dependency injection
+   - Registry pattern for service location
+   - Provider pattern for client component context
+
+## Event-Driven Architecture
+
+The application implements event-driven patterns for loosely coupled communication:
+
+1. **Domain Events**:
+   - Published when significant domain state changes occur
+   - Represent business-meaningful occurrences
+   - Named in past tense (e.g., `AccountCreated`, `TransactionApproved`)
+
+2. **Event Handlers**:
+   - Subscribe to specific domain events
+   - Execute side effects and cross-boundary logic
+   - Maintain single responsibility principle
+
+3. **Event Bus**:
+   - Provides pub/sub mechanism for event distribution
+   - Handles in-memory events for immediate processing
+   - Integrates with external message brokers as needed
+
+4. **Event Sourcing** (where applicable):
+   - Stores domain events as source of truth
+   - Reconstructs entity state from event history
+   - Enables advanced audit and temporal queries
+
+## Integration Patterns
+
+### Midaz Integration
+The application integrates with Midaz (the core ledger system) through:
+
+- **Repository Pattern**: Clean abstraction over Midaz APIs
+- **Service Layer**: Specific Midaz service implementations
+- **Exception Handling** ([src/core/infrastructure/midaz/exceptions](mdc:src/core/infrastructure/midaz/exceptions))
+- **Message Formatting** ([src/core/infrastructure/midaz/messages](mdc:src/core/infrastructure/midaz/messages))
+- **API Client Abstraction**: Type-safe client wrappers around API endpoints
+- **Circuit Breaker Pattern**: Fault tolerance for external service calls
+- **Retry Policies**: Configurable retry strategies for transient failures
+
+### Authentication Flow
+Authentication follows clean architecture principles:
+
+1. **UI Layer**: Login forms and session management
+2. **Application Layer**: Authentication use cases
+3. **Infrastructure Layer**: NextAuth integration and external auth providers
+4. **Domain Layer**: User entities and auth repository interfaces
+5. **JWT Handling**: Secure token processing and validation
+6. **Session Management**: Proper session lifecycle and security
+
+### Error Handling Strategy
+Errors flow through architecture layers with proper abstraction:
+
+1. **Domain Exceptions**: Business rule violations
+2. **Application Exceptions**: Use case failures
+3. **Infrastructure Exceptions**: External service failures
+4. **UI Layer**: User-friendly error presentation
+5. **Global Error Handling**: Centralized error processing and logging
+6. **Structured Error Responses**: Consistent error format across API endpoints
+
+## Best Practices
+
+### Use Case Implementation
+- Keep use cases focused on single business scenarios
+- Validate input at the application layer
+- Use dependency injection for repository access
+- Return DTOs rather than domain entities
+- Implement CQRS pattern for complex domains
+- Follow Single Responsibility Principle
+- Maintain proper error handling and logging
+
+### Repository Implementation
+- Implement domain repository interfaces
+- Handle external service communication
+- Map external data to domain entities
+- Provide appropriate error handling
+- Implement caching where performance critical
+- Support pagination for large data sets
+- Follow consistent naming conventions
+
+### Dependency Injection
+- Register services in the IoC container
+- Use constructor injection for dependencies
+- Follow single responsibility principle for services
+- Use factory patterns for complex object creation
+- Avoid service locator anti-pattern
+- Implement scoped lifetimes appropriately
+- Test with mock implementations
+
+### Testing Strategy
+- **Unit Tests**: Test domain logic in isolation
+  - Test entities, value objects, and domain services
+  - Mock dependencies with precise contract expectations
+  - Focus on business rule validation
+
+- **Integration Tests**: Test use cases with real repositories
+  - Verify correct interaction between components
+  - Use in-memory implementations for external dependencies
+  - Test happy path and error scenarios
+
+- **Contract Tests**: Verify repository interface implementations
+  - Ensure all implementations follow the same contract
+  - Test edge cases and error handling
+  - Validate mapping logic
+
+- **End-to-End Tests**: Test complete user workflows
+  - Verify full stack functionality
+  - Focus on critical user journeys
+  - Test realistic scenarios with proper data
+
+- **Architecture Tests**: Verify clean architecture constraints
+  - Ensure dependency rules are not violated
+  - Validate layer separation
+  - Detect architectural drift
+
+## Documentation and Knowledge Sharing
+
+### Architecture Decision Records (ADRs)
+- Document significant architectural decisions
+- Include context, considered alternatives, and rationale
+- Store in version control alongside code
+- Reference in code comments where relevant
+
+### Domain Glossary
+- Define domain-specific terminology
+- Ensure consistent language across codebase
+- Align with stakeholder terminology
+- Document relationships between domain concepts
+
+### Component Diagrams
+- Visualize system architecture and dependencies
+- Document component responsibilities and interactions
+- Update diagrams when architecture evolves
+- Include in project documentation

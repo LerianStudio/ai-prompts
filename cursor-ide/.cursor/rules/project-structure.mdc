@@ -1,0 +1,309 @@
+---
+description: Guidelines for organizing project files, directories, and modules following clean architecture principles
+globs: ["**/*"]
+---
+
+# Project Structure Guide
+
+This is a Next.js 15+ application following Clean Architecture principles with TypeScript 5+, TailwindCSS 4+, and React 19 patterns. The project implements a comprehensive financial ledger management system (Midaz Console).
+
+## Root Directory Structure
+
+### Configuration Files
+- `package.json` - Project dependencies and scripts
+- `next.config.mjs` - Next.js configuration with internationalization and bundle optimization
+- `tsconfig.json` - TypeScript configuration with strict mode
+- `tailwind.config.ts` - Tailwind CSS configuration with custom design tokens
+- `components.json` - shadcn/ui components configuration
+- `jest.config.ts` - Jest testing configuration for unit and integration tests
+- `playwright.config.ts` - Playwright E2E testing configuration
+- `eslint.config.mjs` - ESLint configuration with TypeScript and React rules
+- `.prettierrc` - Prettier formatting configuration
+- `postcss.config.js` - PostCSS configuration for Tailwind
+- `commitlint.config.js` - Commit message linting configuration
+- `intl.config.ts` - Internationalization configuration
+- `setupJest.ts` - Jest test setup and configuration
+- `.lighthouserc.js` - Lighthouse CI configuration for performance monitoring
+- `trivy-ignore.yaml` - Security scanner ignore rules
+- `Dockerfile` - Production Docker container configuration
+- `Dockerfile-storybook` - Storybook Docker container configuration
+- `docker-compose.yml` - Local development container orchestration
+- `Makefile` - Build automation and development scripts
+- `.env.local.example.test.ts` - Environment variables template with validation
+- `.nvmrc` - Node.js version specification
+- `console.code-workspace` - VS Code workspace configuration
+
+### Documentation and Governance
+- `README.md` - Project overview and setup instructions
+- `STRUCTURE.md` - Detailed architecture and structure documentation
+- `GOVERNANCE.md` - Project governance and contribution guidelines
+- `.releaserc.yml` - Semantic release configuration
+
+### Static Assets and Localization
+- `public/` - Static assets served directly by Next.js
+  - `images/` - Application images and graphics
+  - `svg/` - SVG icons and graphics
+  - `animations/` - Lottie animation files
+  - `fonts/` - Custom font files
+  - `countries.json` - Country data for forms
+- `locales/` - Internationalization files
+  - `compiled/` - Compiled translation files (en.json, pt.json)
+  - `extracted/` - Source translation files for editing
+
+### Testing and Scripts
+- `tests/` - Test files organized by type
+  - `e2e/` - End-to-end Playwright tests
+  - `fixtures/` - Test data and configuration
+  - `utils/` - Testing utilities and helpers
+- `scripts/` - Utility scripts
+  - `check-node-version.sh` - Node.js version validation
+  - `i18n-extract.ts` - Translation extraction script
+
+### Build and Deployment
+- `artifacts/` - Build artifacts and generated files
+- `services/` - Service configurations
+  - `configs/` - Application configuration files
+- `.storybook/` - Storybook configuration for component documentation
+- `.next/` - Next.js build output (auto-generated)
+- `node_modules/` - Dependencies (auto-generated)
+
+## Source Code Structure (`src/`)
+
+### Core Application Framework
+
+#### App Router Structure (`src/app/`)
+Next.js 15+ App Router implementation with route groups and parallel routes:
+
+**Route Groups:**
+- `(auth-routes)/` - Unauthenticated routes
+  - `signin/` - User authentication page
+  - `signout/` - Sign-out page
+- `(routes)/` - Authenticated application routes
+  - `[...not_found]/` - Catch-all 404 handler
+  - `page.tsx` - Dashboard/home page
+  - `layout.tsx` - Shared layout for authenticated routes
+  - `not-found.tsx` - Custom 404 page
+
+**Domain Routes:**
+- `accounts/` - Account management
+  - `accounts-data-table.tsx` - Account listing table
+  - `accounts-sheet.tsx` - Account creation/editing form
+  - `accounts-skeleton.tsx` - Loading skeleton
+- `assets/` - Asset management (currencies, tokens)
+- `ledgers/` - Ledger management with multi-tenant support
+- `portfolios/` - Portfolio organization and management
+- `segments/` - Ledger segment management
+- `transactions/` - Transaction processing and history
+- `settings/` - Application configuration
+  - Organization settings
+  - User management
+  - System preferences
+- `onboarding/` - User onboarding flow
+  - `create/` - Multi-step organization setup
+
+**API Routes (`src/app/api/`):**
+- `admin/` - Administrative endpoints
+- `auth/` - Authentication (NextAuth.js integration)
+- `identity/` - User and permission management
+- `onboarding/` - Onboarding process API
+- `organizations/` - Organization and ledger operations
+- `plugin/` - Plugin system endpoints
+- `utils/` - Utility endpoints and error handling
+
+**Root Files:**
+- `app.tsx` - Application root component
+- `globals.css` - Global styles and Tailwind imports
+- `layout.tsx` - Root layout with providers
+- `middleware.ts` - Route protection and request handling
+
+### Clean Architecture Implementation (`src/core/`)
+
+**Domain Layer (`src/core/domain/`):**
+- `entities/` - Domain entities (20+ business objects)
+  - Account, Asset, Ledger, Transaction, Portfolio, etc.
+- `repositories/` - Repository interfaces and contracts
+  - Defines data access contracts without implementation details
+
+**Application Layer (`src/core/application/`):**
+- `controllers/` - Application controllers for request handling
+- `dto/` - Data Transfer Objects (18+ DTOs for API communication)
+- `mappers/` - Entity-to-DTO mapping logic (16+ mappers)
+- `use-cases/` - Business use cases (18+ directories)
+  - Each use case implements specific business operations
+  - Follows single responsibility principle
+
+**Infrastructure Layer (`src/core/infrastructure/`):**
+- `container-registry/` - Dependency injection container
+- `logger/` - Logging infrastructure
+- `midaz/` - Midaz API client implementations (7+ repositories)
+- `midaz-plugins/` - Plugin system infrastructure (3+ modules)
+- `mongo/` - MongoDB implementations (4+ repositories)
+- `next-auth/` - Authentication infrastructure
+- `observability/` - Monitoring and tracing setup
+- `utils/` - Infrastructure utilities (4+ modules)
+
+### User Interface (`src/components/`)
+
+**Base UI Components (`src/components/ui/`):**
+Shadcn/ui based component library with 30+ components:
+- `button/`, `input/`, `card/`, `dialog/`, `sheet/`, `table/`
+- `form/`, `select/`, `combobox/`, `autocomplete/`
+- `toast/`, `alert/`, `badge/`, `skeleton/`
+- `popover/`, `dropdown-menu/`, `tooltip/`
+- Custom components: `loading-button/`, `input-with-icon/`, `multiple-select/`
+
+**Business Components:**
+- `breadcrumb/` - Navigation breadcrumbs
+- `card/` - Custom card components
+- `confirmation-dialog/` - Confirmation modals
+- `crm/` - CRM-specific components
+  - `holders/` - Account holder management
+- `empty-resource/` - Empty state displays
+- `entity-box/` - Entity information display
+- `entity-data-table/` - Data table with filtering and pagination
+- `form/` - Specialized form components
+  - `combo-box-field/`, `country-field/`, `currency-field/`
+  - `input-field/`, `metadata-field/`, `pagination-limit-field/`
+  - `password-field/`, `select-field/`, `state-field/`, `switch-field/`
+- `header/` - Application header
+- `loading-screen.tsx` - Loading state component
+- `not-found-content/` - 404 content
+- `organization-switcher/` - Multi-organization support
+- `page/`, `page-footer/`, `page-header/` - Page layout components
+- `pagination/` - Data pagination
+- `settings-dropdown/` - Settings menu
+- `sheet/` - Side panel forms
+- `sidebar/` - Navigation sidebar with collapsible sections
+- `table/` - Specialized table components
+- `transactions/` - Transaction-specific UI
+- `user-dropdown/` - User profile menu
+
+### React Ecosystem (`src/hooks/`, `src/providers/`)
+
+**Custom Hooks (`src/hooks/`):**
+20+ custom hooks for shared functionality:
+- `use-click-away.tsx` - Click outside detection
+- `use-custom-form-error.tsx` - Form error handling
+- Form validation, data fetching, state management hooks
+
+**Context Providers (`src/providers/`):**
+- `dayjs-provider.tsx` - Date/time localization
+- `next-auth-session-provider.tsx` - Authentication context
+- `organization-provider/` - Multi-organization state
+- `permission-provider/` - Role-based access control
+- `query-provider.tsx` - React Query configuration
+
+### Data Layer (`src/client/`, `src/schema/`)
+
+**HTTP Clients (`src/client/`):**
+13+ API client modules for external services:
+- `accounts.ts`, `assets.ts`, `ledgers.ts`, `transactions.ts`
+- `applications.ts`, `organizations.ts`, `users.ts`
+- Each client handles specific domain API operations
+
+**Validation Schemas (`src/schema/`):**
+10+ Zod schemas for runtime validation:
+- `account.ts`, `asset.ts`, `ledger.ts`, `transaction.ts`
+- `address.ts`, `application.ts`, `organization.ts`
+- Ensures type safety and data validation
+
+### Utilities and Helpers
+
+**Library Integrations (`src/lib/`):**
+- `fetcher/` - HTTP request utilities
+- `form/` - Form handling utilities
+- `http/` - HTTP client configuration
+  - `api-exception.ts` - Custom API exceptions
+  - `http-exception.ts` - HTTP error handling
+  - `server/` - Server-side HTTP utilities
+- `intl/` - Internationalization utilities
+  - `client-localization-provider.tsx` - Client-side i18n
+  - `define-messages.ts` - Message definition utilities
+- `languages/` - Language detection and management
+- `lottie/` - Animation utilities
+- `middleware/` - Middleware composition
+- `search/` - Search and filtering utilities
+- `storage/` - Local/session storage utilities
+- `theme/` - Theme management
+- `zod/` - Zod schema utilities and decorators
+
+**Helper Functions (`src/helpers/`, `src/utils/`):**
+- `src/helpers/` - Business logic helpers
+- `src/utils/` - Pure utility functions
+  - `color-utils.ts` - Color manipulation
+  - `country-utils.ts` - Country data processing
+
+**Type Definitions (`src/types/`):**
+- `country-type.ts` - Country data types
+- `metadata-type.ts` - Metadata structure types
+- `next-auth.d.ts` - NextAuth type extensions
+
+### Configuration and Environment
+- `src/instrumentation.ts` - Observability instrumentation
+- `src/env.example.test.ts` - Environment validation examples
+
+## Architecture Patterns
+
+### Clean Architecture Flow
+```
+UI Components → Hooks → Use Cases → Repositories → External APIs
+     ↓              ↓         ↓           ↓            ↓
+   React      React Query  Business   Infrastructure  Midaz API
+  Components               Logic      Implementations
+```
+
+### Route Protection and Authentication
+- Middleware-based route protection
+- NextAuth.js integration with JWT
+- Role-based access control (RBAC)
+- Organization-based multi-tenancy
+
+### State Management Strategy
+- React Query for server state
+- React Context for global UI state
+- Local state with useState/useReducer
+- Form state with React Hook Form
+
+### Internationalization (i18n)
+- Server-side internationalization with Next.js
+- Client-side localization with React Context
+- Translation extraction and compilation scripts
+- Support for multiple languages (en, pt)
+
+### Testing Strategy
+- Unit tests with Jest and React Testing Library
+- Integration tests for API routes
+- End-to-end tests with Playwright
+- Component testing with Storybook
+
+### Performance Optimization
+- Server Components by default
+- Client Components only when needed
+- Image optimization with Next.js Image
+- Bundle optimization and code splitting
+- Lighthouse CI for performance monitoring
+
+## Key Files to Understand
+
+### Entry Points
+- `src/app/layout.tsx` - Root application layout
+- `src/app/page.tsx` - Dashboard home page
+- `src/middleware.ts` - Request middleware
+- `src/instrumentation.ts` - Observability setup
+
+### Core Business Logic
+- `src/core/application/use-cases/` - Business operations
+- `src/core/domain/entities/` - Business entities
+- `src/core/infrastructure/container-registry/` - Dependency injection
+
+### UI Framework
+- `src/components/ui/` - Base component library
+- `src/components/form/` - Form components
+- `src/components/entity-data-table/` - Data table component
+
+### Configuration
+- `next.config.mjs` - Next.js and build configuration
+- `tailwind.config.ts` - Design system configuration
+- `components.json` - UI component configuration
+
+This structure follows modern React and Next.js best practices while implementing Clean Architecture principles for maintainability and testability.
