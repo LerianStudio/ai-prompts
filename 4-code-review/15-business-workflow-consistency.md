@@ -16,6 +16,73 @@
 
 This approach enables deeper analysis, better pattern recognition, and more thorough problem-solving capabilities.
 
+### Zen MCP Integration
+Use Zen MCP tools for comprehensive business workflow analysis:
+
+**1. Business Process Deep Analysis:**
+```bash
+mcp__zen__thinkdeep \
+  prompt="Analyze the entire business workflow from user perspective. Map user journeys, identify decision points, validate data flow consistency, and find gaps in process implementation." \
+  files=["/services", "/workflows", "/state-machines", "/api", "/models"] \
+  model="pro" \
+  thinking_mode="max" \
+  focus_areas=["user journey", "state transitions", "data consistency", "error recovery", "business rules"]
+```
+
+**2. Workflow Consistency Review:**
+```bash
+mcp__zen__codereview \
+  files=["/workflows", "/processes", "/services/**/*.js", "/handlers"] \
+  prompt="Review business workflow implementations for consistency, completeness, and error handling. Check state transitions, transaction boundaries, and data validation at each step." \
+  model="pro" \
+  review_type="full" \
+  focus_on="workflow completeness, state consistency, error paths, rollback mechanisms"
+```
+
+**3. Integration Point Analysis:**
+```bash
+mcp__zen__analyze \
+  files=["/api", "/integrations", "/external-services", "/event-handlers"] \
+  prompt="Analyze all integration points in business workflows. Verify data contracts, error handling, retry logic, and fallback mechanisms for external dependencies." \
+  model="pro" \
+  analysis_type="architecture" \
+  output_format="actionable"
+```
+
+### Task Tool Usage
+Search for business workflow patterns:
+
+```bash
+# Find workflow and process implementations
+task search "workflow|process|state|status|flow" --context "class|function|service"
+
+# Search for state transitions
+task search "setState|updateStatus|transition|changeState|status.*="
+
+# Find business operations
+task search "create.*Order|process.*Payment|approve.*|submit.*|complete.*"
+
+# Look for validation rules
+task search "validate|validator|validation|rules|business.*rule"
+
+# Find transaction boundaries
+task search "transaction|beginTx|commit|rollback|atomic"
+
+# Search for workflow orchestration
+task search "orchestrate|coordinate|saga|workflow.*engine"
+
+# Find event-driven patterns
+task search "emit|publish|subscribe|event.*handler|on.*event"
+
+# Look for compensation logic
+task search "compensate|undo|revert|rollback|reverse"
+```
+
+**Benefits:**
+- Zen MCP provides holistic business process analysis and validation
+- Task tool rapidly discovers workflow implementations and patterns
+- Combined approach ensures comprehensive business consistency verification
+
 ---
 
 # Business Workflow Consistency Analysis

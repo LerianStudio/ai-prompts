@@ -16,6 +16,73 @@
 
 This approach enables deeper analysis, better pattern recognition, and more thorough problem-solving capabilities.
 
+### Zen MCP Integration
+Use Zen MCP tools for comprehensive API documentation and analysis:
+
+**1. API Documentation Generation:**
+```bash
+mcp__zen__thinkdeep \
+  prompt="Analyze all API endpoints and generate comprehensive OpenAPI documentation. Include request/response schemas, authentication requirements, error responses, and real-world examples." \
+  files=["/api", "/controllers", "/routes", "/models", "/middleware"] \
+  model="pro" \
+  thinking_mode="high" \
+  focus_areas=["endpoint discovery", "schema extraction", "auth patterns", "error handling", "API versioning"]
+```
+
+**2. API Consistency and Quality Review:**
+```bash
+mcp__zen__codereview \
+  files=["/api/**/*.js", "/controllers/**/*.js", "/routes/**/*.js"] \
+  prompt="Review API design for RESTful principles, consistent naming, proper HTTP methods, status codes, and response formats. Check for API versioning and deprecation handling." \
+  model="pro" \
+  review_type="full" \
+  focus_on="REST compliance, naming conventions, error consistency, API evolution"
+```
+
+**3. Interactive API Documentation:**
+```bash
+mcp__zen__analyze \
+  files=["openapi.yaml", "/api", "/test/api", "/postman"] \
+  prompt="Create interactive API documentation with example requests, responses, and common use cases. Generate curl examples, SDK snippets, and integration guides." \
+  model="pro" \
+  analysis_type="general" \
+  output_format="detailed"
+```
+
+### Task Tool Usage
+Search for API patterns and documentation:
+
+```bash
+# Find all API endpoint definitions
+task search "app.(get|post|put|delete|patch)|router.(get|post|put|delete|patch)"
+
+# Search for API route files
+task search "routes|router|endpoint|controller" --type file
+
+# Find OpenAPI/Swagger specifications
+task search "openapi|swagger|api.yaml|api.yml|api.json"
+
+# Look for API documentation
+task search "@api|@swagger|@route|@endpoint|@apiDoc"
+
+# Find request/response schemas
+task search "schema|dto|model|interface.*Request|interface.*Response"
+
+# Search for API versioning
+task search "v1|v2|version|api/v|/api/.*v[0-9]"
+
+# Find authentication middleware
+task search "authenticate|authorize|auth.*middleware|bearer|jwt"
+
+# Look for API tests
+task search "supertest|api.*test|endpoint.*test|routes.*test"
+```
+
+**Benefits:**
+- Zen MCP generates complete API documentation from code analysis
+- Task tool rapidly discovers all API-related files and patterns
+- Combined approach ensures comprehensive API documentation coverage
+
 ---
 
 You are an API documentation specialist. Your goal is to discover ACTUAL API endpoints and existing documentation, then generate only what's missing based on evidence.

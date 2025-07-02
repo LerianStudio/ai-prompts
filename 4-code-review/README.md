@@ -165,6 +165,38 @@ Each prompt builds upon previous findings:
 - Findings referenced across analyses
 - Patterns detected and consolidated
 
+## 🛠️ Tool Integration
+
+### 🧩 Memory MCP Integration
+All prompts include comprehensive Memory MCP integration:
+- **Context Retrieval:** Access existing patterns and decisions
+- **Finding Storage:** Persist critical issues for future reference
+- **Pattern Building:** Learn from recurring issues
+- **Knowledge Continuity:** Maintain context across sessions
+
+### 🧠 Zen MCP Integration (NEW)
+Enhanced analysis capabilities throughout all prompts:
+- **`codereview`:** Deep code quality analysis with severity prioritization
+- **`analyze`:** Architecture and pattern analysis across directories
+- **`thinkdeep`:** Complex problem exploration and solution validation
+- **`debug`:** Root cause analysis for identified issues
+- **`chat`:** Collaborative validation and brainstorming
+
+### 🚀 Task Tool Usage (NEW)
+Efficient parallel exploration in every prompt:
+- **Pattern Discovery:** Finding code patterns comprehensively
+- **Security Scanning:** Identifying vulnerabilities systematically
+- **Dependency Mapping:** Understanding system-wide relationships
+- **Performance Analysis:** Discovering bottlenecks and issues
+- **Documentation Gaps:** Finding missing or outdated docs
+
+### 🔄 Sequential Thinking MCP
+Complex reasoning for all analyses:
+- **Multi-step Analysis:** Breaking down complex problems
+- **Hypothesis Testing:** Validating assumptions systematically
+- **Pattern Recognition:** Identifying recurring issues
+- **Solution Synthesis:** Building comprehensive fixes
+
 ## 🔗 Integration Points
 
 ### With Pre-Development
@@ -223,6 +255,27 @@ claude 0-memory-related/m3-task-management.md
 3. **Generate Todos Continuously** - Each analysis contributes to todo list
 4. **Use Memory Integration** - Store patterns and decisions
 5. **Validate with Production Audit** - Ensure deployment readiness
+
+## 🧠 Tool Usage Guidelines
+
+### When to Use Task Tool
+- **Initial Discovery:** Codebase exploration in phases 1-2
+- **Pattern Search:** Finding similar code patterns across files
+- **Security Scanning:** Comprehensive vulnerability discovery
+- **Performance Issues:** Finding bottlenecks and slow operations
+- **Example:** `Task(description="Find API endpoints", prompt="Search for all REST, GraphQL, and RPC endpoints")`
+
+### When to Use Zen MCP
+- **Deep Analysis:** Use `codereview` for quality assessment
+- **Architecture Review:** Use `analyze` for pattern identification
+- **Problem Solving:** Use `debug` for root cause analysis
+- **Strategic Planning:** Use `thinkdeep` for complex decisions
+- **Validation:** Use `chat` for quick validation of findings
+
+### When to Combine Tools
+- **Security Reviews:** Task finds patterns → Zen analyzes risks → Memory stores findings
+- **Architecture Analysis:** Task maps structure → Zen evaluates design → Sequential reasons about improvements
+- **Performance Optimization:** Task identifies issues → Zen analyzes causes → Memory tracks solutions
 
 ---
 

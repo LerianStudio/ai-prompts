@@ -10,7 +10,7 @@ This repository provides integrated systems that work together to support the en
 |--------|---------|---------------|-------------|
 | **Memory System** | Cross-session learning & pattern recognition | Sequential (5 phases) | `claude 0-memory-system/m0-memory-orchestrator.mdc` |
 | **Product Development** | Comprehensive planning from idea to implementation | **Dynamic (4 phases, 2 checkpoints)** | `claude 1-pre-dev-product/0-pre-dev-orchestrator.mdc` |
-| **Feature Development** | Streamlined feature addition to existing products | Streamlined (3 phases) | `claude 2-pre-dev-feature/0-feature-orchestrator.mdc` |
+| **Feature Development** | Adaptive feature addition with complexity-based flow | **Adaptive (4 phases, complexity-based)** | `claude 2-pre-dev-feature/0-feature-orchestrator.mdc` |
 | **Frontend Development** | Complete frontend development with flexible design inputs | Flexible (5 phases) | `claude 3-frontend/0-frontend-orchestrator.mdc` |
 | **Code Review** | 18-point systematic code analysis | Systematic (6 phases) | `claude 4-code-review/00-code-review-orchestrator.mdc` |
 | **Documentation Generation** | Comprehensive documentation generation and distribution | Comprehensive (5 phases) | `claude 5-generate-docs/0-docs-orchestrator.mdc` |
@@ -46,11 +46,16 @@ Low Confidence (<50%):
   - User provides targeted input
 ```
 
-### Tool Integration
-- **Memory MCP**: Pattern recognition and knowledge persistence
-- **Sequential Thinking MCP**: Complex problem decomposition
-- **Zen MCP**: Deep analysis, code review, debugging, and collaboration
-- **Task Tool**: Parallel search operations for maximum efficiency
+### Tool Integration (Enhanced)
+- **Memory MCP**: Pattern recognition, knowledge persistence, cross-project learning
+- **Sequential Thinking MCP**: Complex problem decomposition with iterative refinement
+- **Zen MCP Suite**: Comprehensive analysis tools:
+  - `codereview`: Deep code quality analysis with severity prioritization
+  - `analyze`: Architecture and pattern analysis across directories
+  - `thinkdeep`: Complex problem exploration and solution validation
+  - `debug`: Root cause analysis with 1M token capacity
+  - `chat`: Collaborative thinking and validation
+- **Task Tool**: Parallel search operations for maximum efficiency in pattern discovery
 
 ## 🚀 Quick Start Workflows
 
@@ -135,17 +140,21 @@ graph LR
 - **Cross-System Dependencies**: Workflows feed into each other with validation gates
 
 ### 📋 User Interaction Patterns
+- **Adaptive Complexity Assessment**: Feature Development now includes Phase 0 complexity analysis
 - **Confidence-Based Interactions**: AI decides when user input is needed based on confidence scores
 - **Structured Feedback Loops**: Draft → User feedback → AI incorporation → Approval
 - **Minimal Interruption**: From 6+ checkpoints down to just 2 in Pre-Development workflow
 - **Flexible Design Inputs**: iPad sketches, Figma designs, written specs, reference apps
+- **Risk-Based Planning**: Complex features get automatic risk assessment and mitigation strategies
 
 ### 🚀 Workflow Features
+- **Deliverable-Focused Planning**: Shifted from atomic tasks to complete deliverables (2-pre-dev-feature)
 - **Autonomous Refinement**: AI works independently when confidence is high
 - **Parallel Processing**: Multiple operations execute simultaneously for efficiency
-- **Atomic Tasks**: Each task delivers complete, working software with git workflow
+- **Adaptive Task Sizing**: 2-8 hours based on complexity assessment
 - **Smart Validation**: Consistency checks with auto-correction capabilities
 - **Priority-Based Todos**: 🔴 CRITICAL → 🟡 HIGH → 🟢 MEDIUM → 🔵 LOW organization
+- **Pattern Reuse**: Automatic detection and application of similar solutions
 
 ## 📦 Output Organization
 
@@ -190,11 +199,14 @@ docs/documentation/
 1. **Memory First**: Always start with `memory_search` and `memory_get_context` before any workflow
 2. **Follow Phase Dependencies**: 
    - Pre-Development: Discovery (conditional) → Strategic Decision✓ → Autonomous Refinement → Final Validation✓
+   - **Feature Development**: Phase 0 Complexity Assessment → Adaptive Brief (1-7 questions) → Technical Approach✓ → Deliverable Planning → Test Strategy
    - Code Review: Foundation → Security → Quality → Documentation → Production → Synthesis
    - Frontend: Design✓ → Tech✓ → Architecture → Tasks → Validation
    - Documentation: Discovery✓ → Planning✓ → Generation✓ → Validation✓ → Distribution
 3. **Leverage AI Autonomy**: Let confidence scores guide interaction needs
-4. **Use Tools Liberally**: Zen MCP for deep analysis, Task tool for parallel searches
+4. **Use Tools Liberally**: 
+   - **Zen MCP**: Use specific tools (`codereview`, `analyze`, `thinkdeep`, `debug`, `chat`) based on context
+   - **Task Tool**: Always prefer for parallel searches and pattern discovery
 5. **Store All Decisions**: Use `memory_store_decision` for architectural choices and `memory_store_chunk` for insights
 
 ### Integration Patterns
@@ -223,17 +235,20 @@ repository="github.com/lerianstudio/monorepo"
 ## 📈 Key Benefits
 
 - **Consistency**: Standardized workflows across all projects
-- **Quality**: Comprehensive analysis at every stage
-- **Learning**: Continuous improvement through memory
-- **Efficiency**: Reuse patterns and decisions
-- **Collaboration**: Clear user interaction points
+- **Quality**: Comprehensive analysis at every stage with Zen MCP integration
+- **Learning**: Continuous improvement through memory and pattern recognition
+- **Efficiency**: Reuse patterns and decisions, deliverable-focused planning
+- **Collaboration**: Clear user interaction points with adaptive complexity
+- **Tool Synergy**: Zen MCP + Task Tool + Memory MCP work together for comprehensive analysis
 
 ### 🚀 Efficiency Improvements
 - **70% Reduction in Interactions**: Pre-Development workflow reduced from 6+ to 2 mandatory checkpoints
-- **Parallel Processing**: Multiple analyses run simultaneously instead of sequentially
+- **Adaptive Complexity**: Feature Development adjusts depth based on feature complexity (1-7 questions)
+- **Parallel Processing**: Multiple analyses run simultaneously with Task Tool
 - **Pattern Reuse**: Memory MCP enables >60% pattern reuse from similar projects
 - **Autonomous Refinement**: AI works independently when confidence is high (>80%)
 - **Smart Validation**: Auto-correction of minor issues without user intervention
+- **Tool-Powered Analysis**: Zen MCP tools accelerate deep analysis by 5-10x
 
 ## 🔧 Getting Started
 
@@ -241,13 +256,19 @@ repository="github.com/lerianstudio/monorepo"
 1. **Read CLAUDE.md First**: Complete orchestrator architecture and execution patterns
 2. **Choose Your Workflow**:
    - New project? Start with Pre-Development Product (4-phase dynamic, only 2 checkpoints!)
-   - Existing code? Begin with Code Review (6-phase systematic)
+   - Existing code? Begin with Code Review (6-phase systematic with Zen MCP)
    - Frontend focus? Use Frontend Development (5-phase flexible)
-   - Quick feature? Use Pre-Development Feature (3-phase streamlined)
-3. **Leverage Tools**:
-   - Use Zen MCP for deep analysis and collaboration
-   - Use Task tool for parallel pattern searches
-   - Let confidence scores guide your interactions
+   - Feature addition? Use Pre-Development Feature (4-phase adaptive with complexity assessment)
+3. **Leverage Tools Strategically**:
+   - **Zen MCP**: Choose the right tool for the task:
+     - `codereview` for quality assessment
+     - `analyze` for architecture review
+     - `thinkdeep` for complex reasoning
+     - `debug` for troubleshooting (1M token capacity)
+     - `chat` for collaborative validation
+   - **Task Tool**: Always use for parallel searches and pattern discovery
+   - **Memory MCP**: Start and end every workflow with memory operations
+   - Let confidence scores and complexity assessments guide your interactions
 
 ### For Developers
 1. **Start with Orchestrators**: Each system has a `0-*-orchestrator.mdc` entry point
@@ -257,12 +278,17 @@ repository="github.com/lerianstudio/monorepo"
 
 ### Command Examples
 ```bash
-# Complete new feature workflow
+# Complete new feature workflow with adaptive complexity
 claude 0-memory-system/m0-memory-orchestrator.mdc
-claude 1-pre-dev-product/0-pre-dev-orchestrator.mdc  
+claude 2-pre-dev-feature/0-feature-orchestrator.mdc  # Now with Phase 0 complexity assessment
 claude 3-frontend/0-frontend-orchestrator.mdc
-claude 4-code-review/00-code-review-orchestrator.mdc
+claude 4-code-review/00-code-review-orchestrator.mdc  # Enhanced with Zen MCP integration
 claude 5-generate-docs/0-docs-orchestrator.mdc
+
+# Quick feature addition with risk assessment
+claude 2-pre-dev-feature/0-feature-orchestrator.mdc  # Adapts to feature complexity
+# Phase 0: Automatic complexity assessment
+# Phases 1-4: Adjusted based on complexity (Simple/Medium/Complex)
 ```
 
 ## 📄 License

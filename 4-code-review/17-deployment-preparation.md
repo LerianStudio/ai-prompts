@@ -16,6 +16,73 @@
 
 This approach enables deeper analysis, better pattern recognition, and more thorough problem-solving capabilities.
 
+### Zen MCP Integration
+Use Zen MCP tools for comprehensive deployment preparation:
+
+**1. Deployment Configuration Analysis:**
+```bash
+mcp__zen__thinkdeep \
+  prompt="Analyze deployment readiness and infrastructure requirements. Check for Dockerfile, CI/CD configs, build scripts, environment setup, and production configurations. Identify missing components and optimization opportunities." \
+  files=["/Dockerfile", "/.github", "/.gitlab-ci.yml", "/deploy", "/scripts", "/package.json"] \
+  model="pro" \
+  thinking_mode="high" \
+  focus_areas=["containerization", "CI/CD pipeline", "build optimization", "deployment automation", "infrastructure as code"]
+```
+
+**2. Build and Bundle Review:**
+```bash
+mcp__zen__codereview \
+  files=["/build", "/dist", "/webpack.config.js", "/rollup.config.js", "/tsconfig.json"] \
+  prompt="Review build configuration and output optimization. Check bundle sizes, tree shaking, code splitting, and production optimizations. Identify development artifacts that shouldn't deploy." \
+  model="pro" \
+  review_type="full" \
+  focus_on="build performance, bundle size, dead code elimination, production optimizations"
+```
+
+**3. Environment and Secrets Check:**
+```bash
+mcp__zen__analyze \
+  files=["/.env*", "/config", "/secrets", "/.gitignore", "/vault"] \
+  prompt="Analyze environment configuration and secrets management. Verify no hardcoded secrets, proper .gitignore patterns, environment variable usage, and secure configuration practices." \
+  model="pro" \
+  analysis_type="security" \
+  output_format="actionable"
+```
+
+### Task Tool Usage
+Search for deployment-related files and patterns:
+
+```bash
+# Find deployment configuration
+task search "Dockerfile|docker-compose|k8s|kubernetes|helm|deploy"
+
+# Search for CI/CD files
+task search ".github/workflows|.gitlab-ci|jenkinsfile|.travis|circleci"
+
+# Find build artifacts
+task search "dist|build|target|out|bundle" --type directory
+
+# Look for environment files
+task search ".env|dotenv|config|secrets" --type file
+
+# Find package files
+task search "package.json|requirements.txt|go.mod|pom.xml|Gemfile"
+
+# Search for build scripts
+task search "build|compile|bundle|webpack|rollup|vite"
+
+# Find cleanup patterns
+task search "node_modules|__pycache__|.cache|.tmp|*.log"
+
+# Look for deployment scripts
+task search "deploy.sh|release.sh|publish.sh|ship.sh"
+```
+
+**Benefits:**
+- Zen MCP provides comprehensive deployment readiness assessment
+- Task tool rapidly discovers all deployment files and artifacts
+- Combined approach ensures thorough deployment preparation
+
 ---
 
 You are a deployment preparation specialist focusing on discovering ACTUAL deployment requirements and preparing the codebase through systematic checks. Your goal is to verify deployment readiness based on evidence.
