@@ -14,7 +14,43 @@
 - Question assumptions and explore alternative approaches
 - Generate and verify solution hypotheses through structured reasoning
 
-This approach enables deeper analysis, better pattern recognition, and more thorough problem-solving capabilities.
+### 🧠 Zen MCP Integration (CRITICAL FOR SYNTHESIS)
+**Use Zen tools for comprehensive task prioritization:**
+- **`mcp__zen__thinkdeep`** - Strategic task prioritization
+  ```bash
+  mcp__zen__thinkdeep
+    prompt="Given all the findings from code review, what is the optimal order of addressing issues considering dependencies, risk, and effort?"
+    model="pro"
+    thinking_mode="high"
+    focus_areas=["risk_mitigation", "quick_wins", "long_term_health", "dependencies"]
+  ```
+- **`mcp__zen__chat`** - Validate task groupings and priorities
+  ```bash
+  mcp__zen__chat
+    prompt="Review this task prioritization and suggest improvements for team execution"
+    model="flash"
+  ```
+- **Benefits**: Strategic prioritization, dependency analysis, execution optimization
+
+### 🚀 Task Tool Usage (ESSENTIAL FOR CONSOLIDATION)
+**Use Task tool for comprehensive finding aggregation:**
+```bash
+Task(
+  description="Consolidate all findings",
+  prompt="Search all code review outputs for:
+    1. Critical security vulnerabilities that need immediate attention
+    2. Performance bottlenecks affecting user experience
+    3. Technical debt impacting maintainability
+    4. Missing tests for critical paths
+    5. Documentation gaps blocking onboarding
+    6. Deployment risks and production readiness issues
+    7. Quick wins that can be fixed immediately
+    8. Long-term architectural improvements"
+)
+```
+**Benefits**: Complete finding aggregation, no missed issues, efficient consolidation
+
+This multi-tool approach ensures comprehensive task synthesis and strategic prioritization.
 
 ---
 

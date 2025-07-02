@@ -15,6 +15,36 @@ Use Memory MCP to search for successful test strategies from similar projects:
 - mcp__lerian-memory__memory_read with operation="find_similar", problem="testing challenges for [specific-features]"
 </execute>
 
+### 🤖 Zen MCP Integration (HIGHLY RECOMMENDED)
+**Why Use Zen MCP:**
+- **Test Strategy Design**: Use `mcp__zen__thinkdeep` for comprehensive test coverage analysis
+- **Quality Assessment**: Use `mcp__zen__codereview` to validate test completeness
+- **Risk Analysis**: Use `mcp__zen__analyze` to identify testing gaps and edge cases
+- **Best Practices**: Use `mcp__zen__chat` to explore testing patterns and approaches
+
+**Example Usage:**
+```
+mcp__zen__thinkdeep
+  prompt="Designing comprehensive test strategy for [feature]: coverage goals, test types, and risk mitigation"
+  model="pro"
+  thinking_mode="high"
+  focus_areas=["test-coverage", "edge-cases", "performance", "security"]
+```
+
+### 🔍 Task Tool Usage (USE LIBERALLY)
+**When to Use Task():**
+- Finding existing test patterns and strategies
+- Searching for test utilities and frameworks in use
+- Discovering edge cases from similar features
+- Parallel exploration of test scenarios
+
+**Example:**
+```
+Task
+  description="Find test patterns"
+  prompt="Search for existing test strategies, test utilities, edge case scenarios, and testing frameworks used in similar features"
+```
+
 ### Document Review
 I'll now review:
 1. **PRD**: Understanding user journeys and critical business flows

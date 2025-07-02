@@ -23,39 +23,84 @@ alwaysApply: false
 - **Benefit:** Ensures sub-tasks are logically sequenced and properly sized for LLM implementation
 - **When:** During task breakdown analysis, dependency mapping, and implementation planning
 
+### 🤖 Zen MCP Integration (HIGHLY RECOMMENDED)
+**Why Use Zen MCP:**
+- **Sub-Task Design**: Use `mcp__zen__thinkdeep` for optimal sub-task sizing and boundaries
+- **Implementation Analysis**: Use `mcp__zen__analyze` to validate sub-task completeness
+- **Quality Planning**: Use `mcp__zen__codereview` to ensure quality checks are embedded
+- **Complexity Assessment**: Use `mcp__zen__chat` to evaluate sub-task complexity
+
+**Example Usage:**
+```
+mcp__zen__thinkdeep
+  prompt="Decomposing task [MT-XXX] into 6-hour senior developer sub-tasks with clear boundaries"
+  model="pro"
+  thinking_mode="high"
+  focus_areas=["sub-task-sizing", "implementation-flow", "quality-integration"]
+```
+
+### 🔍 Task Tool Usage (USE LIBERALLY)
+**When to Use Task():**
+- Finding successful sub-task patterns from similar features
+- Searching for implementation approaches in the codebase
+- Discovering quality check patterns and standards
+- Parallel exploration of sub-task dependencies
+
+**Example:**
+```
+Task
+  description="Find sub-task patterns"
+  prompt="Search for existing sub-task breakdowns, implementation patterns, and 6-hour task sizing examples from successful features"
+```
+
 **IMPLEMENTATION TIP:** Each sub-task should include Memory MCP actions to store implementation progress and learnings!
 
 **Pro tip:** Store every implementation decision and pattern to build a knowledge base of successful development approaches!
 
 ## Goal
 
-To guide an AI assistant in analyzing tasks and breaking them down into detailed, implementable sub-tasks. Each sub-task must be specific, actionable, and small enough to be completed in a single development session while contributing to the completion of its parent task.
+To autonomously generate implementation-ready sub-tasks as an **optional enhancement** to the workflow. This prompt operates with complete autonomy unless explicitly requested by the user, focusing on creating sprint-ready work items for development teams.
 
-## Process
+## Process - Fully Autonomous Sub-Task Generation
 
-1. **Read Tasks Document:** The AI must first read the tasks-[feature-name].md document to understand the atomic phases from `/docs/pre-development/tasks/`
-   - 🧩 **Memory Action:** `memory_search` to retrieve all related context from PRD, TRD, and validation steps
-   - 🧩 **Memory Action:** `memory_tasks` to track sub-task generation workflow with session_id
+### Why This Is Optional
 
-2. **Verify Chain Validation:** Ensure validation-report-[feature-name].md shows PASS status and tasks are validated
-   - 🧩 **Memory Action:** `memory_search` for validation patterns and any documented risks
+Sub-task generation is **NOT required** for the pre-development workflow to be complete. The main tasks (MT-XXX) are already atomic and implementable. Sub-tasks provide additional granularity for:
+- Sprint planning
+- Work distribution
+- Progress tracking
+- Junior developer guidance
 
-3. **Analyze Task Structure:** Extract and understand each task's scope, dependencies, and deliverables
-   - 🔄 **Sequential Thinking:** Map task boundaries to implementation components and dependencies
+### Autonomous Generation Process
 
-4. **Apply Senior Engineer Breakdown:** Ensure each sub-task is comprehensive yet focused
-   - 🔄 **Sequential Thinking:** Validate each sub-task represents a full day's work (~6 hours) for a senior engineer
+1. **Silent Execution Mode (Default):**
+   ```yaml
+   If user hasn't explicitly requested sub-tasks:
+     - Skip this entire process
+     - Main tasks are sufficient for implementation
+   
+   If user requests sub-tasks:
+     - Generate comprehensively
+     - No interaction needed
+     - Save directly to file system
+   ```
 
-5. **Generate Sub-Tasks:** Create detailed sub-task specifications using the structure below
-   - 🧩 **Memory Action:** `memory_store_decision` for sub-task breakdown rationale and implementation approach
-6. **Optional User Review:** Since sub-tasks are implementation details, user review is optional:
-   - "I've created detailed sub-tasks for implementation. Would you like to review the granularity, or shall I proceed with saving them?"
-   - If user wants to review, WAIT for feedback
-   - If user approves or skips review, proceed to save
-   - 🧩 **Memory Action:** `memory_store_chunk` with user feedback on sub-task granularity (if provided)
+2. **Pattern-Based Generation:**
+   🧩 **Memory Action:**
+   ```
+   mcp__lerian-memory__memory_read
+     operation="search"
+     options={
+       "query": "sub-task patterns implementation breakdown",
+       "repository": "github.com/[org]/[repo]"
+     }
+   ```
 
-7. **Save Output:** Create individual files for each task and sub-task in `/docs/pre-development/tasks/` directory (see File Organization section)
-   - 🧩 **Memory Action:** `memory_create_thread` completing the full development chain: PRD → TRD → Tasks → Sub-tasks
+3. **Sprint-Ready Output:**
+   - Each sub-task: 4-8 hours senior developer
+   - Includes git workflow
+   - Contains acceptance criteria
+   - Ready for ticket creation
 
 ## Input Document Analysis
 
@@ -579,41 +624,43 @@ memory_store_chunk
 - **Required Sub-Tasks:** Sub-tasks that must be completed first
 - **External Dependencies:** Third-party services, libraries, or tools
 
-## User Interaction Guidelines
+## User Interaction Model - Zero Touch
 
-### Optional Review Process
-Since sub-tasks are implementation details, user review is optional but available:
+### No Interaction by Default
 
-1. **Summary Presentation:** Show task breakdown summary first
-2. **Granularity Check:** Ask if level of detail is appropriate
-3. **Quick Approval:** Allow user to skip detailed review
+Sub-tasks are generated **silently** with no user interaction required.
 
-### Example Interaction Flow
+### Only If Explicitly Requested
+
+**User:** "Can you break down the tasks into sub-tasks?"
+
+**AI Response:**
+```markdown
+## ✅ Sub-Tasks Generated
+
+Created 45 implementation sub-tasks across 15 main tasks.
+
+**Structure:**
+- Average: 3 sub-tasks per main task
+- Duration: 4-8 hours each
+- Total effort: ~180 hours
+
+All sub-tasks saved to `/docs/pre-development/tasks/`
+
+Ready for sprint planning.
 ```
-AI: "I've broken down the main tasks into comprehensive sub-tasks for senior engineers:
 
-**MT-001: Foundation Phase** → 3 sub-tasks
-- ST-001: Complete Task Domain Layer with Repository Pattern (6h)
-- ST-002: CLI Command Framework with Full Test Coverage (6h)
-- ST-003: Local Storage Implementation with Migration Support (6h)
+### Advanced Options (Rarely Needed)
 
-**MT-002: Core Features** → 4 sub-tasks
-**MT-003: Enhancements** → 2 sub-tasks
+Only if user specifically asks for options:
+```markdown
+## Sub-Task Generation Options
 
-Total: 9 implementation sub-tasks (optimized for senior engineers)
+1. **Standard** (default): 4-8 hour chunks
+2. **Granular**: 2-4 hour chunks (more items)
+3. **Comprehensive**: 8-12 hour chunks (fewer items)
 
-Would you like to:
-1. Review the detailed breakdown
-2. Adjust the scope (more comprehensive or more granular)
-3. Proceed with saving these sub-tasks
-
-What's your preference?"
-
-[WAIT FOR USER RESPONSE - OR PROCEED IF USER SAYS "PROCEED"]
-
-User: "Proceed with saving"
-
-AI: "Great! I'll save all sub-tasks in the organized structure..."
+Current: Standard. Change? (1/2/3 or 'proceed')
 ```
 - **Environmental Requirements:** Development environment setup needs
 - **Potential Blockers:** Known issues or complications
@@ -980,18 +1027,20 @@ Before finalizing sub-tasks:
 - Performance analysis
 - Security assessment
 
-## Final Instructions
+## Final Instructions - Autonomous Excellence
 
-1. **Analyze Thoroughly:** Read tasks document completely before starting
-2. **Think Comprehensively:** Create full-stack sub-tasks that deliver complete functionality
-3. **Be Specific:** Provide concrete implementation guidance for senior engineers
-4. **Consider Dependencies:** Map sub-task relationships carefully
-5. **Include Everything:** Each sub-task includes implementation, tests, docs, and quality checks
-6. **Define Completion:** Clear definition of done for each comprehensive sub-task
-7. **Estimate for Seniors:** ~6 hours per sub-task for very senior, highly skilled engineers
-8. **Create Individual Files:** Save each task and sub-task in separate files
-9. **Update Index:** Maintain task-index.md with links to all task files
-10. **Next Step:** After completing sub-tasks, teams can begin sprint planning and implementation
+1. **Check First:** Only proceed if user explicitly requests sub-tasks
+2. **Use Patterns:** Apply proven sub-task patterns from Memory MCP
+3. **No Interaction:** Generate silently unless user asks for options
+4. **Sprint Ready:** Create tickets that can go directly to developers
+5. **Git Workflow:** Include branch names and commit templates
+6. **Quality Built-In:** Embed quality checks in each sub-task
+7. **Save Directly:** Output to file system without confirmation
+8. **Report Success:** Single line confirmation when complete
+
+## Key Principle
+
+**Sub-tasks are OPTIONAL**. The pre-development workflow is complete with just the main tasks. Sub-tasks are a convenience for teams that want additional granularity.
 
 ## Relationship to Chain
 

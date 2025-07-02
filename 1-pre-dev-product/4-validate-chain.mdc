@@ -3,7 +3,7 @@ description: Validation step to ensure PRD/TRD/Tasks consistency before proceedi
 globs: 
 alwaysApply: false
 ---
-# Rule: Validate Development Chain Consistency
+# Rule: Final Validation & Optimization (Dynamic Workflow)
 
 ## 🧠 Enhanced Analysis Tools - USE THESE!
 
@@ -22,42 +22,129 @@ alwaysApply: false
 - **Benefit:** Systematic validation ensures no requirements are lost in translation
 - **When:** During cross-reference analysis and completeness validation
 
+### 🤖 Zen MCP Integration (HIGHLY RECOMMENDED)
+**Why Use Zen MCP:**
+- **Cross-Document Analysis**: Use `mcp__zen__analyze` for validating consistency across PRD/TRD/Tasks
+- **Risk Assessment**: Use `mcp__zen__thinkdeep` to identify potential implementation risks
+- **Quality Validation**: Use `mcp__zen__codereview` to assess technical completeness
+- **Architecture Validation**: Use `mcp__zen__chat` to verify architectural alignment
+
+**Example Usage:**
+```
+mcp__zen__analyze
+  files=["docs/pre-development/prd-[feature].md", "docs/pre-development/trd-[feature].md", "docs/pre-development/tasks/tasks-[feature].md"]
+  prompt="Validate requirements traceability and consistency across all documents"
+  model="pro"
+  analysis_type="architecture"
+```
+
+### 🔍 Task Tool Usage (USE LIBERALLY)
+**When to Use Task():**
+- Finding validation patterns from previous projects
+- Searching for common consistency issues
+- Discovering risk mitigation strategies
+- Parallel validation of multiple aspects
+
+**Example:**
+```
+Task
+  description="Find validation patterns"
+  prompt="Search for previous validation reports, consistency checks, and common issues found during chain validation"
+```
+
 **Pro tip:** Store validation patterns to improve future validation accuracy and speed!
 
 ## Goal
 
-To guide an AI assistant in validating that the Product Requirements Document (PRD), Technical Requirements Document (TRD), and generated tasks maintain consistency and alignment before proceeding to implementation. This validation step ensures that business requirements, technical specifications, and implementation plans are coherent and complete.
+To serve as the **Final Checkpoint** in the pre-development workflow. This prompt performs comprehensive validation autonomously and presents a single approval point for the user to proceed to implementation.
 
-## Process
+## Process - Autonomous Validation with Single Checkpoint
 
-1. **Read All Chain Documents:** Load PRD, TRD, and main tasks documents from `/docs/pre-development/`
-   - 🧩 **Memory Action:** `memory_search` to retrieve all related decisions from the development chain
-   - 🧩 **Memory Action:** `memory_tasks` to track validation workflow with session_id
+### Phase 1: Parallel Validation (AI-Driven)
 
-2. **Cross-Reference Analysis:** Validate alignment between documents
-   - 🔄 **Sequential Thinking:** Systematically trace each requirement through all documents
+1. **Comprehensive Document Analysis:**
+   ```yaml
+   Parallel Validation:
+     - Requirements traceability mapping
+     - Architecture consistency check
+     - Technical completeness audit
+     - Task coverage analysis
+     - Risk identification
+   ```
+   
+   🧩 **Memory Actions:**
+   ```
+   # Retrieve all decisions and patterns
+   mcp__lerian-memory__memory_read
+     operation="search"
+     options={
+       "query": "validation patterns consistency issues",
+       "repository": "github.com/[org]/[repo]"
+     }
+   ```
 
-3. **Architecture Consistency:** Ensure architecture patterns are consistently applied
-   - 🧩 **Memory Action:** `memory_search` for established architecture patterns and decisions
+2. **Autonomous Issue Resolution:**
+   - For minor inconsistencies: Auto-correct and document
+   - For medium issues: Generate resolution options
+   - For critical issues: Flag for user attention
+   
+   🔄 **Sequential Thinking:**
+   ```
+   mcp__sequential-thinking__sequentialthinking
+     thought="Validating PRD→TRD→Tasks chain: checking requirement coverage, technical alignment, implementation readiness"
+     nextThoughtNeeded=true
+     thoughtNumber=1
+     totalThoughts=4
+   ```
 
-4. **Requirements Traceability:** Verify all PRD requirements are addressed in TRD and tasks
-   - 🔄 **Sequential Thinking:** Map each PRD requirement to TRD specs and task implementation
+3. **Optimization Pass:**
+   - Identify redundancies across documents
+   - Suggest task consolidations
+   - Optimize dependency chains
+   - Generate implementation roadmap
 
-5. **Generate Validation Report:** Create detailed validation report with findings
-   - 🧩 **Memory Action:** `memory_store_chunk` with validation patterns and issues discovered
-6. **Present Report to User:** Show validation results and ask for acknowledgment:
-   - "Here's the validation report. Please review any issues found. Should we proceed or address these first?"
-   - **WAIT for user decision**
-   - 🧩 **Memory Action:** `memory_store_chunk` with user's validation decisions and risk acceptance
+### Phase 2: Final Approval Checkpoint (User Interaction)
 
-7. **Handle Issues:** If issues found, user decides whether to:
-   - Proceed anyway (with documented risks)
-   - Go back and fix specific documents
-   - Iterate on the entire chain
-   - 🧩 **Memory Action:** `memory_store_decision` documenting validation resolution approach
+**Present Executive Validation Package:**
 
-8. **Save Validation:** After user acknowledgment, save as `validation-report-[feature-name].md` in `/docs/pre-development/`
-   - 🧩 **Memory Action:** `memory_create_thread` completing the full PRD → TRD → Tasks → Validation chain
+```markdown
+## 🎯 Final Pre-Development Approval
+
+### Validation Summary
+✅ **Requirements Coverage**: 100% (all PRD requirements mapped)
+✅ **Technical Alignment**: 98% (minor naming inconsistency auto-corrected)
+✅ **Task Completeness**: 100% (15 atomic tasks validated)
+⚠️ **Risk Identified**: Legacy system integration complexity
+
+### Optimization Opportunities
+- Tasks MT-003 and MT-004 can be combined (saves 2 days)
+- Parallel execution possible for MT-007 and MT-008
+- Total timeline: 3 weeks (optimized from 4 weeks)
+
+### Implementation Roadmap
+Week 1: Foundation (MT-001 to MT-003)
+Week 2: Core Features (MT-004 to MT-008)
+Week 3: Integration & Polish (MT-009 to MT-015)
+
+### Critical Decision Required
+⚠️ **Legacy System Risk**: No established pattern for legacy API integration
+
+Options:
+1. Proceed with research spike in MT-008 (adds 2 days)
+2. Defer legacy integration to Phase 2
+3. Use adapter pattern from similar project (70% confidence)
+
+### Ready to Proceed?
+All documents validated and optimized. Type 'proceed' to begin implementation or 'review' to see detailed report.
+```
+
+### Phase 3: Post-Approval Actions (Autonomous)
+
+Once user approves:
+1. Generate optimized implementation checklist
+2. Create sprint-ready task breakdowns
+3. Store all validation patterns
+4. Export implementation roadmap
 
 ## Required Input Documents
 
@@ -154,99 +241,98 @@ Before running validation, ensure:
 - **Tasks → Implementation:** All tasks are implementable with provided specifications
 - **Architecture Enforcement:** Patterns are consistently referenced throughout
 
-## User Interaction Guidelines
+## User Interaction Model - Single Decision Point
 
-### Validation Review Process
-1. **Present Summary First:** Show high-level findings before details
-2. **Highlight Critical Issues:** Make blocking issues clearly visible
-3. **Offer Clear Options:** Let user decide how to proceed
+### The Final Gateway
 
-### Example Interaction Flow
-```
-AI: "I've completed the validation of your pre-development documents. Here's the summary:
+This validation represents the **LAST checkpoint** before implementation begins.
 
-**Overall Status: NEEDS_REVIEW**
+### Interaction Principles
+1. **Executive Summary Only**: Present actionable insights, not detailed analysis
+2. **Risk-Focused**: Highlight only critical decisions needed
+3. **Optimization Value**: Show time/effort savings clearly
+4. **Binary Decision**: Simple proceed/review choice
 
-✅ Requirements Traceability: All PRD requirements mapped (100%)
-⚠️  Architecture Consistency: Minor pattern inconsistency found
-✅ Task Coverage: All features covered in tasks
-❌ Technical Gaps: Missing error handling specification
+### Dynamic Presentation Based on Validation Results
 
-**Critical Issue:**
-- TRD doesn't specify error handling approach for API endpoints
+**Scenario 1: All Green (95%+ validation)**
+```markdown
+## ✅ Ready for Implementation
 
-Would you like to:
-1. Go back and update the TRD with error handling details
-2. Proceed with a note to address during implementation
-3. Review the full validation report first
+All documents validated successfully. No critical issues found.
 
-Please let me know how you'd like to proceed."
+**Quick Stats:**
+- 15 atomic tasks ready
+- 3-week timeline
+- First deliverable: Day 2
 
-[WAIT FOR USER DECISION]
-
-User: "Let's update the TRD first"
-
-AI: "Understood. Please run the TRD generation again to add error handling specifications."
+Type 'proceed' to start implementation.
 ```
 
-## Validation Report Structure
+**Scenario 2: Minor Issues (85-94% validation)**
+```markdown
+## 🟡 Minor Adjustments Applied
 
-Generate a comprehensive validation report with the following sections:
+**Auto-corrected:**
+- Naming inconsistencies (3 instances)
+- Task dependency optimization (saved 2 days)
 
-### 0. Executive Summary
-- Overall validation status (PASS/FAIL/NEEDS_REVIEW)
-- Critical issues requiring immediate attention
-- Recommendation for proceeding to implementation
-- Required remediation steps (if validation fails)
+**Timeline Impact:** None (absorbed in buffer)
 
-### 1. Requirements Traceability Analysis
-- Complete traceability matrix
-- Missing or orphaned requirements
-- Coverage gaps and recommendations
+Type 'proceed' to start or 'review' for details.
+```
 
-### 2. Architecture Consistency Report
-- Architecture pattern compliance across documents
-- Component interface alignment
-- Data model consistency
-- API specification alignment
+**Scenario 3: Critical Decision Needed (<85% validation)**
+```markdown
+## 🔴 Strategic Decision Required
 
-### 3. Technical Completeness Assessment
-- TRD specification gaps
-- Implementation readiness score
-- Missing technical details
+**Blocking Issue:** [Specific issue]
 
-### 4. Task Breakdown Evaluation
-- Atomic task validation results
-- Task coverage analysis
-- Dependency validation
-- Acceptance criteria completeness
+**Your Options:**
+1. [Option with impact]
+2. [Option with impact]
 
-### 5. Chain Continuity Analysis
-- Document progression validation
-- Architecture pattern enforcement
-- Integration points verification
+Please select (1/2) or type 'review' for full analysis.
+```
 
-### 6. Critical Issues and Blockers
-- Issues that must be resolved before implementation
-- Recommendations for resolution
-- Priority ranking of issues
+## Validation Report Structure - Optimized Format
 
-### 7. Recommendations and Next Steps
-- Document updates required
-- Process improvements needed
-- Go/no-go recommendation for implementation
+### Executive Package (What User Sees)
+```markdown
+# Implementation Readiness Report
 
-### 8. Validation Metadata
-- Documents validated and versions
-- Validation date and validator
-- Validation criteria and methodology
+## Status: [READY/NEEDS_DECISION/BLOCKED]
 
-### 9. Remediation Plan (if FAIL/NEEDS_REVIEW)
-- Specific document updates required
-- Priority order for fixes
-- Re-validation requirements
-- Estimated effort for remediation
-- Go/no-go decision criteria for proceeding
+### Scorecard
+| Aspect | Score | Status |
+|--------|-------|--------|
+| Requirements | 100% | ✅ |
+| Technical | 98% | ✅ |
+| Tasks | 100% | ✅ |
+| Risks | 85% | ⚠️ |
+
+### Key Findings
+- [Finding 1 with impact]
+- [Finding 2 with resolution]
+- [Risk with mitigation]
+
+### Optimizations Applied
+- [Optimization 1: saved X days]
+- [Optimization 2: reduced complexity]
+
+### Next Steps
+[Specific action required or "Ready to implement"]
+```
+
+### Detailed Report (Available on Request)
+Generated but only shown if user types 'review':
+
+1. **Requirements Traceability Matrix**
+2. **Technical Alignment Details**
+3. **Task Dependency Graph**
+4. **Risk Analysis Deep Dive**
+5. **Optimization Rationale**
+6. **Implementation Guidelines**
 
 ## Critical Validation Rules
 

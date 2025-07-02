@@ -22,17 +22,37 @@ alwaysApply: false
 - **Use for:** Architecture integration analysis, technology evaluation, implementation path validation
 - **Pattern:** Feature requirements → existing architecture → integration points → implementation strategy
 - **Benefit:** Ensures technical approach aligns with existing system and minimizes architectural risk
-- **Example Usage:**
-  ```
-  mcp__sequential-thinking__sequentialthinking
-    thought="Analyzing integration points for [feature]. Current architecture uses [patterns]. Need to evaluate: 1) Component integration, 2) Data flow, 3) Performance impact."
-    nextThoughtNeeded=true
-    thoughtNumber=1
-    totalThoughts=4
-  ```
-- **When:** During architecture analysis and implementation strategy development
 
-**Pro tip:** Always reference existing architecture decisions to ensure consistency and avoid reinventing solutions!
+### 🧠 Zen MCP Tools (ARCHITECTURAL INSIGHTS)
+**Use Zen for technical deep dives:**
+- **`mcp__zen__analyze`** - Analyze existing codebase for integration patterns
+  ```bash
+  mcp__zen__analyze
+    files=["src/api/", "src/services/"]
+    prompt="How can we integrate [feature] with existing architecture?"
+    model="pro"
+    analysis_type="architecture"
+  ```
+- **`mcp__zen__thinkdeep`** - Explore technical trade-offs and alternatives
+  ```bash
+  mcp__zen__thinkdeep
+    prompt="What are the trade-offs between [approach1] vs [approach2] for [feature]?"
+    model="pro"
+    thinking_mode="high"
+    focus_areas=["performance", "maintainability", "scalability"]
+  ```
+- **`mcp__zen__codereview`** - Validate technical approach against best practices
+
+### 🚀 Task Tool (ARCHITECTURE EXPLORATION)
+**Use Task for comprehensive technical search:**
+```bash
+Task(
+  description="Find integration patterns",
+  prompt="Search for how existing features integrate with [system components] to identify reusable patterns and avoid architectural conflicts"
+)
+```
+
+**Pro tip:** Combine all tools for comprehensive technical analysis - Task finds patterns, Zen analyzes trade-offs, Memory stores decisions!
 
 ## Goal
 
@@ -40,61 +60,55 @@ To guide an AI assistant in creating a focused Technical Approach that defines i
 
 ## Process
 
-1. **Read Feature Brief:** Load approved feature brief from previous phase
+1. **Complexity-Based Approach:** Adjust technical depth based on feature complexity
+   - **[ADAPT]:** Simple features focus on integration, complex features explore alternatives
+   - 🧩 **Memory Action:** Use `mcp__lerian-memory__memory_read` with `operation="find_similar"` for pattern matching
+
+2. **Read Feature Brief:** Load approved feature brief from previous phase
    - 🧩 **Memory Action:** Use `mcp__lerian-memory__memory_read` with:
      ```
      operation="search"
      options={
-       "query": "feature-brief [feature-name] requirements user-stories",
+       "query": "feature-brief [feature-name] requirements user-stories complexity",
        "repository": "github.com/[org]/[repo]"
      }
      ```
-   - 🧩 **Memory Action:** Use `mcp__lerian-memory__memory_tasks` with:
-     ```
-     operation="todo_write"
-     options={
-       "todos": [{"content": "Create technical approach for [feature-name]", "status": "in_progress", "priority": "high"}],
-       "repository": "github.com/[org]/[repo]"
-     }
-     ```
+   - **[OPTIMIZE]:** Extract risk factors and constraints for technical consideration
 
-2. **Retrieve Architecture Context:** Use Memory MCP to understand existing system architecture
-   - 🧩 **Memory Action:** Use `mcp__lerian-memory__memory_read` with:
+3. **Retrieve Architecture Context:** Use Memory MCP to understand existing system
+   - 🧩 **Memory Action:** Search for reusable patterns:
      ```
-     operation="search"
+     operation="find_similar"
      options={
-       "query": "architecture patterns tech-stack integration-points",
+       "problem": "implementing [feature-type] with [constraints]",
        "repository": "github.com/[org]/[repo]"
      }
      ```
+   - **[FLEX]:** Reference successful past implementations
 
-3. **Analyze Integration Points:** Identify how feature integrates with existing system
-   - 🔄 **Sequential Thinking:** Use `mcp__sequential-thinking__sequentialthinking`:
+4. **Analyze Integration Points:** Identify how feature integrates with existing system
+   - 🔄 **Sequential Thinking:** Multi-path analysis for complex features:
      ```
-     thought="Analyzing integration for [feature]. Current system has: [components]. Feature needs to: [requirements]. Let me evaluate integration options."
+     thought="Analyzing integration for [feature]. Evaluating: 1) Reuse existing patterns, 2) Minimal new components, 3) Performance impact"
      nextThoughtNeeded=true
      thoughtNumber=1
      totalThoughts=4
+     branchId="integration-analysis"
      ```
 
-4. **Ask Technical Questions:** Gather specific technical preferences and constraints
+5. **Ask Technical Questions:** Scale questions to complexity
+   - **Simple (1-2 questions):** Confirm integration approach
+   - **Medium (2-4 questions):** Add performance and scalability
+   - **Complex (4-6 questions):** Include alternatives and trade-offs
    - **IMPORTANT:** WAIT for user responses before proceeding
-   - Focus on implementation strategy within existing constraints
 
-5. **Generate Technical Approach:** Create comprehensive implementation strategy
-   - 🧩 **Memory Action:** Use `mcp__lerian-memory__memory_create` with:
-     ```
-     operation="store_decision"
-     options={
-       "decision": "Technical implementation approach for [feature-name]",
-       "rationale": "[key technical reasoning]",
-       "repository": "github.com/[org]/[repo]",
-       "session_id": "[current-session]"
-     }
-     ```
+6. **Generate Technical Approach:** Create implementation strategy with estimates
+   - **[ADAPT]:** Include cost estimates for each approach
+   - **[OPTIMIZE]:** Reference similar implementations from Memory
+   - 🧩 **Memory Action:** Store technical decisions with justifications
 
-6. **Request Technical Review:** Present approach and ask for feedback:
-   - "Please review this technical approach. Are there any technical decisions you'd like to adjust?"
+7. **Request Technical Review:** Present approach with clear trade-offs:
+   - "Please review this technical approach. I've included effort estimates and identified [X] reusable patterns from past features."
    - **WAIT for user approval or feedback**
    - 🧩 **Memory Action:** Use `mcp__lerian-memory__memory_create` with:
      ```
@@ -171,6 +185,27 @@ Create technical approach using this structure:
 **Implementation Type:** [Frontend/Backend/Full-stack/Integration]
 **Integration Strategy:** [How this connects with existing system]
 **Estimated Complexity:** [Low/Medium/High based on integration points]
+
+### 💰 Cost Estimates
+
+#### Development Effort
+- **Total Estimate:** [X] days ([Y] hours)
+- **Breakdown by Phase:**
+  - Foundation Setup: [X] hours
+  - Core Implementation: [Y] hours
+  - Integration & Testing: [Z] hours
+
+#### Approach Options (For Complex Features)
+| Approach | Effort | Risk | Benefits |
+|----------|--------|------|----------|
+| **Option 1: [Name]** | [X] days | Low/Med/High | [Key benefits] |
+| **Option 2: [Name]** | [Y] days | Low/Med/High | [Key benefits] |
+| **Recommended** | **[Choice]** | **[Risk]** | **[Why this option]** |
+
+### 🔄 Pattern Reuse Opportunities
+- **Similar Implementation:** [Reference to past feature]
+- **Reusable Components:** [Existing components to leverage]
+- **Time Saved:** ~[X] hours through pattern reuse
 
 ## 📋 Architecture Integration
 

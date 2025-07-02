@@ -25,31 +25,120 @@ To guide an AI assistant through a streamlined feature development process that 
 - Validate feature integration with existing architecture
 - Question assumptions and explore implementation alternatives
 
+### 🧠 Zen MCP Integration (HIGHLY RECOMMENDED)
+**Use Zen tools for enhanced analysis and collaboration:**
+- **`mcp__zen__thinkdeep`** - For complex architectural decisions and exploring alternatives
+- **`mcp__zen__analyze`** - For codebase analysis and pattern identification
+- **`mcp__zen__chat`** - For collaborative brainstorming and validation
+- **Benefits**: Deeper insights, alternative perspectives, and validation of approaches
+
+### 🚀 Task Tool Usage (POWERFUL FOR SEARCH)
+**Use the Task tool for efficient exploration:**
+- **When to use**: Searching for patterns, finding similar implementations, exploring codebase
+- **Example**: `Task(description="Find auth patterns", prompt="Search for authentication implementations across the codebase")`
+- **Benefits**: Parallel search, comprehensive results, reduced context usage
+
 ## Process Overview
 
-This orchestrator manages a **4-phase feature workflow** with focused user feedback:
+This orchestrator manages an **adaptive feature workflow** that adjusts based on complexity:
+
+### 🔍 Phase 0: Complexity Assessment (NEW)
+**Objective**: Evaluate feature complexity to determine optimal workflow
+**Agent Action**: Analyze feature scope and propose workflow adaptation
+**Output**: Complexity score and recommended workflow structure
+
+### Adaptive Workflow Paths:
+
+#### 🟢 Simple Features (1-2 days)
+- **Phase 1**: Feature Brief & Technical Approach (merged)
+- **Phase 2**: Implementation Plan with integrated testing
+- **[FLEX]**: Agent can propose further consolidation
+
+#### 🟡 Medium Features (3-5 days) 
+- **Phase 1**: Feature Brief
+- **Phase 2**: Technical Approach
+- **Phase 3**: Implementation Plan
+- **Phase 4**: Test Strategy
+- **[ADAPT]**: Standard 4-phase with flexibility points
+
+#### 🔴 Complex Features (5+ days)
+- **Phase 1**: Feature Brief with risk assessment
+- **Phase 2**: Architecture Review (additional)
+- **Phase 3**: Technical Approach with alternatives
+- **Phase 4**: Implementation Plan with milestones
+- **Phase 5**: Comprehensive Test Strategy
+- **[OPTIMIZE]**: Enhanced pattern matching from past projects
+
+### Core Phases (Adaptive):
 
 ### Phase 1: Feature Brief
-**Objective**: Capture feature requirements and user stories quickly
-**User Interaction**: Required - clarifying questions and brief review
+**Objective**: Capture requirements with complexity-aware depth
+**User Interaction**: Required - clarifying questions scaled to complexity
 **Output**: `docs/pre-development/feature-brief-[feature-name].md`
 
 ### Phase 2: Technical Approach  
-**Objective**: Define implementation strategy within existing architecture
-**User Interaction**: Required - technical decisions and approach review
+**Objective**: Define implementation strategy with pattern reuse
+**User Interaction**: Required for medium/complex, optional for simple
 **Output**: `docs/pre-development/tech-approach-[feature-name].md`
 
 ### Phase 3: Implementation Plan
-**Objective**: Break down into atomic, implementable tasks with git workflow
-**User Interaction**: Optional - review task breakdown
+**Objective**: Define deliverables and decompose into work units
+**User Interaction**: Optional - review deliverable structure
 **Output**: `docs/pre-development/tasks/feature-[feature-name]/`
 
 ### Phase 4: Test Strategy
-**Objective**: Define focused test coverage for the feature
-**User Interaction**: Required - test priorities and approach
+**Objective**: Define test coverage linked to acceptance criteria
+**User Interaction**: Required for complex, optional for simple/medium
 **Output**: `docs/pre-development/features/test-plan-[feature-name].md`
 
 ## Execution Phases
+
+### 🔍 Phase 0: Complexity Assessment (NEW)
+
+**Automated complexity evaluation with workflow adaptation:**
+
+```bash
+# Initial feature analysis
+# AI performs automatic complexity assessment using:
+# - Sequential Thinking MCP for multi-factor analysis
+# - Memory MCP for similar feature patterns
+# - Complexity scoring based on multiple factors
+
+# Process flow:
+# 1. AI analyzes initial feature description
+# 2. AI searches Memory for similar past features
+# 3. AI evaluates complexity factors:
+#    - Integration points count
+#    - Data model changes required
+#    - External dependencies
+#    - Security considerations
+#    - Performance implications
+# 4. AI proposes workflow adaptation
+# 5. User reviews and approves workflow structure
+```
+
+**Complexity Factors Evaluated:**
+- **Scope**: Number of user stories and acceptance criteria
+- **Integration**: Count of existing systems affected
+- **Architecture**: Need for new patterns or components
+- **Risk**: Security, performance, or reliability concerns
+- **Dependencies**: External services or major refactoring
+
+**🧠 Enhanced with Zen MCP:**
+```bash
+# Use Zen for deeper complexity analysis
+mcp__zen__thinkdeep
+  prompt="Analyze feature complexity for [feature]: [description]"
+  focus_areas=["integration_complexity", "architectural_impact", "risk_assessment"]
+  model="pro"
+  thinking_mode="high"
+```
+
+**[FLEX] Agent Discretion:**
+- Propose phase consolidation for simple features
+- Suggest additional phases for complex features
+- Recommend pattern reuse from Memory MCP
+- Use Task tool for comprehensive pattern search
 
 ### 📋 Phase 1: Feature Brief
 
@@ -260,6 +349,32 @@ Store feature decisions and patterns with appropriate tags:
 4. **Quick Validation** - Get user feedback early and often
 5. **Atomic Tasks** - Ensure each task can be completed independently
 6. **Git-First** - Include git workflow from the start
+
+### 🧠 When to Use Each Tool
+
+#### Use Task Tool When:
+- **Searching for patterns** across the codebase
+- **Finding similar implementations** to learn from
+- **Exploring multiple aspects** in parallel
+- **Reducing context usage** in large searches
+
+#### Use Zen MCP When:
+- **Analyzing complex decisions** (use `thinkdeep` with pro model)
+- **Reviewing code architecture** (use `analyze` for patterns)
+- **Validating approaches** (use `codereview` for quality)
+- **Brainstorming alternatives** (use `chat` for ideas)
+
+#### Use Memory MCP When:
+- **Starting any phase** to retrieve context
+- **Making decisions** to store rationale
+- **Completing work** to capture learnings
+- **Finding similar work** for pattern reuse
+
+#### Combine All Three When:
+- **Complex features** need deep analysis
+- **Uncertain approaches** require validation
+- **Pattern reuse** can accelerate development
+- **Risk assessment** needs multiple perspectives
 
 ### For Quality Assurance
 

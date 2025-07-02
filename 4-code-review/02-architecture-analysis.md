@@ -14,7 +14,43 @@
 - Question assumptions and explore alternative approaches
 - Generate and verify solution hypotheses through structured reasoning
 
-This approach enables deeper analysis, better pattern recognition, and more thorough problem-solving capabilities.
+### 🧠 Zen MCP Integration (CRITICAL FOR ARCHITECTURE ANALYSIS)
+**Use Zen tools for deep architectural insights:**
+- **`mcp__zen__analyze`** - Comprehensive architecture analysis
+  ```bash
+  mcp__zen__analyze
+    files=["src/", "lib/", "core/", "services/"]
+    prompt="Analyze architectural patterns, component relationships, and design decisions"
+    model="pro"
+    analysis_type="architecture"
+  ```
+- **`mcp__zen__thinkdeep`** - Explore architectural trade-offs
+  ```bash
+  mcp__zen__thinkdeep
+    prompt="What are the architectural strengths, weaknesses, and potential improvements for this system?"
+    model="pro"
+    thinking_mode="high"
+    focus_areas=["scalability", "maintainability", "performance", "security"]
+  ```
+- **Benefits**: Deep pattern recognition, trade-off analysis, improvement opportunities
+
+### 🚀 Task Tool Usage (ESSENTIAL FOR DEPENDENCY MAPPING)
+**Use Task tool for comprehensive architectural discovery:**
+```bash
+Task(
+  description="Map architectural dependencies",
+  prompt="Find and analyze:
+    1. Service dependencies and communication patterns
+    2. Module imports and coupling
+    3. Database access patterns
+    4. External API integrations
+    5. Configuration and environment dependencies
+    6. Build and deployment dependencies"
+)
+```
+**Benefits**: Complete dependency graph, integration points, architectural boundaries
+
+This multi-tool approach enables deeper architectural understanding and more thorough analysis.
 
 ---
 

@@ -1,25 +1,81 @@
-# Feature Test Strategy
+---
+description: Define focused test coverage linked directly to acceptance criteria
+globs: 
+alwaysApply: false
+---
+# Rule: Creating Feature Test Strategy
 
-**Phase 4 of Feature Development Workflow**
+## 🧠 Enhanced Analysis Tools - USE THESE!
 
-You are a test strategist specializing in incremental feature testing. Your role is to ensure new features are thoroughly tested while maintaining existing system stability.
+**CRITICAL:** Leverage these tools throughout the test strategy creation process:
 
-## Context Analysis
+### 🧩 Memory MCP Integration
+- **Retrieve test patterns:** Use `mcp__lerian-memory__memory_read` with `operation="search"` for existing test strategies and patterns
+- **Find similar tests:** Use `mcp__lerian-memory__memory_read` with `operation="find_similar"` for comparable feature test approaches
+- **Store test decisions:** Use `mcp__lerian-memory__memory_create` with `operation="store_decision"` for test strategy rationale
+- **Tags to use:** `["test-strategy", "feature-testing", "acceptance-criteria", "feature-name"]`
 
-Let me first understand the feature scope and its testing implications.
+### 🔄 Sequential Thinking MCP
+- **Use for:** Test coverage analysis, risk assessment, test prioritization
+- **Pattern:** Acceptance criteria → test scenarios → coverage gaps → risk mitigation
+- **Benefit:** Ensures comprehensive test coverage directly linked to feature requirements
 
-### Memory Integration for Feature Testing
-<execute>
-Use Memory MCP to find relevant test patterns:
-- mcp__lerian-memory__memory_read with operation="search", query="feature testing patterns [feature-type]"
-- mcp__lerian-memory__memory_read with operation="get_context" for existing test coverage
-</execute>
+### 🧠 Zen MCP Tools (TEST INTELLIGENCE)
+**Use Zen for test strategy optimization:**
+- **`mcp__zen__codereview`** - Identify testable code patterns
+  ```bash
+  mcp__zen__codereview
+    files=["feature/implementation/files"]
+    prompt="Identify critical paths and edge cases that need testing for [feature]"
+    model="flash"
+    review_type="quick"
+    focus_on="testability and edge cases"
+  ```
+- **`mcp__zen__thinkdeep`** - Explore test scenarios and edge cases
+  ```bash
+  mcp__zen__thinkdeep
+    prompt="What are non-obvious test scenarios for [feature] considering user behavior and system integration?"
+    model="pro"
+    thinking_mode="medium"
+    focus_areas=["edge_cases", "error_scenarios", "performance_boundaries"]
+  ```
 
-### Feature Document Review
-Analyzing:
-1. **Feature Brief**: Understanding the feature's scope and user impact
-2. **Technical Approach**: Identifying new components and integration points
-3. **Implementation Plan**: Mapping tasks to required test coverage
+### 🚀 Task Tool (TEST PATTERN DISCOVERY)
+**Use Task for finding test examples:**
+```bash
+Task(
+  description="Find test patterns",
+  prompt="Search for test strategies and test code for similar features, including unit tests, integration tests, and E2E scenarios"
+)
+```
+**Benefits**: Reuse test patterns, understand coverage expectations, learn from test automation approaches
+
+## Goal
+
+To guide an AI assistant in creating a focused test strategy that directly validates acceptance criteria from the feature brief, with complexity-appropriate depth and pattern reuse.
+
+## Process
+
+1. **Extract Acceptance Criteria:** Load feature brief and map all acceptance criteria
+   - 🧩 **Memory Action:** `memory_search` for feature brief and acceptance criteria
+   - **[ADAPT]:** Scale test depth based on feature complexity
+
+2. **Analyze Technical Risks:** Review technical approach for testing implications
+   - 🧩 **Memory Action:** `memory_read` with `operation="find_similar"` for similar test patterns
+   - **[OPTIMIZE]:** Identify reusable test patterns and frameworks
+
+3. **Define Test Coverage:** Map tests directly to acceptance criteria
+   - 🔄 **Sequential Thinking:** Each criterion → test scenarios → validation approach
+   - **[FLEX]:** Adjust coverage depth based on risk assessment
+
+4. **User Interaction:** Present test priorities for feedback
+   - **Simple features:** "I'll focus on [X] key test scenarios. Any specific concerns?"
+   - **Complex features:** "Here's my risk-based test prioritization. Please review."
+   - **WAIT for user input**
+
+5. **Generate Test Plan:** Create comprehensive test strategy
+   - **[OPTIMIZE]:** Include references to similar test implementations
+   - 🧩 **Memory Action:** `memory_store_decision` for test approach rationale
 
 ## Focused Test Strategy Development
 
@@ -167,9 +223,106 @@ Based on the feature complexity:
 
 **Question**: Any additional criteria specific to your team's DoD?
 
+## Test Strategy Structure
+
+### 📋 Acceptance Criteria Mapping
+
+Each acceptance criterion from the feature brief MUST have corresponding tests:
+
+```markdown
+# Test Plan: [Feature Name]
+
+## 🎯 Test Coverage Mapping
+
+### Acceptance Criterion 1: [Description]
+**Test Scenarios:**
+- ✅ **Happy Path:** [Test description]
+- ❌ **Error Case:** [Test description]
+- 🔄 **Edge Case:** [Test description]
+
+### Acceptance Criterion 2: [Description]
+**Test Scenarios:**
+- ✅ **Integration:** [How it works with existing features]
+- 🔒 **Security:** [Permission/access tests]
+- ⚡ **Performance:** [Load/speed tests]
+
+## 🧪 Test Strategy by Type
+
+### Unit Tests (Coverage Target: [X]%)
+- **New Components:** [List of components needing unit tests]
+- **Modified Components:** [Existing code requiring updated tests]
+- **[OPTIMIZE] Reusable Patterns:** [Reference to similar test suites]
+
+### Integration Tests
+- **API Endpoints:** [New/modified endpoints to test]
+- **Database Operations:** [Data integrity tests]
+- **Service Interactions:** [Inter-service communication tests]
+- **[FLEX] Complexity-Based:** Add contract tests for complex integrations
+
+### E2E Tests
+- **User Journey 1:** [Primary feature workflow]
+- **User Journey 2:** [Alternative workflow]
+- **[ADAPT] Risk-Based:** Focus on high-risk user paths
+
+## ⚠️ Risk-Based Testing (For Complex Features)
+
+### Technical Risks
+| Risk | Impact | Test Strategy | Priority |
+|------|--------|---------------|----------|
+| [Risk 1] | High/Med/Low | [Specific tests] | P0/P1/P2 |
+| [Risk 2] | High/Med/Low | [Specific tests] | P0/P1/P2 |
+
+### Performance Risks
+- **Baseline Metrics:** [Current performance]
+- **Acceptable Degradation:** [Thresholds]
+- **Test Approach:** [Load testing strategy]
+
+## 🔄 Test Implementation Phases
+
+### Phase 1: Development Testing
+- Unit tests written alongside code
+- Local integration tests
+- **[OPTIMIZE]:** Use existing test utilities
+
+### Phase 2: Pre-Merge Testing
+- Full integration test suite
+- Security scanning
+- Performance benchmarks
+
+### Phase 3: Post-Merge Validation
+- E2E test updates
+- Regression suite execution
+- Production monitoring setup
+
+## 📊 Test Metrics & Success Criteria
+
+### Coverage Requirements
+- **Unit Test Coverage:** ≥[X]% for new code
+- **Integration Coverage:** All API endpoints tested
+- **E2E Coverage:** All acceptance criteria validated
+
+### Quality Gates
+- [ ] All tests passing in CI/CD
+- [ ] No performance regression >5%
+- [ ] Security scan clean
+- [ ] No increase in test flakiness
+
+## 🔧 Test Infrastructure Needs
+
+### Test Data Requirements
+- **Fixtures:** [Required test data]
+- **Mocks:** [External services to mock]
+- **[OPTIMIZE]:** Reuse existing test factories
+
+### Environment Setup
+- **Dependencies:** [Test environment needs]
+- **Configuration:** [Special test configs]
+- **[ADAPT]:** Scale based on feature complexity
+```
+
 ## Generated Test Plan
 
-Based on our discussion, I'll create your feature-specific test plan.
+Based on our discussion and acceptance criteria analysis, I'll create your feature-specific test plan.
 
 ### Saving Test Strategy
 <execute>

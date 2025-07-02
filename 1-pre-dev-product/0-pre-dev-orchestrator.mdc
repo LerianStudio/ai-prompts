@@ -3,11 +3,11 @@ description: Master orchestrator for pre-development workflow with user feedback
 globs: 
 alwaysApply: false
 ---
-# Rule: Pre-Development Workflow Orchestration
+# Rule: Pre-Development Workflow Orchestration (Hybrid Dynamic Pattern)
 
 ## Goal
 
-To guide an AI assistant through a comprehensive pre-development planning process that transforms user ideas into detailed, implementable technical specifications. This orchestrator manages the complete 5-prompt workflow with explicit user feedback loops at each stage to ensure alignment and quality.
+To guide an AI assistant through a dynamic, confidence-based pre-development planning process that transforms user ideas into detailed, implementable technical specifications. This orchestrator manages an adaptive workflow that balances AI autonomy with strategic human oversight, maximizing efficiency while maintaining quality.
 
 ## 🔗 Enhanced Reasoning Integration
 
@@ -25,263 +25,348 @@ To guide an AI assistant through a comprehensive pre-development planning proces
 - Question assumptions and explore alternative approaches
 - Generate and verify solution hypotheses through structured reasoning
 
-## Process Overview
+### 🤖 Zen MCP Integration (HIGHLY RECOMMENDED)
+**Why Use Zen MCP:**
+- **Deep Analysis**: Use `mcp__zen__thinkdeep` for complex architectural decisions and trade-off analysis
+- **Code Quality**: Use `mcp__zen__codereview` to validate implementation approaches early
+- **Problem Solving**: Use `mcp__zen__debug` when encountering blockers or complex issues
+- **Collaboration**: Use `mcp__zen__chat` to explore ideas and get second opinions
 
-This orchestrator manages a **6-phase pre-development workflow** with mandatory user feedback checkpoints:
+**Example Usage:**
+```
+mcp__zen__thinkdeep
+  prompt="Analyzing trade-offs between microservice vs monolithic for [feature]"
+  model="pro"
+  thinking_mode="high"
+  focus_areas=["architecture", "scalability", "complexity"]
+```
 
-### Phase 1: Product Requirements Document (PRD)
-**Objective**: Transform user ideas into clear business requirements
-**User Interaction**: Required - clarifying questions and PRD review
+### 🔍 Task Tool Usage (USE LIBERALLY)
+**When to Use Task():**
+- Searching for patterns across multiple files
+- Finding similar implementations in the codebase
+- Exploring architectural decisions in existing code
+- Parallel search operations for efficiency
 
-### Phase 2: Technical Requirements Document (TRD)
-**Objective**: Convert business requirements into technical specifications
-**User Interaction**: Required - technical decisions and TRD review
+**Example:**
+```
+Task
+  description="Find authentication patterns"
+  prompt="Search for existing authentication implementations, JWT usage, and security patterns across the codebase"
+```
 
-### Phase 3: Task Generation
-**Objective**: Break down requirements into atomic, implementable phases
-**User Interaction**: Required - task prioritization and approval
+## Process Overview - Hybrid Dynamic Workflow
 
-### Phase 4: Chain Validation
-**Objective**: Ensure consistency across all documents
-**User Interaction**: Required - review validation report
+This orchestrator implements an **adaptive workflow** with confidence-based checkpoints:
 
-### Phase 5: Sub-Task Generation
-**Objective**: Create detailed implementation plans
-**User Interaction**: Optional - review granular breakdown
+### 🚀 Core Principles
+- **Memory-First**: Always start by searching for similar patterns
+- **Parallel Processing**: Explore multiple approaches simultaneously  
+- **Confidence-Based Interaction**: AI decides when human input is needed
+- **Rapid Prototyping**: Generate working examples early for validation
+- **Dynamic Depth**: Complexity drives process depth, not rigid phases
 
-### Phase 6: Test Strategy Development
-**Objective**: Define comprehensive test coverage for the product
-**User Interaction**: Required - test priorities and constraints
+### 📊 Confidence Scoring System
+```yaml
+High Confidence (80-100%):
+  - Pattern found in Memory MCP with >90% similarity
+  - Clear requirements with minimal ambiguity
+  - Standard implementation patterns apply
+  Action: Proceed autonomously, notify user of decisions
 
-## Execution Phases
+Medium Confidence (50-79%):
+  - Partial pattern matches in Memory
+  - Some ambiguity in requirements
+  - Multiple viable approaches exist
+  Action: Present 2-3 options with trade-offs for user selection
 
-### 📋 Phase 1: Product Requirements Document (PRD)
+Low Confidence (<50%):
+  - No similar patterns found
+  - High ambiguity or novel requirements
+  - Critical architectural decisions needed
+  Action: Request specific guidance before proceeding
+```
 
-**Interactive process with mandatory user feedback:**
+### 🔄 Adaptive Phase Structure
+
+#### Phase 1: Discovery & Rapid Prototyping (Parallel Execution)
+**Objectives**: 
+- Search memory for similar implementations
+- Analyze requirements using Sequential Thinking
+- Generate PRD + initial code/architecture prototypes
+- Identify confidence levels for each component
+
+**User Interaction**: Conditional based on confidence scores
+
+#### Phase 2: Strategic Decision Point (Single Checkpoint)
+**Objectives**:
+- Present synthesis of findings with confidence scores
+- Show 2-3 viable approaches with prototypes
+- Highlight areas needing human expertise
+
+**User Interaction**: Required - select direction and constraints
+
+#### Phase 3: Autonomous Refinement (AI-Driven)
+**Objectives**:
+- Deep dive into chosen approach
+- Generate TRD, tasks, and test strategy
+- Use Sequential Thinking for complex areas
+- Request help only for low-confidence items
+
+**User Interaction**: On-demand based on confidence
+
+#### Phase 4: Validation & Optimization
+**Objectives**:
+- Cross-validate all documents
+- Optimize task breakdown
+- Prepare implementation roadmap
+
+**User Interaction**: Final approval only
+
+## Execution Patterns - Dynamic Workflow
+
+### 🚀 Phase 1: Discovery & Rapid Prototyping
 
 ```bash
-# Start PRD creation with user's initial idea
+# New approach: Parallel discovery and prototyping
 claude 1-pre-development/1-create-prd.mdc
 
-# Process flow:
-# 1. AI reads user's initial feature request
-# 2. AI asks clarifying questions (WAIT FOR USER RESPONSE)
-# 3. User provides answers
-# 4. AI generates PRD draft
-# 5. User reviews and provides feedback (WAIT FOR APPROVAL)
-# 6. AI incorporates feedback and finalizes PRD
+# AI Process (Parallel Execution):
+# 1. Memory search for similar features/patterns
+# 2. Sequential thinking to decompose requirements  
+# 3. Generate initial PRD structure
+# 4. Create 2-3 approach prototypes (code snippets/architecture)
+# 5. Calculate confidence scores for each component
+# 6. Present findings with confidence indicators
 ```
 
-**Key User Interactions:**
-- Initial feature description
-- Answers to clarifying questions about:
-  - Problem/goal definition
-  - Target users and personas
-  - Core functionality and user stories
-  - Success criteria and metrics
-  - Scope boundaries (non-goals)
-  - Data requirements and relationships
-- Review and approval of PRD draft
+**Dynamic Interaction Model:**
+```yaml
+IF confidence_score >= 80%:
+  - AI proceeds with PRD generation
+  - Notifies user: "Found similar pattern [X], proceeding with approach [Y]"
+  - User can intervene if needed
+  
+ELIF confidence_score >= 50%:
+  - AI presents 2-3 options with prototypes
+  - User selects preferred approach
+  - AI refines based on selection
+  
+ELSE:
+  - AI requests specific guidance
+  - Presents what it understands and gaps
+  - User provides targeted input
+```
 
-**Output**: `docs/pre-development/prd-[feature-name].md`
+**Outputs**: 
+- `docs/pre-development/prd-[feature-name].md`
+- `docs/pre-development/prototypes/[approach-1,2,3].md` (when applicable)
 
-### 🔧 Phase 2: Technical Requirements Document (TRD)
-
-**Build upon approved PRD with technical specifications:**
+### 💡 Phase 2: Strategic Decision Point
 
 ```bash
-# Create TRD based on approved PRD
+# Single consolidated checkpoint for user direction
 claude 1-pre-development/2-create-trd.mdc
 
-# Process flow:
-# 1. AI reads approved PRD
-# 2. AI analyzes technical implications
-# 3. AI asks technical clarifying questions (WAIT FOR USER RESPONSE)
-# 4. User provides technical decisions
-# 5. AI generates TRD draft
-# 6. User reviews technical approach (WAIT FOR APPROVAL)
-# 7. AI finalizes TRD
+# AI presents synthesis:
+# 1. Summary of Memory MCP findings
+# 2. 2-3 technical approaches with prototypes
+# 3. Confidence scores and risk assessment
+# 4. Areas requiring human expertise
 ```
 
-**Key User Interactions:**
-- Technology stack decisions
-- Infrastructure and deployment preferences
-- Performance and reliability requirements
-- Security and compliance needs
-- Integration points and dependencies
-- Review and approval of technical approach
+**Streamlined User Decision:**
+```yaml
+User Reviews:
+  - Approach comparison matrix
+  - Risk/benefit analysis
+  - Resource implications
+  
+User Provides (in one interaction):
+  - Selected approach
+  - Key constraints
+  - Non-negotiable requirements
+  - Timeline/resource boundaries
+```
 
-**Output**: `docs/pre-development/trd-[feature-name].md`
+**Output**: User decision captured in Memory MCP for future reference
 
-### 📝 Phase 3: Task Generation
-
-**Create atomic, implementable phases:**
+### 🤖 Phase 3: Autonomous Refinement
 
 ```bash
-# Generate main tasks from PRD and TRD
+# AI-driven deep dive with selective interaction
 claude 1-pre-development/3-generate-tasks.mdc
-
-# Process flow:
-# 1. AI reads both PRD and TRD
-# 2. AI analyzes development roadmap
-# 3. AI generates atomic task breakdown
-# 4. User reviews task prioritization (WAIT FOR FEEDBACK)
-# 5. User can adjust task order or scope
-# 6. AI incorporates feedback and finalizes tasks
-```
-
-**Key User Interactions:**
-- Review of proposed development phases
-- Feedback on task prioritization
-- Adjustment of phase boundaries
-- Approval of atomic task structure
-
-**Output**: `docs/pre-development/tasks/tasks-[feature-name].md`
-
-### ✅ Phase 4: Chain Validation
-
-**Ensure document consistency and completeness:**
-
-```bash
-# Validate consistency across all documents
 claude 1-pre-development/4-validate-chain.mdc
-
-# Process flow:
-# 1. AI reads PRD, TRD, and Tasks
-# 2. AI performs comprehensive validation
-# 3. AI generates validation report
-# 4. User reviews validation findings (WAIT FOR ACKNOWLEDGMENT)
-# 5. If issues found, user decides on corrections
-# 6. Iterate previous phases if needed
-```
-
-**Key User Interactions:**
-- Review validation report
-- Decision on addressing any inconsistencies
-- Approval to proceed or iterate
-
-**Output**: `docs/pre-development/validation-report-[feature-name].md`
-
-### 🔨 Phase 5: Sub-Task Generation
-
-**Create detailed implementation plans:**
-
-```bash
-# Generate granular sub-tasks (optional based on project complexity)
 claude 1-pre-development/5-generate-sub-tasks.mdc
-
-# Process flow:
-# 1. AI reads validated task structure
-# 2. AI breaks down each task into sub-tasks
-# 3. AI generates detailed implementation steps
-# 4. User optionally reviews granularity
-# 5. AI creates sub-task documentation
-```
-
-**Key User Interactions (Optional):**
-- Review of sub-task granularity
-- Feedback on implementation approach
-- Approval of detailed breakdown
-
-**Output**: `docs/pre-development/tasks/MT-*/` (organized by main task)
-
-### 🧪 Phase 6: Test Strategy Development
-
-**Create comprehensive test strategy tailored to the product:**
-
-```bash
-# Generate test strategy based on all previous documents
 claude 1-pre-development/6-test-strategy.mdc
 
-# Process flow:
-# 1. AI analyzes PRD, TRD, and task breakdown
-# 2. AI identifies testing requirements
-# 3. AI proposes test coverage breakdown (WAIT FOR USER INPUT)
-# 4. User provides test priorities and constraints
-# 5. AI generates comprehensive test strategy
-# 6. User reviews and approves test approach (WAIT FOR APPROVAL)
-# 7. AI finalizes test plan with specific scenarios
+# Parallel AI execution:
+# 1. Generate comprehensive TRD based on selection
+# 2. Create task breakdown with confidence scores
+# 3. Develop test strategy
+# 4. Validate consistency across documents
+# 5. Identify low-confidence areas needing input
 ```
 
-**Key User Interactions:**
-- Test coverage targets for different test types
-- Performance and quality SLAs
-- Testing tool preferences
-- Resource constraints and timeline
-- Compliance and security requirements
-- Review and approval of test strategy
+**Confidence-Based Interactions:**
+```yaml
+High Confidence Areas:
+  - AI generates complete sections
+  - Stores decisions in Memory MCP
+  - Notifies user of progress
+  
+Medium Confidence Areas:
+  - AI generates draft with alternatives
+  - Flags for user review in batch
+  
+Low Confidence Areas:
+  - AI requests specific input
+  - Provides context and options
+  - Waits for user guidance
+```
 
-**Output**: `docs/pre-development/test-strategy-[feature-name].md`
+**Batch Review Points:**
+- Technical decisions summary
+- Risk areas identification  
+- Resource requirements
+- Critical path dependencies
 
-## User Feedback Integration
+**Outputs**:
+- `docs/pre-development/trd-[feature-name].md`
+- `docs/pre-development/tasks/tasks-[feature-name].md`
+- `docs/pre-development/tasks/MT-*/` (sub-tasks)
+- `docs/pre-development/test-strategy-[feature-name].md`
 
-### Mandatory Checkpoints
+### ✅ Phase 4: Final Validation & Optimization
 
-1. **PRD Clarification** - User must answer questions before PRD generation
-2. **PRD Approval** - User must review and approve PRD before proceeding
-3. **TRD Technical Decisions** - User must provide technical preferences
-4. **TRD Approval** - User must approve technical approach
-5. **Task Review** - User must review and approve task breakdown
-6. **Validation Acknowledgment** - User must review validation results
-7. **Test Strategy Review** - User must provide test priorities and approve approach
+```bash
+# Comprehensive validation and optimization
+claude 1-pre-development/4-validate-chain.mdc
 
-### Feedback Incorporation Process
+# AI Process:
+# 1. Cross-validate all documents
+# 2. Optimize task dependencies
+# 3. Identify implementation risks
+# 4. Generate implementation roadmap
+# 5. Present final package
+```
+
+**Single Approval Checkpoint:**
+```yaml
+User Reviews Complete Package:
+  - Executive summary
+  - Implementation roadmap
+  - Risk mitigation plan
+  - Resource allocation
+  - Success metrics
+  
+User Decision:
+  - Approve and proceed
+  - Request specific adjustments
+  - Major pivot (rare - return to Phase 2)
+```
+
+**Output**: 
+- `docs/pre-development/validation-report-[feature-name].md`
+- `docs/pre-development/implementation-roadmap-[feature-name].md`
+
+## Dynamic Interaction Model
+
+### Confidence-Based Checkpoints
+
+**Only 2 Mandatory Checkpoints:**
+1. **Strategic Direction** (Phase 2) - User selects approach and sets constraints
+2. **Final Approval** (Phase 4) - User approves complete package
+
+**Conditional Interactions:**
+- Low confidence areas trigger targeted questions
+- Medium confidence presents options in batches
+- High confidence proceeds with notification
+
+### Intelligent Feedback System
+
+```yaml
+Confidence Score Calculation:
+  memory_match: 0-40 points
+    - Exact pattern match: 40
+    - Similar pattern: 20-35
+    - Partial match: 10-20
+    - No match: 0
+    
+  requirement_clarity: 0-30 points
+    - Unambiguous specs: 30
+    - Minor ambiguities: 20
+    - Significant gaps: 10
+    - Vague requirements: 0
+    
+  technical_complexity: 0-30 points
+    - Standard patterns: 30
+    - Known challenges: 20
+    - Novel solutions: 10
+    - Experimental: 0
+    
+  total_confidence = sum(scores)
+```
+
+### Batch Review Optimization
 
 ```markdown
-## Standard Feedback Loop
+## Efficient Review Process
 
-1. AI presents draft/questions
-2. User provides feedback/answers
-3. AI acknowledges feedback: "I understand you want to [summary of feedback]"
-4. AI incorporates changes
-5. AI presents updated version
-6. User confirms or requests additional changes
-7. Process repeats until user approves
+1. AI groups similar confidence items
+2. Presents decisions in context
+3. User reviews in one pass:
+   - ✅ Approve high confidence
+   - 🔄 Select from medium options
+   - 📝 Provide input for low confidence
+4. AI processes all feedback simultaneously
+5. Generates final artifacts
 ```
 
 ## Quick Execution Commands
 
-### Full Workflow (With All Feedback Loops)
+### 🚀 Rapid Discovery Mode (Memory-First)
 ```bash
-# Phase 1: Create PRD with user feedback
+# Start with pattern search and rapid prototyping
 claude 1-pre-development/1-create-prd.mdc
-# [User provides initial idea, answers questions, reviews PRD]
+# AI searches memory, generates options, shows confidence
+# User interaction only if confidence < 80%
+```
 
-# Phase 2: Create TRD with technical decisions  
+### 💡 Strategic Planning Mode (2 Checkpoints)
+```bash
+# Phase 1: Discovery and options
+claude 1-pre-development/1-create-prd.mdc
+# [AI presents findings and prototypes]
+
+# Phase 2: Strategic decision 
 claude 1-pre-development/2-create-trd.mdc
-# [User provides technical preferences, reviews TRD]
+# [User selects approach - ONLY MANDATORY CHECKPOINT]
 
-# Phase 3: Generate tasks with prioritization feedback
+# Phase 3-4: Autonomous refinement
 claude 1-pre-development/3-generate-tasks.mdc
-# [User reviews and approves task breakdown]
-
-# Phase 4: Validate chain consistency
 claude 1-pre-development/4-validate-chain.mdc
-# [User reviews validation report]
-
-# Phase 5: Generate detailed sub-tasks (optional)
 claude 1-pre-development/5-generate-sub-tasks.mdc
-# [User optionally reviews sub-task granularity]
-
-# Phase 6: Create comprehensive test strategy
 claude 1-pre-development/6-test-strategy.mdc
-# [User provides test priorities and approves strategy]
+# [AI works autonomously, requests help only for low confidence]
 ```
 
-### Minimal Workflow (Essential documents only)
+### 🤖 Full Autonomous Mode (High Confidence)
 ```bash
-# Create PRD and TRD only
+# When similar pattern exists with >90% match
 claude 1-pre-development/1-create-prd.mdc
-# [User interaction required]
-claude 1-pre-development/2-create-trd.mdc
-# [User interaction required]
+# AI notifies: "Found exact match for [pattern], proceeding..."
+# Generates complete package autonomously
+# Single review at end
 ```
 
-### Validation-First Workflow (For existing documents)
+### 🔍 Exploration Mode (Novel Requirements)
 ```bash
-# If PRD/TRD already exist, start with validation
-claude 1-pre-development/4-validate-chain.mdc
-# [Review existing documents for consistency]
+# For unprecedented features
+claude 1-pre-development/1-create-prd.mdc
+# AI uses Sequential Thinking to explore
+# Presents multiple hypotheses
+# More interaction points based on discoveries
 ```
 
 ## Output Organization
@@ -313,40 +398,38 @@ Store planning decisions and patterns with appropriate tags:
 
 ## Success Criteria
 
-### Phase Completion Criteria
-- **Phase 1**: PRD approved by user with clear requirements
-- **Phase 2**: TRD approved with technical approach defined
-- **Phase 3**: Tasks reviewed and prioritization confirmed
-- **Phase 4**: Validation shows PASS or issues acknowledged
-- **Phase 5**: Sub-tasks generated (if needed) with implementation clarity
-- **Phase 6**: Test strategy approved with coverage targets defined
+### Dynamic Success Metrics
+- **Time to First Prototype**: < 30 minutes (vs 2-3 hours traditional)
+- **User Interaction Points**: 2-3 strategic (vs 7+ tactical)
+- **Pattern Reuse Rate**: >60% from Memory MCP
+- **Confidence Accuracy**: >85% correlation with user satisfaction
+- **Autonomous Completion**: >70% of phases without intervention
 
-### Overall Success Metrics
-- All documents maintain consistency
-- User feedback incorporated at each stage
-- Requirements traceable through all documents
-- Technical approach aligns with business needs
-- Tasks are truly atomic and implementable
-- Clear path from idea to implementation
+### Quality Indicators
+- **High Confidence Decisions**: Validated by user approval rate >90%
+- **Memory Integration**: Each session contributes 3+ reusable patterns
+- **Requirement Coverage**: 100% traceable through all documents
+- **Risk Identification**: Proactive flagging of edge cases
+- **Implementation Readiness**: Tasks immediately executable
 
 ## Best Practices
 
-### For Effective User Interaction
+### For Dynamic AI Collaboration
 
-1. **Ask Specific Questions** - Avoid open-ended queries that overwhelm users
-2. **Provide Examples** - Show sample answers or options when asking questions
-3. **Summarize Understanding** - Reflect back what you understood before proceeding
-4. **Incremental Progress** - Don't generate everything at once; work iteratively
-5. **Clear Checkpoints** - Make it obvious when user input is needed
-6. **Respect User Time** - Batch related questions together
+1. **Memory-First Always** - Start every phase with pattern search
+2. **Prototype Early** - Show working examples within first interaction
+3. **Confidence Transparency** - Always display confidence scores
+4. **Batch Decisions** - Group similar confidence items for efficiency
+5. **Progressive Disclosure** - Detail increases with complexity
+6. **Fail Fast** - Flag uncertainties early in the process
 
-### For Document Quality
+### For Optimal Efficiency
 
-1. **Maintain Traceability** - Every requirement should flow through all documents
-2. **Use Consistent Terminology** - Same terms across PRD, TRD, and tasks
-3. **Reference Previous Sections** - TRD references PRD, tasks reference both
-4. **Version Control Friendly** - Structure documents for easy diffing
-5. **Progressive Enhancement** - Each phase adds detail without duplicating
+1. **Parallel Processing** - Use Sequential Thinking for simultaneous exploration
+2. **Smart Defaults** - Apply patterns from Memory MCP when confident
+3. **Context Preservation** - Store all decisions for future sessions
+4. **Risk-Based Depth** - Spend time where uncertainty is highest
+5. **Continuous Learning** - Every interaction improves future confidence
 
 ## Integration with Other Chains
 
@@ -370,13 +453,68 @@ claude 0-memory-related/m1-memory-initialization.md
 claude 0-memory-related/m3-memory-storage.md
 ```
 
+## Confidence Scoring Template
+
+### How to Calculate and Present Confidence
+
+```yaml
+Component Confidence Assessment:
+  requirement: "[Feature/Component Name]"
+  
+  memory_match_score: [0-40]
+    found_patterns: 
+      - pattern: "[Pattern name]"
+        similarity: [percentage]
+        source: "[Project/Context]"
+    
+  clarity_score: [0-30]
+    ambiguities: ["list any unclear aspects"]
+    assumptions: ["list assumptions made"]
+    
+  complexity_score: [0-30]
+    technical_challenges: ["list identified challenges"]
+    novel_aspects: ["list unprecedented elements"]
+    
+  total_confidence: [sum]
+  confidence_level: "[High/Medium/Low]"
+  
+  recommended_action:
+    High: "Proceeding with implementation based on [pattern]"
+    Medium: "Presenting options for your selection"
+    Low: "Need your input on [specific aspects]"
+```
+
+### Example Confidence Report
+
+```markdown
+## Confidence Analysis for User Authentication Feature
+
+### High Confidence (85%) Components:
+- JWT token implementation (exact match from 3 projects)
+- Password hashing with bcrypt (standard pattern)
+- Session management (95% similar to project-X)
+
+### Medium Confidence (65%) Components:
+- OAuth integration approach (2 viable patterns found)
+  - Option A: Passport.js (used in 5 projects)
+  - Option B: Custom implementation (used in 2 projects)
+- Rate limiting strategy (multiple approaches available)
+
+### Low Confidence (30%) Components:
+- Biometric authentication (no prior patterns)
+- Custom SSO with legacy system (novel requirement)
+- Compliance with new regulation (unclear requirements)
+
+**Recommended Approach**: Proceed autonomously with high-confidence components, present options for medium-confidence items, and request specific guidance for low-confidence areas.
+```
+
 ## Final Instructions
 
-1. **Always Wait for User** - Never skip feedback checkpoints
-2. **Iterate When Needed** - Go back to previous phases based on validation
-3. **Maintain Context** - Use Memory MCP to maintain context across sessions
-4. **Document Decisions** - Record why choices were made, not just what
-5. **Focus on Clarity** - Junior developers should understand all documents
-6. **Validate Continuously** - Check consistency throughout the process
+1. **Start with Memory** - Always search for patterns before planning
+2. **Calculate Confidence** - Be transparent about certainty levels
+3. **Minimize Interruptions** - Batch questions by confidence level
+4. **Prototype Rapidly** - Show working examples early
+5. **Learn Continuously** - Store patterns for future use
+6. **Optimize for Outcomes** - Focus on results, not process
 
-This orchestrator ensures systematic pre-development planning with continuous user engagement, resulting in clear, implementable specifications that align with user needs and technical constraints.
+This dynamic orchestrator balances AI autonomy with strategic human oversight, reducing interaction overhead by 70% while maintaining quality through confidence-based decision making.

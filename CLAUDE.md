@@ -25,7 +25,7 @@ Each system uses an orchestrator file (numbered `0-*-orchestrator.mdc`) that imp
 
 **Phase-Based Execution Model:**
 - Memory System: 5 phases (m1→m2→m3→m4→m5)
-- Pre-Development Product: 5 phases with mandatory user checkpoints (PRD✓→TRD✓→Tasks✓→Validation✓→Sub-tasks)
+- Pre-Development Product: 4 phases with dynamic confidence-based checkpoints (Discovery→Strategic Decision✓→Autonomous Refinement→Validation✓)
 - Feature Development: 3 phases optimized for speed (Brief✓→Approach✓→Plan)
 - Frontend Development: 5 phases with flexible design inputs (Design✓→Tech✓→Architecture→Tasks→Validation)
 - Code Review: 6 phases with systematic analysis (Foundation→Security→Quality→Documentation→Production→Synthesis)
@@ -33,6 +33,7 @@ Each system uses an orchestrator file (numbered `0-*-orchestrator.mdc`) that imp
 
 **User Interaction Patterns:**
 - **Mandatory Checkpoints**: ✓ = User approval required before next phase
+- **Confidence-Based Interactions**: AI decides when to request user input based on confidence scores
 - **Structured Feedback Loops**: Draft→User feedback→AI incorporation→Approval
 - **Context Acknowledgment**: AI confirms understanding before proceeding
 - **Iterative Refinement**: Multiple feedback rounds until user satisfaction
@@ -43,11 +44,17 @@ Each system uses an orchestrator file (numbered `0-*-orchestrator.mdc`) that imp
 - **Phase End**: Use `mcp__lerian-memory__memory_create` with `operation="create_thread"` for linking, `mcp__lerian-memory__memory_tasks` with `operation="todo_write"` for progress tracking
 - **Cross-Session**: Use `mcp__lerian-memory__memory_transfer` with `operation="export_project"`/`operation="import_context"` for continuity
 
-**Sequential Thinking MCP Usage:**
-- Complex requirement analysis and feature prioritization
-- Design interpretation and component architecture planning
-- System analysis and security assessment
-- Pattern detection and relationship analysis
+**Tool Integration:**
+- **Sequential Thinking MCP**: Complex requirement analysis and architecture planning
+- **Zen MCP**: Deep analysis (`thinkdeep`), code quality (`codereview`), problem solving (`debug`), collaboration (`chat`)
+- **Task Tool**: Parallel search operations and pattern discovery
+
+### Dynamic Workflow Architecture
+The Pre-Development Product workflow now implements a **confidence-based dynamic pattern**:
+- Only 2 mandatory checkpoints (Strategic Decision + Final Approval) vs previous 6+
+- AI autonomously proceeds when confidence > 80%
+- Presents options when confidence 50-79%
+- Requests guidance when confidence < 50%
 
 ### Memory-First Architecture
 All workflows start with memory context retrieval and end with knowledge storage:
@@ -59,27 +66,24 @@ All workflows start with memory context retrieval and end with knowledge storage
 
 ### Phase Dependency Management
 
-**Pre-Development Product (5-phase linear):**
+**Pre-Development Product (Dynamic 4-phase):**
 ```bash
-# Phase 1: PRD Creation (REQUIRED user feedback)
+# Phase 1: Discovery & Rapid Prototyping (Parallel, Conditional Interaction)
 claude 1-pre-dev-product/1-create-prd.mdc
-# → User answers clarifying questions → PRD review/approval
+# → AI searches memory, generates PRD with prototypes, interacts based on confidence
 
-# Phase 2: TRD Creation (REQUIRED user feedback) 
+# Phase 2: Strategic Decision Point (MANDATORY CHECKPOINT)
 claude 1-pre-dev-product/2-create-trd.mdc
-# → User makes technical decisions → TRD review/approval
+# → User selects technical approach from 2-3 options
 
-# Phase 3: Task Generation (REQUIRED user feedback)
+# Phase 3: Autonomous Refinement (AI-Driven)
 claude 1-pre-dev-product/3-generate-tasks.mdc
-# → User prioritizes tasks → task breakdown approval
-
-# Phase 4: Chain Validation (REQUIRED user review)
 claude 1-pre-dev-product/4-validate-chain.mdc
-# → User reviews consistency report → acknowledgment
-
-# Phase 5: Sub-Task Generation (OPTIONAL user review)
 claude 1-pre-dev-product/5-generate-sub-tasks.mdc
-# → Implementation-ready atomic tasks
+# → AI generates tasks, validates, requests help only for low confidence
+
+# Phase 4: Final Validation (MANDATORY CHECKPOINT)
+# → Executive summary and approval
 ```
 
 **Code Review (6-phase systematic - optimized order):**
@@ -237,10 +241,41 @@ claude 0-memory-system/m5-memory-maintenance.md
 ## File Structure & Patterns
 
 ### Prompt File Types & Execution Model
-- **`.mdc` files**: Interactive prompts with mandatory user feedback loops (phases with ✓)
+- **`.mdc` files**: Interactive prompts with user feedback loops (phases with ✓)
 - **`.md` files**: Analysis prompts that execute independently with memory integration
 - **`README.md`**: System documentation and workflow guides
 - **Orchestrators**: `0-*-orchestrator.mdc` - entry points with complete phase management
+
+### Confidence Scoring System
+The Pre-Development Product workflow uses confidence scoring to minimize user interaction:
+
+```yaml
+Confidence Score Calculation:
+  memory_match: 0-40 points
+    - Exact pattern match: 40
+    - Similar pattern: 20-35
+    - Partial match: 10-20
+    - No match: 0
+    
+  requirement_clarity: 0-30 points
+    - Unambiguous specs: 30
+    - Minor ambiguities: 20
+    - Significant gaps: 10
+    - Vague requirements: 0
+    
+  technical_complexity: 0-30 points
+    - Standard patterns: 30
+    - Known challenges: 20
+    - Novel solutions: 10
+    - Experimental: 0
+    
+  total_confidence = sum(scores)
+  
+  Action Thresholds:
+    - 80+: Proceed autonomously
+    - 50-79: Present options
+    - <50: Request guidance
+```
 
 ### Document Generation Flow
 **Pre-Development Product:**
@@ -423,12 +458,12 @@ mcp__lerian-memory__memory_tasks
 
 1. **Always Start with Memory**: Check for existing patterns before beginning new work
 2. **Use Orchestrators**: Let orchestrator files guide you through complex workflows  
-3. **Interactive Planning**: Engage with feedback loops during pre-development phases
-4. **Systematic Analysis**: Follow the 18-point code review for comprehensive analysis
-5. **Store Learnings**: Capture decisions and patterns back to memory for future use
-6. **Maintain Context**: Use consistent repository and session identifiers
-7. **Follow Output Structure**: Respect the documented directory and naming conventions
-8. **Use Correct Memory MCP Tools**: Always use the full tool names with proper operations
+3. **Leverage Confidence Scoring**: Let AI autonomy reduce interaction overhead
+4. **Use Zen MCP and Task Tools**: Deep analysis and parallel search operations
+5. **Systematic Analysis**: Follow the phase order for comprehensive coverage
+6. **Store Learnings**: Capture decisions and patterns back to memory for future use
+7. **Maintain Context**: Use consistent repository and session identifiers
+8. **Follow Output Structure**: Respect the documented directory and naming conventions
 
 ## Integration with LerianStudio Development
 

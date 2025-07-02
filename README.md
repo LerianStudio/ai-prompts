@@ -6,14 +6,14 @@ A comprehensive collection of AI prompts designed for complete software developm
 
 This repository provides integrated systems that work together to support the entire software development lifecycle:
 
-| System | Purpose | Directory | Quick Start |
-|--------|---------|-----------|-------------|
-| **Memory System** | Cross-session learning & pattern recognition | [`0-memory-system/`](0-memory-system/) | `claude 0-memory-system/m0-memory-orchestrator.mdc` |
-| **Product Development** | Comprehensive planning from idea to implementation | [`1-pre-dev-product/`](1-pre-dev-product/) | `claude 1-pre-dev-product/0-pre-dev-orchestrator.mdc` |
-| **Feature Development** | Streamlined feature addition to existing products | [`2-pre-dev-feature/`](2-pre-dev-feature/) | `claude 2-pre-dev-feature/0-feature-orchestrator.mdc` |
-| **Frontend Development** | Complete frontend development with flexible design inputs | [`3-frontend/`](3-frontend/) | `claude 3-frontend/0-frontend-orchestrator.mdc` |
-| **Code Review** | 18-point systematic code analysis | [`4-code-review/`](4-code-review/) | `claude 4-code-review/00-code-review-orchestrator.mdc` |
-| **Documentation Generation** | Comprehensive documentation generation and distribution | [`5-generate-docs/`](5-generate-docs/) | `claude 5-generate-docs/0-docs-orchestrator.mdc` |
+| System | Purpose | Workflow Type | Quick Start |
+|--------|---------|---------------|-------------|
+| **Memory System** | Cross-session learning & pattern recognition | Sequential (5 phases) | `claude 0-memory-system/m0-memory-orchestrator.mdc` |
+| **Product Development** | Comprehensive planning from idea to implementation | **Dynamic (4 phases, 2 checkpoints)** | `claude 1-pre-dev-product/0-pre-dev-orchestrator.mdc` |
+| **Feature Development** | Streamlined feature addition to existing products | Streamlined (3 phases) | `claude 2-pre-dev-feature/0-feature-orchestrator.mdc` |
+| **Frontend Development** | Complete frontend development with flexible design inputs | Flexible (5 phases) | `claude 3-frontend/0-frontend-orchestrator.mdc` |
+| **Code Review** | 18-point systematic code analysis | Systematic (6 phases) | `claude 4-code-review/00-code-review-orchestrator.mdc` |
+| **Documentation Generation** | Comprehensive documentation generation and distribution | Comprehensive (5 phases) | `claude 5-generate-docs/0-docs-orchestrator.mdc` |
 
 ## 📚 Documentation
 
@@ -23,6 +23,34 @@ This repository provides integrated systems that work together to support the en
 - **[Frontend Development README](3-frontend/README.md)** - Complete frontend development workflow
 - **[Code Review README](4-code-review/README.md)** - Systematic analysis documentation
 - **[Documentation Generation README](5-generate-docs/README.md)** - Comprehensive documentation workflow guide
+
+## 🆕 Dynamic Workflow Innovation
+
+### Confidence-Based Interactions
+The Pre-Development Product workflow now uses AI confidence scoring to minimize user interaction:
+
+```yaml
+High Confidence (80-100%):
+  - AI proceeds autonomously
+  - Notifies user of decisions
+  - User can intervene if needed
+
+Medium Confidence (50-79%):
+  - AI presents 2-3 options
+  - User selects preferred approach
+  - AI refines based on selection
+
+Low Confidence (<50%):
+  - AI requests specific guidance
+  - Presents gaps in understanding
+  - User provides targeted input
+```
+
+### Tool Integration
+- **Memory MCP**: Pattern recognition and knowledge persistence
+- **Sequential Thinking MCP**: Complex problem decomposition
+- **Zen MCP**: Deep analysis, code review, debugging, and collaboration
+- **Task Tool**: Parallel search operations for maximum efficiency
 
 ## 🚀 Quick Start Workflows
 
@@ -101,21 +129,22 @@ graph LR
 ## 🎯 Key Features
 
 ### 🔗 Orchestrator Architecture
-- **Phase-Based Execution**: 6 systematic workflows with mandatory checkpoints (✓ = user approval required)
+- **Dynamic Phase Execution**: Pre-Development now uses confidence-based execution with only 2 mandatory checkpoints
 - **Memory MCP Integration**: Context retrieval, decision storage, pattern analysis across sessions
-- **Sequential Thinking**: Complex analysis through structured reasoning and hypothesis validation
+- **Multi-Tool Integration**: Sequential Thinking, Zen MCP, and Task tool for enhanced capabilities
 - **Cross-System Dependencies**: Workflows feed into each other with validation gates
 
 ### 📋 User Interaction Patterns
+- **Confidence-Based Interactions**: AI decides when user input is needed based on confidence scores
 - **Structured Feedback Loops**: Draft → User feedback → AI incorporation → Approval
-- **Context Acknowledgment**: AI confirms understanding before proceeding to next phase
-- **Iterative Refinement**: Multiple feedback rounds until user satisfaction
+- **Minimal Interruption**: From 6+ checkpoints down to just 2 in Pre-Development workflow
 - **Flexible Design Inputs**: iPad sketches, Figma designs, written specs, reference apps
 
 ### 🚀 Workflow Features
+- **Autonomous Refinement**: AI works independently when confidence is high
+- **Parallel Processing**: Multiple operations execute simultaneously for efficiency
 - **Atomic Tasks**: Each task delivers complete, working software with git workflow
-- **Validation Gates**: Consistency checks prevent flawed implementations
-- **File Size Optimization**: <300 lines target, 500 max for LLM processing efficiency
+- **Smart Validation**: Consistency checks with auto-correction capabilities
 - **Priority-Based Todos**: 🔴 CRITICAL → 🟡 HIGH → 🟢 MEDIUM → 🔵 LOW organization
 
 ## 📦 Output Organization
@@ -160,12 +189,13 @@ docs/documentation/
 ### Execution Order Guidelines
 1. **Memory First**: Always start with `memory_search` and `memory_get_context` before any workflow
 2. **Follow Phase Dependencies**: 
-   - Pre-Development: PRD✓ → TRD✓ → Tasks✓ → Validation✓ → Sub-tasks
+   - Pre-Development: Discovery (conditional) → Strategic Decision✓ → Autonomous Refinement → Final Validation✓
    - Code Review: Foundation → Security → Quality → Documentation → Production → Synthesis
    - Frontend: Design✓ → Tech✓ → Architecture → Tasks → Validation
    - Documentation: Discovery✓ → Planning✓ → Generation✓ → Validation✓ → Distribution
-3. **Respect Checkpoints**: Mandatory user approval (✓) required before proceeding to next phase
-4. **Store All Decisions**: Use `memory_store_decision` for architectural choices and `memory_store_chunk` for insights
+3. **Leverage AI Autonomy**: Let confidence scores guide interaction needs
+4. **Use Tools Liberally**: Zen MCP for deep analysis, Task tool for parallel searches
+5. **Store All Decisions**: Use `memory_store_decision` for architectural choices and `memory_store_chunk` for insights
 
 ### Integration Patterns
 - **New Product**: Memory → Pre-Development Product → Frontend → Code Review → Documentation → Memory
@@ -198,15 +228,26 @@ repository="github.com/lerianstudio/monorepo"
 - **Efficiency**: Reuse patterns and decisions
 - **Collaboration**: Clear user interaction points
 
+### 🚀 Efficiency Improvements
+- **70% Reduction in Interactions**: Pre-Development workflow reduced from 6+ to 2 mandatory checkpoints
+- **Parallel Processing**: Multiple analyses run simultaneously instead of sequentially
+- **Pattern Reuse**: Memory MCP enables >60% pattern reuse from similar projects
+- **Autonomous Refinement**: AI works independently when confidence is high (>80%)
+- **Smart Validation**: Auto-correction of minor issues without user intervention
+
 ## 🔧 Getting Started
 
 ### For AI Assistants
 1. **Read CLAUDE.md First**: Complete orchestrator architecture and execution patterns
 2. **Choose Your Workflow**:
-   - New project? Start with Pre-Development Product (5-phase linear)
+   - New project? Start with Pre-Development Product (4-phase dynamic, only 2 checkpoints!)
    - Existing code? Begin with Code Review (6-phase systematic)
    - Frontend focus? Use Frontend Development (5-phase flexible)
    - Quick feature? Use Pre-Development Feature (3-phase streamlined)
+3. **Leverage Tools**:
+   - Use Zen MCP for deep analysis and collaboration
+   - Use Task tool for parallel pattern searches
+   - Let confidence scores guide your interactions
 
 ### For Developers
 1. **Start with Orchestrators**: Each system has a `0-*-orchestrator.mdc` entry point

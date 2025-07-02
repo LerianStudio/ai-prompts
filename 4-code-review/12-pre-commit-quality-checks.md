@@ -16,6 +16,73 @@
 
 This approach enables deeper analysis, better pattern recognition, and more thorough problem-solving capabilities.
 
+### Zen MCP Integration
+Use Zen MCP tools for comprehensive quality analysis:
+
+**1. Code Quality Assessment:**
+```bash
+mcp__zen__codereview \
+  files=["/src", "/lib", "/api", "/services"] \
+  prompt="Perform a comprehensive code quality review. Check for code smells, anti-patterns, maintainability issues, and adherence to best practices." \
+  model="pro" \
+  review_type="full" \
+  focus_on="code complexity, duplication, naming conventions, SOLID principles"
+```
+
+**2. Pre-commit Validation Strategy:**
+```bash
+mcp__zen__thinkdeep \
+  prompt="Analyze our development workflow and create an effective pre-commit quality gate strategy. Consider linting, testing, security checks, and build validation." \
+  files=[".github/workflows", "package.json", "Makefile", ".pre-commit-config.yaml"] \
+  model="pro" \
+  thinking_mode="high" \
+  focus_areas=["automation", "developer experience", "fast feedback", "quality gates"]
+```
+
+**3. Build and Test Analysis:**
+```bash
+mcp__zen__analyze \
+  files=["package.json", "tsconfig.json", "webpack.config.js", "jest.config.js"] \
+  prompt="Analyze our build and test configuration. Identify optimization opportunities, missing quality checks, and configuration issues." \
+  model="pro" \
+  analysis_type="quality" \
+  output_format="actionable"
+```
+
+### Task Tool Usage
+Search for quality tools and configurations:
+
+```bash
+# Find linter configurations
+task search "eslint|prettier|tslint|pylint|flake8|rubocop|golangci"
+
+# Search for test configurations
+task search "jest|mocha|pytest|unittest|rspec|go test"
+
+# Find build scripts
+task search "build:|compile:|bundle:|webpack|rollup|vite"
+
+# Look for pre-commit hooks
+task search "pre-commit|husky|lint-staged|git hook"
+
+# Find CI/CD configurations
+task search ".github/workflows|.gitlab-ci|jenkinsfile|circleci"
+
+# Search for code quality tools
+task search "sonarqube|codeclimate|codecov|coveralls"
+
+# Find formatting rules
+task search "prettierrc|editorconfig|rustfmt|gofmt|black"
+
+# Look for dependency checks
+task search "npm audit|yarn audit|safety|bundler-audit|cargo audit"
+```
+
+**Benefits:**
+- Zen MCP provides holistic code quality assessment beyond basic linting
+- Task tool enables rapid discovery of all quality configurations
+- Combined approach ensures comprehensive pre-commit validation
+
 ---
 
 You are a software quality engineer responsible for discovering ACTUAL quality tooling and build configurations. Your goal is to find and execute existing quality checks, not create hypothetical pipelines.

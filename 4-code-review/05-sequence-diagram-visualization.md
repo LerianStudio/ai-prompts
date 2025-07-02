@@ -16,6 +16,73 @@
 
 This approach enables deeper analysis, better pattern recognition, and more thorough problem-solving capabilities.
 
+### Zen MCP Integration
+Use Zen MCP tools for advanced flow analysis and visualization:
+
+**1. Analyze System Flows:**
+```bash
+mcp__zen__analyze \
+  files=["/api", "/services", "/controllers", "/handlers"] \
+  prompt="Trace and document the complete flow of key system operations. Identify actor interactions, service calls, and data transformations." \
+  model="pro" \
+  analysis_type="architecture" \
+  output_format="detailed"
+```
+
+**2. Deep Dive into Authentication Flows:**
+```bash
+mcp__zen__thinkdeep \
+  prompt="Analyze our authentication and authorization flows. Map the complete journey from login to protected resource access." \
+  files=["/auth", "/middleware/auth.js", "/services/token-service.js"] \
+  model="pro" \
+  thinking_mode="high" \
+  focus_areas=["JWT flow", "session management", "role-based access", "token refresh"]
+```
+
+**3. Debug Complex Interaction Issues:**
+```bash
+mcp__zen__debug \
+  prompt="Users report intermittent failures during checkout process" \
+  files=["/api/checkout", "/services/payment", "/services/inventory", "/services/notification"] \
+  error_context="Transaction rolled back but user charged. Occurs ~5% of requests." \
+  model="pro" \
+  thinking_mode="max"
+```
+
+### Task Tool Usage
+Search for flow patterns and system interactions:
+
+```bash
+# Find controller to service calls
+task search "controller.*service|handler.*service|route.*controller"
+
+# Search for async operation chains
+task search "await.*then|Promise.all|async.*function.*await"
+
+# Find event emitters and listeners
+task search "emit\(|on\(|EventEmitter|publish|subscribe"
+
+# Look for transaction boundaries
+task search "beginTransaction|commit|rollback|transaction\("
+
+# Find external API calls
+task search "fetch\(|axios|http.request|RestTemplate"
+
+# Search for workflow patterns
+task search "workflow|process|pipeline|chain|sequence"
+
+# Find middleware chains
+task search "app.use|router.use|middleware.*next"
+
+# Look for error propagation
+task search "catch.*throw|error.*bubble|propagate.*error"
+```
+
+**Benefits:**
+- Zen MCP provides deep understanding of complex interaction patterns
+- Task tool enables rapid discovery of flow components and connections
+- Combined approach ensures comprehensive sequence documentation
+
 ---
 
 # Sequence Diagram Visualization

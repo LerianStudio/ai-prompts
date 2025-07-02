@@ -25,79 +25,131 @@
   ```
 - **When:** During clarifying questions formulation, requirement analysis, and complexity assessment
 
+### 🤖 Zen MCP Integration (HIGHLY RECOMMENDED)
+**Why Use Zen MCP:**
+- **Deep Analysis**: Use `mcp__zen__thinkdeep` for exploring complex feature requirements and user needs
+- **Architecture Planning**: Use `mcp__zen__chat` to brainstorm architectural approaches early
+- **Problem Solving**: Use `mcp__zen__analyze` when decomposing vague requirements
+- **Trade-off Analysis**: Use `mcp__zen__thinkdeep` to evaluate different approaches
+
+**Example Usage:**
+```
+mcp__zen__thinkdeep
+  prompt="Analyzing user requirement for [feature]: exploring use cases, edge cases, and potential approaches"
+  model="pro"
+  thinking_mode="high"
+  focus_areas=["requirements", "user-experience", "architecture"]
+```
+
+### 🔍 Task Tool Usage (USE LIBERALLY)
+**When to Use Task():**
+- Searching for similar PRDs or features across the codebase
+- Finding existing implementations that match requirements
+- Discovering design patterns used in similar features
+- Parallel exploration of multiple requirement areas
+
+**Example:**
+```
+Task
+  description="Find similar feature implementations"
+  prompt="Search for existing notification systems, messaging features, or alert mechanisms across the codebase to understand patterns"
+```
+
 **Pro tip:** Store every user answer and design decision in memory for future reference!
 
 ## Goal
 
 To guide an AI assistant in creating a detailed Product Requirements Document (PRD) in Markdown format, based on an initial user prompt. The PRD should be clear, actionable, and suitable for a junior developer to understand and implement the feature.
 
-## Process
+## Process - Dynamic Confidence-Based Flow
 
-1.  **Receive Initial Prompt:** The user provides a brief description or request for a new feature or functionality.
-    - 🧩 **Memory Action:** Use `mcp__lerian-memory__memory_create` with:
-      ```
-      operation="store_chunk"
-      options={
-        "content": "[initial user request]",
-        "repository": "github.com/[org]/[repo]",
-        "session_id": "[current-session]"
-      }
-      ```
-    - 🧩 **Memory Action:** Use `mcp__lerian-memory__memory_tasks` with:
-      ```
-      operation="todo_write"
-      options={
-        "todos": [{"content": "Create PRD for [feature-name]", "status": "in_progress", "priority": "high"}],
-        "repository": "github.com/[org]/[repo]"
-      }
-      ```
-    - 🔄 **Sequential Thinking:** Analyze initial request complexity and scope
+### Phase 1: Parallel Discovery & Analysis
 
-2.  **Ask Clarifying Questions:** Before writing the PRD, the AI *must* ask clarifying questions to gather sufficient detail. The goal is to understand the "what" and "why" of the feature, not necessarily the "how" (which the developer will figure out).
-    - 🧩 **Memory Action:** Use `mcp__lerian-memory__memory_read` with:
-      ```
-      operation="search"
-      options={
-        "query": "similar features PRD requirements [feature-type]",
-        "repository": "github.com/[org]/[repo]"
-      }
-      ```
-    - 🔄 **Sequential Thinking:** Structure questions by user journey, business impact, technical constraints
-    - **IMPORTANT:** WAIT for user responses before proceeding to the next step
-    - Present questions in a clear, organized manner
-    - Allow user to answer all questions before generating PRD
-3.  **Generate PRD Draft:** Based on the initial prompt and the user's answers to the clarifying questions, generate a PRD using the structure outlined below.
-    - 🧩 **Memory Action:** Use `mcp__lerian-memory__memory_create` with:
-      ```
-      operation="store_decision"
-      options={
-        "decision": "[key design choice]",
-        "rationale": "[why this approach was chosen]",
-        "repository": "github.com/[org]/[repo]",
-        "session_id": "[current-session]"
-      }
-      ```
-    - 🔄 **Sequential Thinking:** Validate requirements flow from user needs to business value
+1. **Memory-First Pattern Search** (Execute simultaneously):
+   ```yaml
+   Parallel Actions:
+     - Memory Search: Find similar features/implementations
+     - Sequential Thinking: Decompose the request
+     - Confidence Assessment: Calculate initial confidence
+     - Prototype Generation: Create 2-3 approach examples
+   ```
+   
+   🧩 **Memory Actions:**
+   ```
+   # Search for patterns
+   mcp__lerian-memory__memory_read
+     operation="search"
+     options={
+       "query": "[feature type] implementation patterns",
+       "repository": "github.com/[org]/[repo]"
+     }
+   
+   # Store initial request
+   mcp__lerian-memory__memory_create
+     operation="store_chunk"
+     options={
+       "content": "[initial request with context]",
+       "repository": "github.com/[org]/[repo]",
+       "session_id": "[current-session]"
+     }
+   ```
 
-4.  **Request User Review:** Present the PRD draft to the user and explicitly ask for feedback:
-    - "Please review this PRD draft. What would you like to change or add?"
-    - **WAIT for user approval or feedback**
-    - 🧩 **Memory Action:** Use `mcp__lerian-memory__memory_create` with:
-      ```
-      operation="store_chunk"
-      options={
-        "content": "User feedback: [feedback details]",
-        "repository": "github.com/[org]/[repo]",
-        "session_id": "[current-session]"
-      }
-      ```
+2. **Confidence-Based Interaction Decision**:
+   ```yaml
+   IF total_confidence >= 80%:
+     - Generate complete PRD based on found patterns
+     - Include prototypes/examples
+     - Notify user: "Found similar pattern in [project], proceeding with proven approach"
+     - Allow user to intervene if desired
+   
+   ELIF total_confidence >= 50%:
+     - Present 2-3 approach options with prototypes
+     - Show confidence breakdown for each
+     - Request user selection of preferred approach
+     - Generate targeted clarifying questions for gaps
+   
+   ELSE (confidence < 50%):
+     - Use Sequential Thinking to explore the problem space
+     - Generate comprehensive clarifying questions
+     - Present initial understanding and gaps
+     - Request specific user guidance
+   ```
 
-5.  **Incorporate Feedback:** If user requests changes, update the PRD accordingly and present the revised version
-    - 🧩 **Memory Action:** Use `mcp__lerian-memory__memory_create` with:
-      ```
-      operation="store_decision"
-      options={
-        "decision": "PRD changes based on feedback",
+3. **Smart Question Generation** (Only if confidence < 80%):
+   - Group questions by confidence level
+   - Prioritize high-impact questions
+   - Provide example answers
+   - Allow partial responses
+   
+   🔄 **Sequential Thinking Usage:**
+   ```
+   mcp__sequential-thinking__sequentialthinking
+     thought="Breaking down [feature] into core components: 1) User need, 2) Business value, 3) Technical approach"
+     nextThoughtNeeded=true
+     thoughtNumber=1
+     totalThoughts=5  # Adjust based on complexity
+   ```
+
+4. **Rapid PRD Generation with Prototypes**:
+   - Generate PRD structure immediately
+   - Include working examples/prototypes
+   - Show confidence indicators for each section
+   - Flag areas needing review
+
+5. **Efficient Review Process**:
+   ```yaml
+   Present to User:
+     - Executive summary with confidence score
+     - High-confidence sections (green)
+     - Medium-confidence options (yellow)
+     - Low-confidence questions (red)
+     - Prototype implementations
+   
+   User Actions:
+     - Approve high-confidence sections in bulk
+     - Select from medium-confidence options
+     - Provide input for low-confidence areas
+   ```
         "rationale": "[specific changes and why]",
         "repository": "github.com/[org]/[repo]",
         "session_id": "[current-session]"
@@ -150,9 +202,84 @@ AI: "Please review this PRD draft. What would you like to change or add?"
 [WAIT FOR USER APPROVAL]
 ```
 
-## Clarifying Questions (Examples)
+## Confidence Scoring Framework
 
-The AI should adapt its questions based on the prompt, but here are some common areas to explore:
+### Calculate Confidence for Each PRD Component
+
+```yaml
+Feature Confidence Assessment:
+  component: "[Feature/Section Name]"
+  
+  memory_match_score: [0-40]
+    - Exact pattern match: 40 points
+    - Similar implementation: 20-35 points
+    - Partial match: 10-20 points
+    - No match found: 0 points
+    
+  requirement_clarity_score: [0-30]
+    - Crystal clear specs: 30 points
+    - Minor ambiguities: 20 points  
+    - Significant gaps: 10 points
+    - Vague requirements: 0 points
+    
+  technical_complexity_score: [0-30]
+    - Standard pattern: 30 points
+    - Known challenges: 20 points
+    - Novel approach needed: 10 points
+    - Experimental/R&D: 0 points
+    
+  total_confidence: [sum of scores]
+  action_threshold:
+    - 80-100: Proceed autonomously
+    - 50-79: Present options
+    - 0-49: Request guidance
+```
+
+### Example Confidence Presentation
+
+```markdown
+## PRD Confidence Analysis
+
+### 🟢 High Confidence (85%+) - Proceeding Autonomously:
+- **User Authentication Module** (92% confidence)
+  - Found: JWT implementation in 5 similar projects
+  - Pattern: Standard OAuth2 flow with refresh tokens
+  - Decision: Using proven pattern from project-auth-service
+
+### 🟡 Medium Confidence (65%) - Your Input Needed:
+- **Data Synchronization Approach**
+  - Option A: Real-time WebSocket (used in 3 projects)
+  - Option B: Polling with exponential backoff (used in 2 projects)
+  - Option C: Server-Sent Events (newer, used in 1 project)
+  - **Please select preferred approach**
+
+### 🔴 Low Confidence (30%) - Guidance Required:
+- **Integration with Legacy System**
+  - No similar patterns found
+  - Unknown API specifications
+  - **Need: API documentation, authentication method, data format**
+```
+
+## Smart Clarifying Questions (Confidence-Based)
+
+### Priority 1: High-Impact Questions (Ask First)
+- What is the single most important outcome this feature must achieve?
+- Are there any non-negotiable constraints or requirements?
+- Do you have examples of similar features you like/dislike?
+
+### Priority 2: Scoping Questions (Ask if Confidence < 60%)
+- What specific user actions trigger this feature?
+- What data inputs/outputs are involved?
+- How does this fit into the user's broader workflow?
+
+### Priority 3: Technical Questions (Ask if Confidence < 40%)
+- What existing systems must this integrate with?
+- Are there performance requirements (response time, scale)?
+- What are the security/compliance considerations?
+
+### Traditional Clarifying Questions (Reference)
+
+The AI should adapt its questions based on confidence scores, but here are areas to explore:
 
 *   **Problem/Goal:** "What problem does this feature solve for the user?" or "What is the main goal we want to achieve with this feature?"
 *   **Target User:** "Who is the primary user of this feature?"
@@ -172,11 +299,12 @@ The AI should adapt its questions based on the prompt, but here are some common 
 *   **Design/UI:** "Are there any existing design mockups or UI guidelines to follow?" or "Can you describe the desired look and feel?"
 *   **Edge Cases:** "Are there any potential edge cases or error conditions we should consider?"
 
-## PRD Structure
+## PRD Structure with Confidence Indicators
 
-The generated PRD should include the following sections (strictly using this numbering system):
+The generated PRD should include confidence scores for each section and the following structure:
 
-0. **Index**: ///REVIEW
+0. **Confidence Summary**: Overall confidence score and breakdown by section
+1. **Index**: ///REVIEW
 1.  **Introduction/Overview:** Briefly describe the feature and the problem it solves. State the goal.
 2.  **Goals:** List the specific, measurable objectives for this feature.
 3.  **User Stories:** Detail the user narratives describing feature usage and benefits.
@@ -195,8 +323,9 @@ The generated PRD should include the following sections (strictly using this num
 13. **Development Roadmap:** Break down the development process into logical phases focusing on scope and deliverables. Define MVP requirements and future enhancements without specific timelines. Focus on what needs to be built in each phase for proper task breakdown.
 14. **Logical Dependency Chain:** Define the logical order of development, identifying which features need to be built first (foundation), how to get quickly to a usable/visible frontend, and proper pacing/scoping of each feature to be atomic yet buildable.
 15. **Risks and Mitigations:** Identify potential risks and mitigation strategies, including technical challenges, MVP scope definition, and resource constraints.
-16. **Architecture Patterns & Principles:** Define the mandatory architectural patterns, principles, and standards that must be followed during implementation, including Hexagonal Architecture requirements, repository patterns, and lib-commons integration.
-17. **Open Questions:** List any remaining questions or areas needing further clarification.
+16. **Prototype Examples** (When confidence > 50%): Include code snippets or architectural diagrams showing potential implementation approaches. Mark each with confidence level.
+17. **Architecture Patterns & Principles:** Define the mandatory architectural patterns, principles, and standards that must be followed during implementation, including Hexagonal Architecture requirements, repository patterns, and lib-commons integration.
+18. **Open Questions:** List any remaining questions or areas needing further clarification.
 
 ## Detailed Section Guidelines
 

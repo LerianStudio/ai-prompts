@@ -25,6 +25,20 @@ To guide an AI assistant through a comprehensive, systematic code review process
 - Question assumptions and explore alternative approaches
 - Generate and verify solution hypotheses through structured reasoning
 
+### 🧠 Zen MCP Integration (HIGHLY RECOMMENDED)
+**Use Zen tools for enhanced code review analysis:**
+- **`mcp__zen__codereview`** - Deep code quality analysis with severity prioritization
+- **`mcp__zen__analyze`** - Architecture and pattern analysis across directories
+- **`mcp__zen__thinkdeep`** - Complex problem exploration and solution validation
+- **`mcp__zen__debug`** - Root cause analysis for identified issues
+- **Benefits**: Multi-perspective analysis, deeper insights, validated findings
+
+### 🚀 Task Tool Usage (POWERFUL FOR COMPREHENSIVE SEARCH)
+**Use the Task tool for efficient code exploration:**
+- **When to use**: Finding patterns, security vulnerabilities, architectural inconsistencies
+- **Example**: `Task(description="Find security patterns", prompt="Search for authentication, authorization, and input validation patterns across the codebase")`
+- **Benefits**: Parallel analysis, comprehensive coverage, reduced review time
+
 ## Process Overview
 
 This orchestrator manages a **6-phase code review workflow** with logical progression and optimal dependency management:
@@ -330,14 +344,46 @@ Store comprehensive findings in memory with appropriate tags:
 - Security vulnerabilities addressed
 - Quality gates established
 
+## 🧠 Tool Usage Best Practices
+
+### When to Use Each Tool in Code Review
+
+#### Use Task Tool For:
+- **Pattern Discovery**: Finding code patterns across the entire codebase
+- **Security Scanning**: Identifying potential vulnerabilities comprehensively
+- **Architecture Mapping**: Understanding system-wide dependencies
+- **Quick Searches**: Reducing context usage with parallel searches
+- **Example**: `Task(description="Find all API endpoints", prompt="Search for REST endpoints, GraphQL resolvers, and RPC methods")`
+
+#### Use Zen MCP For:
+- **Deep Analysis**: Complex architectural decisions and trade-offs
+  - `mcp__zen__codereview` - Comprehensive quality analysis
+  - `mcp__zen__analyze` - Pattern and architecture review
+  - `mcp__zen__debug` - Root cause analysis
+  - `mcp__zen__thinkdeep` - Complex problem exploration
+- **Cross-Validation**: Getting second opinions on critical findings
+- **Priority Setting**: Severity assessment and impact analysis
+
+#### Use Memory MCP For:
+- **Storing Findings**: Critical issues and patterns for future reference
+- **Building Knowledge**: Cross-project learnings and best practices
+- **Tracking Progress**: Review findings across sessions
+- **Pattern Recognition**: Identifying recurring issues
+
+#### Combine All Three For Maximum Impact:
+- **Security Reviews**: Task finds patterns → Zen analyzes risks → Memory stores findings
+- **Architecture Analysis**: Task maps structure → Zen evaluates design → Memory captures decisions
+- **Quality Audits**: Task identifies issues → Zen prioritizes fixes → Memory tracks improvements
+
 ## Final Instructions
 
 1. **Execute in phases** - Don't rush through all prompts at once
-2. **Validate dependencies** - Ensure each phase builds upon previous findings  
-3. **Store in memory** - Use Memory MCP for cross-session continuity
-4. **Review outputs** - Check that each analysis builds upon previous work
-5. **Synthesize findings** - Use Phase 6 to create actionable plans
-6. **Iterate if needed** - Re-run specific phases if major issues are discovered
+2. **Leverage all tools** - Use Task for search, Zen for analysis, Memory for persistence
+3. **Validate dependencies** - Ensure each phase builds upon previous findings  
+4. **Store in memory** - Use Memory MCP for cross-session continuity
+5. **Review outputs** - Check that each analysis builds upon previous work
+6. **Synthesize findings** - Use Phase 6 to create actionable plans
+7. **Iterate if needed** - Re-run specific phases if major issues are discovered
 
 This orchestrator ensures systematic, comprehensive code review with optimal execution order and clear phase progression for maximum analysis effectiveness.
 

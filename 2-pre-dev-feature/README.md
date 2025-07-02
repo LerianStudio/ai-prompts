@@ -22,83 +22,122 @@ The **2-pre-dev-feature** workflow is designed for rapid feature development wit
 
 ## Workflow Phases
 
-### 🚀 Phase 1: Feature Brief (1-2 hours)
+### 🔍 Phase 0: Complexity Assessment (NEW - 15-30 minutes)
+**File:** Handled by `0-feature-orchestrator.mdc`
+
+**Purpose:** Evaluate feature complexity to determine optimal workflow path
+
+**Key Activities:**
+- Analyze feature scope and integration requirements
+- Search Memory MCP for similar past features
+- Propose adapted workflow (Simple/Medium/Complex)
+- Get user approval for workflow structure
+
+**Adaptive Paths:**
+- **Simple (1-2 days):** Merge phases for speed
+- **Medium (3-5 days):** Standard 4-phase workflow
+- **Complex (5+ days):** Add architecture review phase
+
+### 🚀 Phase 1: Feature Brief (Complexity-Scaled)
 **File:** `1-feature-brief.mdc`
 
-**Purpose:** Capture feature requirements and user stories quickly
+**Purpose:** Capture requirements with appropriate depth
 
 **Key Outputs:**
 - User stories and acceptance criteria
 - Integration points with existing features
-- Business priority and success metrics
+- **[NEW]** Risk assessment for complex features
+- **[NEW]** Pattern references from similar features
 - Scope boundaries and assumptions
 
-**User Interaction:** Required - clarifying questions and brief review
+**User Interaction:** Required - questions scaled to complexity (1-7 based on assessment)
 
-### 🔧 Phase 2: Technical Approach (1-3 hours)  
+### 🔧 Phase 2: Technical Approach (With Estimates)  
 **File:** `2-technical-approach.mdc`
 
-**Purpose:** Define implementation strategy within existing architecture
+**Purpose:** Define implementation strategy with cost analysis
 
 **Key Outputs:**
 - Architecture integration strategy
+- **[NEW]** Cost estimates for each approach
+- **[NEW]** Pattern reuse opportunities
+- **[NEW]** Multiple options for complex features
 - Technology choices within existing stack
-- API and database integration approach
-- Performance and security considerations
 
-**User Interaction:** Required - technical decisions and approach review
+**User Interaction:** Required for medium/complex, optional for simple
 
-### 📝 Phase 3: Implementation Plan (2-4 hours)
+### 📝 Phase 3: Implementation Plan (Deliverable-Focused)
 **File:** `3-implementation-plan.mdc`
 
-**Purpose:** Break down into atomic, implementable tasks with git workflow
+**Purpose:** Define deliverables and decompose into work units
 
 **Key Outputs:**
-- Atomic feature tasks (2-4 hours each)
-- Complete git workflow for each task
+- **[NEW]** Hierarchical deliverable structure
+- **[NEW]** Flexible task sizing (2-8 hours)
+- Work units demonstrating measurable progress
+- Complete git workflow for each deliverable
 - Integration specifications
-- Task dependencies and sequencing
 
-**User Interaction:** Optional - review task breakdown
+**User Interaction:** Optional - scaled to complexity
 
-### 🧪 Phase 4: Test Strategy (1-2 hours)
+### 🧪 Phase 4: Test Strategy (Acceptance-Linked)
 **File:** `4-test-strategy.mdc`
 
-**Purpose:** Define focused test coverage for the feature
+**Purpose:** Define test coverage directly from acceptance criteria
 
 **Key Outputs:**
+- **[NEW]** Direct mapping to acceptance criteria
+- **[NEW]** Risk-based test prioritization
+- **[NEW]** Reusable test pattern references
 - Feature-specific test coverage targets
-- Integration test scenarios
-- Performance impact testing approach
-- Security testing considerations
+- Performance and security thresholds
 
-**User Interaction:** Required - test priorities and approach
+**User Interaction:** Required for complex, optional for simple/medium
 
 ## Key Advantages
 
 ### ⚡ Speed
-- **4 phases** vs 6 phases (product workflow)
-- **1-2 days** vs 1-2 weeks planning time
-- **Focused feedback** loops with minimal overhead
+- **Adaptive workflow** adjusts to feature complexity
+- **1-2 days** for most features (vs 1-2 weeks)
+- **Pattern reuse** accelerates implementation
 
-### 🎯 Integration Focus
-- Assumes existing architecture and patterns
-- Leverages established tech stack and conventions
-- Minimizes architectural risk and complexity
+### 🎯 Smart Adaptation
+- **[NEW] Complexity assessment** guides workflow depth
+- **[NEW] Flexible phase structure** merges/expands as needed
+- **[NEW] Agent discretion points** for autonomous optimization
 
-### 📏 Right-Sized Planning
-- Sufficient structure to avoid integration issues
-- Not over-engineered for iterative development
-- Balances speed with quality
+### 📏 Enhanced Planning
+- **[NEW] Deliverable-focused** rather than task-focused
+- **[NEW] Cost estimates** for informed decisions
+- **[NEW] Direct acceptance criteria mapping** for tests
 
-## Memory MCP Integration
+### 🤖 AI-Optimized
+- **[NEW] Pattern matching** from past implementations
+- **[NEW] Risk-based prioritization** for complex features
+- **[NEW] Hierarchical task decomposition** for clarity
 
+## Tool Integration
+
+### 🧩 Memory MCP Integration
 All phases include comprehensive Memory MCP integration:
-
 - **Context Retrieval:** Access existing product decisions and patterns
 - **Decision Storage:** Store feature choices for future reference
 - **Pattern Building:** Learn from successful integration approaches
 - **Knowledge Continuity:** Maintain context across development sessions
+
+### 🧠 Zen MCP Integration (NEW)
+Enhanced analysis and validation throughout:
+- **`thinkdeep`:** Complex decision analysis and alternative exploration
+- **`analyze`:** Codebase pattern identification and architecture review
+- **`codereview`:** Approach validation and quality assurance
+- **`chat`:** Collaborative brainstorming and idea validation
+
+### 🚀 Task Tool Usage (NEW)
+Efficient parallel exploration:
+- **Pattern Search:** Find similar implementations across codebase
+- **Comprehensive Results:** Parallel search reduces context usage
+- **Example Discovery:** Learn from existing successful patterns
+- **Reduced Tokens:** More efficient than sequential searches
 
 ## File Size Guidelines
 
@@ -236,4 +275,27 @@ claude 0-memory-related/m0-memory-orchestrator.mdc
 - Consider technical debt or refactoring before feature development
 - Validate assumptions in technical approach phase
 
-This workflow provides the perfect balance of structure and speed for feature development within established systems.
+## Recent Enhancements Summary
+
+### 🚀 What's New
+1. **Complexity Assessment Phase** - Automatically evaluates feature scope and adapts workflow
+2. **Flexible Phase Structure** - Merges or expands phases based on complexity
+3. **Deliverable-Focused Planning** - Shifts from tasks to outcomes
+4. **Enhanced MCP Integration** - Better pattern matching and reuse
+5. **Agent Discretion Points** - [FLEX], [ADAPT], [OPTIMIZE] markers for autonomous decisions
+
+### 💡 Key Improvements
+- **Risk Assessment** integrated into Feature Brief for complex features
+- **Cost Estimates** in Technical Approach for informed decisions  
+- **Pattern References** throughout for faster implementation
+- **Acceptance Criteria Mapping** in Test Strategy for complete coverage
+- **Hierarchical Task Structure** for better work organization
+- **Zen MCP Integration** for deeper analysis and validation
+- **Task Tool Usage** for efficient pattern discovery
+
+### 🎯 Result
+This enhanced workflow provides the perfect balance of structure, flexibility, and speed for feature development within established systems. The adaptive approach ensures appropriate depth without over-engineering, while the combination of Memory MCP, Zen MCP, and Task tool accelerates delivery through:
+- **Intelligent Pattern Reuse** - Learn from past implementations
+- **Deep Analysis** - Uncover non-obvious requirements and risks
+- **Efficient Search** - Parallel exploration reduces time and tokens
+- **Validated Approaches** - Multiple perspectives ensure quality

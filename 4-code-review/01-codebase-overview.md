@@ -14,7 +14,37 @@
 - Question assumptions and explore alternative approaches
 - Generate and verify solution hypotheses through structured reasoning
 
-This approach enables deeper analysis, better pattern recognition, and more thorough problem-solving capabilities.
+### 🧠 Zen MCP Integration (ESSENTIAL FOR COMPREHENSIVE ANALYSIS)
+**Use Zen tools for deep codebase understanding:**
+- **`mcp__zen__analyze`** - Comprehensive codebase structure analysis
+  ```bash
+  mcp__zen__analyze
+    files=["/", "src/", "lib/", "app/"]
+    prompt="Analyze overall codebase structure, identify main components and architectural patterns"
+    model="pro"
+    analysis_type="architecture"
+  ```
+- **`mcp__zen__codereview`** - Initial quality assessment
+  ```bash
+  mcp__zen__codereview
+    files=["."]
+    prompt="Provide high-level code quality assessment and identify main areas of concern"
+    model="flash"
+    review_type="quick"
+  ```
+- **Benefits**: Comprehensive overview, pattern identification, quality baseline
+
+### 🚀 Task Tool Usage (CRITICAL FOR DISCOVERY)
+**Use Task tool for efficient codebase exploration:**
+```bash
+Task(
+  description="Discover codebase structure",
+  prompt="Find and list all main components including: entry points, configuration files, core modules, API definitions, database schemas, test structure, and documentation"
+)
+```
+**Benefits**: Parallel discovery, comprehensive file listing, faster initial analysis
+
+This multi-tool approach enables deeper analysis, better pattern recognition, and more thorough problem-solving capabilities.
 
 ---
 
@@ -65,6 +95,24 @@ You are a software architecture engineer specializing in rapid codebase analysis
 - Provide practical implementation insights
 
 ## 1. Initial Discovery Phase
+
+### 🚀 Enhanced Discovery with Task Tool (START HERE)
+
+**HIGHLY RECOMMENDED: Use Task tool for comprehensive parallel discovery:**
+```bash
+Task(
+  description="Complete codebase discovery",
+  prompt="Perform comprehensive codebase analysis finding:
+    1. All source code directories and their purposes
+    2. Configuration files (package.json, go.mod, requirements.txt, etc.)
+    3. Entry points and main files
+    4. Test directories and testing frameworks
+    5. Build and deployment configurations
+    6. Documentation structure
+    7. Database schemas and migrations
+    8. API definitions and routes"
+)
+```
 
 ### Step 1: Verify Project Exists and List Structure
 

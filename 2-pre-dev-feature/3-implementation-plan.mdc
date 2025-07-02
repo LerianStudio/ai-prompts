@@ -23,54 +23,103 @@ alwaysApply: false
 - **Benefit:** Ensures tasks are atomic, properly sequenced, and efficiently implementable
 - **When:** During task boundary analysis and dependency mapping
 
-**Pro tip:** Store every task breakdown decision to improve future feature task generation!
+### 🧠 Zen MCP Tools (TASK OPTIMIZATION)
+**Use Zen for intelligent task breakdown:**
+- **`mcp__zen__analyze`** - Analyze code structure for logical boundaries
+  ```bash
+  mcp__zen__analyze
+    files=["relevant/source/files"]
+    prompt="Identify natural boundaries for implementing [feature] as separate deliverables"
+    model="flash"
+    analysis_type="general"
+  ```
+- **`mcp__zen__chat`** - Validate task sizing and dependencies
+  ```bash
+  mcp__zen__chat
+    prompt="Review this task breakdown for [feature]. Are these deliverables appropriately sized for 2-8 hour implementation?"
+    model="flash"
+  ```
+
+### 🚀 Task Tool (IMPLEMENTATION PATTERNS)
+**Use Task for finding implementation examples:**
+```bash
+Task(
+  description="Find implementation patterns",
+  prompt="Search for similar feature implementations showing task breakdown, file organization, and git workflow patterns"
+)
+```
+**Benefits**: Learn from successful task decompositions, avoid common pitfalls, reuse proven patterns
+
+**Pro tip:** Use Task tool to find examples, Zen to optimize boundaries, Memory to store successful patterns!
 
 ## Goal
 
-To guide an AI assistant in analyzing feature brief and technical approach to generate atomic, implementable tasks with integrated git workflow. Each task must be specific, actionable, and completable in a single development session.
+To guide an AI assistant in analyzing feature brief and technical approach to define deliverables and decompose them into work units. Focus on outcomes rather than activities, ensuring each deliverable demonstrates measurable progress.
 
 ## Process
 
-1. **Read Context Documents:** Load feature brief and technical approach from previous phases
+1. **Assess Feature Complexity:** Determine appropriate task granularity
+   - **[ADAPT]:** Simple features = fewer, larger deliverables; Complex = more granular
+   - 🧩 **Memory Action:** `memory_read` with `operation="find_similar"` for task sizing patterns
+
+2. **Read Context Documents:** Load feature brief and technical approach from previous phases
    - 🧩 **Memory Action:** `memory_search` to retrieve all related feature decisions and context
-   - 🧩 **Memory Action:** `memory_tasks` to track implementation planning workflow with session_id
+   - **[OPTIMIZE]:** Extract effort estimates to guide task sizing
 
-2. **Analyze Implementation Scope:** Extract implementation requirements and integration points
-   - 🔄 **Sequential Thinking:** Map technical approach to implementation components and dependencies
+3. **Define Deliverables:** Identify tangible outputs that demonstrate feature completion
+   - 🔄 **Sequential Thinking:** Feature goals → user-visible outcomes → technical deliverables
+   - **[FLEX]:** Allow 2-8 hour deliverables based on complexity
 
-3. **Apply Atomic Principles:** Ensure each task is self-contained and implementable in 2-4 hours
-   - 🔄 **Sequential Thinking:** Validate task boundaries and completion criteria
+4. **Hierarchical Decomposition:** Break deliverables into implementation tasks
+   - **Level 1:** Feature deliverables (user-visible outcomes)
+   - **Level 2:** Technical components (APIs, UI, data)
+   - **Level 3:** Work units (if needed for complex deliverables)
+   - 🧩 **Memory Action:** `memory_store_decision` for decomposition rationale
 
-4. **Generate Implementation Tasks:** Create detailed task specifications with git workflow
-   - 🧩 **Memory Action:** `memory_store_decision` for task breakdown and implementation approach
+5. **Optional User Review:** Present deliverable structure for feedback:
+   - "I've defined [X] deliverables for this feature. Would you like to review the breakdown?"
+   - **[ADAPT]:** Skip for simple features, require for complex
+   - If user reviews, WAIT for feedback
 
-5. **Optional User Review:** Since tasks are implementation details, user review is optional:
-   - "I've created detailed implementation tasks. Would you like to review the breakdown, or shall I proceed with saving them?"
-   - If user wants to review, WAIT for feedback
-   - If user approves or skips review, proceed to save
-   - 🧩 **Memory Action:** `memory_store_chunk` with user feedback (if provided)
-
-6. **Save Implementation Plan:** Create organized task files in `/docs/pre-development/tasks/feature-[feature-name]/`
-   - 🧩 **Memory Action:** `memory_create_thread` completing feature brief → technical approach → implementation plan
+6. **Generate Implementation Plan:** Create detailed specifications with git workflow
+   - **[OPTIMIZE]:** Include pattern references from similar past features
+   - 🧩 **Memory Action:** `memory_create_thread` linking all planning artifacts
 
 ## Feature Task Principles
 
-### Definition of "Atomic Feature Task"
-Each task MUST be:
-- **Senior Engineer Scope:** Designed for very senior, highly skilled engineers
-- **Full Day Session:** Approximately 6 hours of focused work
-- **Comprehensive:** Includes implementation, tests, integration, and documentation
-- **Self-Contained:** Complete feature slice with all necessary components
-- **Production-Ready:** Ready for deployment after completion
-- **Git-Ready:** Includes complete git workflow
+### Deliverable-Focused Planning
+Each deliverable MUST:
+- **Demonstrate Value:** Show measurable progress toward feature completion
+- **Be Testable:** Have clear acceptance criteria from the feature brief
+- **Stand Alone:** Function independently or with minimal dependencies
+- **Size Appropriately:** Match complexity (2-8 hours based on feature complexity)
 
-### Task Validation Checklist
-Before finalizing each task, ensure:
-- [ ] **Clear Deliverable:** Specific code, API, or UI component
-- [ ] **Integration Path:** Clear how it connects with existing system
-- [ ] **Test Strategy:** Clear validation approach
-- [ ] **File Size Compliance:** Targets <300 lines, max 500 lines per file
-- [ ] **Git Workflow:** Complete branch/commit/PR process
+### Hierarchical Task Structure
+```
+Feature
+├── Deliverable 1: User Authentication Flow
+│   ├── Task 1.1: API endpoints (4h)
+│   ├── Task 1.2: UI components (3h)
+│   └── Task 1.3: Integration tests (2h)
+├── Deliverable 2: Data Persistence
+│   ├── Task 2.1: Database schema (2h)
+│   └── Task 2.2: Repository layer (4h)
+└── Deliverable 3: User Notifications
+    └── Task 3.1: Complete notification system (6h)
+```
+
+### [FLEX] Adaptive Sizing
+- **Simple Features:** 1-2 deliverables, 4-8 hours each
+- **Medium Features:** 3-4 deliverables, 2-6 hours each
+- **Complex Features:** 5+ deliverables with sub-tasks
+
+### Validation Checklist
+Before finalizing each deliverable:
+- [ ] **Clear Outcome:** What will exist after completion
+- [ ] **Success Criteria:** How to verify it works
+- [ ] **Integration Points:** How it connects to existing system
+- [ ] **Pattern Reuse:** Similar implementations to reference
+- [ ] **Git Strategy:** Branch and PR approach
 
 ## Feature Task Structure
 

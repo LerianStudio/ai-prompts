@@ -14,7 +14,46 @@
 - Question assumptions and explore alternative approaches
 - Generate and verify solution hypotheses through structured reasoning
 
-This approach enables deeper analysis, better pattern recognition, and more thorough problem-solving capabilities.
+### 🧠 Zen MCP Integration (ESSENTIAL FOR TEST QUALITY)
+**Use Zen tools for comprehensive test analysis:**
+- **`mcp__zen__analyze`** - Test structure and coverage analysis
+  ```bash
+  mcp__zen__analyze
+    files=["test/", "spec/", "__tests__/", "*test*"]
+    prompt="Analyze test structure, coverage patterns, and testing strategies"
+    model="flash"
+    analysis_type="quality"
+  ```
+- **`mcp__zen__codereview`** - Test quality assessment
+  ```bash
+  mcp__zen__codereview
+    files=["test/"]
+    prompt="Review test quality focusing on: assertion strength, edge case coverage, mocking strategies, and test maintainability"
+    model="flash"
+    review_type="quick"
+    focus_on="test effectiveness and maintainability"
+  ```
+- **Benefits**: Test quality insights, coverage gap identification, testing strategy evaluation
+
+### 🚀 Task Tool Usage (CRITICAL FOR COVERAGE MAPPING)
+**Use Task tool for comprehensive test discovery:**
+```bash
+Task(
+  description="Test coverage analysis",
+  prompt="Find and analyze:
+    1. All test files and testing frameworks in use
+    2. Test coverage for critical business logic
+    3. API endpoint test coverage
+    4. Security-critical code test coverage
+    5. Edge case and error handling tests
+    6. Integration vs unit test balance
+    7. Untested files and functions
+    8. Test execution time and flakiness patterns"
+)
+```
+**Benefits**: Complete test inventory, coverage gap mapping, test quality metrics
+
+This multi-tool approach enables thorough test coverage analysis and quality assessment.
 
 ---
 

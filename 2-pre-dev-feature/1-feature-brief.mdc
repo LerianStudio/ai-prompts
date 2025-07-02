@@ -22,7 +22,29 @@ alwaysApply: false
 - **Benefit:** Ensures feature aligns with user needs and business value
 - **When:** During requirement analysis and acceptance criteria definition
 
-**Pro tip:** Reference existing product features to ensure consistency and avoid conflicts!
+### 🧠 Zen MCP Tools (LEVERAGE FOR DEPTH)
+**Use Zen for enhanced feature analysis:**
+- **`mcp__zen__thinkdeep`** - Explore feature implications and edge cases
+  ```bash
+  mcp__zen__thinkdeep
+    prompt="Analyze user needs and implications for [feature]"
+    model="pro"
+    thinking_mode="high"
+  ```
+- **`mcp__zen__chat`** - Brainstorm user stories and acceptance criteria
+- **Benefits**: Uncover hidden requirements, validate assumptions, identify risks early
+
+### 🚀 Task Tool (EFFICIENT PATTERN SEARCH)
+**Use Task for parallel exploration:**
+```bash
+Task(
+  description="Find similar features",
+  prompt="Search for existing features that handle [similar functionality] to understand patterns and user expectations"
+)
+```
+**Benefits**: Find reusable patterns, understand user expectations, avoid reinventing solutions
+
+**Pro tip:** Combine Memory MCP + Zen MCP + Task tool for comprehensive feature understanding!
 
 ## Goal
 
@@ -30,21 +52,39 @@ To guide an AI assistant in creating a focused Feature Brief that captures requi
 
 ## Process
 
-1. **Retrieve Product Context:** Use Memory MCP to understand existing product and architecture
+1. **Complexity Assessment:** Evaluate feature scope to guide depth of analysis
+   - 🧩 **Memory Action:** `memory_search` for similar features to establish complexity baseline
+   - 🔄 **Sequential Thinking:** Multi-factor complexity analysis
+   - **[ADAPT]:** Scale question depth based on complexity score
+
+2. **Retrieve Product Context:** Use Memory MCP to understand existing product and architecture
    - 🧩 **Memory Action:** `memory_search` for existing product architecture and related features
+   - 🧩 **Memory Action:** `memory_read` with `operation="find_similar"` for pattern matching
    - 🧩 **Memory Action:** `memory_tasks` to track feature brief workflow with session_id
-2. **Receive Feature Request:** The user provides initial feature description
+
+3. **Receive Feature Request:** The user provides initial feature description
    - 🧩 **Memory Action:** `memory_store_chunk` with initial feature request and context
-3. **Ask Focused Questions:** Gather specific details about user needs and business value
+   - **[OPTIMIZE]:** Search for reusable patterns from past implementations
+
+4. **Ask Focused Questions:** Gather specific details scaled to complexity
    - **IMPORTANT:** WAIT for user responses before proceeding
-   - Focus on integration points and user value
+   - **Simple (1-3 questions):** Core functionality and integration point
+   - **Medium (3-5 questions):** Add performance and edge cases
+   - **Complex (5-7 questions):** Include risk assessment and alternatives
    - 🧩 **Memory Action:** `memory_search` for similar features and integration patterns
-4. **Generate Feature Brief:** Create comprehensive feature specification
-5. **Request User Review:** Present brief and ask for feedback:
+
+5. **Generate Feature Brief:** Create specification with complexity-appropriate depth
+   - **[FLEX]:** Include risk assessment section for complex features
+   - **[ADAPT]:** Add pattern references for similar past features
+
+6. **Request User Review:** Present brief and ask for feedback:
    - "Please review this feature brief. What would you like to change or clarify?"
    - **WAIT for user approval or feedback**
-6. **Incorporate Feedback:** Update brief based on user input
-7. **Save Feature Brief:** After approval, save as `feature-brief-[feature-name].md` in `/docs/pre-development/`
+
+7. **Incorporate Feedback:** Update brief based on user input
+   - 🧩 **Memory Action:** `memory_store_decision` with final requirements and rationale
+
+8. **Save Feature Brief:** After approval, save as `feature-brief-[feature-name].md` in `/docs/pre-development/`
 
 ## 🧠 Enhanced Process Steps
 
@@ -55,14 +95,28 @@ memory_search "existing-features integration-points"
 memory_get_context repository="[project-repo]"
 ```
 
-### Step 2-3: Feature Analysis with Sequential Thinking
-Use Sequential Thinking for complex feature analysis:
-```
+### Step 2-3: Feature Analysis with Multiple Tools
+**Parallel Analysis Approach:**
+```bash
+# 1. Use Task for comprehensive search
+Task(
+  description="Feature pattern search",
+  prompt="Find all implementations of [feature-type] including user flows, edge cases, and common pitfalls"
+)
+
+# 2. Use Sequential Thinking for structured analysis
 mcp__sequential-thinking__sequentialthinking
   thought="Analyzing feature request: [feature-description]. Need to understand user value, integration points, and scope boundaries."
   thought_number=1
   total_thoughts=3-5
   next_thought_needed=true
+
+# 3. Use Zen for deep insights (complex features)
+mcp__zen__thinkdeep
+  prompt="What are the non-obvious implications and edge cases for [feature]?"
+  model="pro"
+  thinking_mode="high"
+  focus_areas=["user_experience", "system_integration", "scalability"]
 ```
 
 ## User Interaction Guidelines
@@ -222,6 +276,34 @@ Create feature brief using this structure:
 ### Enables Future Features
 - **[Future Feature 1]:** [How this enables it]
 - **[Future Feature 2]:** [How this enables it]
+
+## ⚠️ Risk Assessment (For Complex Features)
+
+### Technical Risks
+- **[Risk 1]:** [Description] | **Likelihood:** High/Medium/Low | **Impact:** High/Medium/Low
+  - **Mitigation:** [Strategy to address]
+- **[Risk 2]:** [Description] | **Likelihood:** High/Medium/Low | **Impact:** High/Medium/Low
+  - **Mitigation:** [Strategy to address]
+
+### Integration Risks
+- **[System Compatibility]:** [Potential conflicts with existing systems]
+- **[Data Migration]:** [Risks related to data changes]
+- **[Performance Impact]:** [Potential degradation risks]
+
+### Business Risks
+- **[User Adoption]:** [Risk of low adoption and mitigation]
+- **[Market Timing]:** [Risk of delayed delivery]
+- **[Competitive Response]:** [Risk of competitor advantage]
+
+## 🔄 Pattern References (From Memory MCP)
+
+### Similar Features Implemented
+- **[Feature Name]:** [How it was implemented] | **Lessons Learned:** [Key insights]
+- **[Feature Name]:** [Reusable patterns] | **Pitfalls Avoided:** [What to watch for]
+
+### Recommended Patterns
+- **[Pattern Type]:** [Description and applicability]
+- **[Architecture Pattern]:** [How to apply to this feature]
 
 ## 📝 Additional Notes
 
