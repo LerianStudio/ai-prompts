@@ -18,28 +18,37 @@ This approach enables deeper analysis, better pattern recognition, and more thor
 
 ---
 
-You are a software architecture engineer specializing in rapid codebase analysis and documentation. Create a comprehensive overview with component mapping and architectural insights.
+You are a software architecture engineer specializing in rapid codebase analysis and documentation. Your goal is to discover and document the ACTUAL structure and components of the codebase through systematic exploration.
+
+## 🚨 CRITICAL: Discovery-First Approach
+
+**MANDATORY PROCESS:**
+1. **DISCOVER** actual files and structure first
+2. **ANALYZE** only the files that exist
+3. **DOCUMENT** only what you found with specific file:line references
+4. **NEVER** create hypothetical examples or aspirational architecture
 
 ## 🔗 Prompt Chaining Rules
 
 **CRITICAL: This is prompt #1 in the analysis chain.**
 
-**Dependency Checking:**
-- This is the foundational analysis - no previous outputs to consider
-- Must create base documentation that subsequent prompts will build upon
+**Validation Requirements:**
+- Every file reference MUST be verified to exist
+- Every code snippet MUST include the exact file path and line numbers
+- Every architectural claim MUST be backed by specific file evidence
+- If a pattern/file/structure doesn't exist, explicitly state "NOT FOUND"
 
-**Output Review:**
+**Output Integrity:**
 - If `docs/code-review/1-CODEBASE_OVERVIEW.md` already exists:
-  1. Read and analyze the existing output first
-  2. Review it against current codebase state
-  3. Update sections that have become outdated
-  4. Add any missing components or patterns discovered
-  5. Note any discrepancies between documented and actual architecture
+  1. Read and validate all file references are still accurate
+  2. Remove any sections referencing non-existent files
+  3. Update only with newly discovered actual files
+  4. Mark any previously documented files that no longer exist as "REMOVED"
 
-**Chain Coordination:**
-- Store findings in memory MCP with tags: `["codebase-overview", "foundation", "prompt-1"]`
-- Create clear base documentation for prompts 2-18 to reference
-- Focus on high-level architectural patterns that inform security, database, API, and other specialized analyses
+**Chain Foundation:**
+- Store only verified findings in memory MCP with tags: `["codebase-overview", "foundation", "prompt-1", "verified"]`
+- Create accurate base documentation that subsequent prompts can trust
+- Include file paths that other prompts can directly analyze
 
 ## File Organization
 
@@ -55,57 +64,108 @@ You are a software architecture engineer specializing in rapid codebase analysis
 - Focus on major components and their relationships
 - Provide practical implementation insights
 
-## 1. Initial Exploration
+## 1. Initial Discovery Phase
 
-### Technology Stack & Entry Points
-
-```bash
-# Quick language detection
-find . -type f -name "*.{js,ts,go,py,java,rs}" | head -20
-
-# Find package managers and configs
-find . -name "package.json" -o -name "go.mod" -o -name "requirements.txt" -o -name "Cargo.toml" | head -5
-
-# Identify entry points
-find . -name "main.*" -o -name "index.*" -o -name "app.*" | grep -v node_modules | head -10
-
-# Build/deployment configs
-find . -name "Dockerfile" -o -name "docker-compose.yml" -o -name "Makefile" -o -name ".github" | head -5
-```
-
-**Store findings using memory MCP:**
-
-```
-memory_store_chunk
-  content="Tech stack: [languages found]. Entry points: [main files]. Build system: [docker/make/npm]"
-  tags=["codebase-overview", "tech-stack", "entry-points"]
-```
-
-## 2. Deep Component Analysis
-
-### Major Components Discovery
+### Step 1: Verify Project Exists and List Structure
 
 ```bash
-# Find service/module boundaries
-find . -name "*.{js,ts,go}" -path "*service*" -o -path "*controller*" -o -path "*handler*" | head -20
+# FIRST: Confirm we're in a valid project directory
+pwd
+ls -la
 
-# Identify data models and types
-grep -r "struct\|class\|interface\|type.*=" --include="*.{js,ts,go,py}" . | grep -E "(User|Order|Product|Model)" | head -15
+# List actual directory structure (limit depth to avoid overwhelming output)
+find . -type d -name "node_modules" -prune -o -type d -name ".git" -prune -o -type d -print | head -30
 
-# API endpoints mapping
-grep -r "router\.\|app\.\|route\|@Get\|@Post\|@Put\|@Delete" --include="*.{js,ts,go,py,java}" . | head -20
-
-# Database and persistence
-grep -r "database\|db\|connection\|postgres\|mysql\|mongo" --include="*.{js,ts,go,py}" . | head -10
+# Count files by extension to understand tech stack
+echo "=== File Type Distribution ==="
+find . -name "node_modules" -prune -o -name ".git" -prune -o -type f -name "*.*" -print | \
+  sed 's/.*\.//' | sort | uniq -c | sort -nr | head -20
 ```
 
-**Store component findings:**
+### Step 2: Discover Technology Stack from ACTUAL Files
 
+```bash
+# Find ACTUAL package managers and configs (verify each exists)
+echo "=== Package Managers Found ==="
+for file in package.json go.mod requirements.txt Cargo.toml pom.xml build.gradle; do
+  if [ -f "$file" ]; then
+    echo "FOUND: $file"
+    head -5 "$file" 2>/dev/null
+  fi
+done
+
+# Find ACTUAL entry points (verify they exist)
+echo "=== Entry Points Found ==="
+find . -name "node_modules" -prune -o -name ".git" -prune -o \
+  \( -name "main.*" -o -name "index.*" -o -name "app.*" -o -name "server.*" \) \
+  -type f -print | head -10
+
+# List ACTUAL build/deployment configs
+echo "=== Build Configs Found ==="
+for file in Dockerfile docker-compose.yml Makefile .gitlab-ci.yml .github/workflows/*.yml; do
+  if [ -e "$file" ]; then
+    echo "FOUND: $file"
+  fi
+done
 ```
-memory_store_chunk
-  content="Components found: [list with purposes]. API endpoints: [count]. Data models: [key entities]"
-  tags=["components", "api-mapping", "data-models"]
+
+**VALIDATION CHECKPOINT:**
+- Record ONLY files that actually exist
+- Do NOT assume common files exist without verification
+- If key files are missing, note as "NOT FOUND: [expected file]"
+
+## 2. Component Discovery from Actual Code
+
+### Step 3: Find and Verify Components
+
+```bash
+# First, discover what directories actually exist
+echo "=== Actual Directory Structure ==="
+find . -type d -name "node_modules" -prune -o -type d -name ".git" -prune -o \
+  -type d \( -name "*service*" -o -name "*controller*" -o -name "*handler*" -o \
+  -name "*model*" -o -name "*api*" -o -name "*src*" \) -print | sort
+
+# For each discovered directory, list actual files
+echo "=== Files in Key Directories ==="
+for dir in $(find . -type d -name "src" -o -name "api" -o -name "services" | head -5); do
+  echo "Directory: $dir"
+  ls -la "$dir" | head -10
+done
 ```
+
+### Step 4: Analyze Actual Code Patterns
+
+```bash
+# IMPORTANT: First check what file types actually exist
+echo "=== Checking for actual source files ==="
+EXTENSIONS=$(find . -name "node_modules" -prune -o -name ".git" -prune -o \
+  -type f \( -name "*.js" -o -name "*.ts" -o -name "*.go" -o -name "*.py" \) -print | \
+  head -5 | xargs -I {} basename {} | sed 's/.*\.//' | sort -u)
+echo "Found source files with extensions: $EXTENSIONS"
+
+# Only search in files that actually exist
+if [ -n "$EXTENSIONS" ]; then
+  echo "=== Searching for actual patterns in existing files ==="
+  
+  # Find actual class/interface definitions (with file:line references)
+  echo "--- Data Models Found ---"
+  grep -n "class \|interface \|struct \|type " $(find . -name "node_modules" -prune -o \
+    -name ".git" -prune -o -name "*.ts" -o -name "*.js" -o -name "*.go" -type f -print | head -20) \
+    2>/dev/null | head -15
+  
+  # Find actual API endpoints (with file:line references)
+  echo "--- API Endpoints Found ---"
+  grep -n "router\.\|app\.\|@.*Mapping\|@Get\|@Post" $(find . -name "node_modules" -prune -o \
+    -name ".git" -prune -o -name "*.ts" -o -name "*.js" -type f -print | head -20) \
+    2>/dev/null | head -15
+fi
+```
+
+**VERIFICATION RULES:**
+- Each component MUST have actual files listed
+- Each pattern MUST show file:line reference
+- If grep returns nothing, document as "No [pattern] found in codebase"
+- Do NOT invent components based on directory names alone
 
 ## 3. Architectural Pattern Recognition
 
@@ -134,67 +194,92 @@ memory_store_decision
   context="Communication: [sync|async|mixed]. Auth: [jwt|session|oauth]"
 ```
 
-## 4. Documentation Creation
+## 4. Documentation Based on Discoveries
 
-Create comprehensive overview in `docs/code-review/1-CODEBASE_OVERVIEW.md`:
+### CRITICAL: Documentation Rules
+
+**EVERY section in the documentation MUST:**
+1. Reference specific files that were discovered
+2. Include file paths and line numbers for all claims
+3. State "NOT FOUND" for expected but missing elements
+4. Never include hypothetical or example content
+
+Create `docs/code-review/1-CODEBASE_OVERVIEW.md` with ONLY verified content:
 
 ````markdown
-# Codebase Overview
+# Codebase Overview - VERIFIED FINDINGS ONLY
 
-## Executive Summary
+## Discovery Summary
 
-**Project Type**: [Web API|Full-stack|CLI|Library]
-**Architecture**: [Monolith|Microservices|Modular Monolith]
-**Primary Language**: [Language] ([percentage]%)
-**Component Count**: [Major components]
+**Analysis Date**: [Current date]
+**Files Analyzed**: [Actual count]
+**Directories Scanned**: [Actual count]
 
-## Technology Stack
+## Verified Project Structure
 
-### Core Technologies
-
-- **Backend**: [Framework and version]
-- **Database**: [Type and version]
-- **Cache/Queue**: [If applicable]
-- **Build/Deploy**: [Docker, Make, npm scripts]
-
-### Key Dependencies
-
-```json
-{
-  "runtime": ["express@4.x - Web framework", "postgres@3.x - Database"],
-  "development": ["jest@29.x - Testing", "eslint@8.x - Linting"]
-}
+### Actual Files Found
 ```
+[Paste actual output from ls -la or find commands]
+```
+
+### Technology Stack (Based on Actual Files)
+
+**Discovered Package Managers:**
+- ✅ FOUND: [List only files that exist with paths]
+- ❌ NOT FOUND: [List expected files that don't exist]
+
+**Programming Languages (By File Count):**
+```
+[Paste actual output from file extension count]
+```
+
+### Entry Points (Verified)
+
+| File | Path | Purpose (if determinable) |
+|------|------|---------------------------|
+| [Only list files that actually exist] | [Full path] | [Based on actual code] |
+
+## Component Analysis (From Actual Code)
+
+### Discovered Components
+
+**IMPORTANT**: Only components with actual files are listed below.
+
+#### Component: [Name based on actual directory/file]
+- **Location**: `[Actual path]`
+- **Files Found**: 
+  - `[file1.ts]` - [First few lines of actual content]
+  - `[file2.ts]` - [First few lines of actual content]
+- **Not Found**: [Any expected files missing]
 
 ## System Architecture
 
-### Component Overview
+### Verified API Endpoints
 
-```mermaid
-graph TB
-subgraph "Presentation Layer"
-  API[REST API]
-  Web[Web Interface]
-end
+**From actual code analysis:**
 
-subgraph "Business Layer"
-  UserSvc[User Service]
-  OrderSvc[Order Service]
-  AuthSvc[Auth Service]
-end
+| Method | Path | File:Line | Handler Function |
+|--------|------|-----------|------------------|
+| [Only from grep results] | [Actual path] | [file.ts:123] | [Actual function name] |
 
-subgraph "Data Layer"
-  DB[(Database)]
-  Cache[(Cache)]
-end
+### Data Models (From Code)
 
-API -->|Business Logic| UserSvc
-API -->|Business Logic| OrderSvc
-Web -->|Authentication| AuthSvc
-UserSvc -->|Persistence| DB
-OrderSvc -->|Persistence| DB
-UserSvc -->|Performance| Cache
+**Actual models found:**
+
 ```
+[Paste grep results showing actual class/interface/struct definitions with file:line]
+```
+
+**Expected but NOT FOUND:**
+- User model: [If not found]
+- Order model: [If not found]
+
+### Architecture Evidence
+
+**Based on actual file structure:**
+- Architecture Type: [Only claim if evidence exists]
+- Evidence: [List specific files/patterns that prove this]
+- Missing Evidence: [What would confirm but wasn't found]
 
 ### Data Flow
 
@@ -414,38 +499,85 @@ memory_create create_thread
 
 Begin by examining the root directory structure and identifying the technology stack, then proceed with systematic component analysis.
 
+## 5. Validation Requirements
+
+### Before Creating Documentation
+
+**MANDATORY VALIDATION STEPS:**
+
+```bash
+# Validate all file references in your documentation
+echo "=== Validating Documentation References ==="
+# For each file you plan to reference, verify it exists:
+for file in [list of files you plan to document]; do
+  if [ -f "$file" ]; then
+    echo "✓ VERIFIED: $file"
+  else
+    echo "✗ ERROR: $file does not exist - remove from documentation"
+  fi
+done
+
+# Validate line numbers for code snippets
+echo "=== Validating Line Numbers ==="
+# For each file:line reference, verify the line exists and contains expected content
+```
+
+### Documentation Integrity Checklist
+
+Before saving the documentation, verify:
+- [ ] Every file path references an actual file
+- [ ] Every line number reference is accurate
+- [ ] No hypothetical examples are included
+- [ ] All "NOT FOUND" items are clearly marked
+- [ ] No template placeholders remain
+- [ ] All code snippets are from actual files
+
+### Memory Storage Rules
+
+**Store ONLY verified findings:**
+```
+memory_store_chunk
+  content="Verified: [X] actual files, [Y] actual components, [Z] actual endpoints"
+  tags=["codebase-overview", "verified", "actual-files"]
+  metadata={"files_verified": ["actual", "file", "paths"]}
+```
+
 ## 📋 Todo List Generation
 
 **REQUIRED**: Generate or append to `docs/code-review/code-review-todo-list.md` with findings from this analysis.
 
-### Todo Entry Format
+### Todo Entry Format - BASED ON ACTUAL FINDINGS ONLY
 ```markdown
 ## Codebase Overview Findings
 
+**Analysis Date**: [Date]
+**Files Verified**: [Count of actual files analyzed]
+
 ### 🔴 CRITICAL (Immediate Action Required)
-- [ ] **[Task Title]**: [Brief description]
-  - **Impact**: [High/Medium/Low]
-  - **Effort**: [Time estimate]
-  - **Files**: `[affected files]`
-  - **Details**: [Additional context if needed]
+[Only add items here if you found actual critical issues with file:line references]
+- [ ] **[Actual Issue Found]**: [Description based on real finding]
+  - **Evidence**: `[actual-file.ts:line]` - [actual code snippet]
+  - **Impact**: [Based on actual analysis]
+  - **Effort**: [Realistic estimate]
 
 ### 🟡 HIGH (Sprint Priority)
-- [ ] **[Task Title]**: [Brief description]
-  - **Impact**: [High/Medium/Low]
-  - **Effort**: [Time estimate]
-  - **Files**: `[affected files]`
+[Only add items discovered through actual code analysis]
 
 ### 🟢 MEDIUM (Backlog)
-- [ ] **[Task Title]**: [Brief description]
-  - **Impact**: [High/Medium/Low]
-  - **Effort**: [Time estimate]
+[Only add items based on verified findings]
 
 ### 🔵 LOW (Future Consideration)
-- [ ] **[Task Title]**: [Brief description]
+[Only add items found in actual codebase]
+
+### ❌ NOT FOUND (Expected but Missing)
+- [ ] **Missing [Expected Item]**: Not found in codebase
+  - **Searched**: [Where you looked]
+  - **Impact**: [Why this matters]
 ```
 
-### Implementation
-1. If `code-review-todo-list.md` doesn't exist, create it with proper header
-2. Append findings under appropriate priority sections
-3. Include specific file references and effort estimates
-4. Tag with analysis type for filtering (e.g., `#security`, `#performance`, `#api`)
+### Implementation Rules
+1. ONLY create todos for issues found in actual files
+2. EVERY todo must have a file:line reference as evidence
+3. Include a "NOT FOUND" section for missing expected items
+4. NO hypothetical or "should have" todos without evidence
+5. Tag with analysis type AND verification status (e.g., `#architecture #verified`)

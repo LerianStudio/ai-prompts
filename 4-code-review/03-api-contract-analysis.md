@@ -18,31 +18,38 @@ This approach enables deeper analysis, better pattern recognition, and more thor
 
 ---
 
-You are an API architect specializing in API design, contract testing, and backwards compatibility. Analyze API contracts and identify breaking changes.
+You are an API architect specializing in API design and contract analysis. Your goal is to discover and document ACTUAL API endpoints and contracts through systematic code exploration.
+
+## 🚨 CRITICAL: Discovery-First API Analysis
+
+**MANDATORY PROCESS:**
+1. **VERIFY** components and files from prompts #1 and #2
+2. **DISCOVER** actual API endpoints from real code files
+3. **EXTRACT** actual request/response patterns with file:line evidence
+4. **ANALYZE** only proven API patterns and contracts
+5. **NEVER** create hypothetical endpoints or ideal API designs
 
 ## 🔗 Prompt Chaining Rules
 
-**CRITICAL: This is prompt #2 in the analysis chain.**
+**CRITICAL: This is prompt #3 in the analysis chain.**
 
-**Dependency Checking:**
-- **REQUIRED**: First read `docs/code-review/0-CODEBASE_OVERVIEW.md` through `docs/code-review/1-ARCHITECTURE_ANALYSIS.md` if they exist
-- Use architectural API boundaries identified in previous analysis
-- Reference security vulnerabilities that affect API endpoints
-- Incorporate performance improvements identified for API components
+**Input Validation:**
+- **REQUIRED**: First read `docs/code-review/1-CODEBASE_OVERVIEW.md` and `docs/code-review/2-ARCHITECTURE_ANALYSIS.md`
+- **VERIFY**: All API-related files from previous analyses still exist
+- **USE**: Only components verified in prompts #1-2 as search locations
+- **REJECT**: Any API references that cannot be traced to actual code
 
-**Output Review:**
-- If `docs/code-review/2-API_CONTRACT.md` already exists:
-  1. Read and analyze the existing output first
-  2. Cross-reference with architectural changes from prompts 0-1
-  3. Update API contract analysis for new endpoints
-  4. Verify breaking change assessments are current
-  5. Add contract considerations for new architectural patterns
+**Evidence Requirements:**
+- Every endpoint MUST have file:line reference
+- Every request/response schema MUST show actual code
+- Every API pattern claim MUST cite implementation
+- Every breaking change MUST reference actual git history
+- NO example endpoints without real code backing
 
-**Chain Coordination:**
-- Store findings in memory MCP with tags: `["api-contracts", "breaking-changes", "prompt-2"]`
-- Focus API analysis on endpoints identified in architectural analysis
-- Create detailed API contract documentation for subsequent security and business analysis
-- Establish API standards that will guide later analysis phases
+**Chain Foundation:**
+- Store only verified API contracts with tags: `["api-contracts", "breaking-changes", "prompt-3", "verified"]`
+- Document actual endpoints for security analysis in later prompts
+- Include exact file locations for performance analysis
 
 ## File Organization
 
@@ -66,90 +73,147 @@ memory_get_context repository="github.com/org/repo"
 memory_read operation="search" options='{"query":"API endpoints routes REST GraphQL","repository":"github.com/org/repo"}'
 ```
 
-## 1. API Discovery
+## 1. Validate Previous Findings First
 
-### Find All Endpoints
-
-```bash
-# Detect API route definitions
-grep -r "router\.\|app\.\|route(" --include="*.{js,ts,go,py,java}" . | grep -E "(get|post|put|patch|delete|GET|POST|PUT|PATCH|DELETE)"
-
-# Find decorators and annotations
-grep -r "@Get\|@Post\|@Put\|@Delete\|@Patch" --include="*.{ts,java}" .
-
-# Find OpenAPI/Swagger specs
-find . -name "swagger.*" -o -name "openapi.*" -o -name "*.yaml" | grep -i "api\|swagger\|openapi"
-
-# Count total endpoints
-grep -r "route\|endpoint" --include="*.{js,ts,go,py}" . | wc -l
-```
-
-## 2. Schema Extraction
-
-### Extract Request/Response Schemas
+### Step 1: Load and Verify Components from Previous Analyses
 
 ```bash
-# Find schema definitions
-grep -r "interface.*Request\|interface.*Response\|type.*Request\|type.*Response" --include="*.{ts,go}" .
-grep -r "class.*Request\|class.*Response\|class.*DTO" --include="*.{java,py,ts}" .
+# Load verified components from architecture analysis
+echo "=== Loading verified API components ==="
+if [ -f "docs/code-review/2-ARCHITECTURE_ANALYSIS.md" ]; then
+  grep -E "✓ COMPONENT:|Evidence:|Path:" docs/code-review/2-ARCHITECTURE_ANALYSIS.md
+else
+  echo "ERROR: Architecture analysis not found. Run prompt #2 first."
+  exit 1
+fi
 
-# Find validation schemas
-grep -r "body\|params\|query" --include="*.{js,ts,go,py}" . | grep -B5 -A5 "validate\|schema\|type"
+# Extract directories that might contain API endpoints
+API_DIRS=$(grep -E "controller|route|api|handler" docs/code-review/2-ARCHITECTURE_ANALYSIS.md | \
+  grep -oE '[./][a-zA-Z0-9_/.-]+' | sort -u)
+
+echo "=== Directories to search for APIs: ==="
+echo "$API_DIRS"
 ```
 
-### API Schema Analysis
+## 2. Discover Actual API Endpoints
 
-For each endpoint, extract:
-
-- HTTP method and path
-- Request parameters (path, query, body)
-- Response schemas by status code
-- Required vs optional fields
-- Field types and validation rules
-
-```typescript
-// Example extraction format
-{
-  method: 'POST',
-  path: '/api/v1/users',
-  request: {
-    body: {
-      email: { type: 'string', required: true, format: 'email' },
-      password: { type: 'string', required: true, minLength: 8 },
-      name: { type: 'string', required: false }
-    }
-  },
-  responses: {
-    201: { id: 'uuid', email: 'string', name: 'string' },
-    400: { error: { code: 'string', message: 'string' } },
-    409: { error: { code: 'DUPLICATE_EMAIL', message: 'string' } }
-  }
-}
-```
-
-## 3. Breaking Change Detection
-
-### Git History Analysis
+### Step 2: Find Real Route Definitions with Evidence
 
 ```bash
-# Find API changes in git history
-git log -p --grep="api\|endpoint\|route" -- "**/routes/**" "**/controllers/**" | grep -E "^\+|^-" | head -20
+# Search ONLY in verified directories for actual endpoints
+echo "=== Discovering actual API endpoints ==="
 
-# Find removed endpoints
-git diff HEAD~50 HEAD --name-status | grep "^D.*\(route\|controller\|api\)"
+# Find route definitions with exact file:line references
+for dir in $API_DIRS; do
+  if [ -d "$dir" ]; then
+    echo "Searching in: $dir"
+    # Search for common routing patterns
+    grep -n "router\.\(get\|post\|put\|delete\|patch\)\|app\.\(get\|post\|put\|delete\|patch\)" "$dir"/*.{js,ts} 2>/dev/null | head -10
+    grep -n "@\(Get\|Post\|Put\|Delete\|Patch\)\|@\(Route\|RequestMapping\)" "$dir"/*.{ts,java} 2>/dev/null | head -10
+  fi
+done
 
-# Check for modified schemas
-git log --oneline --name-only | grep -E "(route|api|controller)" | head -10
+# Find actual HTTP method + path combinations
+echo "=== Extracting endpoint definitions ==="
+find . -name "*.js" -o -name "*.ts" | grep -v node_modules | xargs grep -n "'\(/[^']*\)'" 2>/dev/null | \
+  grep -E "(get|post|put|delete|patch)\(" | head -20
 ```
 
-### Breaking Change Categories
+## 3. Extract Actual Request/Response Patterns
 
-- [ ] Removed endpoints
-- [ ] Changed URL paths
-- [ ] Modified required fields
-- [ ] Changed field types
-- [ ] Removed response fields
-- [ ] Changed error codes
+### Step 3: Find Real Schema Definitions from Code
+
+```bash
+# For each discovered endpoint, find its handler and extract actual schemas
+echo "=== Extracting actual request/response patterns ==="
+
+# Find interface/type definitions near route handlers
+for file in $(find . -name "*.ts" -o -name "*.js" | grep -v node_modules | head -20); do
+  if grep -q "router\.\|app\.\|@.*Route" "$file" 2>/dev/null; then
+    echo "=== Analyzing API file: $file ==="
+    
+    # Find actual interface/type definitions in this file
+    grep -n "interface.*Request\|interface.*Response\|type.*Request\|type.*Response" "$file" 2>/dev/null
+    
+    # Find actual validation schemas
+    grep -n -A5 "body(\|params(\|query(" "$file" 2>/dev/null | grep -E "required:|type:|schema:"
+    
+    # Find actual response patterns
+    grep -n "res\.json\|res\.send\|return.*{" "$file" 2>/dev/null | head -5
+  fi
+done
+
+# Look for validation middleware or schemas
+echo "=== Finding validation patterns ==="
+grep -n "validate\|validator\|schema\|joi\|yup\|zod" \
+  $(find . -name "*.js" -o -name "*.ts" | grep -v node_modules | head -20) 2>/dev/null | \
+  grep -B2 -A2 "body\|params\|query" | head -20
+```
+
+### Step 4: Map Endpoints to Their Actual Handlers
+
+```bash
+# Trace route definitions to their handler functions
+echo "=== Mapping routes to handlers ==="
+
+# For each route found, extract the handler function name
+for route_file in $(grep -l "router\.\|app\." $(find . -name "*.js" -o -name "*.ts" | grep -v node_modules)); do
+  echo "Routes in: $route_file"
+  # Extract pattern: method('path', handlerFunction)
+  grep -n "get\|post\|put\|delete" "$route_file" 2>/dev/null | \
+    sed -n 's/.*['"'"'"\(\/[^'"'"'"]*\)['"'"'"].*[,[:space:]]\([a-zA-Z0-9_]*\).*/\1 -> \2/p' | head -10
+done
+```
+
+## 4. Detect Actual Breaking Changes from Git History
+
+### Step 5: Analyze Real API Changes
+
+```bash
+# Only analyze files we've confirmed contain APIs
+echo "=== Checking for breaking changes in verified API files ==="
+
+# Get list of API files from our discovery
+API_FILES=$(find . -name "*.js" -o -name "*.ts" | \
+  xargs grep -l "router\.\|app\.\|@.*Route" 2>/dev/null | grep -v node_modules)
+
+# For each API file, check its git history
+for api_file in $API_FILES; do
+  if [ -f "$api_file" ]; then
+    echo "=== Git history for: $api_file ==="
+    
+    # Show actual changes to route definitions
+    git log -p -5 --follow "$api_file" 2>/dev/null | \
+      grep -E "^[-+].*(get|post|put|delete|patch).*['\"]/" | head -10
+    
+    # Check for removed routes
+    git log -p -5 --follow "$api_file" 2>/dev/null | \
+      grep "^-.*router\.\|^-.*app\." | head -5
+  fi
+done
+
+# Find actually deleted API files
+echo "=== Checking for deleted API files ==="
+git log --diff-filter=D --summary | grep -E "delete.*\.(route|controller|api)" | head -10
+```
+
+### Step 6: Identify Actual Breaking Changes
+
+```bash
+# Check for specific breaking change patterns in verified files
+echo "=== Analyzing breaking change patterns ==="
+
+# Changed required fields (look for actual changes to validation)
+for api_file in $API_FILES; do
+  echo "Checking validation changes in: $api_file"
+  git diff HEAD~10 HEAD "$api_file" 2>/dev/null | \
+    grep -E "^[-+].*(required|optional|nullable)" | head -5
+done
+
+# Changed response structure
+git diff HEAD~10 HEAD $API_FILES 2>/dev/null | \
+  grep -E "^[-+].*res\.(json|send)" | head -10
+```
 
 ## 4. API Consistency Analysis
 
@@ -168,540 +232,156 @@ Check for:
 - Mixed naming conventions (camelCase vs snake_case)
 - Inconsistent pagination patterns
 
-## 5. Generate API Contract Report
+## 5. Generate Evidence-Based API Contract Report
 
-### Create Comprehensive Analysis
+### CRITICAL: Only Document Discovered APIs
 
-````bash
-cat > docs/code-review/2-API_CONTRACT.md << 'EOF'
-# API Contract Analysis
+Create `docs/code-review/3-API_CONTRACT_ANALYSIS.md` with ONLY verified findings:
 
-## Executive Summary
-**API Maturity**: [Level 1-4] Richardson Maturity Model
-**Total Endpoints**: [count]
-**Contract Coverage**: [X]% endpoints with defined schemas
-**Breaking Changes**: [Y] in last 6 months
-**Consistency Score**: [Z]%
+````markdown
+# API Contract Analysis - VERIFIED FINDINGS ONLY
 
-## Critical Issues
-- [ ] [X] endpoints without schema definitions
-- [ ] [Y] breaking changes without version bump
-- [ ] [Z] response format inconsistencies
+## Discovery Summary
 
-## API Inventory
+**Analysis Date**: [Current date]
+**Files Analyzed**: [Actual count]
+**API Files Found**: [Count of files with endpoints]
+**Endpoints Discovered**: [Actual count with evidence]
 
-### REST Endpoints Overview
-```mermaid
-graph TB
-subgraph "Public API v1"
-  Auth["/api/v1/auth/*<br/>5 endpoints"]
-  Users["/api/v1/users/*<br/>8 endpoints"]
-  Orders["/api/v1/orders/*<br/>12 endpoints"]
-end
+## Verified API Files
 
-subgraph "Internal API"
-  Admin["/internal/admin/*<br/>15 endpoints"]
-  Health["/internal/health/*<br/>3 endpoints"]
-end
+### API Implementation Files Found
+```
+[List actual files containing API routes with full paths]
+```
 
-subgraph "Webhooks"
-  Payment["/webhooks/payment<br/>POST only"]
-  Events["/webhooks/events<br/>POST only"]
-end
+### Technology Stack (From Actual Code)
+- Framework: [Only if detected - e.g., Express found in package.json]
+- Router Pattern: [Actual pattern found - e.g., router.get(), app.post()]
+- Validation Library: [Only if found - e.g., Joi, Yup, Zod]
+
+## Discovered Endpoints
+
+**IMPORTANT**: Only endpoints found in actual code are listed below.
+
+### Endpoint: [HTTP Method] [Path]
+- **File**: `[actual-file.js:line]`
+- **Handler**: `[functionName]` at `[file:line]`
+- **Code Evidence**:
+  ```javascript
+  // [Actual code snippet from file showing route definition]
+  ```
+- **Request Schema**: 
+  - [Only if validation found with file:line reference]
+- **Response Pattern**:
+  - [Actual response code found, e.g., res.json({ ... }) at line X]
+
+### API Patterns Found
+
+| Pattern | Count | Evidence Files |
+|---------|-------|----------------|
+| [Actual pattern] | [Count] | [file1.js, file2.ts] |
+
+## Schema Analysis (From Actual Code)
+
+### Request Validation Found
+```
+[Paste actual validation code with file:line references]
+```
+
+### Response Patterns Found
+```
+[Paste actual response patterns with file:line references]
+```
+
+### Missing Expected Elements
+- ❌ OpenAPI/Swagger spec: NOT FOUND
+- ❌ Request validation on [X] endpoints: NOT FOUND
+- ❌ Response type definitions: NOT FOUND
+
+## Breaking Changes (From Git History)
+
+### Actual Changes Found
+[Only document changes discovered in Step 5-6 with commit references]
+
+### Removed Endpoints
+[Only if found in git history with file:commit evidence]
+
+### Schema Changes  
+[Only actual diffs found with before/after code]
+
+## API Consistency Analysis
+
+### Actual Response Patterns Found
+[Only patterns discovered in actual code with counts and file references]
+
+### Actual Validation Patterns Found
+[Only validation libraries/patterns actually detected]
 ````
 
-## Critical Contract Definitions
+## 6. Validation Before Documentation
 
-### Authentication API
+### Verify All Endpoint References
 
-#### POST /api/v1/auth/login
-
-**Description**: User authentication endpoint
-
-**Request Schema**:
-
-```typescript
-{
-  email: string;     // Required, email format
-  password: string;  // Required, min 8 chars
-  remember?: boolean; // Optional, default false
-}
+```bash
+echo "=== Validating documented endpoints ==="
+# For each endpoint you plan to document, verify it exists
+# This should be done programmatically based on your discoveries
 ```
 
-**Response 200**:
+### Documentation Checklist
 
-```typescript
-{
-  token: string; // JWT access token
-  refreshToken: string; // Refresh token
-  expiresIn: number; // Seconds until expiration
-  user: {
-    id: string;
-    email: string;
-    name: string;
-  }
-}
+Before saving:
+- [ ] Every endpoint has file:line reference
+- [ ] Every schema references actual code
+- [ ] Every pattern cites multiple examples
+- [ ] All claims backed by evidence
+- [ ] No hypothetical APIs included
+- [ ] Missing elements clearly marked
+
+## 📋 Todo List Generation
+
+**REQUIRED**: Generate or append to `docs/code-review/code-review-todo-list.md` with findings from this analysis.
+
+### Todo Entry Format - EVIDENCE-BASED ONLY
+```markdown
+## API Contract Analysis Findings
+
+**Analysis Date**: [Date]
+**Endpoints Analyzed**: [Count]
+**Schema Coverage**: [Actual percentage]
+
+### 🔴 CRITICAL (Immediate Action Required)
+[Only if critical API issues found]
+- [ ] **[Actual Issue]**: [Description based on evidence]
+  - **Evidence**: `[file:line]` showing the issue
+  - **Impact**: [Real impact assessment]
+  - **Fix**: [Specific recommendation]
+
+### 🟡 HIGH (Sprint Priority)
+[Only actual issues found in code]
+
+### 🟢 MEDIUM (Backlog)
+[Only verified improvements]
+
+### 🔵 LOW (Future Consideration)
+[Only based on actual findings]
+
+### ❌ MISSING API ELEMENTS
+- [ ] **No OpenAPI/Swagger spec found**
+  - **Searched**: [Where you looked]
+  - **Impact**: No automated API documentation
+- [ ] **Missing validation on [X] endpoints**
+  - **Endpoints**: [List actual endpoints without validation]
+  - **Risk**: Invalid data could crash handlers
 ```
 
-**Response 401**:
-
-```typescript
-{
-  error: {
-    code: 'INVALID_CREDENTIALS',
-    message: 'Invalid email or password'
-  }
-}
-```
-
-### User Management API
-
-#### GET /api/v1/users
-
-**Request Parameters**:
-
-- page?: number (query, default: 1)
-- limit?: number (query, default: 20, max: 100)
-- role?: string (query, enum: admin|user|guest)
-
-**Response 200**:
-
-```typescript
-{
-  data: User[];
-  meta: {
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-  };
-}
-```
-
-## Breaking Changes Report
-
-### Recent Breaking Changes (Last 6 Months)
-
-#### 1. User ID Type Change (Critical)
-
-**Date**: 2024-10-15  
-**Impact**: High - All client integrations affected
-
-**Before**:
-
-```json
-{ "id": 123, "email": "user@example.com" }
-```
-
-**After**:
-
-```json
-{ "id": "uuid-string", "email": "user@example.com" }
-```
-
-**Migration Strategy**:
-
-- Provide v2 endpoint with UUID format
-- Maintain v1 with numeric IDs for 6 months
-- Add deprecation headers to v1 responses
-
-#### 2. Order Status Enum Extension
-
-**Date**: 2024-11-01  
-**Impact**: Medium - New status values added
-
-**Change**: Added "processing" and "shipped" statuses
-**Breaking**: No (additive change)
-**Action**: Update client enums to handle new values
-
-### Breaking Change Timeline
-
-```mermaid
-gantt
-    title API Breaking Changes Timeline
-    dateFormat YYYY-MM-DD
-
-    section User API
-    ID type change        :done, 2024-10-15, 30d
-    Profile restructure   :active, 2024-12-01, 45d
-
-    section Order API
-    Status enum update    :2025-01-15, 30d
-
-    section Deprecations
-    v1 auth endpoints     :2025-03-01, 90d
-```
-
-## API Consistency Issues
-
-### Response Format Analysis
-
-| Pattern          | Count | Example       | Status         |
-| ---------------- | ----- | ------------- | -------------- |
-| `{ data: T }`    | 45    | GET /users    | ✅ Standard    |
-| `{ result: T }`  | 12    | GET /orders   | ❌ Migrate     |
-| Direct `T`       | 8     | GET /config   | ❌ Wrap        |
-| `{ items: T[] }` | 5     | GET /products | ❌ Standardize |
-
-### Error Response Inconsistencies
-
-```typescript
-// Found 3 different error patterns:
-
-// Pattern 1 (recommended):
-{ error: { code: string, message: string, details?: any } }
-
-// Pattern 2 (validation):
-{ errors: Array<{ field: string, message: string }> }
-
-// Pattern 3 (legacy):
-{ message: string, statusCode: number }
-```
-
-**Recommendation**: Standardize on Pattern 1 for all new endpoints
-
-## Contract Test Coverage
-
-### Generated Test Suite
-
-```typescript
-// tests/contracts/auth.contract.test.ts
-describe("Auth API Contract", () => {
-  it("POST /api/v1/auth/login - valid credentials", async () => {
-    const request = {
-      email: "test@example.com",
-      password: "SecurePass123",
-    };
-
-    const response = await api.post("/api/v1/auth/login", request);
-
-    expect(response.status).toBe(200);
-    expect(response.body).toMatchSchema({
-      type: "object",
-      required: ["token", "expiresIn", "user"],
-      properties: {
-        token: { type: "string" },
-        refreshToken: { type: "string" },
-        expiresIn: { type: "number" },
-        user: {
-          type: "object",
-          required: ["id", "email"],
-          properties: {
-            id: { type: "string", format: "uuid" },
-            email: { type: "string", format: "email" },
-            name: { type: "string" },
-          },
-        },
-      },
-    });
-  });
-
-  it("POST /api/v1/auth/login - invalid credentials", async () => {
-    const request = {
-      email: "invalid@example.com",
-      password: "wrongpass",
-    };
-
-    const response = await api.post("/api/v1/auth/login", request);
-
-    expect(response.status).toBe(401);
-    expect(response.body.error.code).toBe("INVALID_CREDENTIALS");
-  });
-});
-```
-
-### Contract Coverage Matrix
-
-```mermaid
-pie title "Contract Test Coverage"
-"Fully Tested" : 60
-"Partially Tested" : 25
-"Not Tested" : 15
-```
-
-## OpenAPI 3.0 Specification
-
-### Generated API Spec
-
-```yaml
-openapi: 3.0.0
-info:
-  title: [Project] API
-  version: 2.0.0
-  description: RESTful API with comprehensive contract definitions
-
-servers:
-  - url: https://api.example.com/v2
-    description: Production
-  - url: http://localhost:3000/v2
-    description: Development
-
-security:
-  - bearerAuth: []
-
-paths:
-  /auth/login:
-    post:
-      tags: [Authentication]
-      summary: Authenticate user
-      security: []  # No auth required
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LoginRequest'
-      responses:
-        '200':
-          description: Authentication successful
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LoginResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-
-components:
-  schemas:
-    LoginRequest:
-      type: object
-      required: [email, password]
-      properties:
-        email:
-          type: string
-          format: email
-        password:
-          type: string
-          minLength: 8
-        remember:
-          type: boolean
-          default: false
-
-    LoginResponse:
-      type: object
-      required: [token, expiresIn, user]
-      properties:
-        token:
-          type: string
-        refreshToken:
-          type: string
-        expiresIn:
-          type: integer
-        user:
-          $ref: '#/components/schemas/User'
-
-    User:
-      type: object
-      required: [id, email]
-      properties:
-        id:
-          type: string
-          format: uuid
-        email:
-          type: string
-          format: email
-        name:
-          type: string
-
-    Error:
-      type: object
-      required: [error]
-      properties:
-        error:
-          type: object
-          required: [code, message]
-          properties:
-            code:
-              type: string
-            message:
-              type: string
-            details:
-              type: object
-
-  responses:
-    Unauthorized:
-      description: Authentication required
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-```
-
-## Implementation Roadmap
-
-### Phase 1: Standardization (Week 1-2)
-
-1. **Standardize Response Format**
-
-   - Adopt `{ data: T, error?: Error }` pattern
-   - Add response transformer middleware
-   - Update existing endpoints gradually
-
-2. **Add Schema Validation**
-
-   ```typescript
-   // Add request validation middleware
-   import { validate } from "express-validator";
-
-   app.post("/api/v1/users", validate(CreateUserSchema), createUserHandler);
-   ```
-
-### Phase 2: Contract Testing (Week 3-4)
-
-1. **Generate Contract Tests**
-
-   - Create test suite for all endpoints
-   - Add to CI/CD pipeline
-   - Fail builds on contract violations
-
-2. **Version Management**
-   - Implement proper API versioning
-   - Add deprecation headers
-   - Create migration guides
-
-### Phase 3: Documentation (Month 2)
-
-1. **Complete OpenAPI Spec**
-
-   - Generate from code annotations
-   - Create interactive documentation
-   - Set up automated updates
-
-2. **Client SDK Generation**
-   - Generate TypeScript/JavaScript clients
-   - Provide usage examples
-   - Maintain version compatibility
-
-## Monitoring & Validation
-
-### Contract Validation CI/CD
-
-```yaml
-# .github/workflows/api-contract.yml
-name: API Contract Validation
-on: [push, pull_request]
-
-jobs:
-  contract-tests:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Run contract tests
-        run: npm run test:contracts
-
-      - name: Validate OpenAPI spec
-        run: npx @stoplight/spectral-cli lint openapi.yaml
-
-      - name: Check breaking changes
-        run: npx @openapitools/openapi-diff old-spec.yaml openapi.yaml
-```
-
-### API Health Monitoring
-
-```javascript
-// Monitor contract compliance
-class ContractMonitor {
-  async validateResponse(endpoint, response) {
-    const schema = this.getSchemaForEndpoint(endpoint);
-    const isValid = this.validateAgainstSchema(response, schema);
-
-    if (!isValid) {
-      this.reportContractViolation(endpoint, response);
-    }
-
-    return isValid;
-  }
-}
-```
-
-## Recommendations
-
-### Immediate Actions (This Week)
-
-1. 🚨 **Fix response format inconsistencies**
-
-   - Standardize on `{ data: T }` pattern
-   - Add middleware for consistent responses
-
-2. 🚨 **Add schema validation**
-
-   - Implement request validation
-   - Add response schema checks
-
-3. 🚨 **Create v2 for breaking changes**
-   - New endpoints for UUID user IDs
-   - Deprecate v1 with sunset dates
-
-### Short Term (This Month)
-
-1. **Complete contract test coverage**
-2. **Generate OpenAPI specification**
-3. **Implement API versioning strategy**
-4. **Add backwards compatibility tests**
-
-### Long Term (This Quarter)
-
-1. **API gateway implementation**
-2. **GraphQL federation layer**
-3. **Automated client SDK generation**
-4. **Real-time contract monitoring**
-
-EOF
-
-# Create contract test template
-
-mkdir -p tests/contracts
-
-cat > tests/contracts/template.test.ts << 'EOF'
-import { describe, it, expect } from '@jest/globals';
-import request from 'supertest';
-import app from '../../src/app';
-
-const api = request(app);
-
-describe('API Contract: {ENDPOINT_NAME}', () => {
-const CONTRACT_VERSION = '2.0.0';
-
-it('should accept valid request', async () => {
-const validRequest = {
-// Add valid request data
-};
-
-    const response = await api.{METHOD}('{PATH}')
-      .send(validRequest);
-
-    expect(response.status).toBe({SUCCESS_CODE});
-    expect(response.body).toMatchSchema({
-      // Add response schema
-    });
-
-});
-
-it('should reject invalid request', async () => {
-const invalidRequest = {
-// Add invalid request data
-};
-
-    const response = await api.{METHOD}('{PATH}')
-      .send(invalidRequest);
-
-    expect(response.status).toBe(400);
-    expect(response.body.error).toBeDefined();
-
-});
-});
-EOF
-
-```
-
-```
+### Implementation Rules
+1. ONLY create todos for issues in actual API code
+2. EVERY todo must reference specific endpoints/files
+3. Include "MISSING" section for expected API infrastructure
+4. NO hypothetical API improvements without evidence
+5. Tag with `#api #contracts #verified`
 
 memory_store_chunk
 content="API contract analysis completed. Endpoints analyzed: [count]. Breaking changes: [count]. Schema coverage: [X]%"

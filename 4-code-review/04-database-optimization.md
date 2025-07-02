@@ -18,31 +18,38 @@ This approach enables deeper analysis, better pattern recognition, and more thor
 
 ---
 
-You are a database architect specializing in schema analysis, query optimization, and performance tuning. Identify database issues and create optimization roadmap.
+You are a database architect specializing in schema analysis and query optimization. Your goal is to discover and analyze ACTUAL database usage patterns through systematic code exploration.
+
+## 🚨 CRITICAL: Discovery-First Database Analysis
+
+**MANDATORY PROCESS:**
+1. **VERIFY** data layer components from previous prompts
+2. **DISCOVER** actual database connections and configurations
+3. **ANALYZE** real query patterns with file:line evidence
+4. **IDENTIFY** actual performance issues from code
+5. **NEVER** create hypothetical optimizations without evidence
 
 ## 🔗 Prompt Chaining Rules
 
-**CRITICAL: This is prompt #3 in the analysis chain.**
+**CRITICAL: This is prompt #4 in the analysis chain.**
 
-**Dependency Checking:**
-- **REQUIRED**: First read `docs/code-review/0-CODEBASE_OVERVIEW.md` through `docs/code-review/2-API_CONTRACT_ANALYSIS.md` if they exist
-- Use architectural data layer components identified in previous analysis
-- Reference API contract requirements for database performance
-- Align database optimization with API endpoint performance requirements
+**Input Validation:**
+- **REQUIRED**: First read `docs/code-review/1-CODEBASE_OVERVIEW.md`, `docs/code-review/2-ARCHITECTURE_ANALYSIS.md`, and `docs/code-review/3-API_CONTRACT_ANALYSIS.md`
+- **VERIFY**: Database-related files from previous analyses exist
+- **USE**: Only data layer components verified in earlier prompts
+- **FOCUS**: On actual database code, not theoretical optimizations
 
-**Output Review:**
-- If `docs/code-review/3-DATABASE_ANALYSIS.md` already exists:
-  1. Read and analyze the existing output first
-  2. Cross-reference with architectural and API changes from prompts 0-2
-  3. Update database optimization for new schema changes
-  4. Verify index recommendations are still relevant
-  5. Add database considerations for API performance requirements
+**Evidence Requirements:**
+- Every query pattern MUST have file:line reference
+- Every schema issue MUST show actual code
+- Every optimization MUST address a found problem
+- Every index recommendation MUST cite actual WHERE clauses
+- NO example queries without real code backing
 
-**Chain Coordination:**
-- Store findings in memory MCP with tags: `["database", "performance", "optimization", "prompt-3"]`
-- Focus database analysis on data models identified in architectural analysis
-- Optimize database performance for API endpoints identified in prompt #2
-- Create database optimization foundation for subsequent security and business analysis
+**Chain Foundation:**
+- Store only verified database findings with tags: `["database", "performance", "optimization", "prompt-4", "verified"]`
+- Document actual query patterns for security analysis
+- Include exact query locations for performance testing
 
 ## File Organization
 
@@ -66,425 +73,309 @@ memory_get_context repository="github.com/org/repo"
 memory_read operation="search" options='{"query":"database schema tables indexes","repository":"github.com/org/repo"}'
 ```
 
-## 1. Database Discovery
+## 1. Validate Previous Findings
 
-### Find Database Types & Connections
-
-```bash
-# Detect database systems
-grep -r "DATABASE_URL\|DB_HOST\|connection" --include="*.{js,ts,go,py,env,yml}" .
-grep -r "postgres\|mysql\|mongodb\|redis\|sqlite" --include="*.{js,ts,go,py}" .
-
-# Find ORM/libraries
-grep -r "sequelize\|typeorm\|prisma\|mongoose\|gorm\|sqlalchemy" --include="*.{js,ts,go,py}" .
-
-# Check connection pooling
-grep -r "pool\|maxConnections\|connectionLimit" --include="*.{js,ts,go,py,yml}" .
-```
-
-## 2. Schema Analysis
-
-### Extract Table Structure
+### Step 1: Load Data Layer Components from Architecture
 
 ```bash
-# Find migrations and schema files
-find . -path "*/migrations/*" -name "*.sql" -o -name "*.js" -o -name "*.ts" | head -10
-grep -r "CREATE TABLE\|ALTER TABLE" --include="*.sql" .
+# Load verified data layer components
+echo "=== Loading data layer components from previous analyses ==="
+if [ -f "docs/code-review/2-ARCHITECTURE_ANALYSIS.md" ]; then
+  grep -E "database|model|repository|data.*layer" -i docs/code-review/2-ARCHITECTURE_ANALYSIS.md
+else
+  echo "ERROR: Architecture analysis not found. Run prompt #2 first."
+  exit 1
+fi
 
-# Find model definitions
-grep -r "Schema\|Model\|Entity" --include="*.{js,ts,go,py}" . | head -10
+# Extract directories that might contain database code
+DATA_DIRS=$(grep -E "model|repository|database|data" docs/code-review/2-ARCHITECTURE_ANALYSIS.md | \
+  grep -oE '[./][a-zA-Z0-9_/.-]+' | sort -u)
+
+echo "=== Data directories to search: ==="
+echo "$DATA_DIRS"
 ```
 
-### Schema Health Check
+## 2. Discover Actual Database Configuration
+
+### Step 2: Find Real Database Connections
 
 ```bash
-# Find missing foreign key constraints
-grep -r "References\|REFERENCES\|belongsTo\|hasMany" --include="*.{js,ts,sql}" .
+# Search for actual database configuration files
+echo "=== Finding database configuration ==="
 
-# Check for data types inconsistencies
-grep -r "VARCHAR\|TEXT\|INTEGER\|DECIMAL" --include="*.sql" . | head -10
+# Check for environment files (but don't expose secrets)
+for env_file in .env .env.local .env.development; do
+  if [ -f "$env_file" ]; then
+    echo "Found: $env_file"
+    grep -n "DATABASE\|DB_\|POSTGRES\|MYSQL\|MONGO" "$env_file" 2>/dev/null | \
+      sed 's/=.*/=<REDACTED>/' | head -5
+  fi
+done
+
+# Find database connection code with line numbers
+echo "=== Database connection patterns ==="
+find . -name "*.js" -o -name "*.ts" -o -name "*.go" | grep -v node_modules | \
+  xargs grep -n "createConnection\|new.*Pool\|connect(" 2>/dev/null | head -10
+
+# Identify ORM/database library usage
+echo "=== Database libraries found ==="
+grep -n "require.*['\"].*\(sequelize\|typeorm\|prisma\|mongoose\|pg\|mysql\)" \
+  $(find . -name "*.js" -o -name "*.ts" | grep -v node_modules | head -20) 2>/dev/null
 ```
 
-## 3. Performance Analysis
+## 3. Discover Actual Schema Definitions
 
-### Find Slow Queries
+### Step 3: Find Real Model/Schema Files
 
 ```bash
-# Identify N+1 query patterns
-grep -r "forEach.*await.*find\|map.*await.*query" --include="*.{js,ts}" .
+# Find actual model definitions in verified directories
+echo "=== Searching for model definitions ==="
 
-# Find complex queries
-grep -r "SELECT.*JOIN.*JOIN\|GROUP BY\|ORDER BY.*LIMIT" --include="*.{sql,js,ts}" .
+# Look for ORM model files
+for dir in $DATA_DIRS; do
+  if [ -d "$dir" ]; then
+    echo "Checking models in: $dir"
+    find "$dir" -name "*.model.*" -o -name "*.schema.*" -o -name "*.entity.*" 2>/dev/null | head -5
+  fi
+done
 
-# Check for SELECT * usage
-grep -r "SELECT \*\|select \*" --include="*.{sql,js,ts}" .
+# Extract actual table/collection definitions
+echo "=== Actual schema definitions found ==="
+for model_file in $(find . -name "*.model.*" -o -name "*.schema.*" | grep -v node_modules | head -10); do
+  if [ -f "$model_file" ]; then
+    echo "=== Schema in: $model_file ==="
+    grep -n "define\|Schema\|@Entity\|@Table" "$model_file" 2>/dev/null | head -5
+    # Show field definitions
+    grep -n "type:\|@Column\|field:" "$model_file" 2>/dev/null | head -10
+  fi
+done
+
+# Find migration files if they exist
+echo "=== Migration files ==="
+find . -path "*/migration*" -name "*.sql" -o -name "*.js" -o -name "*.ts" 2>/dev/null | \
+  grep -v node_modules | head -10
 ```
 
-### Missing Index Detection
+### Step 4: Analyze Actual Table Structure
 
 ```bash
-# Find WHERE clauses without indexes
-grep -r "WHERE.*=" --include="*.{sql,js,ts}" . | grep -v "id.*=" | head -10
+# For each schema file found, extract actual structure
+echo "=== Extracting table structures ==="
 
-# Find JOIN operations
-grep -r "JOIN\|join" --include="*.{sql,js,ts}" . | head -10
+# SQL files - look for CREATE TABLE
+for sql_file in $(find . -name "*.sql" | grep -v node_modules | head -10); do
+  if [ -f "$sql_file" ]; then
+    echo "SQL Schema in: $sql_file"
+    grep -n "CREATE TABLE\|ALTER TABLE" "$sql_file" 2>/dev/null | head -5
+  fi
+done
+
+# Check for actual indexes defined
+echo "=== Index definitions found ==="
+grep -n "CREATE.*INDEX\|@Index\|index:" \
+  $(find . -name "*.sql" -o -name "*.model.*" | grep -v node_modules | head -20) 2>/dev/null
 ```
 
-## 4. Generate Database Report
+## 4. Analyze Actual Query Patterns
 
-### Create Optimization Assessment
+### Step 5: Find Real Database Queries in Code
 
-````bash
-cat > docs/code-review/3-DATABASE_ANALYSIS.md << 'EOF'
-# Database Analysis
+```bash
+# Find actual query patterns in application code
+echo "=== Searching for database queries ==="
 
-## Executive Summary
-**Health Score**: [A-F Grade]
-**Critical Issues**: [count]
-**Missing Indexes**: [count]
-**Slow Queries**: [count]
-**Optimization Potential**: [X]% performance improvement
+# Look for ORM query methods
+echo "--- ORM Query Patterns ---"
+grep -n "\.find\|\.findOne\|\.findAll\|\.query\|\.select\|\.where" \
+  $(find . -name "*.js" -o -name "*.ts" | grep -v node_modules | head -30) 2>/dev/null | head -20
 
-## Critical Findings
+# Find raw SQL queries
+echo "--- Raw SQL Queries ---"
+grep -n "SELECT\|INSERT\|UPDATE\|DELETE" \
+  $(find . -name "*.js" -o -name "*.ts" -o -name "*.sql" | grep -v node_modules | head -30) 2>/dev/null | head -15
 
-### 🔴 IMMEDIATE ACTION REQUIRED
-- [ ] [X] missing indexes on foreign keys
-- [ ] [Y] N+1 query patterns found
-- [ ] [Z] queries without pagination
+# Identify potential N+1 patterns (loops with queries)
+echo "--- Potential N+1 Patterns ---"
+for file in $(find . -name "*.js" -o -name "*.ts" | grep -v node_modules | head -20); do
+  if [ -f "$file" ]; then
+    # Look for loops containing database calls
+    grep -n -B2 -A2 "\.forEach\|\.map\|for.*{" "$file" 2>/dev/null | \
+      grep -A2 -B2 "\.find\|\.query\|await" | head -10
+  fi
+done
+```
 
-### 🟡 HIGH PRIORITY
-- [ ] [A] tables missing constraints
-- [ ] [B] denormalization opportunities
-- [ ] [C] connection pooling not configured
+### Step 6: Analyze WHERE Clauses for Index Opportunities
 
-## Schema Analysis
+```bash
+# Extract actual WHERE clauses to identify missing indexes
+echo "=== WHERE clause analysis ==="
 
-### Table Overview
-| Table | Rows | Size | Indexes | Issues |
-|-------|------|------|---------|--------|
-| users | [count] | [size] | [count] | Missing created_at index |
-| orders | [count] | [size] | [count] | No foreign key index |
+# Find WHERE conditions in queries
+for query_file in $(grep -l "WHERE\|where(" $(find . -name "*.js" -o -name "*.ts" | grep -v node_modules)); do
+  echo "WHERE clauses in: $query_file"
+  grep -n "WHERE\|\.where(" "$query_file" 2>/dev/null | head -5
+done
 
-### Missing Indexes (Critical)
-```sql
--- Add these immediately
-CREATE INDEX idx_orders_user_id ON orders(user_id);
-CREATE INDEX idx_orders_status ON orders(status);
-CREATE INDEX idx_users_created_at ON users(created_at);
+# Find JOIN operations that might need indexes
+echo "=== JOIN operations found ==="
+grep -n "JOIN\|\.join\|\.include" \
+  $(find . -name "*.js" -o -name "*.ts" -o -name "*.sql" | grep -v node_modules | head -20) 2>/dev/null
+```
+
+## 5. Generate Evidence-Based Database Report
+
+### CRITICAL: Only Document Discovered Patterns
+
+Create `docs/code-review/4-DATABASE_OPTIMIZATION.md` with ONLY verified findings:
+
+````markdown
+# Database Optimization Analysis - VERIFIED FINDINGS ONLY
+
+## Discovery Summary
+
+**Analysis Date**: [Current date]
+**Database Files Found**: [Count]
+**Model Files Analyzed**: [Count]
+**Query Patterns Found**: [Count]
+**Migration Files**: [Count]
+
+## Database Configuration (Actual)
+
+### Database Type
+```
+[Paste actual findings - e.g., PostgreSQL detected in package.json]
+```
+
+### Connection Configuration
+- **File**: `[actual-file.js:line]`
+- **Pattern**: [e.g., connection pool, single connection]
+- **Evidence**:
+  ```javascript
+  // [Actual connection code found]
+  ```
+
+### ORM/Database Library
+- **Library**: [Only if found - e.g., Sequelize, TypeORM]
+- **Evidence**: `[file:line]` where imported/configured
+
+## Schema Analysis (From Actual Files)
+
+### Discovered Models/Tables
+
+**IMPORTANT**: Only models found in actual code are listed below.
+
+#### Model: [Actual model name]
+- **File**: `[model-file.js:line]`
+- **Fields Found**:
+  ```javascript
+  // [Actual model definition code]
+  ```
+- **Indexes Defined**: [List if found, or "NONE FOUND"]
+- **Relationships**: [Only if found with file:line]
+
+### Migration Files Found
+```
+[List actual migration files with paths]
+```
+
+### Missing Expected Elements
+- ❌ Index definitions: NOT FOUND on [fields used in WHERE clauses]
+- ❌ Foreign key constraints: NOT FOUND
+- ❌ Migration directory: NOT FOUND
+
+## Query Pattern Analysis (From Actual Code)
+
+### N+1 Query Patterns Found
+[Only document if actually found in Step 5]
+- **File**: `[actual-file.js:line]`
+- **Pattern**: [Actual code showing the N+1 pattern]
+- **Impact**: [Number of extra queries this would generate]
+
+### WHERE Clauses Without Indexes
+[Based on Step 6 findings]
+- **Query Location**: `[file:line]`
+- **WHERE Clause**: `WHERE [actual field] = ?`
+- **Index Status**: No index found on `[field]`
+
+### Query Complexity Issues
+[Only if complex queries found]
+- **File**: `[file:line]`
+- **Query**: [Actual complex query]
+- **Issue**: [Specific problem - e.g., multiple JOINs, no limit]
+
+## Connection Pool Analysis
+[Only document if connection pooling code found]
+
+## Optimization Recommendations (Based on Findings)
+
+### For Found Issues Only
+[Only recommend fixes for actual problems discovered]
 ````
 
-## Performance Issues
+## 6. Validation Before Documentation
 
-### N+1 Query Problems
+### Verify All Database References
 
-```javascript
-// ❌ Bad: N+1 pattern (found in [X] files)
-const users = await User.findAll();
-for (const user of users) {
-  const orders = await Order.findByUserId(user.id);
-  user.orders = orders;
-}
-
-// ✅ Fixed: Single query with JOIN
-const users = await User.findAll({
-  include: [{ model: Order, as: "orders" }],
-});
+```bash
+echo "=== Validating database analysis ==="
+# For each model/query documented, verify it exists
+# For each optimization suggested, ensure it addresses a real finding
 ```
 
-### Slow Query Optimization
+### Documentation Checklist
 
-```sql
--- ❌ Current slow query (850ms)
-SELECT * FROM orders
-WHERE user_id = ? AND status = ?
-ORDER BY created_at DESC;
+Before saving:
+- [ ] Every query has file:line reference
+- [ ] Every model references actual code
+- [ ] Every optimization addresses found issue
+- [ ] All missing elements clearly marked
+- [ ] No hypothetical optimizations included
 
--- ✅ Optimized with index (45ms)
--- Requires: CREATE INDEX idx_orders_user_status_date ON orders(user_id, status, created_at);
+## 📋 Todo List Generation
+
+**REQUIRED**: Generate or append to `docs/code-review/code-review-todo-list.md` with findings from this analysis.
+
+### Todo Entry Format - EVIDENCE-BASED ONLY
+```markdown
+## Database Optimization Findings
+
+**Analysis Date**: [Date]
+**Models Analyzed**: [Count]
+**Queries Analyzed**: [Count]
+**Performance Issues**: [Count]
+
+### 🔴 CRITICAL (Immediate Action Required)
+[Only if critical issues found]
+- [ ] **[Actual Issue]**: [Description with evidence]
+  - **Evidence**: `[file:line]` showing the problem
+  - **Impact**: [Measured or calculated impact]
+  - **Fix**: Add index on `[field]` used in WHERE clause
+
+### 🟡 HIGH (Sprint Priority)
+[Only actual N+1 patterns or slow queries]
+
+### 🟢 MEDIUM (Backlog)
+[Only verified improvements]
+
+### 🔵 LOW (Future Consideration)
+[Only based on actual findings]
+
+### ❌ MISSING DATABASE INFRASTRUCTURE
+- [ ] **No indexes found on foreign keys**
+  - **Tables**: [List actual tables checked]
+  - **Impact**: Slow JOIN operations
+- [ ] **No connection pooling configured**
+  - **Current**: Single connection pattern at `[file:line]`
+  - **Risk**: Connection exhaustion under load
 ```
 
-## Data Integrity Issues
-
-### Missing Constraints
-
-```sql
--- Add data validation
-ALTER TABLE products
-ADD CONSTRAINT check_positive_price CHECK (price > 0),
-ADD CONSTRAINT check_positive_stock CHECK (stock >= 0);
-
-ALTER TABLE orders
-ADD CONSTRAINT check_valid_status
-CHECK (status IN ('pending', 'processing', 'completed', 'cancelled'));
-```
-
-### Orphaned Records
-
-```sql
--- Check for orphaned data
-SELECT COUNT(*) FROM order_items oi
-LEFT JOIN orders o ON oi.order_id = o.id
-WHERE o.id IS NULL;
-
--- Clean up and add constraint
-DELETE FROM order_items WHERE order_id NOT IN (SELECT id FROM orders);
-ALTER TABLE order_items ADD FOREIGN KEY (order_id) REFERENCES orders(id);
-```
-
-## Optimization Roadmap
-
-### Phase 1: Critical Performance (Week 1)
-
-#### 1. Add Missing Indexes
-
-```sql
--- Script: add_critical_indexes.sql
-CREATE INDEX CONCURRENTLY idx_orders_user_id ON orders(user_id);
-CREATE INDEX CONCURRENTLY idx_orders_status ON orders(status);
-CREATE INDEX CONCURRENTLY idx_products_category ON products(category_id);
-```
-
-**Impact**: 80-90% query performance improvement
-**Risk**: Low (concurrent creation)
-
-#### 2. Implement Connection Pooling
-
-```javascript
-// db/pool.js
-const { Pool } = require("pg");
-
-const pool = new Pool({
-  max: 20,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
-});
-
-module.exports = pool;
-```
-
-**Impact**: Handle 10x concurrent connections
-**Risk**: Low
-
-### Phase 2: Data Integrity (Week 2-3)
-
-#### 1. Add Constraints
-
-- Check constraints for data validation
-- Foreign key constraints for referential integrity
-- NOT NULL constraints where appropriate
-
-#### 2. Fix N+1 Patterns
-
-```javascript
-// Fix service layer queries
-class OrderService {
-  async getUserOrders(userId) {
-    // Single query instead of N+1
-    return Order.findAll({
-      where: { userId },
-      include: [{ model: OrderItem, include: [Product] }],
-    });
-  }
-}
-```
-
-### Phase 3: Scalability (Month 2)
-
-#### 1. Table Partitioning
-
-```sql
--- Partition large tables by date
-CREATE TABLE orders_partitioned (LIKE orders INCLUDING ALL)
-PARTITION BY RANGE (created_at);
-
--- Create monthly partitions
-CREATE TABLE orders_2024_01 PARTITION OF orders_partitioned
-FOR VALUES FROM ('2024-01-01') TO ('2024-02-01');
-```
-
-#### 2. Query Optimization
-
-- Add composite indexes for complex queries
-- Implement query result caching
-- Optimize full-text search with GIN indexes
-
-## Monitoring Setup
-
-### Database Health Metrics
-
-```sql
--- Monitor query performance
-SELECT query, calls, total_time, mean_time
-FROM pg_stat_statements
-ORDER BY total_time DESC LIMIT 10;
-
--- Check connection usage
-SELECT count(*) as connections,
-       state,
-       application_name
-FROM pg_stat_activity
-GROUP BY state, application_name;
-```
-
-### Automated Monitoring
-
-```javascript
-// scripts/db-monitor.js
-class DatabaseMonitor {
-  async checkPerformance() {
-    const slowQueries = await db.query(`
-      SELECT query, mean_time, calls 
-      FROM pg_stat_statements 
-      WHERE mean_time > 100
-      ORDER BY mean_time DESC
-    `);
-
-    return {
-      slowQueryCount: slowQueries.length,
-      avgQueryTime:
-        slowQueries.reduce((sum, q) => sum + q.mean_time, 0) /
-        slowQueries.length,
-    };
-  }
-
-  async checkConnections() {
-    const result = await db.query(
-      "SELECT count(*) as active FROM pg_stat_activity"
-    );
-    return { activeConnections: result[0].active };
-  }
-}
-
-module.exports = DatabaseMonitor;
-```
-
-## Cost-Benefit Analysis
-
-| Optimization       | Effort  | Performance Gain     | Cost Savings | Priority |
-| ------------------ | ------- | -------------------- | ------------ | -------- |
-| Add indexes        | 1 day   | 80% faster queries   | $500/month   | P0       |
-| Connection pooling | 4 hours | 10x concurrency      | $1000/month  | P0       |
-| Fix N+1 queries    | 3 days  | 90% faster APIs      | $800/month   | P1       |
-| Table partitioning | 1 week  | 60% faster reporting | $300/month   | P2       |
-
-## Immediate Actions
-
-### Week 1
-
-1. 🚨 **Add missing indexes**
-
-   ```bash
-   psql -f scripts/add_critical_indexes.sql
-   ```
-
-2. 🚨 **Implement connection pooling**
-
-   ```bash
-   npm install pg
-   # Update database configuration
-   ```
-
-3. 🚨 **Fix top 3 N+1 patterns**
-   - User orders query
-   - Product categories query
-   - Order items query
-
-### Week 2-4
-
-1. **Add data constraints**
-2. **Implement query monitoring**
-3. **Set up automated performance alerts**
-4. **Create database backup strategy**
-
-## Success Metrics
-
-- P95 query latency: < 100ms (current: 450ms)
-- Database connection efficiency: > 80%
-- Slow query count: < 5 (current: 23)
-- Index usage ratio: > 95%
-
-EOF
-
-# Create monitoring script
-
-cat > scripts/db-monitor.js << 'EOF'
-#!/usr/bin/env node
-
-const { Pool } = require('pg');
-
-class DatabaseMonitor {
-constructor() {
-this.pool = new Pool({
-connectionString: process.env.DATABASE_URL
-});
-}
-
-async checkHealth() {
-try {
-const slowQueries = await this.pool.query(`        SELECT query, mean_time, calls 
-        FROM pg_stat_statements 
-        WHERE mean_time > 100 
-        ORDER BY mean_time DESC 
-        LIMIT 5
-     `);
-
-      const connections = await this.pool.query(`
-        SELECT count(*) as active
-        FROM pg_stat_activity
-        WHERE state = 'active'
-      `);
-
-      const indexUsage = await this.pool.query(`
-        SELECT schemaname, tablename,
-               100 * idx_tup_fetch / (seq_tup_read + idx_tup_fetch) as index_usage_pct
-        FROM pg_stat_user_tables
-        WHERE (seq_tup_read + idx_tup_fetch) > 0
-        ORDER BY index_usage_pct ASC
-        LIMIT 5
-      `);
-
-      const report = {
-        timestamp: new Date().toISOString(),
-        slowQueries: slowQueries.rows.length,
-        activeConnections: connections.rows[0].active,
-        lowIndexUsage: indexUsage.rows.filter(r => r.index_usage_pct < 95),
-        status: this.calculateHealthStatus(slowQueries.rows.length, connections.rows[0].active)
-      };
-
-      console.log('Database Health Report:', JSON.stringify(report, null, 2));
-      return report;
-
-    } catch (error) {
-      console.error('Database health check failed:', error);
-      return { status: 'ERROR', error: error.message };
-    }
-
-}
-
-calculateHealthStatus(slowQueries, activeConnections) {
-if (slowQueries > 10 || activeConnections > 80) return 'CRITICAL';
-if (slowQueries > 5 || activeConnections > 50) return 'WARNING';
-return 'HEALTHY';
-}
-
-async close() {
-await this.pool.end();
-}
-}
-
-if (require.main === module) {
-const monitor = new DatabaseMonitor();
-monitor.checkHealth().then(() => monitor.close());
-}
-
-module.exports = DatabaseMonitor;
-EOF
-
-chmod +x scripts/db-monitor.js
-
-```
-
-```
+### Implementation Rules
+1. ONLY create todos for issues found in actual database code
+2. EVERY optimization must address a discovered problem
+3. Include "MISSING" section for expected database features
+4. NO hypothetical performance improvements
+5. Tag with `#database #performance #verified`
 
 memory_store_chunk
 content="Database analysis completed. Missing indexes: [count]. N+1 patterns: [count]. Performance improvement potential: [X]%"

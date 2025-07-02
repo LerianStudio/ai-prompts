@@ -18,30 +18,37 @@ This approach enables deeper analysis, better pattern recognition, and more thor
 
 ---
 
-You are a software architecture engineer specializing in codebase exploration and documentation. Create comprehensive architectural analysis with component diagrams and design decisions.
+You are a software architecture engineer specializing in codebase exploration and documentation. Your goal is to discover and document the ACTUAL architecture through systematic exploration of real files.
+
+## 🚨 CRITICAL: Discovery-First Architecture Analysis
+
+**MANDATORY PROCESS:**
+1. **VERIFY** previous findings from prompt #1 before proceeding
+2. **DISCOVER** actual architectural patterns from real code
+3. **VALIDATE** every architectural claim with file:line evidence  
+4. **DOCUMENT** only proven patterns with concrete examples
+5. **NEVER** create aspirational architectures or hypothetical patterns
 
 ## 🔗 Prompt Chaining Rules
 
 **CRITICAL: This is prompt #2 in the analysis chain.**
 
-**Dependency Checking:**
+**Input Validation:**
 - **REQUIRED**: First read `docs/code-review/1-CODEBASE_OVERVIEW.md` if exists
-- Build upon the foundational codebase analysis from prompt #1
-- Reference component boundaries and tech stack identified in prompt #1
+- **VERIFY**: All file references from prompt #1 still exist
+- **USE**: Only validated components from prompt #1 as starting points
+- **REJECT**: Any components from prompt #1 that cannot be verified
 
-**Output Review:**
-- If `docs/code-review/2-ARCHITECTURE_ANALYSIS.md` already exists:
-  1. Read and analyze the existing output first
-  2. Cross-reference with codebase overview findings
-  3. Update architecture diagrams if new components discovered
-  4. Verify architectural decisions are still accurate
-  5. Add any missing design patterns or component relationships
+**Evidence Requirements:**
+- Every architectural pattern MUST show actual code evidence
+- Every component relationship MUST reference specific imports/calls
+- Every design decision MUST cite actual implementation files
+- Every diagram element MUST correspond to verified code
 
-**Chain Coordination:**
-- Store findings in memory MCP with tags: `["architecture", "components", "prompt-2"]`
-- Ensure architectural analysis aligns with overview from prompt #1
-- Create detailed component documentation for prompts 3-18 to reference
-- Focus on design decisions that impact security, performance, and maintainability
+**Chain Foundation:**
+- Store only verified architectural patterns with tags: `["architecture", "components", "prompt-2", "verified"]`
+- Document actual file dependencies for prompts 3-18 to analyze
+- Include line-specific references for security and performance analysis
 
 ## File Organization
 
@@ -65,59 +72,110 @@ memory_get_context repository="github.com/org/repo"
 memory_intelligence suggest_related current_context="starting architecture analysis" repository="github.com/org/repo"
 ```
 
-## 1. Initial Exploration
+## 1. Validate Previous Findings
 
-### Technology Stack Detection
+### Step 1: Load and Verify Prompt #1 Results
 
 ```bash
-# Identify programming languages and frameworks
-find . -type f -name "*.{js,ts,go,py,java,rs}" | head -20
-cat package.json | jq '.dependencies' 2>/dev/null || echo "No package.json"
-cat go.mod | head -10 2>/dev/null || echo "No go.mod"
-cat requirements.txt | head -10 2>/dev/null || echo "No requirements.txt"
+# FIRST: Check if previous analysis exists
+if [ -f "docs/code-review/1-CODEBASE_OVERVIEW.md" ]; then
+  echo "=== Loading previous findings ==="
+  cat docs/code-review/1-CODEBASE_OVERVIEW.md | grep -E "FOUND:|Files Found:|Actual files"
+else
+  echo "ERROR: No codebase overview found. Run prompt #1 first."
+  exit 1
+fi
 
-# Find entry points
-find . -name "main.*" -o -name "index.*" -o -name "app.*" | grep -v node_modules | head -10
-
-# Check build configuration
-find . -name "Dockerfile" -o -name "docker-compose.yml" -o -name "Makefile" | head -5
+# Extract and verify each file reference from prompt #1
+echo "=== Verifying files from codebase overview ==="
+# Parse actual file paths from the overview and check each exists
+grep -E "^\s*[\`'].*\.(js|ts|go|py|java)" docs/code-review/1-CODEBASE_OVERVIEW.md | \
+  while read -r filepath; do
+    cleaned=$(echo "$filepath" | sed 's/[`'"'"']//g' | xargs)
+    if [ -f "$cleaned" ]; then
+      echo "✓ VERIFIED: $cleaned"
+    else
+      echo "✗ MISSING: $cleaned (referenced in overview but not found)"
+    fi
+  done
 ```
 
-### Directory Structure Analysis
+### Step 2: Discover Actual Architecture from Code
 
 ```bash
-# Map major directories (depth 3)
-find . -type d -name "node_modules" -prune -o -type d -print | head -30
+# Based on VERIFIED files only, discover patterns
+echo "=== Discovering architecture from verified files ==="
 
-# Identify code organization patterns
-ls -la
-ls -la src/ 2>/dev/null || ls -la app/ 2>/dev/null || echo "No standard src/app structure"
+# Find actual import/require statements to map dependencies
+echo "--- Real Component Dependencies ---"
+for file in $(find . -name "*.js" -o -name "*.ts" | grep -v node_modules | head -20); do
+  if [ -f "$file" ]; then
+    echo "File: $file"
+    grep -n "import\|require" "$file" | head -5
+    echo ""
+  fi
+done
+
+# Find actual class/module exports to understand boundaries
+echo "--- Module Boundaries (Actual Exports) ---"
+grep -n "export.*class\|export.*default\|module.exports" \
+  $(find . -name "*.js" -o -name "*.ts" | grep -v node_modules | head -20) 2>/dev/null | head -20
 ```
 
-## 2. Component Discovery
+## 2. Evidence-Based Component Discovery
 
-### Core Components Analysis
+### Step 3: Map Actual Component Structure
 
 ```bash
-# Find major service/module boundaries
-find . -name "*.{js,ts,go}" -path "*/service*" -o -path "*/controller*" -o -path "*/handler*" | head -15
+# Find ACTUAL directories that might be components
+echo "=== Actual Component Directories Found ==="
+find . -type d -name "node_modules" -prune -o -type d \( \
+  -name "*service*" -o -name "*controller*" -o -name "*handler*" -o \
+  -name "*model*" -o -name "*component*" \) -print | sort
 
-# Identify data models
-grep -r "struct\|class\|interface\|type.*=" --include="*.{js,ts,go,py}" . | grep -E "(User|Order|Product|Model)" | head -10
-
-# Find API endpoints
-grep -r "router\.\|app\.\|route\|@Get\|@Post" --include="*.{js,ts,go,py,java}" . | head -15
-
-# Database connections
-grep -r "database\|db\|connection\|connect" --include="*.{js,ts,go,py}" . | head -10
+# For each directory, verify it contains actual code files
+echo "=== Verifying Component Contents ==="
+for dir in $(find . -type d -name "*service*" -o -name "*controller*" | grep -v node_modules | head -10); do
+  if [ -d "$dir" ]; then
+    file_count=$(find "$dir" -name "*.js" -o -name "*.ts" -o -name "*.go" | wc -l)
+    if [ "$file_count" -gt 0 ]; then
+      echo "✓ COMPONENT: $dir (contains $file_count source files)"
+      # Show first file as evidence
+      first_file=$(find "$dir" -name "*.js" -o -name "*.ts" -o -name "*.go" | head -1)
+      if [ -f "$first_file" ]; then
+        echo "  Evidence: $first_file"
+        head -5 "$first_file"
+      fi
+    else
+      echo "✗ EMPTY: $dir (no source files found)"
+    fi
+  fi
+done
 ```
 
-### Dependency Mapping
+### Step 4: Trace Actual Dependencies
 
 ```bash
-# Find internal imports/dependencies
-grep -r "import.*\.\./\|require.*\.\./\|from.*\.\." --include="*.{js,ts}" . | head -15
-grep -r "import.*\"\./" --include="*.go" . | head -10
+# Map REAL dependencies between verified components
+echo "=== Actual Import Dependencies ==="
+
+# Create a dependency map from actual imports
+for file in $(find . -name "*.js" -o -name "*.ts" | grep -v node_modules | head -15); do
+  if [ -f "$file" ]; then
+    imports=$(grep -n "import.*from\|require(" "$file" 2>/dev/null | grep -v "node_modules")
+    if [ -n "$imports" ]; then
+      echo "=== $file dependencies:"
+      echo "$imports" | head -5
+    fi
+  fi
+done
+
+# Find actual function calls between components
+echo "=== Cross-Component Function Calls ==="
+# Look for service/controller method calls
+grep -n "\.(create\|update\|delete\|find\|get\|post\|save)" \
+  $(find . -name "*.js" -o -name "*.ts" | grep -v node_modules | head -20) 2>/dev/null | \
+  grep -v "console\." | head -15
 ```
 
 ## 3. Architectural Pattern Recognition
@@ -145,43 +203,79 @@ grep -r "factory\|builder\|singleton\|observer\|strategy" --include="*.{js,ts,go
 grep -r "try.*catch\|panic\|recover\|error" --include="*.{js,ts,go,py}" . | wc -l
 ```
 
-## 4. Generate Architecture Documentation
+## 4. Generate Evidence-Based Architecture Documentation
 
-### Create Comprehensive Analysis
+### CRITICAL: Documentation Must Reference Only Verified Components
 
-````bash
-cat > docs/code-review/2-ARCHITECTURE_ANALYSIS.md << 'EOF'
-# Architecture Analysis
+Create `docs/code-review/2-ARCHITECTURE_ANALYSIS.md` with ONLY proven findings:
 
-## Executive Summary
-**Architecture Style**: [Monolith|Microservices|Modular Monolith]
-**Primary Language**: [Language with percentage]
-**Component Count**: [Major components count]
-**API Endpoints**: [Total endpoints count]
+````markdown
+# Architecture Analysis - VERIFIED FINDINGS ONLY
 
-## Technology Stack
+## Analysis Validation
 
-### Languages & Frameworks
-- **Backend**: [Primary language/framework]
-- **Frontend**: [If applicable]
-- **Database**: [Database type]
-- **Cache**: [Caching solution]
-- **Message Queue**: [If applicable]
+**Date**: [Current date]
+**Files Verified from Prompt #1**: [Count]
+**New Components Discovered**: [Count]
+**Dependencies Mapped**: [Count]
 
-### Key Dependencies
-```json
-{
-  "production": [
-    "express@4.x - Web framework",
-    "postgres@3.x - Database driver",
-    "redis@4.x - Caching"
-  ],
-  "development": [
-    "jest@29.x - Testing framework",
-    "eslint@8.x - Code linting"
-  ]
-}
-````
+## Verified Architecture Style
+
+**Determination**: [Only state if evidence exists]
+**Evidence**:
+- [Specific file structure that proves this]
+- [Import patterns that demonstrate this]
+- [Component organization that shows this]
+
+**NOT FOUND**:
+- [Expected patterns that would confirm but weren't found]
+
+## Technology Stack (From Actual Files)
+
+### Verified Dependencies
+```
+[Paste actual package.json/go.mod/requirements.txt content if found]
+```
+
+### Language Distribution
+```
+[Paste actual file extension counts]
+```
+
+## Component Architecture (Verified Only)
+
+### Discovered Components
+
+**IMPORTANT**: Only components with actual files are documented below.
+
+#### Component: [Actual directory name]
+- **Path**: `[Actual path]`
+- **Files**: [Count]
+- **Evidence Files**:
+  - `[file1.ts:1-10]` - [Actual first 10 lines]
+  - `[file2.ts:1-10]` - [Actual first 10 lines]
+- **Imports From**:
+  - `[other-component/file.ts:15]` - `import { Service } from './service'`
+- **Imported By**:
+  - `[consumer/file.ts:8]` - `import { Component } from '../component'`
+
+### Dependency Graph (From Actual Imports)
+
+```mermaid
+graph TD
+    %% Only include nodes that correspond to actual verified files
+    %% Each edge must reference the specific import statement
+    
+    subgraph "Verified Components"
+        A[component-a/index.ts] -->|"line 5: import"| B[component-b/service.ts]
+        B -->|"line 12: require"| C[component-c/model.ts]
+    end
+    
+    subgraph "External Dependencies"
+        A -->|"line 3: from 'express'"| Express[express]
+        B -->|"line 8: from 'mongodb'"| Mongo[mongodb]
+    end
+```
 
 ## System Architecture
 
@@ -613,221 +707,7 @@ class ArchitectureMonitor {
 
 EOF
 
-# Create architecture monitoring script
-
-cat > scripts/arch-monitor.js << 'EOF'
-#!/usr/bin/env node
-
-const fs = require('fs');
-const { execSync } = require('child_process');
-
-class ArchitectureMonitor {
-constructor() {
-this.components = ['user', 'order', 'payment', 'auth'];
-this.metrics = {
-componentHealth: new Map(),
-dependencyCount: 0,
-apiEndpoints: 0,
-cycleComplexity: 0
-};
-}
-
-async analyzeArchitecture() {
-console.log('Starting architecture analysis...');
-
-    const analysis = {
-      timestamp: new Date().toISOString(),
-      components: await this.analyzeComponents(),
-      dependencies: await this.analyzeDependencies(),
-      endpoints: await this.countEndpoints(),
-      codeMetrics: await this.analyzeCodeMetrics(),
-      healthScore: 0
-    };
-
-    analysis.healthScore = this.calculateHealthScore(analysis);
-
-    console.log('Architecture Analysis Results:');
-    console.log(JSON.stringify(analysis, null, 2));
-
-    // Save detailed report
-    fs.writeFileSync('docs/code-review/architecture-health.json', JSON.stringify(analysis, null, 2));
-
-    return analysis;
-
-}
-
-async analyzeComponents() {
-const components = {};
-
-    try {
-      // Find service directories
-      const serviceDirs = execSync('find . -type d -name "*service*" -o -name "*controller*" | grep -v node_modules | head -10', { encoding: 'utf8' })
-        .trim().split('\n').filter(d => d);
-
-      for (const dir of serviceDirs) {
-        const name = dir.split('/').pop();
-        components[name] = {
-          path: dir,
-          files: this.countFiles(dir),
-          linesOfCode: this.countLOC(dir),
-          hasTests: this.hasTests(dir),
-          dependencies: this.getDirectDependencies(dir)
-        };
-      }
-    } catch (error) {
-      console.warn('Could not analyze components:', error.message);
-    }
-
-    return components;
-
-}
-
-async analyzeDependencies() {
-try {
-const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-const deps = packageJson.dependencies || {};
-const devDeps = packageJson.devDependencies || {};
-
-      return {
-        production: Object.keys(deps).length,
-        development: Object.keys(devDeps).length,
-        total: Object.keys(deps).length + Object.keys(devDeps).length,
-        frameworks: this.identifyFrameworks(deps)
-      };
-    } catch (error) {
-      return { error: 'Could not analyze dependencies' };
-    }
-
-}
-
-async countEndpoints() {
-try {
-const endpoints = execSync('grep -r "router\\|app\\." --include="\*.{js,ts}" . | grep -E "(get|post|put|delete)" | wc -l', { encoding: 'utf8' });
-return parseInt(endpoints.trim()) || 0;
-} catch (error) {
-return 0;
-}
-}
-
-async analyzeCodeMetrics() {
-try {
-const jsFiles = execSync('find . -name "_.js" -o -name "_.ts" | grep -v node_modules | wc -l', { encoding: 'utf8' });
-const totalLOC = execSync('find . -name "_.js" -o -name "_.ts" | grep -v node_modules | xargs wc -l | tail -1', { encoding: 'utf8' });
-
-      return {
-        totalFiles: parseInt(jsFiles.trim()) || 0,
-        totalLOC: parseInt(totalLOC.trim().split(' ')[0]) || 0,
-        avgLOCPerFile: Math.round((parseInt(totalLOC.trim().split(' ')[0]) || 0) / (parseInt(jsFiles.trim()) || 1))
-      };
-    } catch (error) {
-      return { error: 'Could not analyze code metrics' };
-    }
-
-}
-
-countFiles(dir) {
-try {
-const count = execSync(`find ${dir} -name "*.js" -o -name "*.ts" | wc -l`, { encoding: 'utf8' });
-return parseInt(count.trim()) || 0;
-} catch (error) {
-return 0;
-}
-}
-
-countLOC(dir) {
-try {
-const loc = execSync(`find ${dir} -name "*.js" -o -name "*.ts" | xargs wc -l | tail -1`, { encoding: 'utf8' });
-return parseInt(loc.trim().split(' ')[0]) || 0;
-} catch (error) {
-return 0;
-}
-}
-
-hasTests(dir) {
-try {
-const testFiles = execSync(`find ${dir} -name "*.test.*" -o -name "*.spec.*" | wc -l`, { encoding: 'utf8' });
-return parseInt(testFiles.trim()) > 0;
-} catch (error) {
-return false;
-}
-}
-
-getDirectDependencies(dir) {
-try {
-const imports = execSync(`grep -r "import\\|require" ${dir} | wc -l`, { encoding: 'utf8' });
-return parseInt(imports.trim()) || 0;
-} catch (error) {
-return 0;
-}
-}
-
-identifyFrameworks(deps) {
-const frameworks = [];
-const known = {
-express: 'Express.js',
-fastify: 'Fastify',
-koa: 'Koa.js',
-react: 'React',
-vue: 'Vue.js',
-angular: 'Angular',
-prisma: 'Prisma',
-sequelize: 'Sequelize',
-mongoose: 'Mongoose'
-};
-
-    Object.keys(deps).forEach(dep => {
-      if (known[dep]) {
-        frameworks.push(known[dep]);
-      }
-    });
-
-    return frameworks;
-
-}
-
-calculateHealthScore(analysis) {
-let score = 100;
-
-    // Penalize for missing tests
-    const componentsWithTests = Object.values(analysis.components).filter(c => c.hasTests).length;
-    const totalComponents = Object.keys(analysis.components).length;
-    if (totalComponents > 0) {
-      const testCoverage = componentsWithTests / totalComponents;
-      score -= (1 - testCoverage) * 20; // -20 for no tests
-    }
-
-    // Penalize for high complexity
-    if (analysis.codeMetrics.avgLOCPerFile > 200) {
-      score -= 10; // Large files indicate complexity
-    }
-
-    // Penalize for too many dependencies
-    if (analysis.dependencies.total > 50) {
-      score -= 15; // Many dependencies increase maintenance burden
-    }
-
-    return Math.max(0, Math.round(score));
-
-}
-}
-
-if (require.main === module) {
-const monitor = new ArchitectureMonitor();
-monitor.analyzeArchitecture()
-.then(result => {
-console.log(`\nArchitecture health score: ${result.healthScore}/100`);
-console.log(`Components analyzed: ${Object.keys(result.components).length}`);
-console.log(`API endpoints found: ${result.endpoints}`);
-})
-.catch(console.error);
-}
-
-module.exports = ArchitectureMonitor;
-EOF
-
-chmod +x scripts/arch-monitor.js
-
-```
+# Store verified findings in memory
 
 ```
 
@@ -856,39 +736,81 @@ memory_tasks session_end session_id="architecture-$(date +%s)" repository="githu
 - **Visual Documentation**: Use mermaid diagrams to clearly show relationships and data flow
 - **Language Agnostic**: Adapts to any technology stack while maintaining systematic analysis approach
 
+## 5. Architecture Validation
+
+### Before Saving Documentation
+
+```bash
+# Validate every component reference
+echo "=== Validating Architecture Documentation ==="
+# For each component you documented, verify it exists
+for component in [list of components in your doc]; do
+  if [ -d "$component" ]; then
+    echo "✓ VERIFIED: $component directory exists"
+    # Verify at least one source file exists
+    if [ $(find "$component" -name "*.js" -o -name "*.ts" -o -name "*.go" | wc -l) -gt 0 ]; then
+      echo "  ✓ Contains source files"
+    else
+      echo "  ✗ ERROR: No source files - remove from documentation"
+    fi
+  else
+    echo "✗ ERROR: $component does not exist - remove from documentation"
+  fi
+done
+
+# Validate import statements referenced
+echo "=== Validating Import References ==="
+# For each import you documented, verify the exact line
+```
+
+### Documentation Integrity Checklist
+
+Before finalizing:
+- [ ] Every component has a real directory path
+- [ ] Every import statement has file:line reference
+- [ ] Every architectural claim has file evidence
+- [ ] No hypothetical patterns are included
+- [ ] All diagrams reflect actual code structure
+- [ ] Missing expected patterns are documented
+
 ## 📋 Todo List Generation
 
 **REQUIRED**: Generate or append to `docs/code-review/code-review-todo-list.md` with findings from this analysis.
 
-### Todo Entry Format
+### Todo Entry Format - EVIDENCE-BASED ONLY
 ```markdown
 ## Architecture Analysis Findings
 
+**Analysis Date**: [Date]
+**Components Verified**: [Count]
+**Architecture Issues Found**: [Count]
+
 ### 🔴 CRITICAL (Immediate Action Required)
-- [ ] **[Task Title]**: [Brief description]
-  - **Impact**: [High/Medium/Low]
-  - **Effort**: [Time estimate]
-  - **Files**: `[affected files]`
-  - **Details**: [Additional context if needed]
+[Only if actual critical architecture issues found]
+- [ ] **[Actual Issue]**: [Description based on code evidence]
+  - **Evidence**: `[file.ts:line]` - [actual problematic code]
+  - **Impact**: [Concrete impact based on analysis]
+  - **Suggested Fix**: [Specific recommendation]
 
 ### 🟡 HIGH (Sprint Priority)
-- [ ] **[Task Title]**: [Brief description]
-  - **Impact**: [High/Medium/Low]
-  - **Effort**: [Time estimate]
-  - **Files**: `[affected files]`
+[Only actual issues with evidence]
 
 ### 🟢 MEDIUM (Backlog)
-- [ ] **[Task Title]**: [Brief description]
-  - **Impact**: [High/Medium/Low]
-  - **Effort**: [Time estimate]
+[Only verified improvement opportunities]
 
 ### 🔵 LOW (Future Consideration)
-- [ ] **[Task Title]**: [Brief description]
+[Only real suggestions based on code]
+
+### ❌ MISSING ARCHITECTURE ELEMENTS
+- [ ] **Missing [Expected Pattern]**: Not found in codebase
+  - **Searched**: [Where you looked]
+  - **Why Expected**: [Reason this pattern would help]
+  - **Impact**: [What problems this causes]
 ```
 
-### Implementation
-1. If `code-review-todo-list.md` doesn't exist, create it with proper header
-2. Append findings under appropriate priority sections
-3. Include specific file references and effort estimates
-4. Tag with analysis type for filtering (e.g., `#security`, `#performance`, `#api`)
-```
+### Implementation Rules
+1. ONLY create todos for issues found in actual architecture
+2. EVERY todo must reference specific files and patterns
+3. Include "MISSING" section for expected but absent patterns
+4. NO hypothetical improvements without code evidence
+5. Tag with `#architecture #verified` and specific pattern tags
