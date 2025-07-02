@@ -20,97 +20,235 @@ This approach enables deeper analysis, better pattern recognition, and more thor
 
 # Business Workflow Consistency Analysis
 
-**Role**: Product Business Analyst  
-**Goal**: Validate end-to-end business process integrity and workflow consistency  
-**Token Optimization**: 70% reduction via focused validation matrices and dependency analysis
+You are a product business analyst specializing in discovering ACTUAL business workflows through code analysis. Your goal is to identify real workflows, validate their consistency, and find gaps based on evidence.
 
-## Prerequisites
+## 🚨 CRITICAL: Discovery-First Workflow Analysis
 
-**REQUIRED**: Read ALL previous analysis outputs:
-- `docs/code-review/0-CODEBASE_OVERVIEW.md` - Foundation understanding
-- `docs/code-review/1-ARCHITECTURE_ANALYSIS.md` - System design patterns
-- `docs/code-review/2-API_CONTRACT_ANALYSIS.md` - Endpoint specifications
-- `docs/code-review/3-DATABASE_OPTIMIZATION.md` - Data flow patterns
-- `docs/code-review/4-SEQUENCE_DIAGRAMS.md` - Process visualizations
-- `docs/code-review/5-BUSINESS_ANALYSIS.md` - Business logic and rules
-- `docs/code-review/6-SECURITY_ANALYSIS.md` - Auth/authorization flows
-- `docs/code-review/7-DEPENDENCY_SECURITY_ANALYSIS.md` - External service dependencies
-- `docs/code-review/8-PRIVACY_COMPLIANCE_ANALYSIS.md` - Data handling workflows
-- `docs/code-review/9-TEST_COVERAGE_ANALYSIS.md` - Business scenario coverage
-- `docs/code-review/10-OBSERVABILITY_MONITORING.md` - Process tracking
-- `docs/code-review/11-PRE_COMMIT_QUALITY_CHECKS.md` - Quality gates
-- `docs/code-review/12-DOCUMENTATION_GENERATION.md` - Process documentation
-- `docs/code-review/13-API_DOCUMENTATION_GENERATOR.md` - Client integration patterns
+**MANDATORY PROCESS:**
+1. **DISCOVER** actual business workflows in the codebase
+2. **TRACE** real user journeys through code paths
+3. **VALIDATE** workflow consistency with evidence
+4. **IDENTIFY** gaps in business process implementation
+5. **NEVER** create hypothetical workflows without code evidence
 
-**Cross-Reference**: Use findings from architectural (#1), business (#5), API (#2), and testing (#9) analysis.
+## 🔗 Prompt Chaining Rules
 
-**Output Review**: If `docs/code-review/14-BUSINESS_WORKFLOW_CONSISTENCY.md` exists, review and update against current codebase state.
+**CRITICAL: This is prompt #15 in the analysis chain.**
+
+**Input Validation:**
+- **REQUIRED**: First read ALL outputs from prompts #1-14 if they exist
+- **VERIFY**: Business processes from prompt #6 still exist
+- **USE**: API endpoints from prompt #3 for entry points
+- **CHECK**: Database operations from prompt #4 for data flow
+- **EXAMINE**: Test scenarios from prompt #10 for coverage
+
+**Evidence Requirements:**
+- Every workflow MUST be traced through actual code
+- Every state transition MUST have file:line evidence
+- Every process gap MUST reference missing implementation
+- Every validation MUST show actual business rules
+- NO template workflows without code paths
+
+**Chain Foundation:**
+- Store only verified findings with tags: `["business-workflow", "consistency", "verified", "prompt-15"]`
+- Document actual workflow implementations
+- Map real user journeys with evidence
+- Create consistency report based on discovered flows
 
 ## Core Analysis Framework
 
-### 1. Business Process Mapping (15min)
+### 1. Discover Actual Business Workflows
 
-**Workflow Discovery**:
+#### Step 1: Find Real Business Processes
+
 ```bash
-# Critical business processes identification
-rg -i "workflow|process|journey|funnel" --type md,js,ts,go,py -A 3 -B 1
-rg "(create|update|delete|approve|reject|submit)" controllers/ handlers/ services/ -A 2
-rg "state|status|transition" --type go,js,ts,py -A 2
+echo "=== Discovering actual business workflows in codebase ==="
+
+# Find workflow/process implementations
+echo "--- Searching for workflow implementations ---"
+WORKFLOW_FILES=$(grep -r "workflow\|process\|state\|status" --include="*.{js,ts,go,py,java}" . | grep -v test | grep -v node_modules)
+if [ -n "$WORKFLOW_FILES" ]; then
+  echo "Workflow references found:"
+  echo "$WORKFLOW_FILES" | head -20
+  WORKFLOW_COUNT=$(echo "$WORKFLOW_FILES" | wc -l)
+  echo "Total workflow references: $WORKFLOW_COUNT"
+else
+  echo "❌ NO WORKFLOW IMPLEMENTATIONS FOUND"
+fi
+
+# Find state transitions
+echo "--- Searching for state transitions ---"
+STATE_TRANSITIONS=$(grep -r "setState\|updateStatus\|transition\|changeState" --include="*.{js,ts,go,py}" . | grep -v test | head -20)
+if [ -n "$STATE_TRANSITIONS" ]; then
+  echo "State transition code found:"
+  echo "$STATE_TRANSITIONS"
+else
+  echo "❌ NO STATE TRANSITION CODE FOUND"
+fi
+
+# Find business operations
+echo "--- Searching for business operations ---"
+BUSINESS_OPS=$(grep -r "create.*Order\|process.*Payment\|approve.*Request\|submit.*Application" --include="*.{js,ts,go,py}" . | grep -v test | head -20)
+if [ -n "$BUSINESS_OPS" ]; then
+  echo "Business operations found:"
+  echo "$BUSINESS_OPS"
+else
+  echo "No standard business operations found - checking for custom operations"
+fi
 ```
 
-**Process Chain Validation**:
-- Map complete user journeys from entry to completion
-- Identify process dependencies and prerequisites
-- Validate state transitions and business rules
-- Check for process dead-ends or infinite loops
+### 2. Trace User Journey Entry Points
 
-### 2. Client Integration Consistency (10min)
+#### Step 2: Map Actual Entry Points to Workflows
 
-**Entry Point Analysis**:
 ```bash
-# API endpoint accessibility validation
-rg "router\.|app\.|mux\." --type go,js,ts -A 1 | grep -E "(GET|POST|PUT|DELETE|PATCH)"
-rg "@(Get|Post|Put|Delete|Patch)" --type ts,js -A 1
-rg "func.*Handler|ServeHTTP" --type go -A 3
+echo "=== Tracing user journey entry points ==="
+
+# Find actual API endpoints that start workflows
+echo "--- Finding workflow entry points ---"
+if [ -f "docs/code-review/3-API_CONTRACT_ANALYSIS.md" ]; then
+  echo "Using API analysis from prompt #3..."
+  ENTRY_POINTS=$(grep -E "POST|PUT" docs/code-review/3-API_CONTRACT_ANALYSIS.md | grep -E "create|submit|start|initiate")
+  echo "Workflow entry points from API analysis:"
+  echo "$ENTRY_POINTS"
+fi
+
+# Map endpoints to handlers
+echo "--- Mapping endpoints to business logic ---"
+for endpoint in $(echo "$ENTRY_POINTS" | awk '{print $2}' | head -5); do
+  echo "\nTracing endpoint: $endpoint"
+  # Find handler for this endpoint
+  HANDLER=$(grep -r "$endpoint" --include="*.{js,ts,go,py}" . | grep -E "router|app|handle" | head -1)
+  if [ -n "$HANDLER" ]; then
+    echo "  Handler found: $HANDLER"
+    # Extract the handler function name
+    HANDLER_FILE=$(echo "$HANDLER" | cut -d: -f1)
+    HANDLER_LINE=$(echo "$HANDLER" | cut -d: -f2)
+    echo "  Location: $HANDLER_FILE:$HANDLER_LINE"
+  else
+    echo "  ❌ NO HANDLER FOUND for $endpoint"
+  fi
+done
+
+# Check authentication requirements
+echo "--- Checking authentication for workflows ---"
+AUTH_MIDDLEWARE=$(grep -r "authenticate\|requireAuth\|isAuthenticated" --include="*.{js,ts,go,py}" . | grep -v test | head -10)
+if [ -n "$AUTH_MIDDLEWARE" ]; then
+  echo "Authentication middleware found:"
+  echo "$AUTH_MIDDLEWARE"
+fi
 ```
 
-**Client Journey Mapping**:
-- Validate all endpoints are discoverable and documented
-- Check required vs optional parameters consistency
-- Verify authentication/authorization requirements
-- Ensure error responses guide next actions
+### 3. Validate Workflow Data Flow
 
-### 3. Information Flow Validation (10min)
+#### Step 3: Trace Data Requirements Through Workflows
 
-**Data Consistency Checks**:
 ```bash
-# Required field validation across layers
-rg "required|mandatory|must" validation/ models/ schemas/ -A 2 -B 1
-rg "validate|check|verify" --type go,js,ts,py -A 2
-rg "missing|empty|null|undefined" error/ --type go,js,ts,py -A 1
+echo "=== Validating workflow data consistency ==="
+
+# Find validation rules
+echo "--- Discovering validation rules ---"
+VALIDATION_FILES=$(find . -name "*validat*" -o -name "*schema*" | grep -v node_modules | grep -v test)
+if [ -n "$VALIDATION_FILES" ]; then
+  echo "Validation files found:"
+  for file in $(echo "$VALIDATION_FILES" | head -5); do
+    echo "\nChecking $file:"
+    # Look for required fields
+    REQUIRED_FIELDS=$(grep -n "required\|mandatory" "$file" 2>/dev/null | head -5)
+    if [ -n "$REQUIRED_FIELDS" ]; then
+      echo "Required fields:"
+      echo "$REQUIRED_FIELDS"
+    fi
+  done
+else
+  echo "❌ NO VALIDATION FILES FOUND"
+fi
+
+# Trace data flow through workflow
+echo "--- Tracing data through workflow stages ---"
+if [ -n "$BUSINESS_OPS" ]; then
+  # For each business operation, check data flow
+  for op_line in $(echo "$BUSINESS_OPS" | head -3 | cut -d: -f1,2); do
+    FILE=$(echo "$op_line" | cut -d: -f1)
+    LINE=$(echo "$op_line" | cut -d: -f2)
+    echo "\nAnalyzing workflow at $FILE:$LINE"
+    
+    # Check what data is used
+    DATA_ACCESS=$(sed -n "${LINE},$((LINE+20))p" "$FILE" 2>/dev/null | grep -E "\.|->|\[" | head -5)
+    if [ -n "$DATA_ACCESS" ]; then
+      echo "Data accessed in workflow:"
+      echo "$DATA_ACCESS"
+    fi
+  done
+fi
+
+# Check for data validation gaps
+echo "--- Checking for validation gaps ---"
+UNVALIDATED=$(grep -r "TODO.*validat\|FIXME.*check\|XXX.*verify" --include="*.{js,ts,go,py}" . | head -10)
+if [ -n "$UNVALIDATED" ]; then
+  echo "⚠️  VALIDATION GAPS FOUND:"
+  echo "$UNVALIDATED"
+fi
 ```
 
-**Workflow Information Requirements**:
-- Map information collection points vs usage points
-- Validate required data is collected before needed
-- Check for information gaps in business processes
-- Verify data transformations preserve business meaning
+### 4. Verify Workflow Completeness
 
-### 4. Process Completeness Audit (10min)
+#### Step 4: Check End-to-End Process Implementation
 
-**Business Logic Integrity**:
 ```bash
-# Critical business operations validation
-rg "(transaction|payment|order|booking|approval)" --type go,js,ts,py -A 3 -B 1
-rg "rollback|compensate|undo|cancel" --type go,js,ts,py -A 2
-rg "(success|failure|error).*callback" --type go,js,ts,py -A 2
-```
+echo "=== Verifying workflow completeness ==="
 
-**End-to-End Process Validation**:
-- Verify all business processes have clear completion criteria
-- Check for proper error handling and recovery paths
-- Validate notification and feedback mechanisms
-- Ensure audit trails for critical operations
+# Check for transaction handling
+echo "--- Checking transaction handling ---"
+TRANSACTIONS=$(grep -r "transaction\|beginTx\|commit\|rollback" --include="*.{js,ts,go,py}" . | grep -v test | head -20)
+if [ -n "$TRANSACTIONS" ]; then
+  echo "Transaction handling found:"
+  echo "$TRANSACTIONS"
+  
+  # Check for rollback mechanisms
+  ROLLBACKS=$(echo "$TRANSACTIONS" | grep -i "rollback\|compensate\|undo")
+  if [ -z "$ROLLBACKS" ]; then
+    echo "❌ NO ROLLBACK MECHANISMS FOUND in transactions"
+  fi
+else
+  echo "❌ NO TRANSACTION HANDLING FOUND"
+fi
+
+# Check for error handling in workflows
+echo "--- Checking workflow error handling ---"
+for workflow_file in $(echo "$WORKFLOW_FILES" | cut -d: -f1 | sort -u | head -5); do
+  if [ -f "$workflow_file" ]; then
+    echo "\nChecking error handling in $workflow_file:"
+    ERROR_HANDLING=$(grep -n "catch\|except\|error\|fail" "$workflow_file" | head -5)
+    if [ -n "$ERROR_HANDLING" ]; then
+      echo "Error handling found:"
+      echo "$ERROR_HANDLING"
+    else
+      echo "❌ NO ERROR HANDLING in workflow file"
+    fi
+  fi
+done
+
+# Check for success/completion handling
+echo "--- Checking workflow completion ---"
+COMPLETION=$(grep -r "complete\|success\|finish\|done" --include="*.{js,ts,go,py}" . | grep -v test | grep -i "workflow\|process\|transaction" | head -10)
+if [ -n "$COMPLETION" ]; then
+  echo "Completion handling found:"
+  echo "$COMPLETION"
+else
+  echo "❌ NO CLEAR COMPLETION HANDLING FOUND"
+fi
+
+# Check for audit trails
+echo "--- Checking audit logging ---"
+AUDIT_LOGS=$(grep -r "audit\|log.*event\|track.*action" --include="*.{js,ts,go,py}" . | grep -v test | head -10)
+if [ -n "$AUDIT_LOGS" ]; then
+  echo "Audit logging found:"
+  echo "$AUDIT_LOGS"
+else
+  echo "❌ NO AUDIT LOGGING FOUND for workflows"
+fi
+```
 
 ## Token-Optimized Output Structure
 
@@ -155,6 +293,15 @@ Create `docs/code-review/14-BUSINESS_WORKFLOW_CONSISTENCY.md`:
 - **Data Collection**: [points] - Where data is gathered
 - **Data Usage**: [points] - Where data is required
 - **Gaps**: [mismatches] - Missing information flows
+
+## NOT FOUND (Missing Workflow Elements)
+
+### Missing Core Components
+- ❌ No workflow implementations [if not found]
+- ❌ No state transition code [if not found]
+- ❌ No transaction handling [if not found]
+- ❌ No rollback mechanisms [if not found]
+- ❌ No audit logging [if not found]
 
 ## Recommendations
 

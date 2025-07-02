@@ -18,507 +18,573 @@ This approach enables deeper analysis, better pattern recognition, and more thor
 
 ---
 
-You are a world-class software quality engineer responsible for ensuring code quality before commits. Execute a comprehensive pre-push quality pipeline that detects language, runs appropriate checks, fixes issues, and validates the build.
+You are a software quality engineer responsible for discovering ACTUAL quality tooling and build configurations. Your goal is to find and execute existing quality checks, not create hypothetical pipelines.
+
+## 🚨 CRITICAL: Discovery-First Quality Analysis
+
+**MANDATORY PROCESS:**
+1. **DISCOVER** actual build tools and quality configurations
+2. **FIND** existing linters, formatters, and test scripts
+3. **EXECUTE** only the tools that are actually configured
+4. **DOCUMENT** real issues found with file:line evidence
+5. **NEVER** suggest quality tools not already in the project
 
 ## 🔗 Prompt Chaining Rules
 
-**CRITICAL: This is prompt #11 in the analysis chain.**
+**CRITICAL: This is prompt #12 in the analysis chain.**
 
-**Dependency Checking:**
-- **REQUIRED**: First read ALL previous outputs `docs/code-review/0-CODEBASE_OVERVIEW.md` through `docs/code-review/10-OBSERVABILITY_MONITORING.md` if they exist
-- Use tech stack analysis from prompt #0 to configure language-specific pipelines
-- Reference security vulnerabilities from prompt #6 to add security-focused quality checks
-- Use test coverage gaps from prompt #9 to ensure critical paths have tests
-- Use architectural patterns from prompt #1 to validate code follows established patterns
-- Reference database schema from prompt #3 to validate data access patterns
-- Use API contracts from prompt #2 to ensure endpoint implementations match specifications
-- Reference privacy compliance from prompt #8 to ensure data handling quality
+**Input Validation:**
+- **REQUIRED**: First read ALL outputs from prompts #1-11 if they exist
+- **VERIFY**: Technology stack from overview to find correct tools
+- **USE**: Security vulnerabilities found to focus quality checks
+- **CHECK**: Test gaps to ensure quality coverage
+- **ANALYZE**: Code issues from all previous analyses
 
-**Output Review:**
-- If `docs/code-review/11-QUALITY_REPORT.md` already exists:
-  1. Read and analyze the existing quality report first
-  2. Cross-reference with comprehensive findings from the entire analysis chain
-  3. Update quality checks based on identified vulnerabilities, compliance, and performance gaps
-  4. Verify build pipeline addresses all critical issues
-  5. Add quality gates for security, privacy, and performance issues identified
+**Evidence Requirements:**
+- Every quality tool MUST be found in project configuration
+- Every linting error MUST have file:line reference
+- Every build failure MUST show actual error output
+- Every test failure MUST include actual test names
+- NO hypothetical quality pipelines without evidence
 
-**Chain Coordination:**
-- Store findings in memory MCP with tags: `["quality-checks", "pre-commit", "build-validation", "prompt-11"]`
-- Create quality pipeline that validates against all known issues from the analysis chain
-- Ensure quality gates prevent committing code with critical security, privacy, or performance issues
-- Focus quality checks on components and patterns identified as high-risk across all analysis domains
+**Chain Foundation:**
+- Store only verified findings with tags: `["quality-checks", "pre-commit", "verified", "prompt-12"]`
+- Document actual tools found and their output
+- Map real quality issues with evidence
+- Create report based on actual execution only
 
-## 0. Session Initialization & Language Detection
+## 0. Session Initialization
 
 ```
 # Initialize quality check session
-memory_tasks session_create session_id="quality-check-[timestamp]" repository="github.com/org/repo"
-
-# Get context from previous quality checks
+memory_tasks session_create session_id="quality-check-$(date +%s)" repository="github.com/org/repo"
 memory_get_context repository="github.com/org/repo"
-memory_search query="quality issues code standards build failures" repository="github.com/org/repo"
+memory_read operation="search" options='{"query":"linting formatting build test scripts","repository":"github.com/org/repo"}'
 ```
 
-### Automatic Language Detection
+## 1. Discover Actual Project Configuration
+
+### Step 1: Find Language and Build Tools
 
 ```bash
-# Detect primary languages in the repository
-find . -name "*.go" | head -1 && echo "Go detected"
-find . -name "package.json" | head -1 && echo "Node.js/TypeScript detected"
-find . -name "requirements.txt" -o -name "pyproject.toml" | head -1 && echo "Python detected"
-find . -name "pom.xml" -o -name "build.gradle" | head -1 && echo "Java detected"
-find . -name "Cargo.toml" | head -1 && echo "Rust detected"
-find . -name "*.cs" -o -name "*.csproj" | head -1 && echo ".NET detected"
-find . -name "composer.json" | head -1 && echo "PHP detected"
-```
+echo "=== Discovering project configuration ==="
 
-```
-memory_store_chunk
-  content="Languages detected: [list]. Primary language: [main]. Build tools: [detected tools]"
-  session_id="quality-check-[timestamp]"
-  repository="github.com/org/repo"
-  tags=["quality", "language-detection", "build-tools"]
-```
+# Check for actual configuration files
+LANGUAGE=""
+BUILD_TOOL=""
 
-## 1. Pre-Flight Checks
-
-### Repository Status & Staging
-
-```bash
-# Check repository state
-git status --porcelain
-git diff --cached --name-only
-git branch --show-current
-
-# Verify we're not on main/master without explicit permission
-current_branch=$(git branch --show-current)
-if [[ "$current_branch" == "main" || "$current_branch" == "master" ]]; then
-  echo "⚠️  WARNING: Committing directly to $current_branch"
-  read -p "Continue? (y/N): " confirm
-  [[ $confirm != [yY] ]] && exit 1
-fi
-```
-
-### Dependencies & Environment Check
-
-```bash
-# Check for dependency lock files and sync
+# Node.js/TypeScript
 if [ -f "package.json" ]; then
-  [ ! -f "package-lock.json" ] && [ ! -f "yarn.lock" ] && echo "⚠️  Missing lock file"
-  [ -f "package-lock.json" ] && npm ci --silent || npm install --silent
-  [ -f "yarn.lock" ] && yarn install --silent
+  echo "✓ Found package.json - Node.js/TypeScript project"
+  LANGUAGE="nodejs"
+  BUILD_TOOL="npm"
+  [ -f "yarn.lock" ] && BUILD_TOOL="yarn"
+  [ -f "pnpm-lock.yaml" ] && BUILD_TOOL="pnpm"
 fi
 
-if [ -f "requirements.txt" ]; then
-  pip install -r requirements.txt --quiet --disable-pip-version-check
-fi
-
+# Go
 if [ -f "go.mod" ]; then
-  go mod download && go mod tidy
+  echo "✓ Found go.mod - Go project"
+  LANGUAGE="go"
+  BUILD_TOOL="go"
 fi
 
-if [ -f "pom.xml" ]; then
-  mvn dependency:resolve --quiet
-fi
-
-if [ -f "Cargo.toml" ]; then
-  cargo fetch
-fi
-```
-
-## 2. Language-Specific Quality Pipelines
-
-### Go Quality Pipeline
-
-```bash
-if [ -f "go.mod" ]; then
-  echo "🔍 Running Go quality checks..."
-
-  # Format code
-  echo "  📝 Formatting code..."
-  go fmt ./...
-
-  # Vet analysis
-  echo "  🔍 Running go vet..."
-  go vet ./... || { echo "❌ go vet failed"; exit 1; }
-
-  # Security scan
-  echo "  🔒 Security scan..."
-  if command -v gosec &> /dev/null; then
-    gosec ./... || echo "⚠️  gosec found potential issues"
-  fi
-
-  # Vulnerability check
-  echo "  🛡️  Vulnerability check..."
-  if command -v govulncheck &> /dev/null; then
-    govulncheck ./... || echo "⚠️  Vulnerabilities found"
-  fi
-
-  # Performance anti-patterns
-  echo "  ⚡ Performance check..."
-  if command -v perfsprint &> /dev/null; then
-    perfsprint ./... || echo "⚠️  Performance issues detected"
-  fi
-
-  # Linting
-  echo "  📋 Linting..."
-  if command -v golangci-lint &> /dev/null; then
-    golangci-lint run ./...
-  elif command -v staticcheck &> /dev/null; then
-    staticcheck ./...
-  fi
-
-  # Tests
-  echo "  🧪 Running tests..."
-  go test -race -coverprofile=coverage.out ./... || { echo "❌ Tests failed"; exit 1; }
-
-  # Build verification
-  echo "  🔨 Build verification..."
-  go build ./... || { echo "❌ Build failed"; exit 1; }
-fi
-```
-
-### Node.js/TypeScript Quality Pipeline
-
-```bash
-if [ -f "package.json" ]; then
-  echo "🔍 Running Node.js/TypeScript quality checks..."
-
-  # Type checking
-  if grep -q "typescript" package.json; then
-    echo "  📝 Type checking..."
-    npx tsc --noEmit || { echo "❌ Type check failed"; exit 1; }
-  fi
-
-  # Linting
-  echo "  📋 Linting..."
-  if [ -f ".eslintrc.js" ] || [ -f ".eslintrc.json" ] || grep -q "eslint" package.json; then
-    npx eslint . --fix --max-warnings 0 || { echo "❌ ESLint failed"; exit 1; }
-  fi
-
-  # Formatting
-  echo "  📝 Formatting..."
-  if grep -q "prettier" package.json; then
-    npx prettier --write . --ignore-unknown
-  fi
-
-  # Security audit
-  echo "  🔒 Security audit..."
-  npm audit --audit-level high || echo "⚠️  Security vulnerabilities found"
-
-  # Tests
-  echo "  🧪 Running tests..."
-  if grep -q "\"test\":" package.json; then
-    npm test || { echo "❌ Tests failed"; exit 1; }
-  fi
-
-  # Build verification
-  echo "  🔨 Build verification..."
-  if grep -q "\"build\":" package.json; then
-    npm run build || { echo "❌ Build failed"; exit 1; }
-  fi
-fi
-```
-
-### Python Quality Pipeline
-
-```bash
+# Python
 if [ -f "requirements.txt" ] || [ -f "pyproject.toml" ] || [ -f "setup.py" ]; then
-  echo "🔍 Running Python quality checks..."
-
-  # Code formatting
-  echo "  📝 Formatting..."
-  if command -v black &> /dev/null; then
-    black . --check || black .
-  fi
-
-  if command -v isort &> /dev/null; then
-    isort . --check-only || isort .
-  fi
-
-  # Linting
-  echo "  📋 Linting..."
-  if command -v ruff &> /dev/null; then
-    ruff check . --fix || { echo "❌ Ruff linting failed"; exit 1; }
-  elif command -v flake8 &> /dev/null; then
-    flake8 . || { echo "❌ Flake8 failed"; exit 1; }
-  fi
-
-  # Type checking
-  echo "  📝 Type checking..."
-  if command -v mypy &> /dev/null; then
-    mypy . || echo "⚠️  Type check issues found"
-  fi
-
-  # Security scan
-  echo "  🔒 Security scan..."
-  if command -v bandit &> /dev/null; then
-    bandit -r . || echo "⚠️  Security issues found"
-  fi
-
-  if command -v safety &> /dev/null; then
-    safety check || echo "⚠️  Vulnerable dependencies found"
-  fi
-
-  # Tests
-  echo "  🧪 Running tests..."
-  if command -v pytest &> /dev/null; then
-    pytest --maxfail=1 -q || { echo "❌ Tests failed"; exit 1; }
-  elif [ -f "test_*.py" ] || find . -name "test_*.py" | grep -q .; then
-    python -m unittest discover -s . -p "test_*.py" || { echo "❌ Tests failed"; exit 1; }
-  fi
-fi
-```
-
-### Java Quality Pipeline
-
-```bash
-if [ -f "pom.xml" ] || [ -f "build.gradle" ]; then
-  echo "🔍 Running Java quality checks..."
-
-  if [ -f "pom.xml" ]; then
-    # Maven pipeline
-    echo "  📋 Maven compile & test..."
-    mvn clean compile test || { echo "❌ Maven build/test failed"; exit 1; }
-
-    # Security scan
-    echo "  🔒 Security scan..."
-    mvn org.owasp:dependency-check-maven:check || echo "⚠️  Security vulnerabilities found"
-
-    # Code quality
-    if mvn help:describe -Dplugin=com.github.spotbugs:spotbugs-maven-plugin &> /dev/null; then
-      mvn spotbugs:check || echo "⚠️  SpotBugs found issues"
-    fi
-
-  elif [ -f "build.gradle" ]; then
-    # Gradle pipeline
-    echo "  📋 Gradle build & test..."
-    ./gradlew build test || { echo "❌ Gradle build/test failed"; exit 1; }
-
-    # Security scan
-    echo "  🔒 Security scan..."
-    ./gradlew dependencyCheckAnalyze || echo "⚠️  Security vulnerabilities found"
-  fi
-fi
-```
-
-### Rust Quality Pipeline
-
-```bash
-if [ -f "Cargo.toml" ]; then
-  echo "🔍 Running Rust quality checks..."
-
-  # Format check
-  echo "  📝 Format check..."
-  cargo fmt -- --check || cargo fmt
-
-  # Linting
-  echo "  📋 Clippy linting..."
-  cargo clippy -- -D warnings || { echo "❌ Clippy failed"; exit 1; }
-
-  # Security audit
-  echo "  🔒 Security audit..."
-  if command -v cargo-audit &> /dev/null; then
-    cargo audit || echo "⚠️  Security vulnerabilities found"
-  fi
-
-  # Tests
-  echo "  🧪 Running tests..."
-  cargo test || { echo "❌ Tests failed"; exit 1; }
-
-  # Build verification
-  echo "  🔨 Build verification..."
-  cargo build --release || { echo "❌ Build failed"; exit 1; }
-fi
-```
-
-## 3. Universal Quality Checks
-
-### Git Hooks & Pre-commit Checks
-
-```bash
-# Check for common issues
-echo "🔍 Universal quality checks..."
-
-# Large files check
-echo "  📦 Checking for large files..."
-large_files=$(find . -type f -size +50M -not -path "./.git/*" -not -path "./node_modules/*" -not -path "./target/*" -not -path "./build/*")
-if [ -n "$large_files" ]; then
-  echo "⚠️  Large files detected:"
-  echo "$large_files"
-  read -p "Continue anyway? (y/N): " confirm
-  [[ $confirm != [yY] ]] && exit 1
-fi
-
-# Secrets detection
-echo "  🔐 Scanning for secrets..."
-if command -v gitleaks &> /dev/null; then
-  gitleaks detect --verbose || { echo "❌ Secrets detected"; exit 1; }
-elif command -v truffleHog &> /dev/null; then
-  truffleHog --regex --entropy=False . || echo "⚠️  Potential secrets found"
-else
-  # Basic regex check
-  if grep -r -E "(api[_-]?key|secret|password|token|auth)" --include="*.{js,ts,py,go,java}" . | grep -v -E "(test|spec|example|mock)" | head -5; then
-    echo "⚠️  Potential secrets found in code"
+  echo "✓ Found Python project files"
+  LANGUAGE="python"
+  if [ -f "pyproject.toml" ]; then
+    grep -q "poetry" pyproject.toml && BUILD_TOOL="poetry"
+    grep -q "setuptools" pyproject.toml && BUILD_TOOL="setuptools"
+  else
+    BUILD_TOOL="pip"
   fi
 fi
 
-# TODO/FIXME/HACK check
-echo "  📝 Checking for TODO/FIXME/HACK comments..."
-todo_count=$(grep -r -E "(TODO|FIXME|HACK|XXX)" --include="*.{js,ts,py,go,java,rs,cs}" . | wc -l)
-if [ "$todo_count" -gt 0 ]; then
-  echo "  📋 Found $todo_count TODO/FIXME/HACK comments"
-  if [ "$todo_count" -gt 50 ]; then
-    echo "⚠️  High number of TODO items - consider cleanup"
-  fi
-fi
-```
-
-### Documentation Checks
-
-```bash
-# Documentation completeness
-echo "  📚 Documentation checks..."
-
-# README existence
-[ ! -f "README.md" ] && [ ! -f "README.rst" ] && echo "⚠️  No README file found"
-
-# Changelog for versioned projects
-if [ -f "package.json" ] || [ -f "setup.py" ] || [ -f "Cargo.toml" ]; then
-  [ ! -f "CHANGELOG.md" ] && [ ! -f "CHANGELOG.rst" ] && echo "⚠️  No CHANGELOG found"
-fi
-
-# License file
-[ ! -f "LICENSE" ] && [ ! -f "LICENSE.md" ] && [ ! -f "LICENSE.txt" ] && echo "⚠️  No LICENSE file found"
-```
-
-## 4. Build & Integration Verification
-
-### Final Build Check
-
-```bash
-echo "🔨 Final build verification..."
-
-# Language-specific build commands
-if [ -f "go.mod" ]; then
-  go build ./... || { echo "❌ Go build failed"; exit 1; }
-fi
-
-if [ -f "package.json" ] && grep -q "\"build\":" package.json; then
-  npm run build || { echo "❌ Node.js build failed"; exit 1; }
-fi
-
+# Java
 if [ -f "pom.xml" ]; then
-  mvn compile -q || { echo "❌ Maven compile failed"; exit 1; }
+  echo "✓ Found pom.xml - Maven project"
+  LANGUAGE="java"
+  BUILD_TOOL="maven"
+elif [ -f "build.gradle" ] || [ -f "build.gradle.kts" ]; then
+  echo "✓ Found build.gradle - Gradle project"
+  LANGUAGE="java"
+  BUILD_TOOL="gradle"
 fi
 
-if [ -f "build.gradle" ]; then
-  ./gradlew build -q || { echo "❌ Gradle build failed"; exit 1; }
-fi
-
+# Rust
 if [ -f "Cargo.toml" ]; then
-  cargo build || { echo "❌ Rust build failed"; exit 1; }
+  echo "✓ Found Cargo.toml - Rust project"
+  LANGUAGE="rust"
+  BUILD_TOOL="cargo"
 fi
 
-if [ -f "pyproject.toml" ] && grep -q "build-system" pyproject.toml; then
-  python -m build || echo "⚠️  Python build check failed"
+if [ -z "$LANGUAGE" ]; then
+  echo "❌ NO BUILD CONFIGURATION FOUND"
+  # Try to detect by file extensions
+  find . -name "*.js" -o -name "*.ts" | head -1 && LANGUAGE="javascript"
+  find . -name "*.go" | head -1 && LANGUAGE="go"
+  find . -name "*.py" | head -1 && LANGUAGE="python"
+  find . -name "*.java" | head -1 && LANGUAGE="java"
+  find . -name "*.rs" | head -1 && LANGUAGE="rust"
+fi
+
+echo "Language: $LANGUAGE"
+echo "Build tool: $BUILD_TOOL"
+```
+
+### Step 2: Discover Quality Tool Configurations
+
+```bash
+echo "=== Discovering quality tools in project ==="
+
+# Find linting configurations
+echo "--- Checking for linter configs ---"
+LINTER_CONFIG=""
+FORMATTER_CONFIG=""
+
+# JavaScript/TypeScript linters
+if [ "$LANGUAGE" = "nodejs" ]; then
+  [ -f ".eslintrc.js" ] || [ -f ".eslintrc.json" ] || [ -f ".eslintrc.yml" ] && LINTER_CONFIG="eslint" && echo "✓ Found ESLint config"
+  [ -f ".prettierrc" ] || [ -f ".prettierrc.json" ] || [ -f ".prettierrc.js" ] && FORMATTER_CONFIG="prettier" && echo "✓ Found Prettier config"
+  [ -f "tslint.json" ] && LINTER_CONFIG="tslint" && echo "✓ Found TSLint config (deprecated)"
+  
+  # Check package.json for lint scripts
+  if [ -f "package.json" ]; then
+    grep -q "\"lint\":" package.json && echo "✓ Found lint script in package.json"
+    grep -q "\"format\":" package.json && echo "✓ Found format script in package.json"
+    grep -q "\"test\":" package.json && echo "✓ Found test script in package.json"
+    grep -q "\"build\":" package.json && echo "✓ Found build script in package.json"
+  fi
+fi
+
+# Python linters
+if [ "$LANGUAGE" = "python" ]; then
+  [ -f ".flake8" ] && LINTER_CONFIG="flake8" && echo "✓ Found Flake8 config"
+  [ -f ".pylintrc" ] && LINTER_CONFIG="pylint" && echo "✓ Found Pylint config"
+  [ -f "pyproject.toml" ] && grep -q "\[tool.ruff\]" pyproject.toml && LINTER_CONFIG="ruff" && echo "✓ Found Ruff config"
+  [ -f "pyproject.toml" ] && grep -q "\[tool.black\]" pyproject.toml && FORMATTER_CONFIG="black" && echo "✓ Found Black config"
+  [ -f ".isort.cfg" ] || ([ -f "pyproject.toml" ] && grep -q "\[tool.isort\]" pyproject.toml) && echo "✓ Found isort config"
+  [ -f "mypy.ini" ] || ([ -f "pyproject.toml" ] && grep -q "\[tool.mypy\]" pyproject.toml) && echo "✓ Found mypy config"
+fi
+
+# Go linters
+if [ "$LANGUAGE" = "go" ]; then
+  [ -f ".golangci.yml" ] || [ -f ".golangci.yaml" ] && LINTER_CONFIG="golangci-lint" && echo "✓ Found golangci-lint config"
+  [ -f "Makefile" ] && grep -q "lint\|fmt\|vet" Makefile && echo "✓ Found lint targets in Makefile"
+fi
+
+# Java linters
+if [ "$LANGUAGE" = "java" ]; then
+  [ -f "checkstyle.xml" ] && LINTER_CONFIG="checkstyle" && echo "✓ Found Checkstyle config"
+  [ -f "spotbugs.xml" ] && echo "✓ Found SpotBugs config"
+  [ -f "pom.xml" ] && grep -q "maven-checkstyle-plugin" pom.xml && LINTER_CONFIG="checkstyle" && echo "✓ Found Checkstyle in pom.xml"
+fi
+
+# Rust linters
+if [ "$LANGUAGE" = "rust" ]; then
+  [ -f "rustfmt.toml" ] || [ -f ".rustfmt.toml" ] && FORMATTER_CONFIG="rustfmt" && echo "✓ Found rustfmt config"
+  [ -f "clippy.toml" ] || [ -f ".clippy.toml" ] && LINTER_CONFIG="clippy" && echo "✓ Found clippy config"
+fi
+
+if [ -z "$LINTER_CONFIG" ] && [ -z "$FORMATTER_CONFIG" ]; then
+  echo "❌ NO LINTER OR FORMATTER CONFIGURATION FOUND"
+fi
+
+# Check for pre-commit hooks
+echo "--- Checking for pre-commit hooks ---"
+if [ -f ".pre-commit-config.yaml" ]; then
+  echo "✓ Found pre-commit configuration"
+  PRE_COMMIT_CONFIG="found"
+fi
+
+if [ -d ".git/hooks" ] && [ -f ".git/hooks/pre-commit" ]; then
+  echo "✓ Found git pre-commit hook"
+  GIT_HOOKS="found"
+fi
+
+# Check for CI configuration
+echo "--- Checking for CI configuration ---"
+[ -f ".github/workflows" ] && echo "✓ Found GitHub Actions workflows"
+[ -f ".gitlab-ci.yml" ] && echo "✓ Found GitLab CI config"
+[ -f ".circleci/config.yml" ] && echo "✓ Found CircleCI config"
+[ -f "Jenkinsfile" ] && echo "✓ Found Jenkins pipeline"
+```
+
+## 2. Execute Discovered Quality Tools
+
+### Step 3: Run Only Configured Tools
+
+```bash
+echo "=== Executing discovered quality tools ==="
+
+# Execute based on what we actually found
+if [ -n "$LANGUAGE" ]; then
+  echo "Running quality checks for $LANGUAGE project..."
+  
+  # Check for npm/yarn scripts first (most reliable)
+  if [ -f "package.json" ] && [ "$LANGUAGE" = "nodejs" ]; then
+    echo "--- Checking npm scripts ---"
+    
+    # Run lint if it exists
+    if grep -q "\"lint\":" package.json; then
+      echo "✓ Running npm lint script..."
+      npm run lint 2>&1 | tee lint-output.log || echo "⚠️  Lint errors found"
+      LINT_ERRORS=$(grep -c "error" lint-output.log 2>/dev/null || echo "0")
+      echo "Lint errors: $LINT_ERRORS"
+    else
+      echo "❌ No lint script found in package.json"
+    fi
+    
+    # Run format check if it exists
+    if grep -q "\"format\":" package.json; then
+      echo "✓ Running npm format script..."
+      npm run format 2>&1 || echo "Format check completed"
+    fi
+    
+    # Run tests if they exist
+    if grep -q "\"test\":" package.json; then
+      echo "✓ Running npm test script..."
+      npm test 2>&1 | tee test-output.log || echo "⚠️  Test failures found"
+      TEST_FAILURES=$(grep -c "fail" test-output.log 2>/dev/null || echo "0")
+      echo "Test failures: $TEST_FAILURES"
+      # Extract specific failing tests
+      if [ "$TEST_FAILURES" -gt 0 ]; then
+        grep -A2 -B2 "fail\|FAIL" test-output.log | head -10
+      fi
+    else
+      echo "❌ No test script found in package.json"
+    fi
+    
+    # Run build if it exists
+    if grep -q "\"build\":" package.json; then
+      echo "✓ Running npm build script..."
+      npm run build 2>&1 || echo "⚠️  Build errors found"
+    fi
+  fi
+  
+  # Python with discovered tools
+  if [ "$LANGUAGE" = "python" ]; then
+    # Run discovered Python linter
+    if [ "$LINTER_CONFIG" = "flake8" ] && command -v flake8 &> /dev/null; then
+      echo "✓ Running flake8..."
+      flake8 . 2>&1 | tee flake8-output.log || echo "⚠️  Flake8 errors found"
+      FLAKE8_ERRORS=$(wc -l < flake8-output.log)
+      echo "Flake8 issues: $FLAKE8_ERRORS"
+    elif [ "$LINTER_CONFIG" = "pylint" ] && command -v pylint &> /dev/null; then
+      echo "✓ Running pylint..."
+      find . -name "*.py" -not -path "./venv/*" | xargs pylint 2>&1 | tee pylint-output.log || true
+    elif [ "$LINTER_CONFIG" = "ruff" ] && command -v ruff &> /dev/null; then
+      echo "✓ Running ruff..."
+      ruff check . 2>&1 | tee ruff-output.log || echo "⚠️  Ruff errors found"
+    fi
+    
+    # Run formatter if configured
+    if [ "$FORMATTER_CONFIG" = "black" ] && command -v black &> /dev/null; then
+      echo "✓ Running black --check..."
+      black . --check 2>&1 || echo "⚠️  Code formatting needed"
+    fi
+    
+    # Run pytest if available
+    if command -v pytest &> /dev/null && [ -d "tests" ] || find . -name "test_*.py" | head -1; then
+      echo "✓ Running pytest..."
+      pytest -v 2>&1 | tee pytest-output.log || echo "⚠️  Test failures"
+    fi
+  fi
+  
+  # Go with discovered tools
+  if [ "$LANGUAGE" = "go" ]; then
+    # Always available Go tools
+    echo "✓ Running go fmt..."
+    UNFMT_FILES=$(gofmt -l .)
+    if [ -n "$UNFMT_FILES" ]; then
+      echo "⚠️  Unformatted files:"
+      echo "$UNFMT_FILES"
+    fi
+    
+    echo "✓ Running go vet..."
+    go vet ./... 2>&1 | tee govet-output.log || echo "⚠️  go vet issues found"
+    
+    # Run configured linter
+    if [ "$LINTER_CONFIG" = "golangci-lint" ] && command -v golangci-lint &> /dev/null; then
+      echo "✓ Running golangci-lint..."
+      golangci-lint run 2>&1 | tee golangci-output.log || echo "⚠️  Linting issues found"
+    fi
+    
+    # Run tests
+    echo "✓ Running go test..."
+    go test ./... 2>&1 | tee gotest-output.log || echo "⚠️  Test failures"
+    
+    # Check build
+    echo "✓ Running go build..."
+    go build ./... 2>&1 || echo "⚠️  Build errors"
+  fi
+  
+  # Check for Makefile targets
+  if [ -f "Makefile" ]; then
+    echo "--- Checking Makefile targets ---"
+    if grep -q "^lint:" Makefile; then
+      echo "✓ Running make lint..."
+      make lint 2>&1 || echo "⚠️  Make lint failed"
+    fi
+    if grep -q "^test:" Makefile; then
+      echo "✓ Running make test..."
+      make test 2>&1 || echo "⚠️  Make test failed"
+    fi
+  fi
 fi
 ```
 
-### Performance & Size Checks
+### Step 4: Execute Pre-commit Hooks If Configured
 
 ```bash
-echo "📊 Performance checks..."
+echo "=== Checking pre-commit hooks ==="
 
-# Bundle size check for web projects
-if [ -f "package.json" ] && [ -d "dist" ]; then
-  bundle_size=$(du -sh dist/ | cut -f1)
-  echo "  📦 Bundle size: $bundle_size"
-fi
-
-# Binary size for compiled languages
-if [ -f "go.mod" ]; then
-  go build -o temp_binary . 2>/dev/null && {
-    binary_size=$(ls -lh temp_binary | awk '{print $5}')
-    echo "  📦 Binary size: $binary_size"
-    rm temp_binary
-  }
+if [ -n "$PRE_COMMIT_CONFIG" ] && command -v pre-commit &> /dev/null; then
+  echo "✓ Running pre-commit hooks..."
+  pre-commit run --all-files 2>&1 | tee pre-commit-output.log || echo "⚠️  Pre-commit checks failed"
+  
+  # Extract specific failures
+  PRECOMMIT_FAILURES=$(grep -c "Failed" pre-commit-output.log 2>/dev/null || echo "0")
+  echo "Pre-commit failures: $PRECOMMIT_FAILURES"
+elif [ -n "$GIT_HOOKS" ] && [ -x ".git/hooks/pre-commit" ]; then
+  echo "✓ Running git pre-commit hook..."
+  .git/hooks/pre-commit 2>&1 || echo "⚠️  Git hook failed"
+else
+  echo "❌ No pre-commit hooks configured"
 fi
 ```
 
-## 5. Quality Report & Memory Storage
+## 3. Analyze Quality Check Results
 
-### Generate Quality Report
+### Step 5: Check for Common Issues
 
 ```bash
-echo "📊 Generating quality report..."
+echo "=== Checking for common code issues ==="
 
-# Create quality summary
-cat > docs/code-review/11-QUALITY_REPORT.md << EOF
-# Quality Check Report - $(date)
+# Get actual source files
+SOURCE_FILES=$(find . -name "*.js" -o -name "*.ts" -o -name "*.py" -o -name "*.go" -o -name "*.java" | grep -v node_modules | grep -v venv | head -100)
 
-## Summary
-- ✅ **Build**: Successful
-- ✅ **Tests**: Passed
-- ✅ **Linting**: Clean
-- ✅ **Security**: Scanned
-- ✅ **Dependencies**: Checked
+# Check for large files
+echo "--- Large file check ---"
+LARGE_FILES=$(find . -type f -size +5M -not -path "./.git/*" -not -path "./node_modules/*" -not -path "./venv/*" -not -path "./target/*" 2>/dev/null)
+if [ -n "$LARGE_FILES" ]; then
+  echo "⚠️  LARGE FILES FOUND:"
+  echo "$LARGE_FILES" | while read -r file; do
+    SIZE=$(ls -lh "$file" | awk '{print $5}')
+    echo "  $file ($SIZE)"
+  done
+else
+  echo "✓ No large files found"
+fi
 
-## Details
-- **Languages**: $(echo "$detected_languages" | tr '\n' ', ')
-- **Files changed**: $(git diff --cached --name-only | wc -l)
-- **Tests run**: $(echo "$test_results")
-- **Security issues**: $(echo "$security_issues")
+# Check for potential secrets (basic patterns)
+echo "--- Basic secrets check ---"
+SECRETS_FOUND=0
+for file in $SOURCE_FILES; do
+  if [ -f "$file" ]; then
+    # Look for hardcoded secrets
+    POTENTIAL_SECRETS=$(grep -n "api[_-]key.*=.*['\"]" "$file" 2>/dev/null | grep -v "example\|test\|mock")
+    if [ -n "$POTENTIAL_SECRETS" ]; then
+      echo "⚠️  POTENTIAL SECRET in $file:"
+      echo "$POTENTIAL_SECRETS"
+      SECRETS_FOUND=$((SECRETS_FOUND + 1))
+    fi
+  fi
+done
 
-## Recommendations
-$(echo "$recommendations")
+if [ "$SECRETS_FOUND" -eq 0 ]; then
+  echo "✓ No obvious secrets found"
+fi
+
+# Count TODO/FIXME comments
+echo "--- TODO/FIXME check ---"
+TODO_FILES=$(grep -l "TODO\|FIXME\|HACK\|XXX" $SOURCE_FILES 2>/dev/null)
+TODO_COUNT=$(grep -c "TODO\|FIXME\|HACK\|XXX" $SOURCE_FILES 2>/dev/null | awk -F: '{sum += $2} END {print sum}')
+if [ -n "$TODO_COUNT" ] && [ "$TODO_COUNT" -gt 0 ]; then
+  echo "Found $TODO_COUNT TODO/FIXME comments in $(echo "$TODO_FILES" | wc -l) files"
+  # Show a few examples
+  grep -n "TODO\|FIXME" $SOURCE_FILES 2>/dev/null | head -5
+else
+  echo "✓ No TODO/FIXME comments found"
+fi
+
+# Check documentation existence
+echo "--- Documentation check ---"
+[ -f "README.md" ] || [ -f "README.rst" ] || [ -f "README.txt" ] && echo "✓ README found" || echo "❌ NO README FOUND"
+[ -f "LICENSE" ] || [ -f "LICENSE.md" ] || [ -f "LICENSE.txt" ] && echo "✓ LICENSE found" || echo "❌ NO LICENSE FOUND"
+```
+
+## 4. Generate Evidence-Based Quality Report
+
+### CRITICAL: Document Only Discovered Issues
+
+Create `docs/code-review/12-QUALITY_REPORT.md` with ONLY verified findings:
+
+```bash
+cat > docs/code-review/12-QUALITY_REPORT.md << 'EOF'
+# Pre-commit Quality Analysis - VERIFIED FINDINGS ONLY
+
+## Discovery Summary
+
+**Analysis Date**: $(date)
+**Language Detected**: $LANGUAGE
+**Build Tool**: $BUILD_TOOL
+**Linter Config**: $LINTER_CONFIG
+**Formatter Config**: $FORMATTER_CONFIG
+**Pre-commit Hooks**: $PRE_COMMIT_CONFIG
+
+## Configured Quality Tools
+
+### Build Configuration
+[Only list what was actually found]
+- Language: $LANGUAGE
+- Build tool: $BUILD_TOOL
+- Package manager: [npm/yarn/pip/etc if found]
+
+### Quality Tools Found
+- Linter: $LINTER_CONFIG [or NOT FOUND]
+- Formatter: $FORMATTER_CONFIG [or NOT FOUND]
+- Pre-commit: $PRE_COMMIT_CONFIG [or NOT FOUND]
+- Git hooks: $GIT_HOOKS [or NOT FOUND]
+
+## Quality Check Execution Results
+
+[Only document tools that were actually run]
+
+### Linting Results
+[If linter was run]
+- Tool: [actual linter used]
+- Errors found: [count from output]
+- Files with issues: [list with evidence]
+  - `[file:line]`: [actual error message]
+
+### Test Results
+[If tests were run]
+- Test runner: [actual runner used]
+- Tests run: [count]
+- Failures: [count]
+- Failed tests: [list actual test names]
+
+### Build Results
+[If build was run]
+- Build command: [actual command]
+- Status: [Success/Failed]
+- Errors: [list actual errors if any]
+
+### Format Check Results
+[If formatter was run]
+- Tool: [actual formatter]
+- Files needing formatting: [count and list]
+
+## Common Issues Found
+
+### Large Files
+[Only if found in Step 5]
+- Count: [number]
+- Files: [list with sizes]
+
+### Potential Secrets
+[Only if found in Step 5]
+- Files with hardcoded values: [count]
+- Locations: [file:line references]
+
+### Technical Debt
+[Only if TODO/FIXME found]
+- TODO/FIXME comments: [count]
+- Distribution: [X files]
+
+### Missing Documentation
+[Based on actual checks]
+- README: [Found/Not Found]
+- LICENSE: [Found/Not Found]
+
+## NOT FOUND (Expected Quality Tools)
+
+### Missing Quality Infrastructure
+[Only list if searched but not found]
+- ❌ No linter configuration
+- ❌ No formatter configuration
+- ❌ No pre-commit hooks
+- ❌ No test scripts
+- ❌ No build scripts
+- ❌ No CI/CD configuration
+
+### Missing Documentation
+- ❌ No README file
+- ❌ No LICENSE file
+- ❌ No CONTRIBUTING guide
+
+## Evidence-Based Recommendations
+
+[Only recommendations for actual issues found]
+
+### Immediate Actions
+
+[If no linter found]
+1. **Add Linter Configuration**
+   - Language: $LANGUAGE
+   - Recommended: [appropriate linter for language]
+   - No linting currently configured
+
+[If lint errors found]
+2. **Fix Linting Errors**
+   - Errors found: [count]
+   - Critical files: [list files with most errors]
+   - Run: [actual command to fix]
+
+[If no tests found]
+3. **Add Test Scripts**
+   - No test script in package.json/Makefile
+   - Test files exist but no runner configured
+
+### Quality Gate Status
+
+**OVERALL STATUS**: [PASS with warnings/FAIL]
+
+**Blocking Issues**:
+[Only list actual blocking issues found]
+- [ ] Lint errors: [count]
+- [ ] Test failures: [count]
+- [ ] Build errors: [count]
+- [ ] Potential secrets: [count]
+
+**Warnings**:
+[Non-blocking issues]
+- [ ] Large files: [count]
+- [ ] TODO comments: [count]
+- [ ] Missing documentation: [list]
+
 EOF
 ```
 
-### Store Quality Metrics
-
-```
-# Store quality check results
-memory_store_chunk
-  content="Quality check completed. Languages: [detected]. Issues found: [count]. Build status: [success/fail]. Test coverage: [percentage]. Security scan: [clean/issues found]"
-  session_id="quality-check-[timestamp]"
-  repository="github.com/org/repo"
-  tags=["quality", "pre-commit", "build-status", "security"]
-
-# Store any quality issues for pattern analysis
-memory_store_decision
-  decision="Pre-commit quality gate: [pass/fail]"
-  rationale="Quality checks completed with [X] issues found. Critical: [list]. Warnings: [list]"
-  context="Automated quality pipeline execution before commit"
-  session_id="quality-check-[timestamp]"
-  repository="github.com/org/repo"
-
-# Find similar quality issues across projects
-memory_read find_similar problem="build failures code quality issues" repository="github.com/org/repo"
-
-# Generate insights from quality patterns
-memory_intelligence auto_insights repository="github.com/org/repo" session_id="quality-check-[timestamp]"
-
-# Complete quality check session
-memory_tasks workflow_analyze session_id="quality-check-[timestamp]" repository="github.com/org/repo"
-memory_tasks session_end session_id="quality-check-[timestamp]" repository="github.com/org/repo"
-```
-
-## 6. Execution Summary
+## 5. Store Quality Check Results
 
 ```bash
-echo "✅ Pre-push quality check completed!"
-echo "📊 Summary:"
-echo "  - Languages processed: $detected_languages"
-echo "  - Quality checks: ✅"
-echo "  - Build verification: ✅"
-echo "  - Security scan: ✅"
-echo "  - Ready for commit: ✅"
-echo ""
-echo "🚀 You can now safely push your changes!"
+# Store only actual findings
+memory_store_chunk
+content="Quality check completed. Language: $LANGUAGE. Linter: ${LINTER_CONFIG:-not found}. Tests: ${TEST_FAILURES:-0} failures. Build: ${BUILD_STATUS:-unknown}. Issues found with evidence."
+session_id="quality-check-$(date +%s)"
+repository="github.com/org/repo"
+tags=["quality", "pre-commit", "build-status", "verified"]
+
+memory_store_decision
+decision="Pre-commit quality gate: [pass/fail based on actual results]"
+rationale="Found [X] lint errors, [Y] test failures, [Z] build issues. All findings verified with tool output."
+context="Actual quality tools executed: $LINTER_CONFIG, $FORMATTER_CONFIG"
+session_id="quality-check-$(date +%s)"
+repository="github.com/org/repo"
+
+memory_tasks session_end session_id="quality-check-$(date +%s)" repository="github.com/org/repo"
 ```
 
-This comprehensive quality check ensures consistent code quality across all languages while being flexible enough to adapt to different project requirements.
+## Execution Notes
+
+- **Discovery First**: Only run tools actually configured in the project
+- **Evidence Required**: Every issue must come from actual tool output
+- **No Assumptions**: Don't suggest tools not already in use
+- **Clear Failures**: Document exactly what failed with evidence
+- **Language Agnostic**: Adapt to whatever build system is found
 
 
 ## 📋 Todo List Generation

@@ -18,40 +18,47 @@ This approach enables deeper analysis, better pattern recognition, and more thor
 
 ---
 
-You are a privacy engineer specializing in GDPR, CCPA, and data protection compliance. Conduct privacy audits and identify data protection gaps.
+You are a privacy engineer specializing in GDPR, CCPA, and data protection compliance. Your goal is to discover ACTUAL privacy and data protection issues through systematic code exploration.
+
+## 🚨 CRITICAL: Discovery-First Privacy Analysis
+
+**MANDATORY PROCESS:**
+1. **VERIFY** components and data flows from prompts #1-8
+2. **DISCOVER** actual PII handling in real code
+3. **VALIDATE** every privacy issue with file:line evidence
+4. **ASSESS** actual compliance gaps based on findings
+5. **NEVER** create hypothetical privacy violations without evidence
 
 ## 🔗 Prompt Chaining Rules
 
-**CRITICAL: This is prompt #8 in the analysis chain.**
+**CRITICAL: This is prompt #9 in the analysis chain.**
 
-**Dependency Checking:**
-- **REQUIRED**: First read all previous outputs `docs/code-review/0-CODEBASE_OVERVIEW.md` through `docs/code-review/7-DEPENDENCY_SECURITY_ANALYSIS.md` if they exist
-- Use architectural data flow analysis to identify PII handling points
-- Reference security vulnerabilities that affect data protection
-- Incorporate database schema analysis to find personal data storage
-- Use API contract analysis to identify data collection and sharing points
-- Reference business logic analysis to understand data processing purposes
+**Input Validation:**
+- **REQUIRED**: First read ALL outputs from prompts #1-8 if they exist
+- **VERIFY**: Data models and schemas from previous analyses still exist
+- **USE**: Only verified API endpoints for data collection analysis
+- **ANALYZE**: Actual database fields for PII identification
+- **EXAMINE**: Real authentication patterns from security analysis
 
-**Output Review:**
-- If `docs/code-review/8-DATA_PRIVACY_AUDIT.md` already exists:
-  1. Read and analyze the existing output first
-  2. Cross-reference with architectural, API, database, security, and business changes from prompts 0-7
-  3. Update privacy assessment for new data flows and API endpoints
-  4. Verify compliance status against current system design
-  5. Add privacy considerations for business processes and dependencies
+**Evidence Requirements:**
+- Every PII field MUST have file:line reference
+- Every consent mechanism MUST show actual implementation
+- Every data flow MUST trace through real code
+- Every compliance gap MUST reference missing implementation
+- NO hypothetical GDPR violations without code evidence
 
-**Chain Coordination:**
-- Store findings in memory MCP with tags: `["privacy", "gdpr", "data-protection", "prompt-8"]`
-- Focus privacy analysis on data handling identified in foundational and security analysis
-- Prioritize data protection based on security vulnerabilities and business criticality
-- Create privacy compliance framework for subsequent testing and monitoring
+**Chain Foundation:**
+- Store only verified findings with tags: `["privacy", "compliance", "verified", "prompt-9"]`
+- Document actual PII discovered in code
+- Map real data flows with evidence
+- Create compliance report based on findings only
 
 ## File Organization
 
 **REQUIRED OUTPUT LOCATIONS:**
 
-- `docs/code-review/8-DATA_PRIVACY_AUDIT.md` - Complete privacy compliance assessment
-- `docs/code-review/8-PII_INVENTORY.md` - Personal data classification report
+- `docs/code-review/9-DATA_PRIVACY_AUDIT.md` - Complete privacy compliance assessment
+- `docs/code-review/9-PII_INVENTORY.md` - Personal data classification report (only if PII found)
 
 **IMPORTANT RULES:**
 
@@ -68,370 +75,511 @@ memory_get_context repository="github.com/org/repo"
 memory_read operation="search" options='{"query":"data model user information PII","repository":"github.com/org/repo"}'
 ```
 
-## 1. PII Discovery & Classification
+## 1. Validate Previous Findings First
 
-### Find Personal Data Fields
+### Step 1: Load and Verify Components from Prior Analysis
 
 ```bash
-# Search for common PII patterns
-grep -r "email\|phone\|address\|name" --include="*.{js,ts,go,py,java,sql}" . | head -30
-grep -r "credit.*card\|ssn\|birth.*date\|ip.*address" --include="*.{js,ts,go,py,java,sql}" . | head -20
+# FIRST: Verify previous analyses exist and are valid
+echo "=== Loading verified components from previous prompts ==="
 
-# Find sensitive data categories
-grep -r "health\|medical\|race\|religion\|political" --include="*.{js,ts,go,py,java,sql}" . | head -10
+# Check for database schema analysis to identify PII storage
+if [ -f "docs/code-review/4-DATABASE_OPTIMIZATION.md" ]; then
+  echo "✓ Found database analysis - checking for PII fields"
+  grep -E "CREATE TABLE|Column:|Field:" docs/code-review/4-DATABASE_OPTIMIZATION.md | grep -E "email|phone|name|address"
+fi
 
-# Check data models and schemas
-find . -name "*.model.*" -o -name "*schema*" -o -name "*entity*" | head -10
+# Get API endpoints that might collect PII
+if [ -f "docs/code-review/3-API_CONTRACT_ANALYSIS.md" ]; then
+  echo "✓ Found API analysis - checking data collection endpoints"
+  grep -E "POST|PUT.*user|profile|account" docs/code-review/3-API_CONTRACT_ANALYSIS.md
+fi
 ```
 
-### Data Storage Analysis
+## 2. Discover Actual PII in Code
+
+### Step 2: Find Real Personal Data Fields with Evidence
 
 ```bash
-# Find database schemas
-grep -r "CREATE TABLE\|@Column\|interface.*User" --include="*.{sql,ts,js,go,py}" . | head -20
+echo "=== Searching for actual PII fields in codebase ==="
 
-# Check for encryption
-grep -r "encrypt\|bcrypt\|hash" --include="*.{js,ts,go,py}" . | head -10
+# First, get list of actual source files to analyze
+SOURCE_FILES=$(find . -name "*.js" -o -name "*.ts" -o -name "*.go" -o -name "*.py" -o -name "*.java" | grep -v node_modules | head -100)
+
+# Search for actual PII field definitions
+echo "--- Searching for PII field definitions ---"
+for file in $SOURCE_FILES; do
+  if [ -f "$file" ]; then
+    # Look for actual field definitions containing PII
+    PII_FIELDS=$(grep -n "email\|phone\|address\|name\|birth\|ssn" "$file" 2>/dev/null | \
+                 grep -E ":\s*(string|String|varchar|text)|@Column|field.*=|property")
+    if [ -n "$PII_FIELDS" ]; then
+      echo "FOUND PII FIELDS in $file:"
+      echo "$PII_FIELDS" | head -5
+    fi
+  fi
+done
+
+# Find actual database schema definitions
+echo "--- Searching for database schemas with PII ---"
+SCHEMA_FILES=$(find . -name "*.sql" -o -name "*migration*" -o -name "*schema*" | grep -v node_modules | head -20)
+for file in $SCHEMA_FILES; do
+  if [ -f "$file" ]; then
+    SCHEMA_PII=$(grep -n "CREATE TABLE\|ADD COLUMN" "$file" 2>/dev/null | \
+                 grep -B2 -A2 "email\|phone\|address\|name\|birth")
+    if [ -n "$SCHEMA_PII" ]; then
+      echo "FOUND PII in schema $file:"
+      echo "$SCHEMA_PII"
+    fi
+  fi
+done
+
+# Check for sensitive data categories
+echo "--- Searching for sensitive data categories ---"
+SENSITIVE_DATA=$(grep -n "health\|medical\|race\|religion\|political\|sexual" $SOURCE_FILES 2>/dev/null | \
+                 grep -v "//\|/\*\|console\|log" | head -10)
+if [ -n "$SENSITIVE_DATA" ]; then
+  echo "⚠️  FOUND SENSITIVE DATA CATEGORIES:"
+  echo "$SENSITIVE_DATA"
+fi
 ```
 
-## 2. Data Flow Mapping
-
-### Collection Points
+### Step 3: Verify Data Encryption Status
 
 ```bash
-# Find data input points
-grep -r "req\.body\|request\.form\|input\|payload" --include="*.{js,ts,go,py}" . | grep -B2 -A2 "email\|name\|phone" | head -20
+echo "=== Checking encryption for discovered PII fields ==="
 
-# Find API endpoints collecting data
-grep -r "POST\|PUT\|PATCH" --include="*.{js,ts,go,py}" . | grep -B2 -A2 "user\|profile\|account" | head -20
+# For each PII field found, check if it's encrypted
+echo "--- Checking field-level encryption ---"
+for file in $SOURCE_FILES; do
+  if [ -f "$file" ] && grep -q "email\|password\|ssn" "$file" 2>/dev/null; then
+    # Check if encryption is applied near PII fields
+    ENCRYPTED=$(grep -B5 -A5 "email\|password\|ssn" "$file" 2>/dev/null | \
+                grep "encrypt\|hash\|bcrypt\|crypto")
+    if [ -z "$ENCRYPTED" ]; then
+      UNENCRYPTED=$(grep -n "password.*=\|email.*=\|ssn.*=" "$file" 2>/dev/null | \
+                    grep -v "encrypt\|hash" | head -3)
+      if [ -n "$UNENCRYPTED" ]; then
+        echo "⚠️  UNENCRYPTED PII in $file:"
+        echo "$UNENCRYPTED"
+      fi
+    fi
+  fi
+done
 ```
 
-### Third-Party Sharing
+## 3. Map Actual Data Flows
+
+### Step 4: Trace Real Data Collection Points
 
 ```bash
-# Find external API calls
-grep -r "fetch\|axios\|http\|api\." --include="*.{js,ts,go,py}" . | grep -v "localhost\|internal" | head -20
+echo "=== Mapping actual data collection points ==="
 
-# Find analytics/tracking
-grep -r "analytics\|gtag\|segment\|mixpanel\|facebook\|google" --include="*.{js,ts,html}" . | head -15
+# Find actual form submissions and API endpoints
+echo "--- Data collection endpoints ---"
+for file in $SOURCE_FILES; do
+  if [ -f "$file" ]; then
+    # Look for actual data collection patterns
+    COLLECTION=$(grep -n "req\.body\|request\.form\|request\.data" "$file" 2>/dev/null | \
+                 grep -B2 -A2 "email\|name\|phone\|address")
+    if [ -n "$COLLECTION" ]; then
+      echo "DATA COLLECTION in $file:"
+      echo "$COLLECTION" | head -5
+      # Check if consent is collected nearby
+      CONSENT_CHECK=$(grep -B10 -A10 "req\.body\|request\.form" "$file" 2>/dev/null | \
+                      grep "consent\|agree\|terms")
+      if [ -z "$CONSENT_CHECK" ]; then
+        LINE_NUM=$(echo "$COLLECTION" | head -1 | cut -d: -f2)
+        echo "  ⚠️  NO CONSENT CHECK FOUND near data collection at line $LINE_NUM"
+      else
+        echo "  ✓ Consent mechanism found near data collection"
+      fi
+    fi
+  fi
+done
+
+# Find actual POST/PUT endpoints handling user data
+echo "--- User data modification endpoints ---"
+API_FILES=$(grep -l "router\|app\." $SOURCE_FILES 2>/dev/null | head -20)
+for file in $API_FILES; do
+  if [ -f "$file" ]; then
+    USER_ENDPOINTS=$(grep -n "POST\|PUT\|PATCH" "$file" 2>/dev/null | \
+                     grep "user\|profile\|account" | head -5)
+    if [ -n "$USER_ENDPOINTS" ]; then
+      echo "USER DATA ENDPOINTS in $file:"
+      echo "$USER_ENDPOINTS"
+    fi
+  fi
+done
 ```
 
-## 3. Consent & Legal Basis Check
-
-### Consent Mechanisms
+### Step 5: Identify Third-Party Data Sharing
 
 ```bash
-# Find consent collection
-grep -r "consent\|agree\|terms\|privacy\|opt.*in" --include="*.{js,ts,jsx,tsx,html}" . | head -20
+echo "=== Checking for third-party data sharing ==="
 
-# Check for privacy policy references
-find . -name "*privacy*" -o -name "*terms*" -o -name "*consent*" | head -10
+# Find actual external API calls
+echo "--- External API integrations ---"
+for file in $SOURCE_FILES; do
+  if [ -f "$file" ]; then
+    # Look for external API calls that might share PII
+    EXTERNAL_APIS=$(grep -n "fetch\|axios\|http" "$file" 2>/dev/null | \
+                    grep -v "localhost\|127.0.0.1\|internal" | \
+                    grep -B2 -A2 "email\|name\|user" | head -5)
+    if [ -n "$EXTERNAL_APIS" ]; then
+      echo "EXTERNAL API CALLS in $file:"
+      echo "$EXTERNAL_APIS"
+    fi
+  fi
+done
 
-# Find marketing opt-ins
-grep -r "newsletter\|marketing\|promotional\|subscribe" --include="*.{js,ts,go,py}" . | head -10
+# Find actual analytics/tracking implementations
+echo "--- Analytics and tracking ---"
+TRACKING_FILES=$(grep -l "analytics\|gtag\|segment\|mixpanel\|facebook\|google" $SOURCE_FILES 2>/dev/null)
+if [ -n "$TRACKING_FILES" ]; then
+  echo "⚠️  TRACKING LIBRARIES FOUND in:"
+  for file in $TRACKING_FILES; do
+    echo "  $file"
+    # Check what data is being sent
+    grep -n "track\|identify\|event" "$file" 2>/dev/null | \
+      grep -B2 -A2 "email\|name\|id" | head -3
+  done
+else
+  echo "✓ No third-party tracking libraries detected"
+fi
 ```
 
-## 4. Data Security Assessment
+## 4. Verify Consent Implementation
 
-### Encryption Analysis
+### Step 6: Find Actual Consent Mechanisms
 
 ```bash
-# Check data encryption
-grep -r "password.*=" --include="*.{js,ts,go,py}" . | grep -v "hash\|encrypt" | head -10
+echo "=== Checking for actual consent implementation ==="
 
-# HTTPS enforcement
-grep -r "http://" --include="*.{js,ts,go,py,env}" . | grep -v "localhost" | head -10
+# Find actual consent collection code
+echo "--- Consent collection mechanisms ---"
+CONSENT_FILES=$(grep -l "consent\|agree\|terms\|gdpr" $SOURCE_FILES 2>/dev/null)
+if [ -n "$CONSENT_FILES" ]; then
+  for file in $CONSENT_FILES; do
+    echo "Checking consent in $file:"
+    # Look for actual consent checkboxes or fields
+    CONSENT_IMPL=$(grep -n "checkbox.*consent\|consent.*checkbox\|acceptTerms\|agreeToTerms" "$file" 2>/dev/null | head -3)
+    if [ -n "$CONSENT_IMPL" ]; then
+      echo "  ✓ FOUND CONSENT IMPLEMENTATION:"
+      echo "  $CONSENT_IMPL"
+    fi
+  done
+else
+  echo "❌ NO CONSENT IMPLEMENTATION FOUND"
+fi
 
-# Find unencrypted sensitive data storage
-grep -r "password\|secret\|key.*=" --include="*.{env,config,json}" . | head -10
+# Check for privacy policy files
+echo "--- Privacy policy files ---"
+PRIVACY_FILES=$(find . -name "*privacy*" -o -name "*terms*" -o -name "*gdpr*" | grep -v node_modules | head -10)
+if [ -n "$PRIVACY_FILES" ]; then
+  echo "Found privacy-related files:"
+  echo "$PRIVACY_FILES"
+else
+  echo "❌ NO PRIVACY POLICY FILES FOUND"
+fi
+
+# Check for marketing consent
+echo "--- Marketing consent ---"
+MARKETING_CONSENT=$(grep -n "newsletter\|marketing\|promotional" $SOURCE_FILES 2>/dev/null | \
+                    grep "consent\|opt.*in\|subscribe" | head -5)
+if [ -n "$MARKETING_CONSENT" ]; then
+  echo "MARKETING CONSENT FOUND:"
+  echo "$MARKETING_CONSENT"
+else
+  echo "❌ NO MARKETING CONSENT MECHANISM FOUND"
+fi
 ```
 
-### Access Controls
+## 5. Check Privacy Rights Implementation
+
+### Step 7: Verify GDPR Rights Implementation
 
 ```bash
-# Find authentication checks
-grep -r "auth\|authenticate\|requireAuth" --include="*.{js,ts,go,py}" . | head -15
+echo "=== Checking implementation of privacy rights ==="
 
-# Check for audit logging
-grep -r "audit\|log.*access\|track.*view" --include="*.{js,ts,go,py}" . | head -10
+# Right to access (GDPR Art. 15) - find actual implementation
+echo "--- Right to Access (data export) ---"
+EXPORT_IMPL=$(grep -n "export.*data\|download.*data\|getUserData\|getMyData" $SOURCE_FILES 2>/dev/null | head -10)
+if [ -n "$EXPORT_IMPL" ]; then
+  echo "✓ DATA EXPORT FOUND:"
+  echo "$EXPORT_IMPL"
+else
+  echo "❌ NO DATA EXPORT FUNCTIONALITY FOUND (GDPR Art. 15)"
+fi
+
+# Right to deletion (GDPR Art. 17) - find actual implementation
+echo "--- Right to Deletion ---"
+DELETION_IMPL=$(grep -n "deleteAccount\|deleteUser\|removeUser\|DELETE.*FROM.*user" $SOURCE_FILES 2>/dev/null | head -10)
+if [ -n "$DELETION_IMPL" ]; then
+  echo "✓ ACCOUNT DELETION FOUND:"
+  echo "$DELETION_IMPL"
+  # Check if it's soft delete or hard delete
+  SOFT_DELETE=$(grep -B5 -A5 "deleteAccount\|deleteUser" $SOURCE_FILES 2>/dev/null | \
+                grep "soft.*delete\|deleted_at\|is_deleted\|active.*false" | head -3)
+  if [ -n "$SOFT_DELETE" ]; then
+    echo "  ⚠️  WARNING: Using soft delete - may not comply with GDPR"
+  fi
+else
+  echo "❌ NO ACCOUNT DELETION FUNCTIONALITY FOUND (GDPR Art. 17)"
+fi
+
+# Data portability (GDPR Art. 20) - find actual implementation
+echo "--- Right to Data Portability ---"
+PORTABILITY=$(grep -n "export.*json\|export.*csv\|downloadAs" $SOURCE_FILES 2>/dev/null | \
+               grep -v "log\|debug" | head -5)
+if [ -n "$PORTABILITY" ]; then
+  echo "✓ DATA PORTABILITY FOUND:"
+  echo "$PORTABILITY"
+else
+  echo "❌ NO DATA PORTABILITY FUNCTIONALITY FOUND (GDPR Art. 20)"
+fi
 ```
 
-## 5. Privacy Rights Implementation
-
-### Data Subject Rights
+### Step 8: Check Data Retention Policies
 
 ```bash
-# Right to access (GDPR Art. 15)
-grep -r "export.*data\|download.*data\|get.*my.*data" --include="*.{js,ts,go,py}" . | head -10
+echo "=== Checking data retention implementation ==="
 
-# Right to deletion (GDPR Art. 17)
-grep -r "delete.*account\|delete.*user\|remove.*user" --include="*.{js,ts,go,py}" . | head -10
-
-# Data portability (GDPR Art. 20)
-grep -r "export.*json\|export.*csv\|portable" --include="*.{js,ts,go,py}" . | head -10
-```
-
-### Data Retention
-
-```bash
-# Find deletion/retention logic
-grep -r "DELETE.*FROM.*users\|destroy\|purge" --include="*.{sql,js,ts,go,py}" . | head -10
+# Find actual retention/cleanup logic
+echo "--- Data retention policies ---"
+RETENTION=$(grep -n "retention\|cleanup\|purge\|expire" $SOURCE_FILES 2>/dev/null | \
+             grep -v "cache\|session\|token" | head -10)
+if [ -n "$RETENTION" ]; then
+  echo "RETENTION LOGIC FOUND:"
+  echo "$RETENTION"
+else
+  echo "❌ NO DATA RETENTION POLICIES FOUND"
+fi
 
 # Check for scheduled cleanup jobs
-grep -r "cron\|schedule\|cleanup\|retention" --include="*.{js,ts,go,py,yml}" . | head -10
+echo "--- Scheduled cleanup jobs ---"
+CRON_FILES=$(find . -name "*cron*" -o -name "*schedule*" | grep -v node_modules | head -10)
+for file in $CRON_FILES; do
+  if [ -f "$file" ]; then
+    CLEANUP_JOBS=$(grep -n "user\|data\|cleanup\|retention" "$file" 2>/dev/null | head -5)
+    if [ -n "$CLEANUP_JOBS" ]; then
+      echo "CLEANUP JOBS in $file:"
+      echo "$CLEANUP_JOBS"
+    fi
+  fi
+done
 ```
 
-## 6. Generate Privacy Audit Report
+## 6. Generate Evidence-Based Privacy Report
 
-### Create Compliance Assessment
+### CRITICAL: Document Only Discovered Issues
 
-````bash
-cat > docs/code-review/8-DATA_PRIVACY_AUDIT.md << 'EOF'
-# Privacy Compliance Audit
+Create `docs/code-review/9-DATA_PRIVACY_AUDIT.md` with ONLY verified findings:
+
+````markdown
+# Privacy Compliance Audit - VERIFIED FINDINGS ONLY
+
+## Discovery Summary
+
+**Analysis Date**: [Current date]
+**Files Analyzed**: [Count from $SOURCE_FILES]
+**PII Fields Found**: [Count from Step 2]
+**Consent Mechanisms**: [Count from Step 6]
+**Privacy Rights Implemented**: [Count from Step 7]
 
 ## Executive Summary
-**GDPR Compliance**: [X]%
-**CCPA Compliance**: [X]%
-**Legal Risk Level**: [HIGH/MEDIUM/LOW]
 
-## Critical Findings
+**IMPORTANT**: Compliance assessment based on actual findings only.
 
-### 🔴 IMMEDIATE RISK (Fix This Week)
-- [ ] Collecting PII without consent mechanism
-- [ ] No privacy policy or outdated policy
-- [ ] Storing passwords in plaintext
-- [ ] No data deletion capability
+**GDPR Compliance Status**:
+- PII Collection: [Found/Not Found]
+- Consent Implementation: [Found/Not Found]
+- Data Subject Rights: [X of 3 implemented]
+- Data Protection: [Encrypted/Unencrypted]
 
-### 🟡 HIGH PRIORITY (Fix This Month)
-- [ ] Missing legal basis documentation
-- [ ] Third-party data sharing without DPAs
-- [ ] No encryption for sensitive data
-- [ ] Missing privacy rights implementation
+## Verified PII Discovery
 
-## Personal Data Inventory
+[Only document if found in Step 2]
 
-### PII Fields Found
-| Field | Location | Sensitivity | Encrypted | Consent | Legal Basis |
-|-------|----------|-------------|-----------|---------|-------------|
-| email | users table | High | ❌ | ❌ | Missing |
-| full_name | users table | Medium | ❌ | ❌ | Missing |
-| phone | profiles table | Medium | ❌ | ❌ | Missing |
-| ip_address | sessions table | Low | ❌ | ❌ | Missing |
-| payment_data | payments table | Critical | ⚠️ Partial | ❌ | Contract |
+### Personal Data Fields Found
 
-### Data Flow Summary
-**Collection** → **Storage** → **Processing** → **Sharing**
-- Web forms (no consent) → Database (unencrypted) → Analytics → Third parties
+**Database Schema PII**:
+[List actual fields found with file:line]
+
+**Code-Level PII Fields**:
+[List actual fields found with file:line]
+
+### Sensitive Data Categories
+[Only if found in Step 2]
+- Health/Medical data: [Found at file:line or NOT FOUND]
+- Racial/Ethnic data: [Found at file:line or NOT FOUND]
+- Religious/Political data: [Found at file:line or NOT FOUND]
+
+### Unencrypted PII
+[Only if found in Step 3]
+**WARNING**: The following PII fields are stored unencrypted:
+- `[field]` at `[file:line]`
+
+## Data Flow Analysis
+
+[Only document if found in Steps 4-5]
+
+### Data Collection Points
+**Endpoints collecting PII without consent**:
+[List actual endpoints found]
 
 ### Third-Party Data Sharing
-- Google Analytics: User behavior, IP addresses (no DPA)
-- Email service: Email addresses, names (no DPA)
-- Payment processor: Financial data (DPA signed)
+[Only if found in Step 5]
+**External APIs receiving PII**:
+- `[file:line]`: Sending [data] to [service]
 
-## Compliance Gaps
+**Analytics/Tracking**:
+[List actual tracking implementations found]
 
-### GDPR Requirements
-- [ ] Art. 6: Legal basis (0% documented)
-- [ ] Art. 7: Consent (not implemented)
-- [ ] Art. 13-14: Privacy notices (outdated)
-- [ ] Art. 15: Right to access (manual only)
-- [ ] Art. 17: Right to deletion (not implemented)
-- [ ] Art. 20: Data portability (not implemented)
-- [ ] Art. 25: Privacy by design (not implemented)
-- [ ] Art. 32: Security measures (partial)
+## Consent Implementation
 
-### CCPA Requirements
-- [ ] Privacy notice (incomplete)
-- [ ] Right to know (not implemented)
-- [ ] Right to delete (not implemented)
-- [ ] Right to opt-out (not implemented)
-- [ ] Non-discrimination (compliant)
+[Only document based on findings from Step 6]
 
-## Remediation Plan
+### Consent Mechanisms
+- Consent checkboxes: [Found/NOT FOUND]
+- Privacy policy: [Found/NOT FOUND]
+- Marketing consent: [Found/NOT FOUND]
 
-### Phase 1: Stop Legal Violations (Week 1)
-1. **Implement Consent Collection**
-   ```typescript
-   // Add to signup form
-   <ConsentCheckbox
-     required
-     label="I agree to the Privacy Policy"
-   />
-   <ConsentCheckbox
-     optional
-     label="Send me marketing emails"
-   />
+### Missing Consent
+[List data collection points without consent]
+
+## Privacy Rights Implementation
+
+[Only document based on findings from Step 7]
+
+### GDPR Rights Status
+| Right | Article | Status | Evidence |
+|-------|---------|--------|----------|
+| Access | Art. 15 | [✓/❌] | [File:line or NOT FOUND] |
+| Deletion | Art. 17 | [✓/❌] | [File:line or NOT FOUND] |
+| Portability | Art. 20 | [✓/❌] | [File:line or NOT FOUND] |
+
+### Data Retention
+- Retention policy: [Found/NOT FOUND]
+- Automated cleanup: [Found/NOT FOUND]
+
+## NOT FOUND (Compliance Gaps)
+
+### Missing GDPR Requirements
+- ❌ No consent mechanism for PII collection
+- ❌ No data export functionality (Art. 15)
+- ❌ No account deletion (Art. 17)
+- ❌ No data portability (Art. 20)
+- ❌ No data retention policy
+- ❌ No privacy policy file
+
+### Missing Security Controls
+- ❌ Unencrypted PII storage
+- ❌ No audit logging for data access
+- ❌ No data minimization practices
+
+## Compliance Recommendations
+
+[Only include recommendations for actual issues found]
+
+### Immediate Actions (Legal Risk)
+
+[If PII collection without consent found]
+1. **Implement consent mechanism**
+   - Files collecting PII: [list actual files]
+   - Add consent checkboxes before data collection
+
+[If unencrypted PII found]
+2. **Encrypt PII fields**
+   - Unencrypted fields: [list actual fields]
+   - Implement field-level encryption
+
+[If no privacy rights found]
+3. **Implement GDPR rights**
+   - Missing: [list actual missing rights]
+   - Priority: Right to deletion (Art. 17)
+
+### Validation Before Report
+
+```bash
+echo "=== Validating privacy findings ==="
+
+# Count actual findings
+PII_COUNT=$(grep -c "FOUND PII" privacy-scan.log 2>/dev/null || echo "0")
+CONSENT_COUNT=$(grep -c "CONSENT IMPLEMENTATION" privacy-scan.log 2>/dev/null || echo "0")
+UNENCRYPTED_COUNT=$(grep -c "UNENCRYPTED PII" privacy-scan.log 2>/dev/null || echo "0")
+RIGHTS_COUNT=$(grep -c "FOUND:" privacy-scan.log 2>/dev/null | grep -E "EXPORT|DELETION|PORTABILITY" | wc -l || echo "0")
+
+echo "Documented findings:"
+echo "- PII fields: $PII_COUNT"
+echo "- Consent mechanisms: $CONSENT_COUNT"
+echo "- Unencrypted PII: $UNENCRYPTED_COUNT"
+echo "- Privacy rights implemented: $RIGHTS_COUNT"
+```
+
+### Documentation Checklist
+
+Before saving the privacy analysis:
+- [ ] Every PII field has file:line evidence
+- [ ] Every consent gap references actual endpoints
+- [ ] All compliance issues based on discovered code
+- [ ] No hypothetical violations included
+- [ ] "NOT FOUND" section lists expected but missing features
+
 ````
 
-2. **Remove Non-Consented Tracking**
+## 7. Create PII Inventory (Only If Found)
 
-   - Disable Google Analytics until consent implemented
-   - Remove Facebook Pixel/other trackers
-   - Stop marketing emails to non-consented users
+### Only Create If PII Was Discovered
 
-3. **Encrypt Sensitive Data**
-   ```sql
-   -- Add encryption for PII
-   ALTER TABLE users ADD COLUMN email_encrypted TEXT;
-   ALTER TABLE users ADD COLUMN name_encrypted TEXT;
-   ```
-
-### Phase 2: Rights Implementation (Week 2-3)
-
-1. **Data Export API**
-
-   ```typescript
-   // GET /api/privacy/my-data
-   async function exportUserData(userId: string) {
-     return {
-       profile: await User.findById(userId),
-       orders: await Order.findByUser(userId),
-       sessions: await Session.findByUser(userId),
-     };
-   }
-   ```
-
-2. **Data Deletion API**
-   ```typescript
-   // DELETE /api/privacy/delete-account
-   async function deleteUserAccount(userId: string) {
-     await User.destroy({ where: { id: userId } });
-     await Order.anonymize({ where: { userId } });
-     // Queue third-party deletions
-   }
-   ```
-
-### Phase 3: Full Compliance (Month 2)
-
-1. **Privacy Policy Update**
-
-   - List all data collected and purposes
-   - Explain legal basis for each use
-   - Detail third-party sharing
-   - Include contact information
-
-2. **Data Protection Agreements**
-
-   - Sign DPAs with all processors
-   - Audit third-party compliance
-   - Document transfer mechanisms
-
-3. **Automated Compliance**
-   ```typescript
-   // Daily compliance checks
-   async function checkCompliance() {
-     const metrics = {
-       consentRate: await getConsentRate(),
-       encryptionCoverage: await getEncryptionCoverage(),
-       deletionRequests: await getPendingDeletions(),
-     };
-     return metrics;
-   }
-   ```
-
-## Implementation Examples
-
-### Consent Management
-
-```typescript
-interface ConsentRecord {
-  userId: string;
-  type: "terms" | "privacy" | "marketing";
-  granted: boolean;
-  timestamp: Date;
-  ipAddress: string;
-}
-
-class ConsentService {
-  async recordConsent(consent: ConsentRecord): Promise<void> {
-    await ConsentRecord.create(consent);
-  }
-
-  async getConsents(userId: string): Promise<ConsentRecord[]> {
-    return ConsentRecord.findAll({ where: { userId } });
-  }
-}
-```
-
-### Data Encryption
-
-```typescript
-import { encrypt, decrypt } from "./encryption";
-
-class UserService {
-  async createUser(userData: UserData) {
-    return User.create({
-      ...userData,
-      email: encrypt(userData.email),
-      name: encrypt(userData.name),
-    });
-  }
-
-  async getUser(id: string) {
-    const user = await User.findById(id);
-    return {
-      ...user,
-      email: decrypt(user.email),
-      name: decrypt(user.name),
-    };
-  }
-}
-```
-
-## Cost & Risk Analysis
-
-- **Potential GDPR Fine**: Up to 4% of revenue (€20M max)
-- **Implementation Cost**: ~$50K for full compliance
-- **Timeline**: 6-8 weeks for basic compliance
-- **Ongoing Cost**: ~$10K/year for maintenance
-
-## Next Steps
-
-1. 🚨 **Immediate**: Stop non-consented data collection
-2. 📋 **This Week**: Implement basic consent mechanism
-3. 🔒 **This Month**: Encrypt all PII and implement privacy rights
-4. ✅ **This Quarter**: Achieve full GDPR/CCPA compliance
-   EOF
-
-# Create PII inventory
-
-cat > docs/code-review/8-PII_INVENTORY.md << 'EOF'
-
-# Personal Data Inventory
+```bash
+# Only create PII inventory if personal data was found
+if [ "$PII_COUNT" -gt 0 ]; then
+  cat > docs/code-review/9-PII_INVENTORY.md << 'EOF'
+# Personal Data Inventory - DISCOVERED PII ONLY
 
 ## Data Classification Summary
 
-- **Personal Data Fields**: [count] found
-- **Sensitive Data Fields**: [count] found
-- **Encrypted Fields**: [count] of [total]
-- **Consented Collection**: [count] of [total]
+**Discovery Date**: [Date]
+**PII Fields Found**: [Count]
+**Sensitive Categories**: [Count]
 
-## Field-by-Field Analysis
+## Discovered Personal Data
 
-[Detailed breakdown of each PII field with location, sensitivity, and compliance status]
+[Only list actual PII found with file:line evidence]
 
-## Recommendations
+### Database Schema PII
+| Field | Table/File | Type | Evidence |
+|-------|------------|------|----------|
+| [Only actual fields found] |
 
-1. Encrypt all PII at database level
-2. Implement granular consent collection
-3. Document legal basis for all processing
-4. Add automated data retention policies
-   EOF
+### Code-Level PII
+| Field | File:Line | Context | Encrypted |
+|-------|-----------|---------|-----------|
+| [Only actual fields found] |
 
+### Data Flow Mapping
+[Only actual flows discovered]
+- Collection: [Actual endpoints found]
+- Storage: [Actual database/files]
+- Processing: [Actual usage found]
+- Sharing: [Actual third parties found]
+EOF
+fi
 ```
 
 ```
 
 memory_store_chunk
-content="Privacy audit completed. PII fields: [count]. GDPR compliance: [X]%. Critical gaps: [list]. Legal risk: [level]"
+content="Privacy compliance analysis completed. PII fields: [count]. Consent mechanisms: [count]. GDPR rights implemented: [count]. All findings verified with file:line evidence."
 session_id="privacy-gdpr-$(date +%s)"
 repository="github.com/org/repo"
-tags=["privacy", "gdpr", "ccpa", "pii", "compliance"]
+tags=["privacy", "gdpr", "compliance", "pii", "verified"]
 
 memory_store_decision
-decision="Privacy compliance status: [compliant/partial/non-compliant]"
-rationale="Found [X] PII fields, [Y] consent gaps, [Z] security issues. Legal basis missing for [%] of processing"
-context="Critical actions needed: [immediate fixes required]"
+decision="Privacy compliance status: [compliant|at-risk|non-compliant]"
+rationale="Found [X] PII fields, [Y] without consent, [Z] unencrypted. Missing [count] GDPR rights."
+context="Most critical issues: [specific privacy violations requiring immediate attention]"
 session_id="privacy-gdpr-$(date +%s)"
 repository="github.com/org/repo"
 
@@ -441,46 +589,65 @@ memory_tasks session_end session_id="privacy-gdpr-$(date +%s)" repository="githu
 
 ## Execution Notes
 
-- **Legal Risk Focus**: Prioritize compliance violations with potential fines
-- **PII Discovery**: Systematically find all personal data collection and storage
-- **Consent Assessment**: Check all data collection has proper legal basis
-- **Security Review**: Ensure encryption and access controls for sensitive data
-- **Rights Implementation**: Verify GDPR/CCPA privacy rights are available to users
-```
-
+- **Legal Priority**: Focus on consent and data protection first
+- **Evidence Required**: Every PII field must have file:line reference
+- **No Assumptions**: Document only actual implementations found
+- **Missing Controls**: Clearly document expected but missing privacy features
+- **Compliance Gaps**: Based on discovered issues, not theoretical requirements
 
 ## 📋 Todo List Generation
 
 **REQUIRED**: Generate or append to `docs/code-review/code-review-todo-list.md` with findings from this analysis.
 
-### Todo Entry Format
+### Todo Entry Format - EVIDENCE-BASED ONLY
 ```markdown
 ## Privacy Compliance Analysis Findings
 
-### 🔴 CRITICAL (Immediate Action Required)
-- [ ] **[Task Title]**: [Brief description]
-  - **Impact**: [High/Medium/Low]
-  - **Effort**: [Time estimate]
-  - **Files**: `[affected files]`
-  - **Details**: [Additional context if needed]
+**Analysis Date**: [Date]
+**PII Fields Found**: [Count with file:line evidence]
+**Consent Mechanisms**: [Found/Not Found]
+**GDPR Rights Implemented**: [X of 3]
+**Legal Risk**: [High/Medium/Low based on findings]
 
-### 🟡 HIGH (Sprint Priority)
-- [ ] **[Task Title]**: [Brief description]
-  - **Impact**: [High/Medium/Low]
-  - **Effort**: [Time estimate]
-  - **Files**: `[affected files]`
+### 🔴 CRITICAL (Immediate Legal Risk)
+[Only if PII collection without consent found]
+- [ ] **Implement consent for [endpoint]**: Collecting PII at `[file:line]`
+  - **Evidence**: No consent mechanism found near data collection
+  - **Legal Risk**: GDPR violation - up to 4% revenue fine
+  - **Effort**: 4-8 hours
+  - **Solution**: Add consent checkbox before collection
 
-### 🟢 MEDIUM (Backlog)
-- [ ] **[Task Title]**: [Brief description]
-  - **Impact**: [High/Medium/Low]
-  - **Effort**: [Time estimate]
+### 🟡 HIGH (Privacy Rights)
+[Only for verified missing rights]
+- [ ] **Implement data deletion (Art. 17)**: Not found in codebase
+  - **Evidence**: No deleteUser/deleteAccount functionality
+  - **Legal Risk**: GDPR non-compliance
+  - **Effort**: 8 hours
+  - **Files**: Need to add deletion endpoint
 
-### 🔵 LOW (Future Consideration)
-- [ ] **[Task Title]**: [Brief description]
+### 🟢 MEDIUM (Data Protection)
+[Only for actual findings]
+- [ ] **Encrypt [field] in [table]**: Unencrypted PII at `[file:line]`
+  - **Evidence**: Password/email stored in plain text
+  - **Risk**: Data breach liability
+  - **Effort**: 4 hours per field
+
+### 🔵 LOW (Future Compliance)
+[Minor privacy issues with evidence]
+
+### ❌ MISSING PRIVACY FEATURES
+- [ ] **No privacy policy file**
+  - **Searched**: /privacy, /terms, /legal directories
+  - **Risk**: Transparency violation
+- [ ] **No consent management**
+  - **Searched**: All data collection points
+  - **Risk**: Invalid legal basis for processing
+
+### Implementation Rules
+1. ONLY create todos for PII actually found in code
+2. EVERY violation must reference the discovery scan
+3. EVERY missing right must note where it was searched
+4. NO hypothetical GDPR articles without evidence
+5. Include specific remediation steps
+6. Tag with `#privacy #gdpr #compliance #verified`
 ```
-
-### Implementation
-1. If `code-review-todo-list.md` doesn't exist, create it with proper header
-2. Append findings under appropriate priority sections
-3. Include specific file references and effort estimates
-4. Tag with analysis type for filtering (e.g., `#security`, `#performance`, `#api`)

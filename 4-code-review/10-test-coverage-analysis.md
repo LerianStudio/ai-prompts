@@ -18,34 +18,40 @@ This approach enables deeper analysis, better pattern recognition, and more thor
 
 ---
 
-You are a test engineer specializing in coverage analysis and test quality assessment. Identify testing gaps and generate test improvement recommendations.
+You are a test engineer specializing in coverage analysis and test quality assessment. Your goal is to discover ACTUAL test coverage gaps and quality issues through systematic exploration.
+
+## 🚨 CRITICAL: Discovery-First Test Analysis
+
+**MANDATORY PROCESS:**
+1. **VERIFY** components and critical paths from prompts #1-9
+2. **DISCOVER** actual test files and frameworks in use
+3. **MEASURE** real coverage if tools are available
+4. **IDENTIFY** actual untested components with evidence
+5. **NEVER** create hypothetical test gaps without verification
 
 ## 🔗 Prompt Chaining Rules
 
-**CRITICAL: This is prompt #9 in the analysis chain.**
+**CRITICAL: This is prompt #10 in the analysis chain.**
 
-**Dependency Checking:**
-- **REQUIRED**: First read all previous outputs `docs/code-review/0-CODEBASE_OVERVIEW.md` through `docs/code-review/8-PRIVACY_COMPLIANCE_ANALYSIS.md` if they exist
-- Use architectural components to identify critical testing paths
-- Reference security vulnerabilities to prioritize security testing
-- Incorporate API contracts to generate contract tests
-- Use database analysis to create data integrity tests
-- Reference business improvements to test performance optimizations
-- Use privacy requirements to generate data protection tests
+**Input Validation:**
+- **REQUIRED**: First read ALL outputs from prompts #1-9 if they exist
+- **VERIFY**: Components from architecture analysis still exist
+- **USE**: Security vulnerabilities found to identify untested risks
+- **CHECK**: API endpoints from prompt #3 for test coverage
+- **EXAMINE**: Critical business logic from prompt #6
 
-**Output Review:**
-- If `docs/code-review/9-TEST_ANALYSIS.md` already exists:
-  1. Read and analyze the existing output first
-  2. Cross-reference with all foundational analysis findings from prompts 0-8
-  3. Update test coverage analysis for new components and vulnerabilities
-  4. Verify test recommendations align with current API contracts and data flows
-  5. Add test considerations for privacy compliance and dependency security
+**Evidence Requirements:**
+- Every coverage gap MUST reference actual missing test files
+- Every test quality issue MUST show file:line evidence
+- Every metric MUST come from actual test runs or analysis
+- Every recommendation MUST address a discovered gap
+- NO example test code without identifying actual gaps first
 
-**Chain Coordination:**
-- Store findings in memory MCP with tags: `["testing", "coverage", "quality", "prompt-9"]`
-- Focus test analysis on critical components identified throughout the analysis chain
-- Prioritize security, privacy, and performance testing based on comprehensive findings
-- Create comprehensive test strategy that validates architectural, API, database, and compliance requirements
+**Chain Foundation:**
+- Store only verified findings with tags: `["testing", "coverage", "verified", "prompt-10"]`
+- Document actual test framework and organization
+- Map real coverage gaps with evidence
+- Create test strategy based on discovered issues only
 
 ## File Organization
 
@@ -69,319 +75,442 @@ memory_get_context repository="github.com/org/repo"
 memory_read operation="search" options='{"query":"architecture components endpoints","repository":"github.com/org/repo"}'
 ```
 
-## 1. Test Framework Detection
+## 1. Validate Previous Findings First
 
-### Identify Testing Setup
+### Step 1: Load Critical Components from Prior Analysis
 
 ```bash
-# Find test files and frameworks
-find . -name "*.test.*" -o -name "*.spec.*" -o -name "*_test.*" | head -20
-find . -name "jest.config.*" -o -name "go.mod" -o -name "pytest.ini" | head -5
+# FIRST: Identify critical components that need testing
+echo "=== Loading critical components from previous analyses ==="
 
-# Check test organization
-grep -r "describe\|it\|test\|expect\|assert" --include="*.{test,spec}.*" . | head -20
+# Get security-critical components
+if [ -f "docs/code-review/7-SECURITY_ANALYSIS.md" ]; then
+  echo "✓ Found security analysis - identifying critical paths"
+  grep -E "VULN-|authentication|authorization|encryption" docs/code-review/7-SECURITY_ANALYSIS.md | grep -E "file:|File:"
+fi
+
+# Get API endpoints that need testing
+if [ -f "docs/code-review/3-API_CONTRACT_ANALYSIS.md" ]; then
+  echo "✓ Found API analysis - checking endpoint coverage"
+  grep -E "Endpoint:|Path:|File:" docs/code-review/3-API_CONTRACT_ANALYSIS.md
+fi
+
+# Get business-critical logic
+if [ -f "docs/code-review/6-BUSINESS_ANALYSIS.md" ]; then
+  echo "✓ Found business analysis - identifying critical features"
+  grep -E "CRUD|payment|order|user" docs/code-review/6-BUSINESS_ANALYSIS.md | grep -E "file:|File:"
+fi
 ```
 
-## 2. Coverage Analysis
+## 2. Discover Actual Test Framework
 
-### Run Coverage Tools
+### Step 2: Find Real Test Setup and Organization
 
 ```bash
-# Language-specific coverage
-npm test -- --coverage --json 2>/dev/null || echo "No npm tests"
-go test -cover ./... 2>/dev/null || echo "No go tests"
-pytest --cov --cov-report=json 2>/dev/null || echo "No python tests"
+echo "=== Discovering actual test framework and files ==="
+
+# Find test files by extension
+echo "--- Searching for test files ---"
+TEST_FILES=$(find . -name "*.test.*" -o -name "*.spec.*" -o -name "*_test.*" -o -name "test_*.py" | grep -v node_modules | head -50)
+TEST_COUNT=$(echo "$TEST_FILES" | grep -v "^$" | wc -l)
+echo "Found $TEST_COUNT test files"
+
+if [ "$TEST_COUNT" -eq 0 ]; then
+  echo "❌ NO TEST FILES FOUND"
+  echo "Searched for: *.test.*, *.spec.*, *_test.*, test_*.py"
+else
+  echo "Test file patterns found:"
+  echo "$TEST_FILES" | head -10
+fi
+
+# Detect testing framework
+echo "--- Detecting test framework ---"
+if [ -f "package.json" ] && grep -q "jest\|mocha\|jasmine\|vitest" package.json 2>/dev/null; then
+  echo "✓ JavaScript test framework found:"
+  grep -E "jest|mocha|jasmine|vitest" package.json
+elif [ -f "go.mod" ]; then
+  echo "✓ Go testing framework (built-in)"
+  # Check for testing libraries
+  grep -E "testify|gomega|ginkgo" go.mod 2>/dev/null || echo "  Using standard library testing"
+elif [ -f "requirements.txt" ] || [ -f "Pipfile" ]; then
+  echo "✓ Python test framework:"
+  grep -E "pytest|unittest|nose" requirements.txt Pipfile 2>/dev/null || echo "  No test framework found in dependencies"
+else
+  echo "❌ NO TEST FRAMEWORK DETECTED"
+fi
+
+# Check test directory structure
+echo "--- Test organization ---"
+if [ -d "test" ] || [ -d "tests" ] || [ -d "__tests__" ] || [ -d "spec" ]; then
+  echo "✓ Dedicated test directory found:"
+  ls -la test tests __tests__ spec 2>/dev/null | grep -E "^d" | head -5
+else
+  echo "⚠️  No dedicated test directory - tests may be colocated with source"
+fi
 ```
 
-### Critical Path Coverage Check
+## 3. Measure Actual Coverage
+
+### Step 3: Check for Existing Coverage Data
 
 ```bash
-# Find untested critical files
-find . -name "*.{js,ts,go,py}" ! -path "*/test*" ! -name "*test*" | while read file; do
-  basename=$(basename "$file" | cut -d. -f1)
-  if ! find . -name "*test*" -exec grep -l "$basename" {} \; | grep -q .; then
-    echo "UNTESTED: $file"
+echo "=== Checking for coverage data and tools ==="
+
+# Check for existing coverage reports
+echo "--- Looking for coverage reports ---"
+COVERAGE_FILES=$(find . -name "coverage*" -o -name "*cov*" -o -name "lcov*" | grep -v node_modules | head -10)
+if [ -n "$COVERAGE_FILES" ]; then
+  echo "✓ Found coverage files:"
+  echo "$COVERAGE_FILES"
+  
+  # Try to extract coverage percentage
+  for file in $COVERAGE_FILES; do
+    if [ -f "$file" ]; then
+      # Check different coverage report formats
+      if grep -q "percentage" "$file" 2>/dev/null; then
+        echo "Coverage from $file:"
+        grep -E "percentage|total.*[0-9]+%" "$file" 2>/dev/null | head -5
+      elif [ -f "coverage/coverage-summary.json" ]; then
+        echo "Coverage summary:"
+        jq '.total.lines.pct' coverage/coverage-summary.json 2>/dev/null || echo "Could not parse coverage"
+      fi
+    fi
+  done
+else
+  echo "❌ NO COVERAGE REPORTS FOUND"
+  
+  # Check if coverage tools are configured
+  echo "--- Checking for coverage configuration ---"
+  if [ -f "package.json" ] && grep -q "coverage" package.json 2>/dev/null; then
+    echo "⚠️  Coverage configured in package.json but no reports found"
   fi
-done | head -20
-
-# Find authentication/payment code without tests
-grep -r "auth\|login\|payment\|charge" --include="*.{js,ts,go,py}" . | grep -v test | head -10
+  if [ -f ".coveragerc" ] || [ -f "pytest.ini" ] && grep -q "cov" pytest.ini 2>/dev/null; then
+    echo "⚠️  Python coverage configured but no reports found"
+  fi
+fi
 ```
 
-## 3. Test Quality Issues
-
-### Test Smells Detection
+### Step 4: Identify Untested Components
 
 ```bash
-# Find problematic test patterns
-grep -r "skip\|todo\|xit\|pending" --include="*.{test,spec}.*" . | head -20
-grep -r "sleep\|setTimeout\|wait" --include="*.{test,spec}.*" . | head -10
-grep -r "Math.random\|Date.now" --include="*.{test,spec}.*" . | head -10
+echo "=== Finding untested critical components ==="
 
-# Find tests without assertions
-grep -r -A10 "it(\|test(" --include="*.{test,spec}.*" . | grep -B5 -A5 "});" | grep -L "expect\|assert" | head -10
+# Get list of source files
+SOURCE_FILES=$(find . -name "*.js" -o -name "*.ts" -o -name "*.go" -o -name "*.py" | grep -v test | grep -v node_modules | head -100)
+
+# For each critical component from previous analyses, check if it has tests
+echo "--- Checking test coverage for critical components ---"
+
+# Function to check if a source file has corresponding tests
+check_test_coverage() {
+  local source_file=$1
+  local basename=$(basename "$source_file" | sed 's/\.[^.]*$//')
+  local dirname=$(dirname "$source_file")
+  
+  # Look for test files that might test this component
+  TEST_FOUND=$(find . -name "*test*" -o -name "*spec*" | xargs grep -l "$basename" 2>/dev/null | head -1)
+  
+  if [ -z "$TEST_FOUND" ]; then
+    # Try alternative search - look for imports/requires of the file
+    local import_name=$(echo "$source_file" | sed 's/^\.\///' | sed 's/\.[^.]*$//')
+    TEST_FOUND=$(grep -r "import.*$import_name\|require.*$import_name" $TEST_FILES 2>/dev/null | head -1)
+  fi
+  
+  if [ -z "$TEST_FOUND" ]; then
+    echo "❌ UNTESTED: $source_file"
+    return 1
+  else
+    echo "✓ TESTED: $source_file (by $(echo $TEST_FOUND | cut -d: -f1))"
+    return 0
+  fi
+}
+
+# Check critical files identified in previous analyses
+echo "--- Authentication/Security components ---"
+AUTH_FILES=$(grep -l "auth\|login\|jwt\|session" $SOURCE_FILES 2>/dev/null | head -10)
+for file in $AUTH_FILES; do
+  check_test_coverage "$file"
+done
+
+echo "--- Payment/Financial components ---"
+PAYMENT_FILES=$(grep -l "payment\|charge\|billing\|stripe" $SOURCE_FILES 2>/dev/null | head -10)
+for file in $PAYMENT_FILES; do
+  check_test_coverage "$file"
+done
+
+echo "--- API endpoints ---"
+API_FILES=$(grep -l "router\|route\|endpoint\|controller" $SOURCE_FILES 2>/dev/null | head -10)
+for file in $API_FILES; do
+  check_test_coverage "$file"
+done
 ```
 
-### Test Performance
+## 4. Analyze Test Quality
+
+### Step 5: Detect Actual Test Quality Issues
 
 ```bash
-# Find slow tests (if framework supports timing)
-npm test -- --verbose 2>&1 | grep -E "([0-9]+\.[0-9]+s)" | head -10
-go test -v ./... 2>&1 | grep -E "([0-9]+\.[0-9]+s)" | head -10
+echo "=== Analyzing test quality in discovered test files ==="
+
+if [ "$TEST_COUNT" -gt 0 ]; then
+  # Find problematic test patterns
+  echo "--- Checking for test smells ---"
+  
+  # Skipped/disabled tests
+  SKIPPED_TESTS=$(grep -n "skip\|todo\|xit\|pending\|\.skip\|test\.skip" $TEST_FILES 2>/dev/null | head -20)
+  if [ -n "$SKIPPED_TESTS" ]; then
+    echo "⚠️  SKIPPED/DISABLED TESTS FOUND:"
+    echo "$SKIPPED_TESTS" | head -10
+    SKIP_COUNT=$(echo "$SKIPPED_TESTS" | wc -l)
+    echo "Total skipped tests: $SKIP_COUNT"
+  else
+    echo "✓ No skipped tests found"
+  fi
+  
+  # Tests with timing dependencies
+  TIMING_TESTS=$(grep -n "sleep\|setTimeout\|wait\|delay" $TEST_FILES 2>/dev/null | grep -v "waitFor" | head -10)
+  if [ -n "$TIMING_TESTS" ]; then
+    echo "⚠️  TIMING-DEPENDENT TESTS FOUND:"
+    echo "$TIMING_TESTS"
+  else
+    echo "✓ No obvious timing dependencies found"
+  fi
+  
+  # Non-deterministic tests
+  RANDOM_TESTS=$(grep -n "Math\.random\|Date\.now\|new Date()" $TEST_FILES 2>/dev/null | head -10)
+  if [ -n "$RANDOM_TESTS" ]; then
+    echo "⚠️  NON-DETERMINISTIC TESTS FOUND:"
+    echo "$RANDOM_TESTS"
+  else
+    echo "✓ No random/date-based tests found"
+  fi
+  
+  # Tests without assertions
+  echo "--- Checking for tests without assertions ---"
+  for test_file in $(echo "$TEST_FILES" | head -10); do
+    if [ -f "$test_file" ]; then
+      # Count test definitions vs assertions
+      TEST_DEFS=$(grep -c "it(\|test(\|it\.(\|test\." "$test_file" 2>/dev/null || echo "0")
+      ASSERTIONS=$(grep -c "expect\|assert\|should" "$test_file" 2>/dev/null || echo "0")
+      
+      if [ "$TEST_DEFS" -gt "$ASSERTIONS" ] && [ "$TEST_DEFS" -gt 0 ]; then
+        echo "⚠️  POSSIBLE TESTS WITHOUT ASSERTIONS in $test_file:"
+        echo "   Tests: $TEST_DEFS, Assertions: $ASSERTIONS"
+        # Show specific tests that might lack assertions
+        grep -n "it(\|test(\|it\.(\|test\." "$test_file" 2>/dev/null | head -3
+      fi
+    fi
+  done
+else
+  echo "❌ NO TEST FILES TO ANALYZE"
+fi
 ```
 
-## 4. Generate Test Analysis Report
+### Step 6: Check Test Organization
 
-### Critical Gaps Assessment
+```bash
+echo "=== Checking test organization and patterns ==="
 
-````bash
-cat > docs/code-review/9-TEST_ANALYSIS.md << 'EOF'
-# Test Analysis Report
+if [ "$TEST_COUNT" -gt 0 ]; then
+  # Check for test fixtures/factories
+  echo "--- Test fixtures and helpers ---"
+  FIXTURES=$(grep -l "fixture\|factory\|mock\|stub" $TEST_FILES 2>/dev/null | head -10)
+  if [ -n "$FIXTURES" ]; then
+    echo "✓ Test fixtures/mocks found in:"
+    echo "$FIXTURES" | head -5
+  else
+    echo "⚠️  No test fixtures or mocks found"
+  fi
+  
+  # Check for integration vs unit tests
+  echo "--- Test types ---"
+  INTEGRATION=$(grep -l "integration\|e2e\|end-to-end" $TEST_FILES 2>/dev/null | wc -l)
+  UNIT=$(grep -l "unit\|mock\|stub" $TEST_FILES 2>/dev/null | wc -l)
+  echo "Integration tests: $INTEGRATION files"
+  echo "Unit tests: $UNIT files"
+  
+  # Check for test documentation
+  echo "--- Test documentation ---"
+  DOCUMENTED=$(grep -c "describe.*['\"].*['\"]" $TEST_FILES 2>/dev/null | grep -v ":0" | wc -l)
+  echo "Tests with descriptions: $DOCUMENTED files"
+fi
+```
+
+## 5. Generate Evidence-Based Test Report
+
+### CRITICAL: Document Only Discovered Issues
+
+Create `docs/code-review/10-TEST_ANALYSIS.md` with ONLY verified findings:
+
+````markdown
+# Test Analysis Report - VERIFIED FINDINGS ONLY
+
+## Discovery Summary
+
+**Analysis Date**: [Current date]
+**Test Files Found**: [Count from $TEST_COUNT]
+**Test Framework**: [Discovered framework or NOT FOUND]
+**Coverage Reports**: [Found/Not Found]
+**Source Files Analyzed**: [Count]
 
 ## Executive Summary
-**Overall Test Health**: [A-F Grade]
-**Coverage**: [X]% (Target: 80%)
-**Critical Gaps**: [count] untested critical paths
-**Test Quality Issues**: [count] test smells found
 
-## Coverage Gaps by Priority
+**IMPORTANT**: Assessment based on actual findings only.
 
-### P0 - Critical (Security/Financial)
-- [ ] Authentication module (0% coverage)
-- [ ] Payment processing (0% coverage)
-- [ ] User data validation (0% coverage)
+**Test Framework Status**:
+- Framework: [Actual framework found or NONE]
+- Test files: [Actual count]
+- Coverage data: [Available/Not Available]
+- Test organization: [Description based on discovery]
 
-### P1 - High (Core Business Logic)
-- [ ] Order management (30% coverage)
-- [ ] Inventory tracking (45% coverage)
-- [ ] Notification system (0% coverage)
+## Coverage Analysis
 
-### P2 - Medium (Supporting Features)
-- [ ] Reporting module (60% coverage)
-- [ ] Configuration management (20% coverage)
+[Only document if coverage data found in Step 3]
+
+### Coverage Metrics
+**Overall Coverage**: [Actual percentage from reports or NOT MEASURED]
+- Line coverage: [X% or NOT AVAILABLE]
+- Branch coverage: [X% or NOT AVAILABLE]
+- Function coverage: [X% or NOT AVAILABLE]
+
+### Untested Components
+
+[Only list components actually found untested in Step 4]
+
+#### Critical Security Components
+[List actual untested auth/security files found]
+- `[file]`: No test file found
+
+#### Business Logic Components
+[List actual untested business logic files found]
+- `[file]`: No test coverage detected
+
+#### API Endpoints
+[List actual untested API files found]
+- `[file]`: No test file found
 
 ## Test Quality Issues
 
-### Test Smells Found
-1. **Skipped Tests**: [count] tests marked as skip/todo
-2. **Flaky Tests**: [count] tests with timing dependencies
-3. **No Assertions**: [count] tests without expect/assert
-4. **Complex Setup**: [count] tests with >20 lines of setup
+[Only document issues actually found in Step 5]
 
-### Recommended Fixes
-- Implement test fixtures for common setup
-- Add proper assertions to all tests
-- Replace timing-based tests with deterministic logic
-- Remove or fix skipped tests
+### Test Smells Discovered
 
-## Missing Test Templates
+#### Skipped/Disabled Tests
+[Only if found]
+**Found**: [Count] skipped tests
+- `[test-file:line]`: [skip/todo/xit marker]
 
-### Authentication Tests
-```typescript
-describe('AuthService', () => {
-  it('should authenticate valid user', async () => {
-    const user = await authService.login('test@example.com', 'password');
-    expect(user).toBeDefined();
-    expect(user.token).toBeTruthy();
-  });
+#### Timing Dependencies
+[Only if found]
+**Found**: [Count] tests with timing issues
+- `[test-file:line]`: Uses [sleep/setTimeout/delay]
 
-  it('should reject invalid credentials', async () => {
-    await expect(authService.login('invalid', 'wrong'))
-      .rejects.toThrow('Invalid credentials');
-  });
-});
-````
+#### Non-Deterministic Tests
+[Only if found]
+**Found**: [Count] tests using random/date
+- `[test-file:line]`: Uses [Math.random/Date.now]
 
-### Payment Processing Tests
+#### Tests Without Assertions
+[Only if detected]
+**Found**: [Count] files with assertion mismatch
+- `[test-file]`: [X] tests, only [Y] assertions
 
-```typescript
-describe("PaymentService", () => {
-  it("should process valid payment", async () => {
-    const payment = await paymentService.charge({
-      amount: 100,
-      card: mockCard,
-    });
-    expect(payment.status).toBe("completed");
-  });
+## Test Organization
 
-  it("should handle payment failure", async () => {
-    mockGateway.charge.mockRejectedValue(new Error("Card declined"));
-    await expect(paymentService.charge(mockRequest)).rejects.toThrow(
-      "Payment failed"
-    );
-  });
-});
-```
+[Only document based on findings from Step 6]
 
-## Remediation Plan
+### Test Infrastructure
+- Test fixtures/mocks: [Found in X files / NOT FOUND]
+- Integration tests: [Count] files
+- Unit tests: [Count] files
+- Test documentation: [Count] files with descriptions
 
-### Week 1: Critical Security Tests
+## NOT FOUND (Testing Gaps)
 
-- Add authentication test suite
-- Add payment processing tests
-- Add input validation tests
+### Missing Test Infrastructure
+- ❌ No test files found [if TEST_COUNT = 0]
+- ❌ No coverage reports available
+- ❌ No test framework configured
+- ❌ No test fixtures or helpers
 
-### Week 2: Core Business Logic
+### Missing Test Coverage
+[Based on Step 4 findings]
+- ❌ Authentication components untested
+- ❌ Payment processing untested
+- ❌ API endpoints without tests
+- ❌ No integration tests found
 
-- Add order management tests
-- Add inventory tests
-- Fix existing test quality issues
+## Recommendations
 
-### Week 3: Integration & E2E
+[Only include recommendations for actual issues found]
 
-- Add API endpoint tests
-- Add user journey tests
-- Set up coverage gates in CI
+### Immediate Actions
 
-## Test Quality Gates
+[If no tests found]
+1. **Set up test framework**
+   - Project type: [detected language]
+   - Recommended: [appropriate framework]
 
-```json
-{
-  "jest": {
-    "coverageThreshold": {
-      "global": {
-        "branches": 80,
-        "functions": 80,
-        "lines": 80,
-        "statements": 80
-      }
-    }
-  }
-}
-```
+[If untested critical components found]
+2. **Add tests for critical components**
+   - Priority files: [list actual untested files]
+   - Security components need immediate coverage
 
-EOF
+[If test quality issues found]
+3. **Fix test quality issues**
+   - Enable [count] skipped tests
+   - Remove timing dependencies in [count] tests
+   - Add assertions to [count] tests
 
-````
-
-## 5. Generate Test Templates
-
-### Create Missing Unit Tests
-```bash
-mkdir -p tests/generated
-
-# Generate auth test template
-cat > tests/generated/auth.test.ts << 'EOF'
-import { AuthService } from '../src/auth/AuthService';
-import { createMockUser, createMockDatabase } from '../fixtures';
-
-describe('AuthService', () => {
-  let authService: AuthService;
-  let mockDatabase: any;
-
-  beforeEach(() => {
-    mockDatabase = createMockDatabase();
-    authService = new AuthService(mockDatabase);
-  });
-
-  describe('login', () => {
-    it('should authenticate valid user', async () => {
-      const mockUser = createMockUser();
-      mockDatabase.findUserByEmail.mockResolvedValue(mockUser);
-
-      const result = await authService.login('test@example.com', 'password');
-
-      expect(result.user).toEqual(mockUser);
-      expect(result.token).toBeTruthy();
-    });
-
-    it('should reject invalid credentials', async () => {
-      mockDatabase.findUserByEmail.mockResolvedValue(null);
-
-      await expect(authService.login('invalid@example.com', 'wrong'))
-        .rejects.toThrow('Invalid credentials');
-    });
-
-    it('should handle database errors', async () => {
-      mockDatabase.findUserByEmail.mockRejectedValue(new Error('DB Error'));
-
-      await expect(authService.login('test@example.com', 'password'))
-        .rejects.toThrow('Authentication failed');
-    });
-  });
-});
-EOF
-
-# Generate payment test template
-cat > tests/generated/payment.test.ts << 'EOF'
-import { PaymentService } from '../src/payment/PaymentService';
-import { createMockCard, createMockOrder } from '../fixtures';
-
-describe('PaymentService', () => {
-  let paymentService: PaymentService;
-  let mockGateway: any;
-
-  beforeEach(() => {
-    mockGateway = {
-      charge: jest.fn(),
-      refund: jest.fn()
-    };
-    paymentService = new PaymentService(mockGateway);
-  });
-
-  describe('processPayment', () => {
-    it('should process valid payment', async () => {
-      const order = createMockOrder({ total: 100 });
-      const card = createMockCard();
-      mockGateway.charge.mockResolvedValue({ id: 'charge_123', status: 'succeeded' });
-
-      const payment = await paymentService.processPayment(order, card);
-
-      expect(payment.status).toBe('completed');
-      expect(payment.amount).toBe(100);
-      expect(mockGateway.charge).toHaveBeenCalledWith({
-        amount: 100,
-        card: expect.objectContaining({ last4: card.last4 })
-      });
-    });
-
-    it('should handle payment failure', async () => {
-      const order = createMockOrder();
-      const card = createMockCard();
-      mockGateway.charge.mockRejectedValue(new Error('Card declined'));
-
-      await expect(paymentService.processPayment(order, card))
-        .rejects.toThrow('Payment failed');
-    });
-  });
-});
-EOF
-````
-
-### Create Test Fixtures
+### Validation Before Report
 
 ```bash
-cat > tests/fixtures/index.ts << 'EOF'
-export const createMockUser = (overrides = {}) => ({
-  id: 'user_123',
-  email: 'test@example.com',
-  name: 'Test User',
-  ...overrides
-});
+echo "=== Validating test findings ==="
 
-export const createMockCard = (overrides = {}) => ({
-  number: '4242424242424242',
-  last4: '4242',
-  expMonth: 12,
-  expYear: 2025,
-  cvc: '123',
-  ...overrides
-});
+# Count actual findings
+UNTESTED_COUNT=$(grep -c "UNTESTED:" test-scan.log 2>/dev/null || echo "0")
+SKIPPED_COUNT=$(grep -c "skip\|todo\|xit" test-scan.log 2>/dev/null || echo "0")
+TIMING_COUNT=$(grep -c "setTimeout\|sleep" test-scan.log 2>/dev/null || echo "0")
 
-export const createMockOrder = (overrides = {}) => ({
-  id: 'order_123',
-  total: 100,
-  items: [{ id: 'item_1', price: 100 }],
-  ...overrides
-});
+echo "Documented findings:"
+echo "- Untested components: $UNTESTED_COUNT"
+echo "- Skipped tests: $SKIPPED_COUNT"  
+echo "- Timing issues: $TIMING_COUNT"
+echo "- Test files found: $TEST_COUNT"
+```
 
-export const createMockDatabase = () => ({
-  findUserByEmail: jest.fn(),
-  createUser: jest.fn(),
-  updateUser: jest.fn(),
-  deleteUser: jest.fn()
-});
-EOF
+### Documentation Checklist
+
+Before saving the test analysis:
+- [ ] Every coverage gap references actual missing test files
+- [ ] Every test smell has file:line evidence
+- [ ] Coverage metrics from actual reports only
+- [ ] No hypothetical test examples without gaps identified
+- [ ] "NOT FOUND" section documents missing infrastructure
+
+````
+
+## 6. Generate Test Templates (Only If Gaps Found)
+
+### Only Create Templates for Discovered Gaps
+
+```bash
+# Only generate test templates if untested components were found
+if [ "$UNTESTED_COUNT" -gt 0 ]; then
+  echo "=== Creating test templates for untested components ==="
+  
+  # Create directory only if needed
+  mkdir -p tests/generated
+  
+  # Generate templates based on actual untested files found
+  echo "Test templates would be generated for:"
+  grep "UNTESTED:" test-scan.log 2>/dev/null | head -10
+  
+  # Note: Actual template generation would be based on:
+  # - Language/framework detected
+  # - Specific untested components found
+  # - Existing test patterns in the codebase
+fi
 ```
 
 ```

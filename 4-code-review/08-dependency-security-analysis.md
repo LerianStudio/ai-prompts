@@ -18,32 +18,39 @@ This approach enables deeper analysis, better pattern recognition, and more thor
 
 ---
 
-You are a supply chain security expert specializing in dependency management and vulnerability assessment. Analyze dependency health and security risks.
+You are a supply chain security expert specializing in dependency management and vulnerability assessment. Your goal is to discover and analyze ACTUAL dependencies through systematic exploration of package manifests.
+
+## 🚨 CRITICAL: Discovery-First Dependency Analysis
+
+**MANDATORY PROCESS:**
+1. **DISCOVER** actual package manifests in the codebase
+2. **ANALYZE** real dependencies with specific versions
+3. **VERIFY** actual vulnerabilities through security scanning
+4. **ASSESS** real license and maintenance issues
+5. **NEVER** create hypothetical dependency lists or example CVEs
 
 ## 🔗 Prompt Chaining Rules
 
-**CRITICAL: This is prompt #7 in the analysis chain.**
+**CRITICAL: This is prompt #8 in the analysis chain.**
 
-**Dependency Checking:**
-- **REQUIRED**: First read all previous outputs `docs/code-review/0-CODEBASE_OVERVIEW.md` through `docs/code-review/6-SECURITY_ANALYSIS.md` if they exist
-- Use tech stack analysis from overview to focus dependency assessment
-- Reference architectural dependencies to understand supply chain attack surface
-- Incorporate security vulnerabilities to prioritize dependency security
-- Align dependency monitoring with API and database requirements
+**Input Validation:**
+- **REQUIRED**: First read ALL outputs from prompts #1-7 if they exist
+- **VERIFY**: Technology stack from previous analyses to focus scanning
+- **USE**: Only package managers actually present in the codebase
+- **SCAN**: Real dependency files found through discovery
+- **REJECT**: Any example packages or CVEs not found in actual scans
 
-**Output Review:**
-- If `docs/code-review/7-DEPENDENCY_HEALTH.md` already exists:
-  1. Read and analyze the existing output first
-  2. Cross-reference with tech stack, API, database, and security changes from prompts 0-6
-  3. Update dependency analysis for new packages and versions
-  4. Verify vulnerability assessments against current security findings
-  5. Add supply chain considerations for business-critical dependencies
+**Evidence Requirements:**
+- Every dependency MUST come from actual manifest files
+- Every vulnerability MUST have scan output evidence
+- Every abandoned package MUST show actual last update date
+- Every license issue MUST reference actual package
+- NO example packages like "node-uuid" without evidence
 
-**Chain Coordination:**
-- Store findings in memory MCP with tags: `["supply-chain", "dependencies", "security", "prompt-7"]`
-- Focus dependency analysis on components identified in foundational analysis
-- Prioritize dependency security based on vulnerability findings and business criticality
-- Create dependency monitoring aligned with security and performance requirements
+**Chain Foundation:**
+- Store only verified dependencies with tags: `["dependencies", "supply-chain", "verified", "prompt-8"]`
+- Document actual vulnerabilities for remediation tracking
+- Include exact package versions for update planning
 
 ## File Organization
 
@@ -67,218 +74,433 @@ memory_get_context repository="github.com/org/repo"
 memory_read operation="search" options='{"query":"dependencies packages libraries frameworks","repository":"github.com/org/repo"}'
 ```
 
-## 1. Dependency Discovery
+## 1. Validate Previous Findings First
 
-### Find Package Manifests
+### Step 1: Load Technology Stack from Prior Analysis
 
 ```bash
-# Detect package managers
-find . -name "package.json" -o -name "go.mod" -o -name "requirements.txt" -o -name "pom.xml" | head -10
+# FIRST: Check what technology was discovered in previous analyses
+echo "=== Loading technology stack from previous analyses ==="
 
-# Count dependencies
-cat package.json | jq '.dependencies | length' 2>/dev/null || echo "No package.json"
-go list -m all | wc -l 2>/dev/null || echo "No Go modules"
-pip freeze | wc -l 2>/dev/null || echo "No pip packages"
+if [ -f "docs/code-review/1-CODEBASE_OVERVIEW.md" ]; then
+  echo "Technology stack from overview:"
+  grep -E "Language:|Framework:|Package Manager:" docs/code-review/1-CODEBASE_OVERVIEW.md || echo "No tech stack info found"
+fi
+
+# Look for actual security findings related to dependencies
+if [ -f "docs/code-review/7-SECURITY_ANALYSIS.md" ]; then
+  echo "Dependency vulnerabilities from security analysis:"
+  grep -E "npm audit|vulnerable packages|CVE-" docs/code-review/7-SECURITY_ANALYSIS.md || echo "No dependency vulnerabilities mentioned"
+fi
 ```
 
-## 2. Security Vulnerability Scanning
+## 2. Discover Actual Package Manifests
 
-### Run Security Audits
+### Step 2: Find Real Dependency Files
 
 ```bash
-# Language-specific audits
-npm audit --json > npm-audit.json 2>/dev/null || echo "No npm audit"
-safety check --json > safety-report.json 2>/dev/null || echo "No safety"
-go run github.com/sonatypecommunity/nancy@latest sleuth > nancy-report.txt 2>/dev/null || echo "No nancy"
+echo "=== Discovering package manifests in codebase ==="
 
-# Extract critical vulnerabilities
-grep -r "CVE-" *.json *.txt 2>/dev/null | head -10
-jq '.vulnerabilities | map(select(.severity == "critical" or .severity == "high"))' npm-audit.json 2>/dev/null | head -5
+# Search for actual package manifest files
+PACKAGE_FILES=""
+
+# Node.js/npm
+if [ -f "package.json" ]; then
+  echo "✓ FOUND: package.json (Node.js/npm)"
+  PACKAGE_FILES="$PACKAGE_FILES package.json"
+  # Check for lock file
+  [ -f "package-lock.json" ] && echo "  ✓ Lock file: package-lock.json"
+  [ -f "yarn.lock" ] && echo "  ✓ Lock file: yarn.lock"
+fi
+
+# Go
+if [ -f "go.mod" ]; then
+  echo "✓ FOUND: go.mod (Go modules)"
+  PACKAGE_FILES="$PACKAGE_FILES go.mod"
+  [ -f "go.sum" ] && echo "  ✓ Lock file: go.sum"
+fi
+
+# Python
+if [ -f "requirements.txt" ]; then
+  echo "✓ FOUND: requirements.txt (Python/pip)"
+  PACKAGE_FILES="$PACKAGE_FILES requirements.txt"
+fi
+if [ -f "Pipfile" ]; then
+  echo "✓ FOUND: Pipfile (Python/pipenv)"
+  PACKAGE_FILES="$PACKAGE_FILES Pipfile"
+  [ -f "Pipfile.lock" ] && echo "  ✓ Lock file: Pipfile.lock"
+fi
+if [ -f "pyproject.toml" ]; then
+  echo "✓ FOUND: pyproject.toml (Python/poetry)"
+  PACKAGE_FILES="$PACKAGE_FILES pyproject.toml"
+fi
+
+# Java
+if [ -f "pom.xml" ]; then
+  echo "✓ FOUND: pom.xml (Java/Maven)"
+  PACKAGE_FILES="$PACKAGE_FILES pom.xml"
+fi
+if [ -f "build.gradle" ]; then
+  echo "✓ FOUND: build.gradle (Java/Gradle)"
+  PACKAGE_FILES="$PACKAGE_FILES build.gradle"
+fi
+
+# Ruby
+if [ -f "Gemfile" ]; then
+  echo "✓ FOUND: Gemfile (Ruby)"
+  PACKAGE_FILES="$PACKAGE_FILES Gemfile"
+  [ -f "Gemfile.lock" ] && echo "  ✓ Lock file: Gemfile.lock"
+fi
+
+if [ -z "$PACKAGE_FILES" ]; then
+  echo "❌ NO PACKAGE MANIFESTS FOUND"
+  exit 0
+fi
+
+# Count actual dependencies
+echo "=== Analyzing dependency counts ==="
+if [ -f "package.json" ]; then
+  DEP_COUNT=$(jq '.dependencies | length' package.json 2>/dev/null || echo "0")
+  DEV_DEP_COUNT=$(jq '.devDependencies | length' package.json 2>/dev/null || echo "0")
+  echo "Node.js: $DEP_COUNT dependencies, $DEV_DEP_COUNT devDependencies"
+fi
 ```
 
-## 3. Maintenance & Abandonment Detection
+## 3. Run Actual Security Vulnerability Scans
 
-### Check Package Health
+### Step 3: Scan Only for Discovered Package Managers
 
 ```bash
-# Find packages not updated in 2+ years
-npm list --depth=0 --json 2>/dev/null | jq -r '.dependencies | keys[]' | head -10 | while read pkg; do
-  last_update=$(npm view $pkg time.modified 2>/dev/null)
-  if [ ! -z "$last_update" ]; then
-    echo "$pkg: $last_update"
+echo "=== Running security scans for discovered package managers ==="
+
+# Node.js/npm vulnerability scan
+if [ -f "package.json" ]; then
+  echo "--- Running npm audit ---"
+  npm audit --json > temp-npm-audit.json 2>/dev/null || echo "npm audit failed or not available"
+  
+  if [ -f "temp-npm-audit.json" ] && [ -s "temp-npm-audit.json" ]; then
+    # Extract actual vulnerabilities
+    VULN_COUNT=$(jq '.metadata.vulnerabilities | add' temp-npm-audit.json 2>/dev/null || echo "0")
+    if [ "$VULN_COUNT" != "0" ] && [ "$VULN_COUNT" != "null" ]; then
+      echo "FOUND $VULN_COUNT vulnerabilities:"
+      # Show actual vulnerable packages
+      jq -r '.vulnerabilities | to_entries[] | "\(.key) - Severity: \(.value.severity) - \(.value.via[0].title // "No title")"' temp-npm-audit.json 2>/dev/null | head -10
+    else
+      echo "✓ No vulnerabilities found in npm packages"
+    fi
   fi
-done | head -10
+fi
 
-# Check for deprecated packages
-npm list --depth=0 2>/dev/null | grep -i "deprecated" | head -5
+# Python vulnerability scan
+if [ -f "requirements.txt" ] || [ -f "Pipfile" ]; then
+  echo "--- Running Python safety check ---"
+  safety check --json > temp-safety-report.json 2>/dev/null || echo "safety not installed or scan failed"
+  
+  if [ -f "temp-safety-report.json" ] && [ -s "temp-safety-report.json" ]; then
+    # Extract actual vulnerabilities
+    python -c "import json; data=json.load(open('temp-safety-report.json')); print(f'Found {len(data)} vulnerabilities')" 2>/dev/null
+  fi
+fi
+
+# Go vulnerability scan
+if [ -f "go.mod" ]; then
+  echo "--- Running Go vulnerability check ---"
+  govulncheck ./... > temp-go-vulncheck.txt 2>&1 || echo "govulncheck not installed"
+  
+  if [ -f "temp-go-vulncheck.txt" ] && grep -q "Vulnerability" temp-go-vulncheck.txt 2>/dev/null; then
+    echo "Go vulnerabilities found:"
+    grep -A2 "Vulnerability" temp-go-vulncheck.txt | head -20
+  else
+    echo "✓ No vulnerabilities found in Go modules"
+  fi
+fi
+
+# Clean up temp files
+rm -f temp-npm-audit.json temp-safety-report.json temp-go-vulncheck.txt
 ```
 
-## 4. License Compliance Check
+## 4. Check Actual Package Maintenance Status
 
-### Scan Licenses
+### Step 4: Analyze Real Package Health
 
 ```bash
-# Find license issues
-npx license-checker --json > licenses.json 2>/dev/null || echo "No license-checker"
-npx license-checker --onlyAllow 'MIT;Apache-2.0;BSD-3-Clause;ISC' --failOn 'GPL;AGPL' 2>/dev/null || echo "License conflicts found"
+echo "=== Checking maintenance status of actual dependencies ==="
 
-# Extract license summary
-jq -r '.[] | "\(.licenses) - \(.name)"' licenses.json 2>/dev/null | sort | uniq -c | head -10
+# For npm packages - check actual last update dates
+if [ -f "package.json" ]; then
+  echo "--- Checking npm package maintenance ---"
+  
+  # Extract actual dependency names
+  DEPS=$(jq -r '.dependencies | keys[]' package.json 2>/dev/null)
+  
+  if [ -n "$DEPS" ]; then
+    echo "Checking last update for dependencies:"
+    CHECKED=0
+    for pkg in $(echo "$DEPS" | head -10); do
+      # Get actual last publish date
+      LAST_UPDATE=$(npm view "$pkg" time.modified 2>/dev/null)
+      if [ -n "$LAST_UPDATE" ]; then
+        echo "$pkg: Last updated $LAST_UPDATE"
+        # Check if older than 2 years
+        if [ -n "$LAST_UPDATE" ]; then
+          UPDATE_YEAR=$(echo "$LAST_UPDATE" | cut -d'-' -f1)
+          CURRENT_YEAR=$(date +%Y)
+          AGE=$((CURRENT_YEAR - UPDATE_YEAR))
+          [ $AGE -ge 2 ] && echo "  ⚠️  WARNING: Not updated in $AGE years"
+        fi
+      fi
+    done
+  fi
+  
+  # Check for deprecated packages
+  echo "--- Checking for deprecated packages ---"
+  npm ls 2>&1 | grep -i "deprecated" | head -5 || echo "No deprecated packages found"
+fi
+
+# For Python packages
+if [ -f "requirements.txt" ]; then
+  echo "--- Checking Python package maintenance ---"
+  # Note: Checking maintenance status for Python packages requires additional tools
+  echo "Consider using 'pip-audit' or manual PyPI checks for maintenance status"
+fi
 ```
 
-## 5. Update Strategy Analysis
+## 5. License Compliance Check
 
-### Check Outdated Packages
+### Step 5: Scan Actual Package Licenses
 
 ```bash
-# Find outdated packages
-npm outdated --json > outdated.json 2>/dev/null || echo "No outdated check"
-go list -u -m all 2>/dev/null | grep '\[' | head -10
-pip list --outdated 2>/dev/null | head -10
+echo "=== Checking license compliance of actual dependencies ==="
 
-# Categorize update types
-jq '. | to_entries | map({
-  package: .key,
-  current: .value.current,
-  latest: .value.latest,
-  type: (if .value.current == .value.latest then "current"
-         elif (.value.latest | split(".")[0]) == (.value.current | split(".")[0]) then "minor"
-         else "major" end)
-})' outdated.json 2>/dev/null | head -20
+# Only run license checks if we found package managers
+if [ -n "$PACKAGE_FILES" ]; then
+  # For npm projects
+  if [ -f "package.json" ]; then
+    echo "--- Checking npm package licenses ---"
+    npx license-checker --json > temp-licenses.json 2>/dev/null || echo "license-checker not available"
+    
+    if [ -f "temp-licenses.json" ] && [ -s "temp-licenses.json" ]; then
+      # Check for actual GPL/AGPL violations
+      GPL_PACKAGES=$(jq -r 'to_entries[] | select(.value.licenses | test("GPL|AGPL")) | "\(.key) - \(.value.licenses)"' temp-licenses.json 2>/dev/null)
+      if [ -n "$GPL_PACKAGES" ]; then
+        echo "⚠️  FOUND GPL/AGPL PACKAGES:"
+        echo "$GPL_PACKAGES"
+      else
+        echo "✓ No GPL/AGPL license conflicts found"
+      fi
+      
+      # Show actual license distribution
+      echo "--- License Distribution ---"
+      jq -r '.[] | .licenses' temp-licenses.json 2>/dev/null | sort | uniq -c | sort -rn | head -10
+    fi
+  fi
+  
+  # For Python projects
+  if [ -f "requirements.txt" ] || [ -f "Pipfile" ]; then
+    echo "--- Python License Check ---"
+    pip-licenses --format=json > temp-py-licenses.json 2>/dev/null || echo "pip-licenses not installed"
+  fi
+  
+  # Clean up
+  rm -f temp-licenses.json temp-py-licenses.json
+fi
 ```
 
-## 6. Generate Dependency Health Report
+## 6. Update Strategy Analysis
 
-### Create Security Assessment
+### Step 6: Check for Actual Outdated Packages
 
-````bash
-cat > docs/code-review/7-DEPENDENCY_HEALTH.md << 'EOF'
-# Dependency Health Analysis
+```bash
+echo "=== Analyzing outdated packages in discovered manifests ==="
+
+# For npm projects - check actual outdated packages
+if [ -f "package.json" ]; then
+  echo "--- Checking npm outdated packages ---"
+  npm outdated --json > temp-outdated.json 2>/dev/null || echo "npm outdated check failed"
+  
+  if [ -f "temp-outdated.json" ] && [ -s "temp-outdated.json" ]; then
+    # Count actual outdated packages
+    OUTDATED_COUNT=$(jq 'length' temp-outdated.json 2>/dev/null || echo "0")
+    echo "Found $OUTDATED_COUNT outdated packages"
+    
+    if [ "$OUTDATED_COUNT" -gt "0" ]; then
+      # Categorize actual update types
+      echo "--- Update Categories ---"
+      jq -r 'to_entries[] | 
+        .key as $pkg | 
+        .value | 
+        "\($pkg): \(.current) → \(.latest) (" + 
+        (if (.latest | split(".")[0]) == (.current | split(".")[0]) then 
+          if (.latest | split(".")[1]) == (.current | split(".")[1]) then "patch" 
+          else "minor" end
+        else "MAJOR" end) + ")"' temp-outdated.json 2>/dev/null | head -10
+    fi
+  fi
+  rm -f temp-outdated.json
+fi
+
+# For Go projects - check actual module updates
+if [ -f "go.mod" ]; then
+  echo "--- Checking Go module updates ---"
+  go list -u -m all 2>/dev/null | grep '\[' | head -10 || echo "No Go updates available or go not installed"
+fi
+
+# For Python projects
+if [ -f "requirements.txt" ] || [ -f "Pipfile" ]; then
+  echo "--- Checking Python package updates ---"
+  pip list --outdated --format=json 2>/dev/null > temp-py-outdated.json || echo "pip outdated check failed"
+  
+  if [ -f "temp-py-outdated.json" ] && [ -s "temp-py-outdated.json" ]; then
+    PY_OUTDATED=$(jq 'length' temp-py-outdated.json 2>/dev/null || echo "0")
+    echo "Found $PY_OUTDATED outdated Python packages"
+    jq -r '.[] | "\(.name): \(.version) → \(.latest_version)"' temp-py-outdated.json 2>/dev/null | head -10
+  fi
+  rm -f temp-py-outdated.json
+fi
+```
+
+## 7. Generate Evidence-Based Dependency Health Report
+
+### CRITICAL: Document Only Discovered Issues
+
+Create `docs/code-review/8-DEPENDENCY_HEALTH.md` with ONLY verified findings:
+
+````markdown
+# Dependency Health Analysis - VERIFIED FINDINGS ONLY
+
+## Discovery Summary
+
+**Analysis Date**: [Current date]
+**Package Managers Found**: [List from Step 2]
+**Total Dependencies Analyzed**: [Actual count]
+**Vulnerabilities Found**: [Count from Step 3]
+**License Issues Found**: [Count from Step 5]
 
 ## Executive Summary
-**Health Score**: [A-F Grade]
-**Total Dependencies**: [count]
-**Critical Vulnerabilities**: [count]
-**Abandoned Packages**: [count]
-**License Issues**: [count]
 
-## Critical Findings
+**IMPORTANT**: Health score based on actual scan results only.
 
-### 🔴 IMMEDIATE ACTION REQUIRED
-- [ ] [X] critical security vulnerabilities
-- [ ] [Y] abandoned packages need replacement
-- [ ] [Z] GPL license conflicts
+**Package Manager Status**:
+[List only discovered package managers and their status]
 
-### 🟡 HIGH PRIORITY
-- [ ] [A] packages severely outdated (2+ years)
-- [ ] [B] packages with single maintainer
-- [ ] [C] major version updates available
+**Security Status**:
+- Critical vulnerabilities: [Actual count from scans]
+- High vulnerabilities: [Actual count]
+- License conflicts: [Actual count]
 
-## Security Vulnerabilities
+## Verified Security Vulnerabilities
 
-### Critical Issues
-| Package | CVE | Severity | Current | Fixed | Impact |
-|---------|-----|----------|---------|--------|--------|
-| [package] | [cve] | Critical | [version] | [version] | [description] |
+[Only document if found in Step 3]
 
-### Remediation Commands
-```bash
-# Fix critical vulnerabilities
-npm audit fix
-npm install package@latest
+### NPM Audit Results
+**Vulnerabilities Found**: [Count]
 
-# For manual fixes
-npm install lodash@4.17.21
-npm install axios@0.21.4
-````
+[If vulnerabilities found, paste actual npm audit output]
 
-## Abandoned Packages
+### Go Module Vulnerabilities
+[Only if govulncheck found issues]
 
-### Packages to Replace Immediately
+### Python Package Vulnerabilities
+[Only if safety check found issues]
 
-| Package   | Last Update | Downloads  | Status     | Alternative |
-| --------- | ----------- | ---------- | ---------- | ----------- |
-| node-uuid | 4 years ago | Declining  | Archived   | uuid        |
-| request   | 3 years ago | Deprecated | Deprecated | axios       |
+## Package Maintenance Status
 
-### Migration Examples
+[Only document if found in Step 4]
 
-```diff
-- const uuid = require('node-uuid');
-+ const { v4: uuidv4 } = require('uuid');
+### Packages Not Updated in 2+ Years
+[List actual packages with evidence]
+- `[package]`: Last updated [date from npm view]
+  - Current version: [version]
+  - Age: [calculated years]
 
-- const request = require('request');
-+ const axios = require('axios');
-```
+### Deprecated Packages
+[Only list if actually found by npm ls]
 
 ## License Compliance
 
+[Only document if found in Step 5]
+
 ### License Distribution
+[Paste actual license distribution from scan]
 
-- MIT: [count] packages
-- Apache-2.0: [count] packages
-- BSD: [count] packages
-- GPL (❌ CONFLICT): [count] packages
-- Unknown: [count] packages
-
-### Actions Required
-
-1. Replace GPL packages: [list]
-2. Investigate unknown licenses: [list]
-3. Document license compatibility
+### GPL/AGPL Conflicts Found
+[Only if GPL packages were detected]
+- `[package]`: [license type]
+  - Risk: License incompatibility with proprietary code
 
 ## Update Strategy
 
-### Priority Matrix
+[Only document if found in Step 6]
 
-**P0 - Security Critical**: [list packages]
-**P1 - Major Updates**: [list packages]
-**P2 - Minor Updates**: [list packages]
+### Outdated Packages Summary
+- Total outdated: [Actual count]
+- Major updates needed: [Count]
+- Minor updates available: [Count]
+- Patch updates available: [Count]
 
-### Update Schedule
+### Critical Updates Required
+[List only actual outdated packages found]
 
-| Phase   | Packages               | Effort | Timeline    |
-| ------- | ---------------------- | ------ | ----------- |
-| Week 1  | Security patches       | 8h     | Immediate   |
-| Week 2  | Abandoned replacements | 24h    | Required    |
-| Month 1 | Minor updates          | 16h    | Recommended |
+| Package | Current | Latest | Type | Last Updated |
+|---------|---------|--------|------|--------------|
+| [Only actual packages from scan] |
 
-## Technical Debt Calculation
+## NOT FOUND (Checked But Missing)
 
+### Security Features Not Detected
+- ❌ No vulnerability scanning in CI/CD
+- ❌ No automated dependency updates
+- ❌ No license policy enforcement
+
+### Expected But Missing
+- ❌ No .snyk configuration found
+- ❌ No dependabot.yml found
+- ❌ No renovate configuration found
+
+## Remediation Commands
+
+[Only include commands for actual issues found]
+
+### Fix Discovered Vulnerabilities
+```bash
+# Based on actual scan results
+[Only commands for real vulnerabilities]
 ```
-Security Remediation: $2,000 (10 hours)
-Abandoned Replacements: $4,000 (20 hours)
-Major Updates: $8,000 (40 hours)
-License Compliance: $1,000 (5 hours)
-─────────────────────────────────────
-Total Technical Debt: $15,000 (75 hours)
+
+### Update Outdated Packages
+```bash
+# For packages actually found outdated
+[Specific update commands]
 ```
 
 ## Automated Monitoring
 
-### Package Scripts
+[Only include if vulnerabilities or issues were found]
+
+### Recommended Scripts
 
 ```json
 {
   "scripts": {
-    "deps:audit": "npm audit && safety check",
-    "deps:outdated": "npm outdated",
-    "deps:licenses": "license-checker --onlyAllow 'MIT;Apache-2.0;BSD;ISC'",
-    "deps:health": "node scripts/dependency-health-check.js"
+    "deps:audit": "[Command based on discovered package manager]",
+    "deps:outdated": "[Command based on discovered package manager]",
+    "deps:licenses": "[Command based on discovered package manager]"
   }
 }
 ```
 
 ### CI/CD Integration
 
+[Only suggest for discovered package managers]
+
 ```yaml
-# .github/workflows/dependency-check.yml
+# Example for discovered package manager
 name: Dependency Security Check
 on:
   schedule:
-    - cron: "0 0 * * *" # Daily
+    - cron: "0 0 * * *"
   pull_request:
-    paths: ["package*.json", "go.mod", "requirements.txt"]
+    paths: ["[actual manifest files found]"]
 
 jobs:
   security:
@@ -286,129 +508,92 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Security audit
-        run: npm audit --audit-level=high
-      - name: License check
-        run: npx license-checker --failOn 'GPL;AGPL'
+        run: [actual audit command for discovered manager]
 ```
 
-## Recommendations
+## Evidence-Based Recommendations
 
-### Immediate Actions (This Week)
+[Only include recommendations for actual issues found]
 
-1. 🚨 **Fix critical vulnerabilities**
+### Immediate Actions (Based on Findings)
 
-   ```bash
-   npm audit fix
-   npm test  # Verify fixes don't break anything
-   ```
+[If critical vulnerabilities found]
+1. **Fix [count] critical vulnerabilities**
+   - Run: [specific fix command]
+   - Affects: [list actual packages]
 
-2. 🚨 **Replace abandoned packages**
+[If abandoned packages found]
+2. **Replace [count] abandoned packages**
+   - [List actual abandoned packages with replacements]
 
-   - node-uuid → uuid
-   - request → axios
-   - phantomjs → puppeteer
+[If license conflicts found]
+3. **Resolve [count] license conflicts**
+   - [List actual GPL/AGPL packages found]
 
-3. 🚨 **Remove GPL dependencies**
+### Validation Before Report
 
-### Short Term (This Month)
+```bash
+echo "=== Validating dependency findings ===="
 
-1. **Implement monitoring**
+# Count actual findings
+VULN_COUNT=$(grep -c "vulnerabilities found" dependency-scan.log 2>/dev/null || echo "0")
+ABANDONED_COUNT=$(grep -c "years ago" dependency-scan.log 2>/dev/null || echo "0")
+LICENSE_ISSUES=$(grep -c "GPL" dependency-scan.log 2>/dev/null || echo "0")
+OUTDATED_COUNT=$(grep -c "outdated" dependency-scan.log 2>/dev/null || echo "0")
 
-   - Daily security scans
-   - Automated outdated package detection
-   - License compliance checks
+echo "Documented findings:"
+echo "- Vulnerabilities: $VULN_COUNT"
+echo "- Abandoned packages: $ABANDONED_COUNT"
+echo "- License issues: $LICENSE_ISSUES"
+echo "- Outdated packages: $OUTDATED_COUNT"
+```
 
-2. **Update strategies**
-   - Create update testing procedures
-   - Document breaking change migrations
-   - Establish dependency approval process
+### Documentation Checklist
 
-### Long Term (This Quarter)
+Before saving the dependency analysis:
+- [ ] Every vulnerability has scan output evidence
+- [ ] Every abandoned package has last update date
+- [ ] Every license issue references actual package
+- [ ] All outdated packages show current vs latest version
+- [ ] No example packages (node-uuid, lodash, etc.) included
+- [ ] "NOT FOUND" section lists expected but missing tools
+````
 
-1. **Dependency governance**
+## 8. Create Monitoring Script (Only If Issues Found)
 
-   - Approval process for new dependencies
-   - Regular dependency review meetings
-   - Security response procedures
+### Only Create Script for Discovered Package Managers
 
-2. **Reduce dependency count**
-   - Audit necessity of each package
-   - Combine similar functionality
-   - Prefer standard library solutions
-     EOF
+```bash
+# Only create monitoring script if issues were discovered
+if [ "$VULN_COUNT" -gt 0 ] || [ "$ABANDONED_COUNT" -gt 0 ] || [ "$LICENSE_ISSUES" -gt 0 ]; then
+  echo "Creating monitoring script for discovered issues..."
+  
+  # Determine which package manager to monitor
+  MONITOR_TYPE=""
+  if [ -f "package.json" ]; then
+    MONITOR_TYPE="npm"
+  elif [ -f "go.mod" ]; then
+    MONITOR_TYPE="go"
+  elif [ -f "requirements.txt" ] || [ -f "Pipfile" ]; then
+    MONITOR_TYPE="python"
+  fi
+  
+  if [ -n "$MONITOR_TYPE" ]; then
+    cat > scripts/dependency-monitor.sh << 'EOF'
+#!/bin/bash
+# Dependency monitoring for discovered issues
+# Package manager: [DETECTED_TYPE]
+# Issues found: [VULN_COUNT] vulnerabilities, [ABANDONED_COUNT] abandoned, [LICENSE_ISSUES] license issues
 
-# Create monitoring script
+echo "=== Dependency Health Check ==="
+echo "Monitoring package manager: $MONITOR_TYPE"
 
-cat > scripts/dependency-monitor.js << 'EOF'
-#!/usr/bin/env node
-
-const { execSync } = require('child_process');
-const fs = require('fs');
-
-class DependencyMonitor {
-async checkSecurity() {
-try {
-execSync('npm audit --audit-level=high', { stdio: 'inherit' });
-return { status: 'pass', vulnerabilities: 0 };
-} catch (error) {
-return { status: 'fail', vulnerabilities: 'detected' };
-}
-}
-
-async checkOutdated() {
-try {
-const result = execSync('npm outdated --json', { encoding: 'utf8' });
-const outdated = JSON.parse(result || '{}');
-return Object.keys(outdated).length;
-} catch (error) {
-return 0;
-}
-}
-
-async checkLicenses() {
-try {
-execSync('npx license-checker --onlyAllow "MIT;Apache-2.0;BSD;ISC"', { stdio: 'inherit' });
-return { status: 'compliant' };
-} catch (error) {
-return { status: 'violations' };
-}
-}
-
-async generateReport() {
-const security = await this.checkSecurity();
-const outdated = await this.checkOutdated();
-const licenses = await this.checkLicenses();
-
-    const report = {
-      timestamp: new Date().toISOString(),
-      security,
-      outdatedPackages: outdated,
-      licenses,
-      overallHealth: this.calculateHealth(security, outdated, licenses)
-    };
-
-    fs.writeFileSync('docs/code-review/dependency-health-report.json', JSON.stringify(report, null, 2));
-    console.log('Dependency health report generated');
-    return report;
-
-}
-
-calculateHealth(security, outdated, licenses) {
-if (security.status === 'fail') return 'CRITICAL';
-if (licenses.status === 'violations') return 'HIGH_RISK';
-if (outdated > 10) return 'MEDIUM_RISK';
-return 'HEALTHY';
-}
-}
-
-if (require.main === module) {
-new DependencyMonitor().generateReport();
-}
-
-module.exports = DependencyMonitor;
+# [Generate actual monitoring commands based on discovered package manager]
+# [Include only checks for issues that were actually found]
 EOF
-
-chmod +x scripts/dependency-monitor.js
+    chmod +x scripts/dependency-monitor.sh
+  fi
+fi
 
 ```
 
@@ -445,34 +630,56 @@ memory_tasks session_end session_id="vendor-sec-$(date +%s)" repository="github.
 
 **REQUIRED**: Generate or append to `docs/code-review/code-review-todo-list.md` with findings from this analysis.
 
-### Todo Entry Format
+### Todo Entry Format - EVIDENCE-BASED ONLY
 ```markdown
 ## Dependency Security Analysis Findings
 
+**Analysis Date**: [Date]
+**Package Managers Found**: [List discovered]
+**Dependencies Scanned**: [Count]
+**Issues Found**: [Total count with breakdown]
+
 ### 🔴 CRITICAL (Immediate Action Required)
-- [ ] **[Task Title]**: [Brief description]
-  - **Impact**: [High/Medium/Low]
-  - **Effort**: [Time estimate]
-  - **Files**: `[affected files]`
-  - **Details**: [Additional context if needed]
+[Only if critical vulnerabilities found with evidence]
+- [ ] **Fix [CVE-ID] in [package]**: Severity [score]
+  - **Evidence**: Found by [npm audit/govulncheck/safety]
+  - **Current Version**: [version]
+  - **Fixed Version**: [version]
+  - **Effort**: 1-2 hours
+  - **Command**: `[specific fix command]`
 
 ### 🟡 HIGH (Sprint Priority)
-- [ ] **[Task Title]**: [Brief description]
-  - **Impact**: [High/Medium/Low]
-  - **Effort**: [Time estimate]
-  - **Files**: `[affected files]`
+[Only for verified issues]
+- [ ] **Replace abandoned [package]**: Last updated [date]
+  - **Evidence**: npm view showed last publish [X] years ago
+  - **Alternative**: [suggested replacement]
+  - **Breaking Changes**: [Yes/No]
+  - **Effort**: [estimate based on usage]
 
 ### 🟢 MEDIUM (Backlog)
-- [ ] **[Task Title]**: [Brief description]
-  - **Impact**: [High/Medium/Low]
-  - **Effort**: [Time estimate]
+[Only for actual findings]
+- [ ] **Update [count] outdated packages**: Major versions behind
+  - **Evidence**: npm outdated showed [list]
+  - **Risk**: Potential security patches missing
+  - **Effort**: [time based on breaking changes]
 
 ### 🔵 LOW (Future Consideration)
-- [ ] **[Task Title]**: [Brief description]
-```
+[Minor issues with evidence]
+- [ ] **Configure automated dependency updates**
+  - **Evidence**: No dependabot.yml or renovate config found
+  - **Benefit**: Automated security patches
+  - **Effort**: 2 hours setup
 
-### Implementation
-1. If `code-review-todo-list.md` doesn't exist, create it with proper header
-2. Append findings under appropriate priority sections
-3. Include specific file references and effort estimates
-4. Tag with analysis type for filtering (e.g., `#security`, `#performance`, `#api`)
+### ❌ MISSING SECURITY TOOLING
+- [ ] **No automated vulnerability scanning**
+  - **Searched**: .github/workflows/, CI config files
+  - **Risk**: Vulnerabilities may go undetected
+  - **Recommendation**: Add [npm audit/snyk/etc] to CI
+
+### Implementation Rules
+1. ONLY create todos for issues found in actual scans
+2. EVERY vulnerability must reference the scanning tool that found it
+3. EVERY abandoned package must show last update evidence
+4. NO hypothetical vulnerabilities or example packages
+5. Include specific commands to fix each issue
+6. Tag with `#dependencies #security #verified`
