@@ -69,11 +69,73 @@ You are a software architecture engineer specializing in codebase exploration an
 
 **CRITICAL: This is prompt #2 in the analysis chain.**
 
+## 🔍 Smart Dependency Validation
+
+**MANDATORY: Execute this validation before proceeding with analysis**
+
+```bash
+## Enhanced Dependency Validation Framework
+
+validate_required_analysis() {
+  local file=$1
+  local analysis_name=$2
+  local min_evidence_count=${3:-3}
+  
+  echo "=== Validating $analysis_name ==="
+  
+  if [ ! -f "$file" ]; then
+    echo "❌ ERROR: Required analysis missing: $file"
+    echo "Please run prompt #1 (Codebase Overview) first."
+    echo "Cannot proceed with architecture analysis without component discovery."
+    exit 1
+  fi
+  
+  # Check for actual findings with evidence
+  local evidence_count=$(grep -c ":[0-9]\+" "$file" 2>/dev/null || echo "0")
+  local component_count=$(grep -c "✓.*FOUND\|✓.*Component" "$file" 2>/dev/null || echo "0")
+  
+  if [ "$evidence_count" -lt "$min_evidence_count" ]; then
+    echo "❌ ERROR: $analysis_name has insufficient evidence ($evidence_count file:line references)"
+    echo "Expected at least $min_evidence_count evidence points for reliable analysis."
+    echo "Please re-run prompt #1 to ensure thorough component discovery."
+    exit 1
+  fi
+  
+  if [ "$component_count" -eq 0 ]; then
+    echo "❌ ERROR: No components found in $analysis_name"
+    echo "Architecture analysis requires discovered components as foundation."
+    echo "Please re-run prompt #1 with proper component discovery."
+    exit 1
+  fi
+  
+  echo "✅ VALIDATED: $analysis_name"
+  echo "   - Evidence points: $evidence_count"
+  echo "   - Components found: $component_count"
+  echo "   - Ready for architecture analysis"
+}
+
+# Validate codebase overview before proceeding
+validate_required_analysis "docs/code-review/1-CODEBASE_OVERVIEW.md" "Codebase Overview" 5
+
+# Extract verified components for analysis
+echo "=== Loading verified components from overview ==="
+VERIFIED_COMPONENTS=$(grep -A 20 "## Component" docs/code-review/1-CODEBASE_OVERVIEW.md | grep "✓.*FOUND\|✓.*Component" || echo "")
+
+if [ -z "$VERIFIED_COMPONENTS" ]; then
+  echo "❌ ERROR: No verified components found in overview"
+  echo "Cannot perform architecture analysis without validated components."
+  exit 1
+fi
+
+echo "✅ Loaded components for analysis:"
+echo "$VERIFIED_COMPONENTS" | head -5
+```
+
 **Input Validation:**
-- **REQUIRED**: First read `docs/code-review/1-CODEBASE_OVERVIEW.md` if exists
-- **VERIFY**: All file references from prompt #1 still exist
-- **USE**: Only validated components from prompt #1 as starting points
-- **REJECT**: Any components from prompt #1 that cannot be verified
+- **REQUIRED**: Codebase overview with minimum 5 evidence points and verified components
+- **VERIFY**: All file references from prompt #1 still exist and are accessible
+- **USE**: Only validated components from prompt #1 as architectural starting points
+- **REJECT**: Any components from prompt #1 that cannot be verified in current codebase state
 
 **Evidence Requirements:**
 - Every architectural pattern MUST show actual code evidence
@@ -81,10 +143,108 @@ You are a software architecture engineer specializing in codebase exploration an
 - Every design decision MUST cite actual implementation files
 - Every diagram element MUST correspond to verified code
 
+## 🧠 Enhanced Memory Integration
+
+**MANDATORY: Execute memory operations for chain continuity**
+
+```bash
+## Standardized Memory Operations for Architecture Analysis
+
+# Initialize memory context for architecture analysis
+initialize_memory_context() {
+  echo "=== Initializing Memory Context for Architecture Analysis ==="
+  
+  # Retrieve previous architecture insights
+  PREVIOUS_INSIGHTS=$(memory_read operation="search" \
+    options='{"query":"architecture components patterns design","repository":"'$REPO_URL'"}')
+  
+  if [ -n "$PREVIOUS_INSIGHTS" ]; then
+    echo "✅ Retrieved previous architecture insights:"
+    echo "$PREVIOUS_INSIGHTS" | head -3
+    echo "Building upon previous architectural understanding..."
+  else
+    echo "ℹ️  No previous architecture context found - starting fresh analysis"
+  fi
+  
+  # Get component discoveries from recent sessions
+  RECENT_COMPONENTS=$(memory_read operation="search" \
+    options='{"query":"component discovered verified file:","repository":"'$REPO_URL'"}')
+  
+  if [ -n "$RECENT_COMPONENTS" ]; then
+    echo "✅ Found recent component discoveries:"
+    echo "$RECENT_COMPONENTS" | head -2
+  fi
+}
+
+# Store architecture findings with evidence
+store_architecture_findings() {
+  local component_count=$1
+  local pattern_count=$2
+  local evidence_locations=$3
+  
+  echo "=== Storing Architecture Analysis Findings ==="
+  
+  # Store component inventory
+  memory_store_chunk \
+    content="Architecture Analysis: Discovered $component_count components with $pattern_count architectural patterns. Evidence: $evidence_locations" \
+    tags=["architecture", "components", "verified", "prompt-2", "analysis-chain"] \
+    repository="$REPO_URL" \
+    session_id="$SESSION_ID"
+  
+  # Store architectural decisions found
+  if [ -n "$ARCHITECTURAL_DECISIONS" ]; then
+    memory_store_decision \
+      decision="Architectural patterns identified: $ARCHITECTURAL_DECISIONS" \
+      rationale="Based on code analysis with file:line evidence. Patterns verified through actual implementation discovery." \
+      context="Prompt #2 architecture analysis - foundation for security, API, and performance analysis" \
+      repository="$REPO_URL" \
+      session_id="$SESSION_ID"
+  fi
+  
+  # Store components for cross-reference by later prompts
+  memory_store_chunk \
+    content="Component registry for analysis chain: $VERIFIED_COMPONENTS" \
+    tags=["component-registry", "analysis-foundation", "prompt-2", "for-chain-use"] \
+    repository="$REPO_URL" \
+    session_id="$SESSION_ID"
+  
+  echo "✅ Architecture findings stored for chain continuity"
+}
+
+# Get architecture insights from memory
+get_memory_insights() {
+  echo "=== Checking for Architecture Insights ==="
+  
+  # Look for similar architectural patterns
+  SIMILAR_PATTERNS=$(memory_read operation="find_similar" \
+    options='{"problem":"analyzing system architecture and component relationships","repository":"'$REPO_URL'"}')
+  
+  if [ -n "$SIMILAR_PATTERNS" ]; then
+    echo "💡 Similar architecture analysis insights found:"
+    echo "$SIMILAR_PATTERNS" | head -2
+    echo "Applying insights to current analysis..."
+  fi
+  
+  # Get AI suggestions for architecture analysis
+  AI_SUGGESTIONS=$(memory_intelligence operation="suggest_related" \
+    options='{"current_context":"analyzing software architecture and component design","repository":"'$REPO_URL'","session_id":"'$SESSION_ID'"}')
+  
+  if [ -n "$AI_SUGGESTIONS" ]; then
+    echo "🤖 AI suggestions for architecture analysis:"
+    echo "$AI_SUGGESTIONS" | head -2
+  fi
+}
+
+# Execute memory operations
+initialize_memory_context
+get_memory_insights
+```
+
 **Chain Foundation:**
-- Store only verified architectural patterns with tags: `["architecture", "components", "prompt-2", "verified"]`
-- Document actual file dependencies for prompts 3-18 to analyze
-- Include line-specific references for security and performance analysis
+- Store verified architectural patterns with tags: `["architecture", "components", "verified", "prompt-2", "analysis-chain"]`
+- Create component registry in memory for cross-prompt access
+- Store architectural decisions for security and performance analysis reference
+- Enable memory-driven insights for similar architecture patterns
 
 ## File Organization
 

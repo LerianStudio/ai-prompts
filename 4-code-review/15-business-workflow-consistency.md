@@ -319,7 +319,7 @@ fi
 
 ## Token-Optimized Output Structure
 
-Create `docs/code-review/14-BUSINESS_WORKFLOW_CONSISTENCY.md`:
+Create `docs/code-review/15-BUSINESS_WORKFLOW_CONSISTENCY.md`:
 
 ```markdown
 # Business Workflow Consistency Analysis
@@ -412,6 +412,14 @@ memory_store_chunk "Workflow Validation: [summary]" session_id repository
 This prompt completes the 16-prompt analysis chain by validating that technical implementations serve business needs effectively. Cross-reference architectural decisions (#1), API contracts (#4), and business analysis (#3) to ensure technical solutions align with business workflow requirements.
 
 **Final Chain Validation**: Ensure all technical analysis outputs (#1-15) support identified business workflows and client integration patterns.
+
+## File Organization
+
+**REQUIRED OUTPUT LOCATIONS:**
+- `docs/code-review/15-BUSINESS_WORKFLOW_CONSISTENCY.md` - Business workflow analysis report
+- `docs/code-review/code-review-todo-list.md` - Append workflow findings to consolidated todo list
+
+**MANDATORY**: Use the Write tool to create these files after completing the analysis.
 
 ## 📋 Todo List Generation
 

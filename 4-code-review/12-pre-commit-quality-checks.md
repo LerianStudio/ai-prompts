@@ -654,6 +654,14 @@ memory_tasks session_end session_id="quality-check-$(date +%s)" repository="gith
 - **Language Agnostic**: Adapt to whatever build system is found
 
 
+## File Organization
+
+**REQUIRED OUTPUT LOCATIONS:**
+- `docs/code-review/12-QUALITY_REPORT.md` - Pre-commit quality analysis report
+- `docs/code-review/code-review-todo-list.md` - Append quality findings to consolidated todo list
+
+**MANDATORY**: Use the Write tool to create these files after completing the analysis.
+
 ## 📋 Todo List Generation
 
 **REQUIRED**: Generate or append to `docs/code-review/code-review-todo-list.md` with findings from this analysis.

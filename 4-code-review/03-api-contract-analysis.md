@@ -97,11 +97,77 @@ You are an API architect specializing in API design and contract analysis. Your 
 
 **CRITICAL: This is prompt #3 in the analysis chain.**
 
+## 🔍 Smart Dependency Validation
+
+**MANDATORY: Execute this validation before proceeding with API analysis**
+
+```bash
+## Enhanced Dependency Validation Framework
+
+validate_required_analysis() {
+  local file=$1
+  local analysis_name=$2
+  local min_evidence_count=${3:-3}
+  
+  echo "=== Validating $analysis_name ==="
+  
+  if [ ! -f "$file" ]; then
+    echo "❌ ERROR: Required analysis missing: $file"
+    echo "Please run previous analyses in order: #1 → #2 → #3"
+    exit 1
+  fi
+  
+  local evidence_count=$(grep -c ":[0-9]\+" "$file" 2>/dev/null || echo "0")
+  local findings_count=$(grep -c "✓.*FOUND\|✓.*Component\|✓.*VERIFIED" "$file" 2>/dev/null || echo "0")
+  
+  if [ "$evidence_count" -lt "$min_evidence_count" ]; then
+    echo "❌ ERROR: $analysis_name has insufficient evidence ($evidence_count file:line references)"
+    echo "Expected at least $min_evidence_count for reliable API analysis."
+    exit 1
+  fi
+  
+  if [ "$findings_count" -eq 0 ]; then
+    echo "❌ ERROR: No verified findings in $analysis_name"
+    echo "API analysis requires verified components as foundation."
+    exit 1
+  fi
+  
+  echo "✅ VALIDATED: $analysis_name ($evidence_count evidence, $findings_count findings)"
+}
+
+# Validate prerequisite analyses
+validate_required_analysis "docs/code-review/1-CODEBASE_OVERVIEW.md" "Codebase Overview" 5
+validate_required_analysis "docs/code-review/2-ARCHITECTURE_ANALYSIS.md" "Architecture Analysis" 3
+
+# Extract API-related components from architecture analysis
+echo "=== Loading API components from architecture analysis ==="
+API_COMPONENTS=$(grep -B2 -A2 "api\|route\|controller\|handler\|endpoint" docs/code-review/2-ARCHITECTURE_ANALYSIS.md | grep "✓\|Path:\|File:" || echo "")
+
+if [ -z "$API_COMPONENTS" ]; then
+  echo "⚠️  WARNING: No API components found in architecture analysis"
+  echo "Will perform fresh API discovery, but this may indicate incomplete previous analysis"
+else
+  echo "✅ Found API-related components for analysis:"
+  echo "$API_COMPONENTS" | head -5
+fi
+
+# Verify architecture analysis found component paths for API search
+COMPONENT_PATHS=$(grep -oE "Path:.*\/" docs/code-review/2-ARCHITECTURE_ANALYSIS.md | sed 's/Path: *//' | sort -u)
+if [ -z "$COMPONENT_PATHS" ]; then
+  echo "❌ ERROR: No component paths found in architecture analysis"
+  echo "API analysis requires discovered paths as search foundation"
+  exit 1
+fi
+
+echo "✅ Will search for APIs in verified paths:"
+echo "$COMPONENT_PATHS"
+```
+
 **Input Validation:**
-- **REQUIRED**: First read `docs/code-review/1-CODEBASE_OVERVIEW.md` and `docs/code-review/2-ARCHITECTURE_ANALYSIS.md`
-- **VERIFY**: All API-related files from previous analyses still exist
-- **USE**: Only components verified in prompts #1-2 as search locations
-- **REJECT**: Any API references that cannot be traced to actual code
+- **REQUIRED**: Codebase overview AND architecture analysis with verified components
+- **VERIFY**: API-related components and paths from architecture analysis exist
+- **USE**: Only verified component paths from prompts #1-2 as API search locations
+- **REJECT**: Any API references that cannot be traced to verified components
 
 **Evidence Requirements:**
 - Every endpoint MUST have file:line reference
@@ -110,16 +176,129 @@ You are an API architect specializing in API design and contract analysis. Your 
 - Every breaking change MUST reference actual git history
 - NO example endpoints without real code backing
 
+## 🧠 Enhanced Memory Integration
+
+**MANDATORY: Execute memory operations for API analysis chain continuity**
+
+```bash
+## Standardized Memory Operations for API Contract Analysis
+
+# Initialize API analysis memory context
+initialize_api_memory_context() {
+  echo "=== Initializing Memory Context for API Analysis ==="
+  
+  # Retrieve previous API insights and patterns
+  PREVIOUS_API_INSIGHTS=$(memory_read operation="search" \
+    options='{"query":"API endpoints REST authentication versioning","repository":"'$REPO_URL'"}')
+  
+  if [ -n "$PREVIOUS_API_INSIGHTS" ]; then
+    echo "✅ Retrieved previous API insights:"
+    echo "$PREVIOUS_API_INSIGHTS" | head -3
+    echo "Building upon previous API understanding..."
+  else
+    echo "ℹ️  No previous API context found - performing fresh API analysis"
+  fi
+  
+  # Get component architecture context for API mapping
+  ARCHITECTURE_CONTEXT=$(memory_read operation="search" \
+    options='{"query":"component-registry analysis-foundation API controller","repository":"'$REPO_URL'"}')
+  
+  if [ -n "$ARCHITECTURE_CONTEXT" ]; then
+    echo "✅ Found architecture context for API mapping:"
+    echo "$ARCHITECTURE_CONTEXT" | head -2
+  fi
+  
+  # Look for API design patterns and best practices
+  API_PATTERNS=$(memory_read operation="find_similar" \
+    options='{"problem":"API design and contract analysis","repository":"'$REPO_URL'"}')
+  
+  if [ -n "$API_PATTERNS" ]; then
+    echo "💡 Similar API design patterns found:"
+    echo "$API_PATTERNS" | head -2
+  fi
+}
+
+# Store API contract findings with endpoints and patterns
+store_api_contract_findings() {
+  local endpoint_count=$1
+  local breaking_changes=$2
+  local security_endpoints=$3
+  
+  echo "=== Storing API Contract Analysis Findings ==="
+  
+  # Store API endpoint inventory
+  memory_store_chunk \
+    content="API Contract Analysis: Discovered $endpoint_count endpoints with $breaking_changes breaking changes. Security-critical endpoints: $security_endpoints" \
+    tags=["api-contracts", "endpoints", "verified", "prompt-3", "analysis-chain"] \
+    repository="$REPO_URL" \
+    session_id="$SESSION_ID"
+  
+  # Store breaking change decisions
+  if [ "$breaking_changes" -gt 0 ]; then
+    memory_store_decision \
+      decision="Breaking changes detected in API contracts requiring version management" \
+      rationale="API analysis found $breaking_changes breaking changes with endpoint evidence. These affect client integration and backward compatibility." \
+      context="Prompt #3 API contract analysis - critical for client impact assessment" \
+      repository="$REPO_URL" \
+      session_id="$SESSION_ID"
+  fi
+  
+  # Store security-critical endpoints for security analysis
+  memory_store_chunk \
+    content="Security-critical API endpoints for vulnerability assessment: $SECURITY_CRITICAL_ENDPOINTS" \
+    tags=["api-security", "critical-endpoints", "prompt-3", "for-security-analysis"] \
+    repository="$REPO_URL" \
+    session_id="$SESSION_ID"
+  
+  # Store API endpoints for test coverage prioritization
+  memory_store_chunk \
+    content="API endpoints requiring test coverage: $ALL_API_ENDPOINTS" \
+    tags=["api-testing", "test-targets", "prompt-3", "for-test-analysis"] \
+    repository="$REPO_URL" \
+    session_id="$SESSION_ID"
+  
+  echo "✅ API contract findings stored for chain continuity"
+}
+
+# Get API design insights and recommendations
+get_api_insights() {
+  echo "=== Checking for API Design Insights ==="
+  
+  # Get AI suggestions for API analysis focus
+  AI_API_SUGGESTIONS=$(memory_intelligence operation="suggest_related" \
+    options='{"current_context":"analyzing API contracts and endpoint design","repository":"'$REPO_URL'","session_id":"'$SESSION_ID'"}')
+  
+  if [ -n "$AI_API_SUGGESTIONS" ]; then
+    echo "🤖 AI suggestions for API contract analysis:"
+    echo "$AI_API_SUGGESTIONS" | head -2
+  fi
+  
+  # Check for API design patterns and anti-patterns
+  API_BEST_PRACTICES=$(memory_read operation="search" \
+    options='{"query":"API design REST patterns best practices","repository":"'$REPO_URL'"}')
+  
+  if [ -n "$API_BEST_PRACTICES" ]; then
+    echo "💡 Previous API design patterns and best practices:"
+    echo "$API_BEST_PRACTICES" | head -2
+  fi
+}
+
+# Execute API analysis memory operations
+initialize_api_memory_context
+get_api_insights
+```
+
 **Chain Foundation:**
-- Store only verified API contracts with tags: `["api-contracts", "breaking-changes", "prompt-3", "verified"]`
-- Document actual endpoints for security analysis in later prompts
-- Include exact file locations for performance analysis
+- Store verified API contracts with tags: `["api-contracts", "endpoints", "verified", "prompt-3", "analysis-chain"]`
+- Create endpoint registry for security vulnerability assessment
+- Store security-critical endpoints for priority security analysis
+- Store API endpoints for comprehensive test coverage mapping
 
 ## File Organization
 
 **REQUIRED OUTPUT LOCATIONS:**
 
-- `docs/code-review/2-API_CONTRACT.md` - Complete API contract analysis with schemas
+- `docs/code-review/3-API_CONTRACT_ANALYSIS.md` - Complete API contract analysis with schemas
 - `tests/contracts/` - Generated contract test suites
 
 **IMPORTANT RULES:**

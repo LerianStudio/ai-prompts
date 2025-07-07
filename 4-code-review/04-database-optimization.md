@@ -122,7 +122,7 @@ You are a database architect specializing in schema analysis and query optimizat
 
 **REQUIRED OUTPUT LOCATIONS:**
 
-- `docs/code-review/3-DATABASE_ANALYSIS.md` - Complete database assessment with optimization plan
+- `docs/code-review/4-DATABASE_OPTIMIZATION.md` - Complete database assessment with optimization plan
 - `scripts/db-monitor.js` - Database health monitoring script
 
 **IMPORTANT RULES:**

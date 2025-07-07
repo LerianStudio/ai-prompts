@@ -125,8 +125,8 @@ You are a deployment preparation specialist focusing on discovering ACTUAL deplo
 
 **REQUIRED OUTPUT LOCATIONS:**
 
-- `docs/code-review/16-QUALITY_REPORT.md` - Quality assessment report
-- `docs/code-review/16-CLEANUP_SUMMARY.md` - Cleanup actions taken
+- `docs/code-review/17-QUALITY_REPORT.md` - Quality assessment report
+- `docs/code-review/17-CLEANUP_SUMMARY.md` - Cleanup actions taken
 
 **IMPORTANT RULES:**
 

@@ -507,3 +507,11 @@ This prompt (#18) completes the analysis chain by consolidating ONLY discovered 
 **Developer Comment Discovery**: The prompt searches for actual `///AUTHOR` patterns in source code, extracts the real comments found, identifies the code context, and includes them with proper file:line attribution - not example comments.
 
 **Evidence Requirements**: Every item in the final todo list MUST trace back to a specific finding from a previous analysis or a discovered comment in the codebase. Items marked "NOT FOUND" represent expected components that were searched for but don't exist.
+
+## File Organization
+
+**REQUIRED OUTPUT LOCATIONS:**
+- `docs/code-review/18-COMPREHENSIVE_TODO_LIST.md` - Final consolidated task list with evidence
+- `docs/code-review/code-review-todo-list.md` - Update with final comprehensive findings
+
+**MANDATORY**: Use the Write tool to create these files after completing the synthesis analysis.

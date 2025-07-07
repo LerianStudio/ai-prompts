@@ -101,13 +101,135 @@ You are a production readiness auditor specializing in discovering ACTUAL produc
 
 **CRITICAL: This is prompt #16 in the analysis chain.**
 
+## 🔍 Smart Dependency Validation
+
+**MANDATORY: Execute this validation before proceeding with production readiness audit**
+
+```bash
+## Enhanced Production Readiness Dependency Validation
+
+validate_production_readiness_prerequisites() {
+  echo "=== Validating Prerequisites for Production Readiness Audit ==="
+  
+  local critical_analyses=(
+    "docs/code-review/1-CODEBASE_OVERVIEW.md:Codebase Overview:5:required"
+    "docs/code-review/7-SECURITY_ANALYSIS.md:Security Analysis:3:critical"
+    "docs/code-review/10-TEST_COVERAGE.md:Test Coverage:3:critical"
+    "docs/code-review/11-OBSERVABILITY_GAPS.md:Observability:2:critical"
+    "docs/code-review/13-DOCUMENTATION_GAPS.md:Documentation:2:important"
+  )
+  
+  local validated_count=0
+  local total_blockers=0
+  local critical_issues=""
+  local production_blockers=""
+  
+  for analysis_info in "${critical_analyses[@]}"; do
+    IFS=':' read -r file name min_evidence priority <<< "$analysis_info"
+    
+    if [ ! -f "$file" ]; then
+      if [ "$priority" = "required" ]; then
+        echo "❌ ERROR: Required analysis missing: $name ($file)"
+        echo "Production readiness audit requires component discovery"
+        exit 1
+      elif [ "$priority" = "critical" ]; then
+        echo "⚠️  CRITICAL MISSING: $name analysis not found"
+        echo "   Production audit will proceed but cannot assess $name readiness"
+        continue
+      else
+        echo "ℹ️  OPTIONAL: $name not found - limited production scope"
+        continue
+      fi
+    fi
+    
+    local evidence_count=$(grep -c ":[0-9]\+" "$file" 2>/dev/null || echo "0")
+    local issue_count=$(grep -c "❌\|⚠️\|CRITICAL\|HIGH" "$file" 2>/dev/null || echo "0")
+    local blocker_count=$(grep -c "BLOCKER\|CRITICAL.*ISSUE\|SECURITY.*CRITICAL" "$file" 2>/dev/null || echo "0")
+    
+    if [ "$evidence_count" -ge "$min_evidence" ]; then
+      echo "✅ VALIDATED: $name ($evidence_count evidence, $issue_count issues, $blocker_count blockers)"
+      ((validated_count++))
+      ((total_blockers += blocker_count))
+      
+      # Extract critical issues for production assessment
+      if [ "$issue_count" -gt 0 ]; then
+        local issues=$(grep -E "❌|⚠️|CRITICAL|HIGH" "$file" | head -3)
+        critical_issues="$critical_issues\n[$name] $issues"
+      fi
+      
+      # Extract production blockers
+      if [ "$blocker_count" -gt 0 ]; then
+        local blockers=$(grep -E "BLOCKER|CRITICAL.*ISSUE|SECURITY.*CRITICAL" "$file" | head -2)
+        production_blockers="$production_blockers\n[$name] $blockers"
+      fi
+    else
+      echo "⚠️  INSUFFICIENT: $name has limited evidence ($evidence_count/$min_evidence)"
+    fi
+  done
+  
+  if [ "$validated_count" -eq 0 ]; then
+    echo "❌ ERROR: No validated analyses found for production readiness assessment"
+    echo "Cannot determine production readiness without prior security/test/observability analysis"
+    exit 1
+  fi
+  
+  echo "✅ Production readiness prerequisites: $validated_count analyses with $total_blockers total blockers"
+  
+  if [ -n "$critical_issues" ]; then
+    echo "⚠️  Pre-existing critical issues found:"
+    echo -e "$critical_issues" | head -5
+  fi
+  
+  if [ -n "$production_blockers" ]; then
+    echo "🚫 Pre-existing production blockers found:"
+    echo -e "$production_blockers" | head -3
+    echo "⚠️  These blockers MUST be resolved before production deployment"
+  fi
+}
+
+# Validate production readiness dependencies
+validate_production_readiness_prerequisites
+
+# Extract production-critical findings from previous analyses
+echo "=== Consolidating production-critical findings ==="
+
+# Get security blockers
+SECURITY_BLOCKERS=""
+if [ -f "docs/code-review/7-SECURITY_ANALYSIS.md" ]; then
+  SECURITY_BLOCKERS=$(grep -E "CRITICAL|HIGH.*RISK|BLOCKER" docs/code-review/7-SECURITY_ANALYSIS.md | head -5)
+  if [ -n "$SECURITY_BLOCKERS" ]; then
+    echo "🚫 Security blockers requiring resolution before production:"
+    echo "$SECURITY_BLOCKERS" | head -2
+  fi
+fi
+
+# Get test coverage blockers
+TEST_BLOCKERS=""
+if [ -f "docs/code-review/10-TEST_COVERAGE.md" ]; then
+  TEST_BLOCKERS=$(grep -E "UNTESTED.*CRITICAL|0%.*coverage|NO.*TESTS" docs/code-review/10-TEST_COVERAGE.md | head -5)
+  if [ -n "$TEST_BLOCKERS" ]; then
+    echo "🚫 Test coverage blockers:"
+    echo "$TEST_BLOCKERS" | head -2
+  fi
+fi
+
+# Get observability gaps
+OBSERVABILITY_GAPS=""
+if [ -f "docs/code-review/11-OBSERVABILITY_GAPS.md" ]; then
+  OBSERVABILITY_GAPS=$(grep -E "NO.*LOGGING|NO.*METRICS|NO.*HEALTH" docs/code-review/11-OBSERVABILITY_GAPS.md | head -5)
+  if [ -n "$OBSERVABILITY_GAPS" ]; then
+    echo "⚠️  Observability gaps affecting production readiness:"
+    echo "$OBSERVABILITY_GAPS" | head -2
+  fi
+fi
+```
+
 **Input Validation:**
-- **REQUIRED**: First read ALL outputs from prompts #1-15 if they exist
-- **VERIFY**: Critical components from architecture analysis still exist
-- **USE**: Security vulnerabilities from prompt #7 for actual security blockers
-- **CHECK**: Test gaps from prompt #10 for quality gate failures
-- **EXAMINE**: Observability gaps from prompt #11 for monitoring readiness
-- **VALIDATE**: Documentation gaps from prompt #13 for operational readiness
+- **REQUIRED**: Codebase overview to identify production components
+- **CRITICAL**: Security, test coverage, and observability analyses to identify blockers
+- **IMPORTANT**: Documentation analysis to assess operational readiness
+- **CONSOLIDATE**: All critical issues from previous analyses into production readiness assessment
+- **PRIORITIZE**: Production blockers over nice-to-have improvements
 
 **Evidence Requirements:**
 - Every production blocker MUST have file:line evidence
@@ -126,8 +248,8 @@ You are a production readiness auditor specializing in discovering ACTUAL produc
 
 **REQUIRED OUTPUT LOCATIONS:**
 
-- `docs/code-review/15-READINESS_AUDIT.md` - Complete audit report with findings
-- `docs/code-review/15-CRITICAL_ISSUES.md` - Priority-ranked critical issues
+- `docs/code-review/16-READINESS_AUDIT.md` - Complete audit report with findings
+- `docs/code-review/16-CRITICAL_ISSUES.md` - Priority-ranked critical issues
 
 **IMPORTANT RULES:**
 

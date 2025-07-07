@@ -123,7 +123,7 @@ You are a supply chain security expert specializing in dependency management and
 
 **REQUIRED OUTPUT LOCATIONS:**
 
-- `docs/code-review/7-DEPENDENCY_HEALTH.md` - Complete dependency security and health report
+- `docs/code-review/8-DEPENDENCY_SECURITY.md` - Complete dependency security and health report
 - `scripts/dependency-monitor.js` - Automated monitoring script
 
 **IMPORTANT RULES:**
@@ -430,7 +430,7 @@ fi
 
 ### CRITICAL: Document Only Discovered Issues
 
-Create `docs/code-review/8-DEPENDENCY_HEALTH.md` with ONLY verified findings:
+Create `docs/code-review/8-DEPENDENCY_SECURITY.md` with ONLY verified findings:
 
 ````markdown
 # Dependency Health Analysis - VERIFIED FINDINGS ONLY
