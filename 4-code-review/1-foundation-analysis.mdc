@@ -1,0 +1,510 @@
+---
+description: Comprehensive foundation analysis combining overview, architecture, APIs, and database
+globs:
+alwaysApply: false
+---
+# Rule: Foundation Analysis - Technical Understanding
+
+## Goal
+
+To establish a comprehensive technical foundation by analyzing the codebase structure, architecture patterns, API design, and data layer. This combined analysis provides the essential context for all subsequent review phases.
+
+## 🧠 Enhanced Analysis Tools
+
+### Memory MCP Integration
+```yaml
+Operations:
+  - Search: Find architectural decisions, patterns, standards
+  - Store: Save codebase insights, architectural findings
+  - Retrieve: Get coding standards, best practices
+  
+Tags: ["code-review", "foundation", "architecture", "api", "database", "repository-name"]
+```
+
+### Sequential Thinking MCP
+```yaml
+Use For:
+  - Breaking down complex architectures
+  - Analyzing API design patterns
+  - Understanding data relationships
+  - Identifying architectural debt
+```
+
+### Zen MCP Tools
+- **analyze**: Overall codebase structure and patterns
+- **codereview**: Initial quality assessment
+- **thinkdeep**: Complex architectural decisions
+
+### Task Tool (ESSENTIAL)
+```yaml
+Parallel Searches:
+  - "Find all API endpoints and routes"
+  - "Identify service boundaries and modules"
+  - "Locate database schemas and migrations"
+  - "Search for configuration patterns"
+  - "Find architectural documentation"
+```
+
+## Process: Comprehensive Foundation
+
+### Phase 1: Initial Discovery
+```yaml
+1. Codebase Overview:
+   - Repository structure
+   - Technology stack identification
+   - Size and complexity metrics
+   - Development patterns
+
+2. Quick Wins:
+   - README analysis
+   - Configuration review
+   - Build system understanding
+   - Development workflow
+```
+
+### Phase 2: Architecture Analysis
+```yaml
+1. System Architecture:
+   - Component identification
+   - Service boundaries
+   - Communication patterns
+   - Dependency graph
+
+2. Design Patterns:
+   - Architectural style (monolith, microservices, etc.)
+   - Pattern consistency
+   - Anti-patterns
+   - Technical debt indicators
+
+3. Code Organization:
+   - Module structure
+   - Package dependencies
+   - Layering violations
+   - Cohesion and coupling
+```
+
+### Phase 3: API Design Review
+```yaml
+1. API Inventory:
+   - REST endpoints
+   - GraphQL schemas
+   - RPC interfaces
+   - WebSocket channels
+
+2. Contract Analysis:
+   - Request/response formats
+   - Validation rules
+   - Error handling
+   - Versioning strategy
+
+3. API Quality:
+   - RESTful compliance
+   - Consistency
+   - Documentation
+   - Security boundaries
+```
+
+### Phase 4: Database Analysis
+```yaml
+1. Schema Review:
+   - Table structures
+   - Relationships
+   - Indexes
+   - Constraints
+
+2. Data Patterns:
+   - Normalization level
+   - Performance optimizations
+   - Migration history
+   - Data integrity
+
+3. Query Analysis:
+   - Common patterns
+   - Performance risks
+   - N+1 problems
+   - Transaction boundaries
+```
+
+## Analysis Structure
+
+### 1. Executive Summary
+```markdown
+## Foundation Analysis Summary
+
+**Repository**: [Name]
+**Technology Stack**: [Primary languages and frameworks]
+**Architecture Style**: [Monolith/Microservices/Serverless/etc.]
+**Codebase Size**: [LOC, number of services/modules]
+**Maturity Level**: [Prototype/MVP/Production/Legacy]
+
+### Key Findings
+1. **Strengths**: [Top 3-5 architectural strengths]
+2. **Concerns**: [Top 3-5 architectural issues]
+3. **Technical Debt**: [Estimated level and main areas]
+```
+
+### 2. Detailed Analysis
+
+#### Codebase Structure
+```markdown
+### Repository Organization
+- **Structure Type**: [Monorepo/Polyrepo/Hybrid]
+- **Main Components**:
+  ```
+  src/
+  ├── services/     # [Description]
+  ├── models/       # [Description]
+  ├── controllers/  # [Description]
+  └── utils/        # [Description]
+  ```
+
+### Technology Analysis
+- **Languages**: [Primary and percentages]
+- **Frameworks**: [Core frameworks and versions]
+- **Build Tools**: [Build system and configuration]
+- **Dependencies**: [Number and categorization]
+```
+
+#### Architecture Patterns
+```markdown
+### Architectural Decisions
+1. **Pattern**: [e.g., Hexagonal Architecture]
+   - Implementation: [How it's implemented]
+   - Consistency: [Adherence level]
+   - Deviations: [Where it breaks]
+
+### Component Analysis
+| Component | Purpose | Dependencies | Health |
+|-----------|---------|--------------|--------|
+| [Name] | [Role] | [Key deps] | [Status] |
+
+### Communication Patterns
+- **Sync**: [HTTP/gRPC/etc.]
+- **Async**: [Queues/Events/etc.]
+- **Data Flow**: [Patterns observed]
+```
+
+#### API Design Assessment
+```markdown
+### API Inventory
+| Endpoint | Method | Purpose | Status |
+|----------|--------|---------|--------|
+| /api/v1/users | GET | List users | ✅ Stable |
+| /api/v1/orders | POST | Create order | ⚠️ Issues |
+
+### Contract Quality
+- **Consistency**: [Score/10]
+- **Documentation**: [Score/10]
+- **Versioning**: [Strategy assessment]
+- **Error Handling**: [Pattern analysis]
+
+### API Issues Found
+1. **Issue**: [Description]
+   - Severity: [High/Medium/Low]
+   - Impact: [What it affects]
+   - Fix: [Recommended approach]
+```
+
+#### Database Design Review
+```markdown
+### Schema Overview
+- **Database Type**: [PostgreSQL/MongoDB/etc.]
+- **Schema Complexity**: [Simple/Moderate/Complex]
+- **Table Count**: [Number]
+- **Relationships**: [Overview]
+
+### Design Quality
+1. **Normalization**: [Assessment]
+2. **Indexing**: [Strategy and gaps]
+3. **Constraints**: [Integrity rules]
+4. **Performance**: [Optimization level]
+
+### Data Issues
+| Issue | Location | Impact | Priority |
+|-------|----------|---------|----------|
+| Missing index | users.email | Slow queries | High |
+| No FK constraint | orders.user_id | Data integrity | Medium |
+```
+
+### 3. Architectural Diagrams
+```mermaid
+graph TB
+    subgraph "System Architecture"
+        A[Web UI] --> B[API Gateway]
+        B --> C[Auth Service]
+        B --> D[Business Logic]
+        D --> E[Database]
+        D --> F[Cache]
+        D --> G[Message Queue]
+    end
+```
+
+### 4. Technical Debt Assessment
+```markdown
+### Debt Categories
+1. **Architectural Debt**
+   - Inconsistent patterns
+   - Coupling issues
+   - Missing abstractions
+
+2. **API Debt**
+   - Inconsistent contracts
+   - Missing documentation
+   - Version sprawl
+
+3. **Database Debt**
+   - Schema issues
+   - Performance problems
+   - Migration backlog
+
+### Debt Prioritization
+| Debt Item | Impact | Effort | Priority | ROI |
+|-----------|--------|--------|----------|-----|
+| [Item] | High | Medium | P1 | High |
+```
+
+### 5. Improvement Opportunities
+```markdown
+### Quick Wins (< 1 week)
+- [ ] Add missing indexes
+- [ ] Fix API documentation
+- [ ] Update dependencies
+
+### Medium Term (1-4 weeks)
+- [ ] Refactor [component]
+- [ ] Implement caching layer
+- [ ] Standardize error handling
+
+### Long Term (> 1 month)
+- [ ] Architectural refactoring
+- [ ] Database optimization
+- [ ] API v2 design
+```
+
+## Quality Metrics
+
+### Foundation Health Score
+```yaml
+Architecture: [0-25]
+  - Clear patterns: 10
+  - Consistency: 10
+  - Documentation: 5
+
+API Design: [0-25]
+  - RESTful/GraphQL compliance: 10
+  - Documentation: 10
+  - Versioning: 5
+
+Database: [0-25]
+  - Schema quality: 10
+  - Performance: 10
+  - Integrity: 5
+
+Code Organization: [0-25]
+  - Structure: 10
+  - Dependencies: 10
+  - Maintainability: 5
+
+Total: [0-100]
+```
+
+## Gate 1: Technical Foundation Validation
+
+### Multi-Dimensional Validation Framework
+
+**Validation Dimensions:**
+1. **Technical Accuracy** - Architecture understanding correctness
+2. **Completeness** - Coverage of all system components
+3. **Clarity** - Quality of technical insights
+4. **Actionability** - Usefulness of findings for next phases
+5. **Risk Assessment** - Identification of critical issues
+
+### Validation Methodology
+
+#### 1A: Architecture Validation
+```yaml
+Purpose: Ensure complete and accurate system understanding
+Process: Systematic verification of architectural analysis
+
+Validation Steps:
+  1. Component Inventory:
+     - [ ] All services/modules identified
+     - [ ] Dependencies mapped correctly
+     - [ ] External integrations documented
+     - [ ] Infrastructure requirements clear
+  
+  2. Pattern Verification:
+     - [ ] Architectural style correctly identified
+     - [ ] Design patterns recognized
+     - [ ] Anti-patterns flagged
+     - [ ] Consistency assessed
+  
+  3. Technical Debt Assessment:
+     - [ ] Debt categories identified
+     - [ ] Impact quantified
+     - [ ] Remediation effort estimated
+     - [ ] Priority established
+```
+
+#### 1B: API Design Validation
+```yaml
+Purpose: Validate API analysis completeness and accuracy
+Process: Cross-reference API inventory with implementation
+
+Validation Criteria:
+  - [ ] All endpoints discovered (internal + external)
+  - [ ] Contract quality assessed accurately
+  - [ ] Versioning strategy understood
+  - [ ] Security boundaries identified
+  - [ ] Rate limiting and quotas documented
+```
+
+#### 1C: Database Analysis Validation
+```yaml
+Purpose: Ensure database layer fully understood
+Process: Verify schema analysis and performance assessment
+
+Validation Points:
+  - [ ] All databases and stores identified
+  - [ ] Schema complexity accurately assessed
+  - [ ] Performance bottlenecks found
+  - [ ] Data integrity risks identified
+  - [ ] Migration requirements clear
+```
+
+### Gate 1 Validation Checklist
+
+```yaml
+Technical Understanding:
+  Architecture:
+    - [ ] Component map complete and accurate
+    - [ ] Communication patterns documented
+    - [ ] Infrastructure requirements clear
+    Quality: [Poor/Fair/Good/Excellent]
+  
+  API Layer:
+    - [ ] All endpoints inventoried
+    - [ ] Contract quality assessed
+    - [ ] Integration points mapped
+    Quality: [Poor/Fair/Good/Excellent]
+  
+  Data Layer:
+    - [ ] Schema fully documented
+    - [ ] Performance risks identified
+    - [ ] Relationships understood
+    Quality: [Poor/Fair/Good/Excellent]
+
+Risk Identification:
+  Critical Issues Found:
+    - [ ] Security vulnerabilities noted
+    - [ ] Performance bottlenecks identified
+    - [ ] Scalability concerns raised
+    - [ ] Technical debt quantified
+  Risk Level: [Low/Medium/High/Critical]
+
+Documentation Quality:
+  Artifacts Created:
+    - [ ] Architecture diagrams clear and complete
+    - [ ] API documentation comprehensive
+    - [ ] Database documentation accurate
+    - [ ] Technical debt register created
+  Documentation Score: [0-100%]
+
+Readiness for Next Phase:
+  Prerequisites Met:
+    - [ ] Foundation for security analysis established
+    - [ ] Baseline for quality assessment created
+    - [ ] Context for business validation provided
+    - [ ] Risk areas identified for deep dive
+  Confidence Level: [0-100%]
+
+Gate 1 Decision Matrix:
+  PASS Criteria (All must be true):
+    - Technical understanding ≥ 85%
+    - Critical components 100% mapped
+    - No blocking knowledge gaps
+    - Documentation quality ≥ 80%
+  
+  CONDITIONAL Criteria:
+    - Technical understanding 70-84%
+    - Minor gaps in non-critical areas
+    - Workarounds available for gaps
+    - Plan to address during next phases
+  
+  FAIL Criteria (Any true = fail):
+    - Technical understanding < 70%
+    - Critical components unmapped
+    - Blocking knowledge gaps exist
+    - Unable to proceed safely
+
+Validation Score: [___]%
+Decision: [PASS/CONDITIONAL/FAIL]
+Rationale: [Detailed explanation of decision]
+```
+
+### Required Actions Before Next Phase
+
+**If CONDITIONAL:**
+1. List specific gaps to address
+2. Assign ownership for gap closure
+3. Set timeline for completion
+4. Define success criteria
+
+**If FAIL:**
+1. Identify blocking issues
+2. Create remediation plan
+3. Estimate additional time needed
+4. Re-run foundation analysis
+
+### Validation Evidence
+
+Document evidence supporting validation:
+- Screenshots of architecture diagrams
+- API endpoint counts and coverage metrics
+- Database complexity metrics
+- Technical debt quantification
+- Risk assessment matrix
+
+## Todo Generation
+
+```markdown
+## Foundation Analysis Todos
+
+### 🔴 CRITICAL (Immediate Action Required)
+- [ ] **[Task]**: [Description]
+  - Impact: [High/Medium/Low]
+  - Component: [Affected area]
+  - Effort: [Time estimate]
+
+### 🟡 HIGH (Sprint Priority)
+- [ ] **[Task]**: [Description]
+
+### 🟢 MEDIUM (Backlog)
+- [ ] **[Task]**: [Description]
+
+### 🔵 LOW (Future Consideration)
+- [ ] **[Task]**: [Description]
+```
+
+## Output
+
+**Location**: `/docs/code-review/1-foundation-analysis.md`
+
+## Next Steps
+
+After Gate 1 approval:
+1. Foundation understanding locked
+2. Proceed to Security & Compliance
+3. Use findings to guide deeper analysis
+4. Reference architecture in all subsequent phases
+
+## Analysis Checklist
+
+- [ ] Repository structure mapped
+- [ ] Architecture patterns identified
+- [ ] API contracts documented
+- [ ] Database design reviewed
+- [ ] Component dependencies traced
+- [ ] Technical debt assessed
+- [ ] Improvement opportunities listed
+- [ ] Gate 1 validation complete

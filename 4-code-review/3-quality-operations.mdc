@@ -1,0 +1,547 @@
+---
+description: Comprehensive quality and operations analysis combining testing, monitoring, and code quality
+globs:
+alwaysApply: false
+---
+# Rule: Quality & Operations Analysis
+
+## Goal
+
+To assess code quality, test coverage, and operational readiness through comprehensive analysis of testing strategies, observability implementation, and development practices. This phase ensures the codebase is maintainable and production-ready.
+
+## 🧠 Enhanced Analysis Tools
+
+### Memory MCP Integration
+```yaml
+Operations:
+  - Search: Find testing patterns, monitoring practices, quality standards
+  - Store: Save quality metrics, testing strategies, operational insights
+  - Retrieve: Get best practices, team standards, quality benchmarks
+  
+Tags: ["code-review", "quality", "testing", "monitoring", "operations", "repository-name"]
+```
+
+### Sequential Thinking MCP
+```yaml
+Use For:
+  - Analyzing test effectiveness
+  - Understanding monitoring gaps
+  - Planning quality improvements
+  - Reasoning about operational risks
+```
+
+### Zen MCP Tools
+- **codereview**: Deep code quality analysis
+- **testgen**: Identify missing test scenarios
+- **analyze**: Quality patterns and anti-patterns
+- **debug**: Root cause of quality issues
+
+### Task Tool (ESSENTIAL)
+```yaml
+Quality Searches:
+  - "Find all test files and test patterns"
+  - "Locate logging and monitoring code"
+  - "Search for error handling patterns"
+  - "Find performance optimizations"
+  - "Identify code quality tools configuration"
+```
+
+## Process: Multi-Dimensional Quality Review
+
+### Phase 1: Test Coverage Analysis
+```yaml
+Inputs Required:
+  - Foundation Analysis (architecture)
+  - Security findings (critical paths)
+  - Business logic understanding
+
+Assessment Areas:
+  1. Test Strategy:
+     - Unit test coverage
+     - Integration test scope
+     - E2E test scenarios
+     - Performance tests
+  
+  2. Test Quality:
+     - Test maintainability
+     - Assertion quality
+     - Mock usage
+     - Flakiness issues
+  
+  3. Coverage Gaps:
+     - Critical paths
+     - Edge cases
+     - Error scenarios
+     - Security tests
+```
+
+### Phase 2: Observability Assessment
+```yaml
+Monitoring Stack:
+  1. Logging:
+     - Log levels usage
+     - Structured logging
+     - Sensitive data filtering
+     - Log aggregation
+  
+  2. Metrics:
+     - Business metrics
+     - Technical metrics
+     - Custom metrics
+     - Dashboard coverage
+  
+  3. Tracing:
+     - Distributed tracing
+     - Request correlation
+     - Performance tracking
+     - Error tracking
+  
+  4. Alerting:
+     - Alert coverage
+     - Threshold accuracy
+     - Escalation paths
+     - Alert fatigue
+```
+
+### Phase 3: Code Quality Review
+```yaml
+Quality Dimensions:
+  1. Code Standards:
+     - Linting rules
+     - Formatting consistency
+     - Naming conventions
+     - Documentation standards
+  
+  2. Maintainability:
+     - Complexity metrics
+     - Duplication analysis
+     - Dependency coupling
+     - Code smells
+  
+  3. Development Practices:
+     - PR process
+     - Code review standards
+     - CI/CD pipeline
+     - Pre-commit hooks
+```
+
+## Analysis Structure
+
+### 1. Quality Executive Summary
+```markdown
+## Quality & Operations Summary
+
+**Test Coverage**: [Percentage and assessment]
+**Code Quality Score**: [A-F grade]
+**Observability Maturity**: [Basic/Intermediate/Advanced]
+**Operational Readiness**: [Ready/Gaps/Not Ready]
+
+### Key Findings
+1. **Testing**: [Main test coverage insight]
+2. **Monitoring**: [Observability status]
+3. **Quality**: [Code quality assessment]
+4. **Operations**: [Production readiness]
+```
+
+### 2. Test Coverage Analysis
+
+#### Coverage Metrics
+```markdown
+### Test Coverage Report
+| Component | Unit | Integration | E2E | Total |
+|-----------|------|-------------|-----|-------|
+| API | 85% | 70% | 40% | 65% |
+| Services | 75% | 60% | N/A | 67% |
+| Database | 45% | 80% | N/A | 62% |
+| **Overall** | **70%** | **65%** | **40%** | **58%** |
+
+### Test Quality Assessment
+- **Test Count**: [Unit: X, Integration: Y, E2E: Z]
+- **Execution Time**: [Fast/Acceptable/Slow]
+- **Flakiness**: [Stable/Some flaky/Many flaky]
+- **Maintenance**: [Low/Medium/High burden]
+```
+
+#### Critical Path Coverage
+```markdown
+### Business Critical Paths
+| Feature | Test Coverage | Risk | Priority |
+|---------|--------------|------|----------|
+| User Login | 95% | Low | ✅ |
+| Payment Process | 60% | HIGH | 🔴 |
+| Data Export | 30% | HIGH | 🔴 |
+
+### Missing Test Scenarios
+1. **Payment Edge Cases**
+   - Scenario: Failed payment retry
+   - Impact: Revenue loss
+   - Priority: CRITICAL
+   
+2. **Concurrent User Actions**
+   - Scenario: Race conditions
+   - Impact: Data corruption
+   - Priority: HIGH
+```
+
+### 3. Observability Assessment
+
+#### Logging Analysis
+```markdown
+### Logging Implementation
+- **Framework**: [Logger used]
+- **Structure**: [JSON/Plain text]
+- **Levels Used**: [DEBUG, INFO, WARN, ERROR]
+- **Correlation**: [Request ID tracking: Yes/No]
+
+### Log Quality Issues
+| Issue | Location | Impact | Fix |
+|-------|----------|--------|-----|
+| PII in logs | auth.service | Compliance | Mask sensitive data |
+| Missing context | payment.process | Debugging | Add transaction ID |
+| Excessive DEBUG | db.query | Performance | Reduce verbosity |
+```
+
+#### Metrics & Monitoring
+```markdown
+### Metrics Coverage
+| Metric Type | Implemented | Missing | Priority |
+|-------------|-------------|---------|----------|
+| Response Time | ✅ p50, p95, p99 | - | - |
+| Error Rate | ✅ 4xx, 5xx | Business errors | HIGH |
+| Throughput | ✅ RPS | Queue depth | MEDIUM |
+| Business | ⚠️ Partial | Conversion rate | HIGH |
+
+### Alerting Review
+- **Total Alerts**: [Count]
+- **Critical**: [Count and examples]
+- **Warning**: [Count and examples]
+- **Info**: [Count and examples]
+- **Alert Fatigue Risk**: [Low/Medium/High]
+```
+
+#### Tracing Implementation
+```markdown
+### Distributed Tracing
+- **Coverage**: [Percentage of services]
+- **Implementation**: [OpenTelemetry/Jaeger/etc.]
+- **Trace Sampling**: [Rate and strategy]
+
+### Tracing Gaps
+1. **Async Operations**: Not traced
+2. **Database Queries**: Partial coverage
+3. **External APIs**: No tracing
+```
+
+### 4. Code Quality Analysis
+
+#### Quality Metrics
+```markdown
+### Code Complexity
+| File | Complexity | LOC | Methods | Issues |
+|------|-----------|-----|---------|--------|
+| payment.service.js | 45 (HIGH) | 1200 | 15 | Refactor needed |
+| user.controller.js | 12 (OK) | 300 | 8 | Acceptable |
+
+### Duplication Analysis
+- **Duplication Rate**: 15%
+- **Hotspots**:
+  - Error handling (8 duplicates)
+  - API response formatting (5 duplicates)
+  - Validation logic (6 duplicates)
+```
+
+#### Development Practices
+```markdown
+### CI/CD Pipeline
+- **Build Time**: [Duration]
+- **Test Execution**: [Duration]
+- **Quality Gates**: [Configured/Missing]
+- **Deployment**: [Automated/Manual]
+
+### Pre-commit Checks
+- [ ] Linting
+- [ ] Formatting
+- [ ] Unit tests
+- [ ] Security scan
+- [ ] Commit message validation
+
+### Code Review Process
+- **PR Requirements**: [Defined/Undefined]
+- **Review Checklist**: [Exists/Missing]
+- **Average Review Time**: [Duration]
+```
+
+## Quality Scoring
+
+```yaml
+Quality Health Score:
+  Testing: [0-25]
+    - >80% coverage: 25
+    - 60-80% coverage: 15
+    - <60% coverage: 5
+  
+  Monitoring: [0-25]
+    - Comprehensive: 25
+    - Partial: 15
+    - Minimal: 5
+  
+  Code Quality: [0-25]
+    - High maintainability: 25
+    - Some issues: 15
+    - Many problems: 5
+  
+  Operations: [0-25]
+    - Production ready: 25
+    - Minor gaps: 15
+    - Major gaps: 5
+
+Total: [0-100]
+Maturity: [Basic/Developing/Advanced/Elite]
+```
+
+## Gate 3: Quality Assurance
+
+### Multi-Dimensional Quality Validation Framework
+
+**Validation Dimensions:**
+1. **Test Effectiveness** - Coverage and quality of testing
+2. **Operational Readiness** - Monitoring and observability maturity
+3. **Code Maintainability** - Quality metrics and standards
+4. **Process Maturity** - Development practices effectiveness
+5. **Performance Confidence** - Load and stress test coverage
+
+### Validation Methodology
+
+#### 3A: Test Coverage Validation
+```yaml
+Purpose: Ensure testing strategy provides confidence
+Process: Validate coverage metrics and test quality
+
+Validation Steps:
+  1. Coverage Analysis:
+     - [ ] Unit test coverage metrics accurate
+     - [ ] Integration test scenarios complete
+     - [ ] E2E tests cover critical user journeys
+     - [ ] Edge cases identified and tested
+  
+  2. Test Quality Assessment:
+     - [ ] Tests are deterministic (not flaky)
+     - [ ] Assertions meaningful and complete
+     - [ ] Test data management appropriate
+     - [ ] Performance benchmarks established
+  
+  3. Critical Path Verification:
+     - [ ] All business-critical paths identified
+     - [ ] Coverage exceeds minimum threshold
+     - [ ] Failure scenarios tested
+     - [ ] Recovery procedures validated
+```
+
+#### 3B: Observability Validation
+```yaml
+Purpose: Validate monitoring and debugging capabilities
+Process: Assess operational visibility and alerting
+
+Validation Criteria:
+  - [ ] All services have structured logging
+  - [ ] Key business metrics tracked
+  - [ ] Technical metrics comprehensive
+  - [ ] Distributed tracing implemented
+  - [ ] Alert thresholds properly calibrated
+  - [ ] Runbooks exist for critical alerts
+```
+
+#### 3C: Code Quality Validation
+```yaml
+Purpose: Ensure code meets maintainability standards
+Process: Verify quality metrics and development practices
+
+Validation Points:
+  - [ ] Complexity metrics within thresholds
+  - [ ] Duplication below acceptable levels
+  - [ ] Code coverage metrics reliable
+  - [ ] Linting rules comprehensive
+  - [ ] Pre-commit hooks effective
+```
+
+### Gate 3 Quality Validation Checklist
+
+```yaml
+Test Coverage Assessment:
+  Coverage Metrics:
+    - [ ] Unit test coverage ≥ target %
+    - [ ] Integration test coverage adequate
+    - [ ] E2E test coverage sufficient
+    - [ ] Performance tests exist
+    Overall Coverage: [X%]
+  
+  Test Quality:
+    - [ ] Zero flaky tests in CI
+    - [ ] Test execution time acceptable
+    - [ ] Test maintenance burden low
+    - [ ] Mock usage appropriate
+    Quality Score: [Poor/Fair/Good/Excellent]
+  
+  Critical Paths:
+    - [ ] All paths identified and documented
+    - [ ] Coverage meets requirements
+    - [ ] Risk areas have extra coverage
+    - [ ] Manual test plans for gaps
+    Path Coverage: [X%]
+
+Observability Assessment:
+  Logging:
+    - [ ] Structured logging implemented
+    - [ ] Log levels used appropriately
+    - [ ] Sensitive data filtered
+    - [ ] Correlation IDs present
+    Logging Maturity: [Basic/Good/Advanced]
+  
+  Monitoring:
+    - [ ] All services monitored
+    - [ ] SLIs/SLOs defined
+    - [ ] Dashboards comprehensive
+    - [ ] Alerts actionable
+    Monitoring Score: [0-100%]
+  
+  Incident Response:
+    - [ ] Runbooks comprehensive
+    - [ ] Escalation paths clear
+    - [ ] Recovery procedures tested
+    - [ ] Post-mortem process exists
+    Readiness: [Low/Medium/High]
+
+Code Quality Assessment:
+  Metrics:
+    - [ ] Cyclomatic complexity acceptable
+    - [ ] Code duplication minimal
+    - [ ] Technical debt tracked
+    - [ ] Dependency health good
+    Quality Grade: [A/B/C/D/F]
+  
+  Development Practices:
+    - [ ] Code review process effective
+    - [ ] CI/CD pipeline comprehensive
+    - [ ] Branch protection enabled
+    - [ ] Deployment automation mature
+    Process Maturity: [1-5]
+
+Performance Validation:
+  Testing:
+    - [ ] Load tests exist
+    - [ ] Stress tests performed
+    - [ ] Baseline established
+    - [ ] Bottlenecks identified
+    Performance Confidence: [Low/Medium/High]
+
+Gate 3 Decision Matrix:
+  PASS Criteria (All must be true):
+    - Critical path coverage ≥ 80%
+    - Monitoring covers all services
+    - Code quality grade ≥ B
+    - No high-severity quality issues
+  
+  CONDITIONAL Criteria:
+    - Critical path coverage 60-79%
+    - Some monitoring gaps exist
+    - Code quality grade C
+    - Quality issues have remediation plan
+  
+  FAIL Criteria (Any true = fail):
+    - Critical path coverage < 60%
+    - No production monitoring
+    - Code quality grade D or F
+    - Quality makes maintenance impossible
+
+Quality Score: [___]%
+Decision: [PASS/CONDITIONAL/FAIL]
+Rationale: [Detailed quality assessment]
+```
+
+### Required Actions Before Next Phase
+
+**If CONDITIONAL:**
+1. Create test improvement plan
+2. Implement missing monitors
+3. Schedule quality improvements
+4. Document technical debt
+
+**If FAIL:**
+1. Stop feature development
+2. Focus on quality improvements
+3. Implement missing tests
+4. Re-assess after improvements
+
+### Quality Evidence Documentation
+
+Required evidence for validation:
+- Test coverage reports
+- Test execution history
+- Monitoring dashboard screenshots
+- Code quality metrics
+- CI/CD pipeline configuration
+- Incident response documentation
+
+## Improvement Priorities
+
+### 🔴 CRITICAL (Production blockers)
+```markdown
+1. **Payment Process Tests**
+   - Coverage: 60% (target: 95%)
+   - Missing: Error scenarios
+   - Effort: 3 days
+   - Impact: Revenue protection
+
+2. **Error Tracking Missing**
+   - Current: No error aggregation
+   - Need: Sentry/Rollbar integration
+   - Effort: 1 day
+   - Impact: Production debugging
+```
+
+### 🟡 HIGH (Sprint priorities)
+```markdown
+1. **Performance Monitoring**
+   - Missing: Database query metrics
+   - Need: Query performance tracking
+   - Effort: 2 days
+   - Impact: Performance optimization
+
+2. **Integration Test Gaps**
+   - Coverage: 65% (target: 80%)
+   - Missing: API integration tests
+   - Effort: 1 week
+   - Impact: Reliability
+```
+
+### 🟢 MEDIUM (Backlog)
+```markdown
+1. **Code Duplication**
+   - Current: 15% duplication
+   - Target: <5%
+   - Effort: 3 days
+   - Impact: Maintainability
+```
+
+## Output
+
+**Location**: `/docs/code-review/3-quality-operations.md`
+
+## Next Steps
+
+After Gate 3 approval:
+1. Quality baseline established
+2. Proceed to Business & Documentation
+3. Implement critical quality fixes
+4. Enhance monitoring coverage
+
+## Quality Checklist
+
+- [ ] Test coverage analyzed
+- [ ] Critical paths verified
+- [ ] Logging assessed
+- [ ] Metrics reviewed
+- [ ] Alerting validated
+- [ ] Code quality measured
+- [ ] CI/CD evaluated
+- [ ] Gate 3 validation complete

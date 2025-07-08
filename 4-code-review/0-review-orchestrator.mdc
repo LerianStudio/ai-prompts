@@ -1,0 +1,280 @@
+---
+description: Streamlined code review orchestrator with 5 phases and mandatory validation gates
+globs: 
+alwaysApply: false
+---
+# Rule: Code Review Orchestration with Gates
+
+## Goal
+
+To guide a systematic code review process through 5 comprehensive phases with mandatory validation gates. This streamlined approach consolidates 18 separate analyses into manageable phases while maintaining depth and quality.
+
+## 🚀 Streamlined Architecture
+
+### 5-Phase Review Structure
+
+```
+1. Foundation Analysis → Gate 1 → 
+2. Security & Compliance → Gate 2 → 
+3. Quality & Operations → Gate 3 → 
+4. Business & Documentation → Gate 4 → 
+5. Production Readiness → Gate 5 → Ready for Deployment
+```
+
+### Key Design Principles
+
+1. **Comprehensive Coverage**: Each phase combines multiple related analyses
+2. **Progressive Validation**: Gates ensure quality before proceeding
+3. **Tool Integration**: Leverages Memory MCP, Sequential Thinking, Zen MCP, and Task tool
+4. **Confidence-Based Flow**: Adapts depth based on codebase complexity
+5. **Actionable Output**: Generates prioritized todo lists throughout
+
+## 🧠 Enhanced Tool Integration
+
+### Memory MCP Integration
+```yaml
+Essential Operations:
+  - Search: Find patterns, previous reviews, architectural decisions
+  - Store: Save findings, issues, improvement patterns
+  - Retrieve: Get standards, best practices, team conventions
+
+Tags: ["code-review", "phase-X", "repository-name", "findings"]
+```
+
+### Sequential Thinking MCP
+```yaml
+Use For:
+  - Analyzing complex architectural patterns
+  - Breaking down security vulnerabilities
+  - Planning refactoring strategies
+  - Reasoning about system improvements
+```
+
+### Zen MCP Tools (HIGHLY RECOMMENDED)
+- **codereview**: Comprehensive quality analysis with severity
+- **analyze**: Architecture and pattern analysis
+- **debug**: Root cause analysis for issues
+- **thinkdeep**: Complex problem exploration
+- **secaudit**: Security vulnerability assessment
+
+### Task Tool (ESSENTIAL FOR EFFICIENCY)
+- **Pattern Discovery**: Finding code patterns comprehensively
+- **Security Scanning**: Parallel vulnerability search
+- **Architecture Mapping**: Understanding dependencies
+- **Performance Analysis**: Identifying bottlenecks
+
+## Execution Flow
+
+### Starting the Review
+
+```bash
+# Load previous review context if available
+claude 0-memory-system/m0-memory-orchestrator.mdc
+
+# Begin code review
+claude 4-code-review/0-review-orchestrator.mdc
+```
+
+### Phase Execution
+
+Based on confidence scoring:
+- **High Confidence (80%+)**: Proceed autonomously through phases
+- **Medium (50-79%)**: Present findings for validation at gates
+- **Low (<50%)**: Request guidance on focus areas
+
+## The 5 Phases
+
+### Phase 1: Foundation Analysis
+**Combines**: Codebase overview, architecture, API contracts, database design
+**Purpose**: Establish comprehensive understanding of the system
+**Gate 1**: Technical foundation validated
+
+### Phase 2: Security & Compliance  
+**Combines**: Security vulnerabilities, dependency analysis, privacy compliance
+**Purpose**: Identify all security and compliance risks
+**Gate 2**: Security posture assessed
+
+### Phase 3: Quality & Operations
+**Combines**: Test coverage, observability, code quality checks
+**Purpose**: Assess operational readiness and maintainability
+**Gate 3**: Quality standards verified
+
+### Phase 4: Business & Documentation
+**Combines**: Business logic, documentation quality, workflow consistency
+**Purpose**: Validate business alignment and knowledge transfer
+**Gate 4**: Business requirements met
+
+### Phase 5: Production Readiness
+**Combines**: Production audit, deployment prep, comprehensive todos
+**Purpose**: Final validation and action planning
+**Gate 5**: Deployment ready
+
+## Confidence Scoring
+
+```yaml
+Complexity Assessment:
+  Codebase Size: [0-25]
+    - <10K LOC: 25
+    - 10K-100K LOC: 15
+    - >100K LOC: 5
+  
+  Architecture Clarity: [0-25]
+    - Well-documented: 25
+    - Some documentation: 15
+    - Minimal docs: 5
+  
+  Technology Stack: [0-25]
+    - Standard/familiar: 25
+    - Mixed/complex: 15
+    - Legacy/unusual: 5
+  
+  Review History: [0-25]
+    - Recent reviews exist: 25
+    - Old reviews: 15
+    - First review: 5
+
+Total Score: [0-100]
+Actions:
+  80+: Autonomous execution
+  50-79: Interactive validation
+  <50: Guided exploration
+```
+
+## Validation Gates
+
+All 5 gates are mandatory checkpoints:
+
+```yaml
+Gate Validation:
+  PASS: 
+    - All critical items addressed
+    - Quality criteria met
+    - Ready for next phase
+  
+  CONDITIONAL:
+    - Some issues need attention
+    - Can proceed with caveats
+    - Track items for later
+  
+  FAIL:
+    - Critical blockers found
+    - Must resolve before proceeding
+    - Return to phase for fixes
+```
+
+**The 5 Mandatory Gates**:
+1. **Gate 1** - Technical Foundation (after Foundation Analysis)
+2. **Gate 2** - Security Validation (after Security & Compliance)
+3. **Gate 3** - Quality Assurance (after Quality & Operations)
+4. **Gate 4** - Business Alignment (after Business & Documentation)
+5. **Gate 5** - Production Readiness (after final phase)
+
+## User Interaction Models
+
+### High-Confidence Path (80%+)
+```markdown
+"Starting comprehensive code review of [repository].
+
+Initial assessment:
+- Codebase: [size] with [tech stack]
+- Documentation: [status]
+- Previous reviews: [found/not found]
+- Confidence: 85%
+
+Proceeding with autonomous 5-phase analysis..."
+```
+
+### Medium-Confidence Path (50-79%)
+```markdown
+"I'll review [repository] with these focus options:
+
+Option A: Security-first review
+- Emphasize vulnerability scanning
+- Deep dependency analysis
+- Compliance verification
+
+Option B: Architecture-first review
+- System design analysis
+- Performance patterns
+- Scalability assessment
+
+Which aligns with your priorities?"
+```
+
+### Low-Confidence Path (<50%)
+```markdown
+"To effectively review this codebase, I need clarity on:
+
+1. **Primary Concerns**: What specific issues are you investigating?
+2. **Review Scope**: Full system or specific components?
+3. **Standards**: What coding standards should I validate against?
+4. **Timeline**: Is this pre-release or post-incident review?
+
+Let's establish the review parameters..."
+```
+
+## Output Organization
+
+```
+docs/code-review/
+├── review-summary.md              # Executive summary
+├── 1-foundation-analysis.md       # Combined technical analysis
+├── 2-security-compliance.md       # All security findings
+├── 3-quality-operations.md        # Quality and ops analysis
+├── 4-business-documentation.md    # Business and docs review
+├── 5-production-readiness.md      # Final validation
+├── code-review-todos.md           # Consolidated action items
+└── artifacts/                     # Diagrams, reports, etc.
+```
+
+## Phase Details
+
+### Which Phase to Run?
+
+#### Full Review (All 5 Phases)
+- New codebases
+- Pre-production validation
+- Quarterly assessments
+- Major refactoring prep
+
+#### Security Focus (Phases 1, 2, 5)
+- Security incidents
+- Compliance audits
+- Vulnerability assessments
+
+#### Quality Focus (Phases 1, 3, 5)
+- Performance issues
+- Bug investigations
+- Technical debt assessment
+
+#### Quick Review (Phases 1, 5)
+- Time-constrained reviews
+- Specific issue investigation
+- Sanity checks
+
+## Best Practices
+
+1. **Always Start with Memory**: Load context about the repository
+2. **Use All Tools**: Combine Task for search, Zen for analysis, Sequential for reasoning
+3. **Document at Gates**: Record decisions and rationale at each validation
+4. **Prioritize Findings**: Use severity levels consistently
+5. **Generate Todos Continuously**: Don't wait until the end
+6. **Store Patterns**: Use Memory MCP to build review knowledge
+
+## Next Steps
+
+1. Begin with Phase 1: Foundation Analysis
+2. Validate at each gate before proceeding
+3. Adjust depth based on findings
+4. Generate actionable todos throughout
+5. Store insights for future reviews
+
+## Success Criteria
+
+- All 5 phases completed or consciously skipped
+- Critical issues identified and prioritized
+- Actionable todo list generated
+- Review findings stored in memory
+- Team can execute improvements immediately
+
+Ready to begin the code review? I'll start with Phase 1: Foundation Analysis.

@@ -1,0 +1,551 @@
+---
+description: Comprehensive business and documentation analysis combining logic validation, docs quality, and workflows
+globs:
+alwaysApply: false
+---
+# Rule: Business & Documentation Analysis
+
+## Goal
+
+To validate business logic implementation, assess documentation quality, and ensure workflow consistency. This phase bridges technical implementation with business requirements and knowledge transfer capabilities.
+
+## 🧠 Enhanced Analysis Tools
+
+### Memory MCP Integration
+```yaml
+Operations:
+  - Search: Find business rules, documentation patterns, workflow implementations
+  - Store: Save business logic findings, documentation gaps, workflow insights
+  - Retrieve: Get domain knowledge, business requirements, documentation standards
+  
+Tags: ["code-review", "business", "documentation", "workflows", "knowledge", "repository-name"]
+```
+
+### Sequential Thinking MCP
+```yaml
+Use For:
+  - Tracing business workflows
+  - Understanding domain logic
+  - Analyzing documentation completeness
+  - Planning knowledge improvements
+```
+
+### Zen MCP Tools
+- **analyze**: Business logic patterns and consistency
+- **thinkdeep**: Complex workflow validation
+- **codereview**: Documentation quality in code
+- **planner**: Documentation improvement strategy
+
+### Task Tool (ESSENTIAL)
+```yaml
+Business & Docs Searches:
+  - "Find business logic and rules implementation"
+  - "Locate domain models and entities"
+  - "Search for documentation files (*.md, *.doc)"
+  - "Find workflow implementations"
+  - "Identify business validation logic"
+  - "Search for API documentation"
+```
+
+## Process: Business-Aligned Review
+
+### Phase 1: Business Logic Analysis
+```yaml
+Inputs Required:
+  - Foundation Analysis (architecture)
+  - API contracts
+  - Database schema
+  - Test scenarios
+
+Assessment Focus:
+  1. Domain Model:
+     - Entity relationships
+     - Business rules encoding
+     - Validation logic
+     - State machines
+  
+  2. Business Rules:
+     - Implementation accuracy
+     - Edge case handling
+     - Rule consistency
+     - Performance impact
+  
+  3. Workflow Implementation:
+     - Process accuracy
+     - State transitions
+     - Error handling
+     - Audit trails
+```
+
+### Phase 2: Documentation Assessment
+```yaml
+Documentation Types:
+  1. Code Documentation:
+     - Inline comments quality
+     - Function/class docs
+     - Complex logic explanation
+     - API documentation
+  
+  2. Project Documentation:
+     - README completeness
+     - Architecture docs
+     - Setup guides
+     - Troubleshooting
+  
+  3. API Documentation:
+     - Endpoint descriptions
+     - Request/response examples
+     - Error codes
+     - Authentication guide
+  
+  4. Business Documentation:
+     - Domain glossary
+     - Business rules
+     - Workflow diagrams
+     - Decision rationale
+```
+
+### Phase 3: Workflow Consistency
+```yaml
+Workflow Validation:
+  1. End-to-End Flows:
+     - User journeys
+     - Data pipelines
+     - Integration flows
+     - Async processes
+  
+  2. State Management:
+     - State transitions
+     - Invariant maintenance
+     - Rollback capabilities
+     - Consistency guarantees
+  
+  3. Business Alignment:
+     - Requirement coverage
+     - Process automation
+     - Manual touchpoints
+     - Compliance needs
+```
+
+## Analysis Structure
+
+### 1. Business & Documentation Summary
+```markdown
+## Business & Documentation Summary
+
+**Business Logic Accuracy**: [Percentage aligned with requirements]
+**Documentation Coverage**: [Comprehensive/Adequate/Lacking]
+**Workflow Implementation**: [Complete/Partial/Missing]
+**Knowledge Transfer Risk**: [Low/Medium/High]
+
+### Key Findings
+1. **Business Logic**: [Main finding about implementation]
+2. **Documentation**: [Documentation state assessment]
+3. **Workflows**: [Process implementation status]
+4. **Knowledge Gaps**: [Critical missing documentation]
+```
+
+### 2. Business Logic Analysis
+
+#### Domain Model Review
+```markdown
+### Core Business Entities
+| Entity | Purpose | Implementation | Validation | Issues |
+|--------|---------|----------------|------------|---------|
+| Order | Purchase tracking | ✅ Complete | ⚠️ Partial | Missing status validation |
+| Payment | Transaction handling | ✅ Complete | ✅ Strong | None |
+| User | Account management | ⚠️ Incomplete | ❌ Weak | Role hierarchy missing |
+
+### Business Rules Implementation
+1. **Order Processing Rules**
+   - Rule: Orders > $10,000 require approval
+   - Implementation: `OrderService.validateHighValue()`
+   - Coverage: ✅ Implemented correctly
+   - Tests: ✅ Well tested
+
+2. **Inventory Management**
+   - Rule: Prevent overselling
+   - Implementation: Missing atomic checks
+   - Coverage: ❌ Race condition possible
+   - Tests: ⚠️ Happy path only
+```
+
+#### Workflow Analysis
+```markdown
+### Critical Business Workflows
+1. **Order Fulfillment Process**
+   ```mermaid
+   graph LR
+     A[Order Placed] --> B{Inventory Check}
+     B -->|Available| C[Payment Process]
+     B -->|Unavailable| D[Backorder]
+     C -->|Success| E[Shipping]
+     C -->|Failed| F[Cancel Order]
+   ```
+   - Implementation: 85% complete
+   - Missing: Backorder handling
+   - Issues: No rollback for partial fulfillment
+
+2. **User Onboarding**
+   - Steps: Registration → Verification → Profile → Preferences
+   - Implementation: ✅ Complete
+   - Monitoring: ⚠️ Partial
+   - Documentation: ❌ Missing
+```
+
+### 3. Documentation Assessment
+
+#### Code Documentation Quality
+```markdown
+### Documentation Coverage
+| Component | Inline Comments | Function Docs | README | Examples |
+|-----------|----------------|---------------|--------|----------|
+| API Layer | 70% | 85% | ✅ Good | ✅ Yes |
+| Business Logic | 40% | 60% | ⚠️ Basic | ❌ No |
+| Database | 20% | 30% | ❌ Missing | ❌ No |
+
+### Documentation Quality Issues
+1. **Missing API Documentation**
+   - Endpoints: 15/45 undocumented
+   - Impact: External integration difficulty
+   - Priority: HIGH
+
+2. **Complex Logic Undocumented**
+   - Location: `PricingEngine.calculateDynamicPrice()`
+   - Complexity: Very High
+   - Impact: Maintenance risk
+   - Priority: HIGH
+```
+
+#### Project Documentation
+```markdown
+### Documentation Inventory
+- **README.md**: ✅ Exists (Last updated: 6 months ago)
+  - Setup: ⚠️ Outdated dependencies
+  - Usage: ✅ Good examples
+  - Contributing: ❌ Missing
+
+- **Architecture**: ⚠️ Partial
+  - System overview: ✅ Current
+  - Component details: ⚠️ Some missing
+  - Data flow: ❌ Not documented
+
+- **API Docs**: ⚠️ Incomplete
+  - Format: OpenAPI 3.0
+  - Coverage: 60%
+  - Examples: 40%
+```
+
+### 4. Knowledge Transfer Assessment
+
+```markdown
+### Onboarding Readiness
+| Area | Documentation | Examples | Time to Productive |
+|------|--------------|----------|-------------------|
+| Development Setup | ⚠️ Basic | ❌ None | 2-3 days |
+| Architecture | ⚠️ Partial | ✅ Some | 1 week |
+| Business Logic | ❌ Minimal | ❌ None | 2-3 weeks |
+
+### Critical Knowledge Gaps
+1. **Payment Processing Logic**
+   - Documentation: None
+   - Complexity: High
+   - Risk: CRITICAL - Single point of knowledge
+
+2. **Dynamic Pricing Algorithm**
+   - Documentation: Comments only
+   - Complexity: Very High
+   - Risk: HIGH - Business critical
+```
+
+### 5. Workflow Consistency
+
+```markdown
+### End-to-End Process Validation
+| Workflow | Implemented | Documented | Tested | Issues |
+|----------|-------------|------------|--------|--------|
+| Order → Delivery | 90% | 50% | 70% | Missing edge cases |
+| User Registration | 100% | 80% | 90% | None |
+| Refund Process | 70% | 30% | 50% | Partial implementation |
+
+### State Management Review
+- **State Tracking**: Database + Redis
+- **Consistency**: Eventually consistent
+- **Recovery**: ⚠️ Manual intervention needed
+- **Audit Trail**: ✅ Comprehensive
+```
+
+## Documentation Quality Score
+
+```yaml
+Documentation Health:
+  Code Documentation: [0-25]
+    - Comprehensive: 25
+    - Adequate: 15
+    - Minimal: 5
+  
+  Project Documentation: [0-25]
+    - Complete: 25
+    - Partial: 15
+    - Missing: 5
+  
+  Business Knowledge: [0-25]
+    - Well documented: 25
+    - Some gaps: 15
+    - Critical gaps: 5
+  
+  API Documentation: [0-25]
+    - Full coverage: 25
+    - Partial: 15
+    - Minimal: 5
+
+Total: [0-100]
+Risk Level: [Low/Medium/High]
+```
+
+## Gate 4: Business Alignment
+
+### Multi-Dimensional Business & Documentation Validation Framework
+
+**Validation Dimensions:**
+1. **Business Accuracy** - Correctness of business logic implementation
+2. **Documentation Completeness** - Coverage of all knowledge areas
+3. **Knowledge Accessibility** - Ease of understanding and finding information
+4. **Workflow Integrity** - End-to-end process validation
+5. **Maintenance Readiness** - Long-term sustainability assessment
+
+### Validation Methodology
+
+#### 4A: Business Logic Validation
+```yaml
+Purpose: Ensure business rules correctly implemented
+Process: Trace requirements to implementation
+
+Validation Steps:
+  1. Requirements Mapping:
+     - [ ] All business rules identified in code
+     - [ ] Implementation matches specifications
+     - [ ] Edge cases properly handled
+     - [ ] Business constraints enforced
+  
+  2. Domain Model Verification:
+     - [ ] Entities reflect business concepts
+     - [ ] Relationships correctly modeled
+     - [ ] Invariants maintained
+     - [ ] State transitions valid
+  
+  3. Workflow Validation:
+     - [ ] End-to-end flows traced
+     - [ ] Happy paths verified
+     - [ ] Error paths handled
+     - [ ] Rollback capabilities exist
+```
+
+#### 4B: Documentation Quality Validation
+```yaml
+Purpose: Validate documentation serves user needs
+Process: Task-based validation with target audiences
+
+Validation Criteria:
+  - [ ] README enables quick start
+  - [ ] Architecture docs explain decisions
+  - [ ] API docs include examples
+  - [ ] Troubleshooting guides exist
+  - [ ] Code comments explain "why"
+  - [ ] Business logic documented
+```
+
+#### 4C: Knowledge Transfer Validation
+```yaml
+Purpose: Ensure knowledge can be transferred effectively
+Process: Onboarding simulation and gap analysis
+
+Validation Points:
+  - [ ] New developer can set up in < 1 day
+  - [ ] Business logic understandable
+  - [ ] No undocumented tribal knowledge
+  - [ ] Examples cover common scenarios
+  - [ ] Contact points identified
+```
+
+### Gate 4 Business Validation Checklist
+
+```yaml
+Business Logic Assessment:
+  Implementation Accuracy:
+    - [ ] Core business rules verified
+    - [ ] Calculations match specifications
+    - [ ] Validations comprehensive
+    - [ ] Audit trails complete
+    Accuracy Score: [0-100%]
+  
+  Edge Case Handling:
+    - [ ] All edge cases identified
+    - [ ] Proper error messages
+    - [ ] Graceful degradation
+    - [ ] Recovery procedures
+    Coverage: [Poor/Fair/Good/Excellent]
+  
+  Workflow Completeness:
+    - [ ] All workflows mapped
+    - [ ] State transitions valid
+    - [ ] Integration points verified
+    - [ ] Performance acceptable
+    Completeness: [0-100%]
+
+Documentation Assessment:
+  Coverage Analysis:
+    - [ ] All components documented
+    - [ ] Business rules explained
+    - [ ] Technical decisions justified
+    - [ ] Examples comprehensive
+    Documentation Score: [0-100%]
+  
+  Quality Metrics:
+    - [ ] Clear and concise
+    - [ ] Up-to-date
+    - [ ] Well-organized
+    - [ ] Searchable
+    Quality Grade: [A/B/C/D/F]
+  
+  Audience Satisfaction:
+    - [ ] Developer needs met
+    - [ ] Operations guides complete
+    - [ ] Business context clear
+    - [ ] Integration docs adequate
+    Satisfaction: [Low/Medium/High]
+
+Knowledge Transfer Assessment:
+  Onboarding Readiness:
+    - [ ] Setup documentation tested
+    - [ ] Learning path clear
+    - [ ] Resources identified
+    - [ ] Mentorship plan exists
+    Time to Productive: [Days]
+  
+  Knowledge Risks:
+    - [ ] Single points identified
+    - [ ] Critical knowledge documented
+    - [ ] Succession planning exists
+    - [ ] Cross-training completed
+    Risk Level: [Low/Medium/High/Critical]
+
+Maintenance Assessment:
+  Documentation Maintenance:
+    - [ ] Update process defined
+    - [ ] Ownership clear
+    - [ ] Automation potential identified
+    - [ ] Version control integrated
+    Sustainability: [Poor/Fair/Good/Excellent]
+
+Gate 4 Decision Matrix:
+  PASS Criteria (All must be true):
+    - Business logic accuracy ≥ 90%
+    - Documentation score ≥ 80%
+    - No critical knowledge gaps
+    - Onboarding time ≤ 3 days
+  
+  CONDITIONAL Criteria:
+    - Business logic accuracy 75-89%
+    - Documentation score 60-79%
+    - Minor knowledge gaps exist
+    - Onboarding time 4-7 days
+  
+  FAIL Criteria (Any true = fail):
+    - Business logic accuracy < 75%
+    - Documentation score < 60%
+    - Critical knowledge missing
+    - Onboarding time > 7 days
+
+Business Alignment Score: [___]%
+Decision: [PASS/CONDITIONAL/FAIL]
+Rationale: [Detailed business and documentation assessment]
+```
+
+### Required Actions Before Next Phase
+
+**If CONDITIONAL:**
+1. Document missing business rules
+2. Create knowledge transfer plan
+3. Update critical documentation
+4. Schedule documentation improvements
+
+**If FAIL:**
+1. Halt new development
+2. Focus on documentation
+3. Capture tribal knowledge
+4. Re-validate business logic
+
+### Business Validation Evidence
+
+Required evidence for validation:
+- Requirements traceability matrix
+- Business rule test results
+- Documentation coverage report
+- Onboarding test results
+- Knowledge gap analysis
+- Workflow diagrams with validation
+
+## Documentation Priorities
+
+### 🔴 CRITICAL (Knowledge risk)
+```markdown
+1. **Payment Processing Documentation**
+   - Current: No documentation
+   - Impact: Single point of failure
+   - Effort: 2 days
+   - Output: Architecture, flow diagrams, code docs
+
+2. **API Documentation Completion**
+   - Current: 60% coverage
+   - Missing: 15 critical endpoints
+   - Effort: 3 days
+   - Output: OpenAPI spec, examples
+```
+
+### 🟡 HIGH (Onboarding blockers)
+```markdown
+1. **Setup Guide Update**
+   - Current: 6 months outdated
+   - Impact: Developer onboarding
+   - Effort: 1 day
+   - Output: Updated README, scripts
+
+2. **Business Rules Documentation**
+   - Current: Scattered in code
+   - Need: Centralized rules doc
+   - Effort: 3 days
+   - Output: Business rules catalog
+```
+
+### 🟢 MEDIUM (Maintenance help)
+```markdown
+1. **Architecture Diagrams**
+   - Current: High-level only
+   - Need: Component details
+   - Effort: 2 days
+   - Output: Detailed diagrams
+```
+
+## Output
+
+**Location**: `/docs/code-review/4-business-documentation.md`
+
+## Next Steps
+
+After Gate 4 approval:
+1. Business alignment verified
+2. Documentation gaps identified
+3. Proceed to Production Readiness
+4. Plan documentation improvements
+
+## Business & Docs Checklist
+
+- [ ] Domain model reviewed
+- [ ] Business rules validated
+- [ ] Workflows traced
+- [ ] Code documentation assessed
+- [ ] Project docs evaluated
+- [ ] API documentation checked
+- [ ] Knowledge gaps identified
+- [ ] Gate 4 validation complete

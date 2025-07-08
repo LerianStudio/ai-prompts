@@ -1,0 +1,629 @@
+---
+description: Comprehensive production readiness assessment with deployment prep and action planning
+globs:
+alwaysApply: false
+---
+# Rule: Production Readiness & Action Planning
+
+## Goal
+
+To validate production readiness, prepare for deployment, and synthesize all findings into a prioritized action plan. This final phase ensures the codebase is ready for production and provides clear next steps.
+
+## 🧠 Enhanced Analysis Tools
+
+### Memory MCP Integration
+```yaml
+Operations:
+  - Search: Find production issues, deployment patterns, incident history
+  - Store: Save readiness assessment, deployment checklist, action items
+  - Retrieve: Get production standards, deployment procedures, SLAs
+  
+Tags: ["code-review", "production", "deployment", "todos", "action-plan", "repository-name"]
+```
+
+### Sequential Thinking MCP
+```yaml
+Use For:
+  - Analyzing production risks
+  - Planning deployment strategy
+  - Prioritizing improvements
+  - Creating rollback plans
+```
+
+### Zen MCP Tools
+- **thinkdeep**: Production scenario analysis
+- **analyze**: Deployment risk assessment
+- **planner**: Action item prioritization
+- **codereview**: Final quality validation
+
+### Task Tool (ESSENTIAL)
+```yaml
+Production Searches:
+  - "Find production configuration files"
+  - "Search for deployment scripts"
+  - "Locate environment variables usage"
+  - "Find error handling and recovery"
+  - "Search for performance bottlenecks"
+  - "Identify ///AUTHOR comment tags"
+```
+
+## Process: Production Validation
+
+### Phase 1: Production Audit
+```yaml
+Inputs Required:
+  - All previous phase findings
+  - Architecture understanding
+  - Security assessment
+  - Quality metrics
+  - Business validation
+
+Audit Areas:
+  1. Infrastructure Readiness:
+     - Configuration management
+     - Environment parity
+     - Secrets management
+     - Resource requirements
+  
+  2. Operational Readiness:
+     - Monitoring coverage
+     - Alerting setup
+     - Runbooks existence
+     - Team knowledge
+  
+  3. Reliability Engineering:
+     - Error handling
+     - Circuit breakers
+     - Retry logic
+     - Graceful degradation
+  
+  4. Performance Readiness:
+     - Load testing results
+     - Bottleneck analysis
+     - Scaling strategy
+     - Resource optimization
+```
+
+### Phase 2: Deployment Preparation
+```yaml
+Deployment Checklist:
+  1. Pre-deployment:
+     - Code freeze criteria
+     - Testing requirements
+     - Approval process
+     - Rollback plan
+  
+  2. Deployment Process:
+     - Deployment automation
+     - Blue-green strategy
+     - Database migrations
+     - Feature flags
+  
+  3. Post-deployment:
+     - Smoke tests
+     - Monitoring alerts
+     - Performance baseline
+     - Success criteria
+```
+
+### Phase 3: Comprehensive Todo Generation
+```yaml
+Todo Synthesis:
+  1. Finding Aggregation:
+     - Collect all phase findings
+     - Include ///AUTHOR comments
+     - Merge duplicate issues
+     - Update priorities
+  
+  2. Impact Analysis:
+     - Business impact
+     - Technical risk
+     - User experience
+     - Compliance requirements
+  
+  3. Effort Estimation:
+     - Development time
+     - Testing effort
+     - Deployment complexity
+     - Team availability
+  
+  4. Priority Matrix:
+     - Critical: Production blockers
+     - High: Sprint priorities
+     - Medium: Backlog items
+     - Low: Future improvements
+```
+
+## Analysis Structure
+
+### 1. Production Readiness Summary
+```markdown
+## Production Readiness Assessment
+
+**Overall Status**: [Ready/Conditional/Not Ready]
+**Deployment Risk**: [Low/Medium/High/Critical]
+**Estimated Go-Live**: [Date or blockers]
+**Team Readiness**: [Prepared/Gaps/Not Ready]
+
+### Go/No-Go Decision
+- **Technical**: [✅ Ready / ⚠️ Conditional / ❌ Blocked]
+- **Security**: [✅ Ready / ⚠️ Conditional / ❌ Blocked]
+- **Operations**: [✅ Ready / ⚠️ Conditional / ❌ Blocked]
+- **Business**: [✅ Ready / ⚠️ Conditional / ❌ Blocked]
+
+### Critical Blockers
+1. **[Blocker Name]**: [Description and impact]
+2. **[Blocker Name]**: [Description and impact]
+```
+
+### 2. Infrastructure & Configuration
+
+```markdown
+### Environment Configuration
+| Config Item | Dev | Staging | Prod | Status |
+|-------------|-----|---------|------|--------|
+| API Keys | ✅ Env vars | ✅ Env vars | ❌ Hardcoded | 🔴 CRITICAL |
+| Database | ✅ Configured | ✅ Configured | ✅ Configured | ✅ |
+| Cache | ✅ Redis | ✅ Redis | ⚠️ Not sized | 🟡 HIGH |
+
+### Resource Requirements
+- **CPU**: [Requirements and current allocation]
+- **Memory**: [Requirements and current allocation]
+- **Storage**: [Requirements and growth projection]
+- **Network**: [Bandwidth and latency requirements]
+
+### Secrets Management
+- **Method**: [Vault/AWS Secrets Manager/etc.]
+- **Rotation**: [Automated/Manual/None]
+- **Access Control**: [RBAC implemented: Yes/No]
+- **Audit Trail**: [Enabled/Disabled]
+```
+
+### 3. Operational Readiness
+
+```markdown
+### Monitoring & Alerting
+| Component | Monitoring | Alerting | Dashboard | Runbook |
+|-----------|------------|----------|-----------|---------|
+| API | ✅ Full | ✅ Configured | ✅ Created | ❌ Missing |
+| Database | ✅ Full | ⚠️ Basic | ✅ Created | ✅ Exists |
+| Queue | ❌ None | ❌ None | ❌ Missing | ❌ Missing |
+
+### Incident Response
+- **On-Call Rotation**: [Defined/Not defined]
+- **Escalation Path**: [Clear/Unclear/Missing]
+- **Runbooks**: [3/10 critical processes documented]
+- **Recovery Time**: [RTO: X hours, RPO: Y hours]
+
+### Team Readiness
+- **Training Status**: [Completed/In progress/Not started]
+- **Knowledge Distribution**: [Well distributed/Some gaps/Single points]
+- **Documentation Access**: [Available/Limited/Missing]
+```
+
+### 4. Deployment Strategy
+
+```markdown
+### Deployment Plan
+1. **Pre-deployment** (T-24 hours)
+   - [ ] Code freeze
+   - [ ] Final testing
+   - [ ] Backup production
+   - [ ] Team notification
+
+2. **Deployment** (T-0)
+   - [ ] Database migrations
+   - [ ] Blue environment deploy
+   - [ ] Smoke tests
+   - [ ] Traffic switch (10% → 50% → 100%)
+
+3. **Post-deployment** (T+2 hours)
+   - [ ] Performance validation
+   - [ ] Error rate monitoring
+   - [ ] User feedback
+   - [ ] Go/No-go decision
+
+### Rollback Strategy
+- **Trigger Criteria**: [Error rate >5%, Response time >2s]
+- **Rollback Time**: [<5 minutes]
+- **Data Handling**: [Forward compatible migrations]
+- **Communication**: [Status page, customer notification]
+```
+
+### 5. Comprehensive Action Plan
+
+```markdown
+## 📋 Consolidated Todo List
+
+### 🔴 CRITICAL - Production Blockers (Must fix before deployment)
+1. **[SECURITY] Remove hardcoded API keys in production config**
+   - **Found in**: Phase 2 Security Analysis
+   - **Location**: `config/production.js:45`
+   - **Impact**: Security breach risk
+   - **Effort**: 2 hours
+   - **Owner**: Security team
+   - **Due**: Before deployment
+
+2. **[INFRASTRUCTURE] Implement database connection pooling**
+   - **Found in**: Phase 1 Foundation Analysis
+   - **Issue**: Connection exhaustion under load
+   - **Impact**: Service unavailability
+   - **Effort**: 1 day
+   - **Owner**: Backend team
+
+### 🟡 HIGH - Sprint Priorities (Fix within current sprint)
+1. **[QUALITY] Increase payment process test coverage to 95%**
+   - **Found in**: Phase 3 Quality Analysis
+   - **Current**: 60% coverage
+   - **Impact**: Revenue risk
+   - **Effort**: 3 days
+   - **Owner**: QA team
+
+2. **[MONITORING] Add queue monitoring and alerting**
+   - **Found in**: Phase 3 Operations Analysis
+   - **Gap**: No visibility into queue depth
+   - **Impact**: Silent failures
+   - **Effort**: 2 days
+   - **Owner**: DevOps team
+
+### 🟢 MEDIUM - Backlog (Plan for next sprint)
+1. **[DOCUMENTATION] Complete API documentation**
+   - **Found in**: Phase 4 Documentation Analysis
+   - **Coverage**: 60% → 100%
+   - **Impact**: Integration difficulty
+   - **Effort**: 3 days
+   - **Owner**: API team
+
+2. **[PERFORMANCE] Optimize database queries**
+   - **Found in**: Phase 1 Database Analysis
+   - **Issue**: Slow queries identified
+   - **Impact**: User experience
+   - **Effort**: 1 week
+   - **Owner**: Database team
+
+### 🔵 LOW - Future Improvements
+1. **[REFACTOR] Reduce code duplication**
+   - **Found in**: Phase 3 Quality Analysis
+   - **Current**: 15% duplication
+   - **Impact**: Maintainability
+   - **Effort**: 1 week
+   - **Owner**: Development team
+
+### ///AUTHOR Tagged Items
+1. **[TECH-DEBT] Refactor legacy payment module**
+   - **Tag**: `///AUTHOR: john - This needs complete rewrite`
+   - **Location**: `services/payment/legacy.js:234`
+   - **Priority**: MEDIUM
+   - **Context**: Using deprecated API
+
+2. **[BUG] Race condition in inventory check**
+   - **Tag**: `///AUTHOR: sarah - Potential race condition here`
+   - **Location**: `services/inventory/check.js:89`
+   - **Priority**: HIGH
+   - **Context**: Could lead to overselling
+```
+
+## Production Readiness Score
+
+```yaml
+Readiness Assessment:
+  Infrastructure: [0-25]
+    - Fully configured: 25
+    - Some gaps: 15
+    - Major issues: 5
+  
+  Operations: [0-25]
+    - Monitoring complete: 25
+    - Partial coverage: 15
+    - Minimal ops: 5
+  
+  Deployment: [0-25]
+    - Automated & tested: 25
+    - Some automation: 15
+    - Manual process: 5
+  
+  Team: [0-25]
+    - Fully prepared: 25
+    - Some training needed: 15
+    - Not ready: 5
+
+Total: [0-100]
+Go-Live Status: [Ready/Conditional/Blocked]
+```
+
+## Gate 5: Deployment Readiness
+
+### Multi-Dimensional Production Validation Framework
+
+**Validation Dimensions:**
+1. **Technical Readiness** - All technical requirements met
+2. **Operational Excellence** - Full operational capability
+3. **Risk Management** - All risks identified and mitigated
+4. **Team Preparedness** - Organization ready to support
+5. **Rollback Confidence** - Recovery procedures validated
+
+### Validation Methodology
+
+#### 5A: Technical Readiness Validation
+```yaml
+Purpose: Ensure all technical blockers resolved
+Process: Final verification of all previous findings
+
+Validation Steps:
+  1. Issue Resolution:
+     - [ ] All CRITICAL issues resolved
+     - [ ] HIGH priority issues addressed or mitigated
+     - [ ] Performance meets SLAs
+     - [ ] Security vulnerabilities patched
+  
+  2. Integration Verification:
+     - [ ] All integrations tested
+     - [ ] External dependencies stable
+     - [ ] Feature flags configured
+     - [ ] Configuration validated
+  
+  3. Final Testing:
+     - [ ] Smoke tests passing
+     - [ ] Regression suite green
+     - [ ] Performance benchmarks met
+     - [ ] Security scans clean
+```
+
+#### 5B: Operational Readiness Validation
+```yaml
+Purpose: Validate production support capabilities
+Process: Verify monitoring, alerting, and response procedures
+
+Validation Criteria:
+  - [ ] All services monitored
+  - [ ] Alerts tested and calibrated
+  - [ ] Runbooks comprehensive
+  - [ ] On-call rotation established
+  - [ ] Incident response tested
+  - [ ] Backup/restore verified
+```
+
+#### 5C: Deployment Process Validation
+```yaml
+Purpose: Ensure safe and repeatable deployment
+Process: Validate deployment procedures and rollback
+
+Validation Points:
+  - [ ] Deployment automation tested
+  - [ ] Blue-green or canary ready
+  - [ ] Database migrations verified
+  - [ ] Rollback procedures tested
+  - [ ] Communication plan ready
+  - [ ] Success criteria defined
+```
+
+### Gate 5 Production Validation Checklist
+
+```yaml
+Technical Readiness:
+  Issue Status:
+    - [ ] Zero CRITICAL issues
+    - [ ] HIGH issues mitigated
+    - [ ] MEDIUM issues tracked
+    - [ ] Technical debt documented
+    Outstanding Issues: [Count by severity]
+  
+  Performance Validation:
+    - [ ] Load tests passed
+    - [ ] Response times acceptable
+    - [ ] Resource usage optimal
+    - [ ] Scaling verified
+    Performance Score: [Pass/Fail]
+  
+  Security Clearance:
+    - [ ] All vulnerabilities patched
+    - [ ] Compliance requirements met
+    - [ ] Security scan passed
+    - [ ] Penetration test cleared
+    Security Status: [Clear/Conditional/Blocked]
+
+Operational Readiness:
+  Monitoring Coverage:
+    - [ ] 100% service coverage
+    - [ ] Business metrics tracked
+    - [ ] Technical metrics comprehensive
+    - [ ] Dashboards operational
+    Coverage Score: [0-100%]
+  
+  Incident Response:
+    - [ ] Runbooks tested
+    - [ ] Team trained
+    - [ ] Escalation paths clear
+    - [ ] Communication ready
+    Response Readiness: [Low/Medium/High]
+  
+  Support Structure:
+    - [ ] On-call schedule set
+    - [ ] Knowledge base ready
+    - [ ] Support tickets configured
+    - [ ] SLAs defined
+    Support Score: [0-100%]
+
+Deployment Readiness:
+  Process Validation:
+    - [ ] Deployment steps documented
+    - [ ] Automation scripts tested
+    - [ ] Rollback verified
+    - [ ] Monitoring during deployment
+    Process Maturity: [1-5]
+  
+  Risk Assessment:
+    - [ ] All risks identified
+    - [ ] Mitigations in place
+    - [ ] Contingency plans ready
+    - [ ] Go/no-go criteria clear
+    Risk Level: [Low/Medium/High]
+  
+  Team Readiness:
+    - [ ] Training completed
+    - [ ] Roles assigned
+    - [ ] Communication channels open
+    - [ ] Decision makers available
+    Team Score: [0-100%]
+
+Rollback Validation:
+  Recovery Procedures:
+    - [ ] Rollback tested in staging
+    - [ ] Time to rollback acceptable
+    - [ ] Data integrity maintained
+    - [ ] User impact minimized
+    Rollback Confidence: [Low/Medium/High]
+
+Gate 5 Decision Matrix:
+  PASS Criteria (All must be true):
+    - No CRITICAL issues
+    - Monitoring coverage 100%
+    - Team readiness ≥ 90%
+    - Rollback tested successfully
+  
+  CONDITIONAL Criteria:
+    - HIGH issues have mitigations
+    - Monitoring coverage ≥ 80%
+    - Team readiness ≥ 70%
+    - Limited deployment scope
+  
+  FAIL Criteria (Any true = fail):
+    - CRITICAL issues unresolved
+    - No production monitoring
+    - Team not prepared
+    - No rollback capability
+
+Production Readiness Score: [___]%
+Go/No-Go Decision: [GO/CONDITIONAL GO/NO GO]
+Deployment Window: [Date/Time]
+Risk Acceptance: [Signed by: ___________]
+```
+
+### Deployment Execution Plan
+
+**Pre-Deployment Checklist:**
+```yaml
+T-24 Hours:
+  - [ ] Final code freeze
+  - [ ] Security scan completed
+  - [ ] Team notification sent
+  - [ ] Rollback plan reviewed
+
+T-2 Hours:
+  - [ ] Database backup completed
+  - [ ] Monitoring alerts paused
+  - [ ] Support team on standby
+  - [ ] Communication channels open
+
+T-0 Deployment:
+  - [ ] Blue environment ready
+  - [ ] Feature flags configured
+  - [ ] Smoke tests prepared
+  - [ ] Rollback trigger ready
+```
+
+### Post-Deployment Validation
+
+**Success Criteria:**
+```yaml
+T+30 Minutes:
+  - [ ] All health checks passing
+  - [ ] Error rate < threshold
+  - [ ] Performance within SLA
+  - [ ] No critical alerts
+
+T+2 Hours:
+  - [ ] User feedback positive
+  - [ ] All metrics stable
+  - [ ] No rollback needed
+  - [ ] Team confidence high
+
+T+24 Hours:
+  - [ ] Full stability confirmed
+  - [ ] All features working
+  - [ ] Performance optimal
+  - [ ] Success declared
+```
+
+### Required Actions for Each Decision
+
+**If GO:**
+1. Execute deployment plan
+2. Monitor closely for 24 hours
+3. Document any issues
+4. Celebrate success
+
+**If CONDITIONAL GO:**
+1. Limit deployment scope
+2. Enhanced monitoring
+3. Extended support coverage
+4. Quick rollback readiness
+
+**If NO GO:**
+1. Communicate decision
+2. Address blockers
+3. Re-plan deployment
+4. Re-run validation
+
+### Production Evidence Required
+
+Documentation needed for go-live:
+- Final test results
+- Security clearance certificate
+- Performance test reports
+- Operational readiness checklist
+- Risk acceptance signatures
+- Deployment runbook
+- Rollback test results
+- Team training records
+
+## Deployment Timeline
+
+```markdown
+### Recommended Deployment Schedule
+1. **Week 1**: Fix CRITICAL items
+   - Security vulnerabilities
+   - Production blockers
+   - Infrastructure gaps
+
+2. **Week 2**: Address HIGH priorities
+   - Test coverage
+   - Monitoring setup
+   - Critical documentation
+
+3. **Week 3**: Final preparation
+   - Load testing
+   - Deployment dry run
+   - Team training
+
+4. **Week 4**: Production deployment
+   - Staged rollout
+   - Monitoring
+   - Quick fixes
+```
+
+## Output
+
+**Locations**: 
+- `/docs/code-review/5-production-readiness.md`
+- `/docs/code-review/code-review-todos.md`
+- `/docs/code-review/deployment-checklist.md`
+
+## Next Steps
+
+After Gate 5:
+1. If PASS: Proceed with deployment
+2. If CONDITIONAL: Address specific items
+3. If FAIL: Resolve blockers first
+4. Execute improvement plan
+
+## Production Checklist
+
+- [ ] Infrastructure validated
+- [ ] Operations prepared
+- [ ] Deployment tested
+- [ ] Team ready
+- [ ] Rollback plan exists
+- [ ] Monitoring active
+- [ ] Documentation complete
+- [ ] Gate 5 validation complete

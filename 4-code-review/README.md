@@ -1,282 +1,396 @@
-# Code Review Analysis System
+# Code Review Workflow
 
-Comprehensive codebase analysis across 18 different engineering disciplines, from architecture to production readiness.
+## Overview
 
-## 🎯 Purpose
+The Code Review workflow is a streamlined 5-phase system designed for comprehensive codebase analysis. It consolidates what was previously 18 separate analyses into manageable phases with mandatory validation gates, ensuring thorough review without overwhelming complexity.
 
-The Code Review Analysis System provides systematic, multi-perspective analysis of existing codebases, delivering:
-- Architecture and design pattern analysis
-- Security vulnerability assessment
-- Performance and scalability insights
-- Production readiness validation
-- Comprehensive todo list generation
+## Architecture
 
-## 📚 Quick Start
+### 5-Phase Structure
 
-Start with the orchestrator to understand the 6-phase workflow:
-
-```bash
-claude 2-code-review/00-code-review-orchestrator.mdc
+```
+1. Foundation Analysis → Gate 1 → 
+2. Security & Compliance → Gate 2 → 
+3. Quality & Operations → Gate 3 → 
+4. Business & Documentation → Gate 4 → 
+5. Production Readiness → Gate 5 → Ready for Deployment
 ```
 
-## 📋 Analysis Phases
+### Key Design Principles
 
-### Phase 1: Foundation & Technical Architecture (01-06)
-| File | Role | Focus Area |
-|------|------|------------|
-| `01-codebase-overview.md` | Foundation Analyst | Initial exploration, tech stack identification |
-| `02-architecture-analysis.md` | Architecture Engineer | System design, patterns, component analysis |
-| `03-api-contract-analysis.md` | API Architect | API design, contracts, documentation |
-| `04-database-optimization.md` | Database Architect | Schema design, optimization, modeling |
-| `05-sequence-diagram-visualization.md` | System Visualizer | Mermaid sequence diagrams |
-| `06-business-analysis.md` | Business Analyst | Requirements alignment, ROI analysis |
+1. **Comprehensive Coverage**: Each phase combines multiple related analyses
+2. **Progressive Validation**: Mandatory gates ensure quality before proceeding
+3. **Tool Integration**: Leverages Memory MCP, Sequential Thinking, Zen MCP, and Task tool
+4. **Confidence-Based Execution**: Adapts review depth based on codebase complexity
+5. **Actionable Output**: Generates prioritized todos throughout review
 
-### Phase 2: Security & Compliance (07-09)
-| File | Role | Focus Area |
-|------|------|------------|
-| `07-security-vulnerability-analysis.md` | Security Researcher | Vulnerability analysis, threat modeling |
-| `08-dependency-security-analysis.md` | Vendor Security Analyst | Third-party risk, supply chain security |
-| `09-privacy-compliance-analysis.md` | Privacy Analyst | GDPR compliance, data protection |
+## File Structure
 
-### Phase 3: Quality & Testing (10-12)
-| File | Role | Focus Area |
-|------|------|------------|
-| `10-test-coverage-analysis.md` | Test Engineer | Test strategy, coverage analysis |
-| `11-observability-monitoring.md` | Observability Engineer | Logging, metrics, tracing |
-| `12-pre-commit-quality-checks.md` | Quality Engineer | Pre-commit validation pipeline |
-
-### Phase 4: Documentation & Workflow (13-15)
-| File | Role | Focus Area |
-|------|------|------------|
-| `13-documentation-generation.md` | Technical Writer | Documentation synthesis |
-| `14-api-documentation-generator.md` | API Docs Generator | OpenAPI/Postman generation |
-| `15-business-workflow-consistency.md` | Business Process Analyst | End-to-end workflow validation |
-
-### Phase 5: Production Readiness (16-17)
-| File | Role | Focus Area |
-|------|------|------------|
-| `16-production-readiness-audit.md` | Production Auditor | Deployment readiness assessment |
-| `17-deployment-preparation.md` | Deployment Engineer | Production cleanup & preparation |
-
-### Phase 6: Final Synthesis (18)
-| File | Role | Focus Area |
-|------|------|------------|
-| `18-comprehensive-todo-generation.md` | Project Coordinator | Action planning, todo consolidation |
-
-## 🔄 Common Workflows
-
-### 1. Full Analysis (All Phases)
-```bash
-# Run complete 18-prompt analysis chain
-# Phase 1: Foundation
-claude 2-code-review/01-codebase-overview.md
-claude 2-code-review/02-architecture-analysis.md
-claude 2-code-review/03-api-contract-analysis.md
-claude 2-code-review/04-database-optimization.md
-claude 2-code-review/05-sequence-diagram-visualization.md
-claude 2-code-review/06-business-analysis.md
-
-# Phase 2: Security
-claude 2-code-review/07-security-vulnerability-analysis.md
-claude 2-code-review/08-dependency-security-analysis.md
-claude 2-code-review/09-privacy-compliance-analysis.md
-
-# Continue through all phases...
-# Final synthesis
-claude 2-code-review/18-comprehensive-todo-generation.md
+```
+4-code-review/
+├── 0-review-orchestrator.mdc     # Entry point - manages workflow execution
+├── 1-foundation-analysis.mdc     # Technical foundation (overview, architecture, APIs, DB)
+├── 2-security-compliance.mdc     # Security and compliance assessment
+├── 3-quality-operations.mdc      # Testing, monitoring, and code quality
+├── 4-business-documentation.mdc  # Business logic and documentation review
+├── 5-production-readiness.mdc    # Deployment readiness and action planning
+└── README.md                     # This file
 ```
 
-### 2. Security-Focused Analysis
+## Phase Details
+
+### Phase 1: Foundation Analysis
+
+**Purpose**: Establish comprehensive technical understanding of the codebase.
+
+**Combines**:
+- Codebase overview and structure
+- Architecture patterns and design
+- API contracts and design quality
+- Database schema and optimization
+
+**Key Outputs**:
+- System architecture diagram
+- Technology stack assessment
+- API inventory
+- Technical debt catalog
+
+**Gate 1 Validation**:
+- Architecture fully mapped
+- All components identified
+- Dependencies understood
+- Critical issues documented
+
+**Output**: `/docs/code-review/1-foundation-analysis.md`
+
+### Phase 2: Security & Compliance
+
+**Purpose**: Identify all security vulnerabilities and compliance gaps.
+
+**Combines**:
+- Security vulnerability analysis (OWASP Top 10)
+- Dependency security assessment
+- Privacy compliance (GDPR, industry standards)
+
+**Key Outputs**:
+- Vulnerability report by severity
+- Dependency risk matrix
+- Compliance gap analysis
+- Threat model
+
+**Gate 2 Validation**:
+- All critical vulnerabilities found
+- Dependencies scanned for CVEs
+- Compliance requirements checked
+- Remediation priorities set
+
+**Output**: `/docs/code-review/2-security-compliance.md`
+
+### Phase 3: Quality & Operations
+
+**Purpose**: Assess code quality, test coverage, and operational readiness.
+
+**Combines**:
+- Test coverage analysis
+- Observability and monitoring assessment
+- Code quality and development practices
+
+**Key Outputs**:
+- Test coverage metrics
+- Monitoring gap analysis
+- Code quality report
+- CI/CD assessment
+
+**Gate 3 Validation**:
+- Critical paths test coverage >80%
+- Monitoring implemented
+- Quality standards enforced
+- CI/CD pipeline functional
+
+**Output**: `/docs/code-review/3-quality-operations.md`
+
+### Phase 4: Business & Documentation
+
+**Purpose**: Validate business logic implementation and knowledge transfer capability.
+
+**Combines**:
+- Business logic validation
+- Documentation quality assessment
+- Workflow consistency verification
+
+**Key Outputs**:
+- Business rule compliance
+- Documentation coverage report
+- Knowledge gap analysis
+- Workflow validation
+
+**Gate 4 Validation**:
+- Business rules correctly implemented
+- Documentation adequate
+- No critical knowledge gaps
+- Workflows properly implemented
+
+**Output**: `/docs/code-review/4-business-documentation.md`
+
+### Phase 5: Production Readiness
+
+**Purpose**: Final validation and comprehensive action planning.
+
+**Combines**:
+- Production readiness audit
+- Deployment preparation
+- Comprehensive todo generation
+- ///AUTHOR comment integration
+
+**Key Outputs**:
+- Go/No-Go decision
+- Deployment checklist
+- Prioritized action items
+- Timeline recommendations
+
+**Gate 5 Validation**:
+- Infrastructure ready
+- Operations prepared
+- Deployment process tested
+- Team ready
+
+**Outputs**: 
+- `/docs/code-review/5-production-readiness.md`
+- `/docs/code-review/code-review-todos.md`
+
+## Workflow Execution
+
+### Starting the Review
+
 ```bash
-# Foundation + Security focus
-claude 2-code-review/01-codebase-overview.md
-claude 2-code-review/07-security-vulnerability-analysis.md
-claude 2-code-review/08-dependency-security-analysis.md
-claude 2-code-review/09-privacy-compliance-analysis.md
-claude 2-code-review/18-comprehensive-todo-generation.md
+# Load any previous review context
+claude 0-memory-system/m0-memory-orchestrator.mdc
+
+# Begin code review
+claude 4-code-review/0-review-orchestrator.mdc
 ```
 
-### 3. Architecture Review
+### Confidence-Based Flow
+
+The system adapts based on confidence scoring:
+
+1. **High Confidence (80%+)**: 
+   - Familiar tech stack
+   - Good documentation
+   - Previous reviews exist
+   - → Autonomous execution
+
+2. **Medium Confidence (50-79%)**:
+   - Mixed technology
+   - Some documentation
+   - First review
+   - → Interactive validation
+
+3. **Low Confidence (<50%)**:
+   - Legacy/unusual tech
+   - Minimal documentation
+   - Complex architecture
+   - → Guided exploration
+
+### Gate Processing
+
+All 5 gates are mandatory validation checkpoints using a comprehensive multi-dimensional framework:
+
+#### Gate Validation Framework
+
+Each gate validates across 5 dimensions:
+1. **Accuracy** - Correctness of analysis
+2. **Completeness** - Coverage of all areas
+3. **Quality** - Depth and usefulness of findings
+4. **Actionability** - Clear next steps identified
+5. **Risk Assessment** - Critical issues found
+
+#### Gate Decision Matrix
+
+Each gate uses quantitative scoring:
+- **PASS**: All criteria met (typically ≥85% score)
+- **CONDITIONAL**: Minor gaps exist (typically 70-84% score)
+- **FAIL**: Critical gaps prevent progress (typically <70% score)
+
+**The 5 Mandatory Gates**:
+
+1. **Gate 1 - Technical Foundation**
+   - Validates: Architecture understanding, API completeness, database analysis
+   - Pass Criteria: Technical understanding ≥85%, all critical components mapped
+   - Evidence: Architecture diagrams, API inventory, technical debt register
+
+2. **Gate 2 - Security Validation**
+   - Validates: Vulnerability coverage, compliance status, remediation feasibility
+   - Pass Criteria: No unmitigated CRITICAL issues, compliance ≥80%
+   - Evidence: Security scan reports, CVE analysis, compliance mapping
+
+3. **Gate 3 - Quality Assurance**
+   - Validates: Test effectiveness, operational readiness, code quality
+   - Pass Criteria: Critical path coverage ≥80%, monitoring complete
+   - Evidence: Coverage reports, monitoring dashboards, quality metrics
+
+4. **Gate 4 - Business Alignment**
+   - Validates: Business logic accuracy, documentation quality, knowledge transfer
+   - Pass Criteria: Business accuracy ≥90%, documentation ≥80%
+   - Evidence: Requirements traceability, onboarding tests, workflow validation
+
+5. **Gate 5 - Production Readiness**
+   - Validates: Technical readiness, operational capability, deployment safety
+   - Pass Criteria: All issues resolved, team ready, rollback tested
+   - Evidence: Final test results, operational checklists, deployment runbook
+
+## MCP Tool Integration
+
+### Memory MCP
+- **Essential**: Always starts by searching for previous reviews
+- **Search**: Find patterns, standards, past issues
+- **Store**: Save findings, decisions, improvement patterns
+- **Tags**: Use consistent tags for retrieval
+
+### Sequential Thinking MCP
+- Analyze complex architectures
+- Break down security vulnerabilities
+- Plan improvement strategies
+- Reason about production risks
+
+### Zen MCP Tools
+- **codereview**: Comprehensive quality analysis
+- **analyze**: Architecture and pattern review
+- **secaudit**: Security vulnerability assessment
+- **debug**: Root cause analysis
+- **thinkdeep**: Complex problem exploration
+
+### Task Tool
+- **Essential for**: Parallel pattern discovery
+- **Use cases**: Finding security issues, API endpoints, test coverage
+- **Benefits**: Reduces context usage, faster analysis
+
+## Common Review Patterns
+
+### Full Review (All 5 Phases)
+- New codebases
+- Pre-production validation
+- Quarterly assessments
+- Major refactoring preparation
+
+### Security-Focused Review
 ```bash
-# Foundation + Architecture focus
-claude 2-code-review/01-codebase-overview.md
-claude 2-code-review/02-architecture-analysis.md
-claude 2-code-review/03-api-contract-analysis.md
-claude 2-code-review/04-database-optimization.md
-claude 2-code-review/05-sequence-diagram-visualization.md
+# Phases 1, 2, and 5 only
+claude 4-code-review/1-foundation-analysis.mdc
+claude 4-code-review/2-security-compliance.mdc
+claude 4-code-review/5-production-readiness.mdc
 ```
 
-### 4. Quick Production Check
+### Quality-Focused Review
 ```bash
-# Essential production readiness
-claude 2-code-review/01-codebase-overview.md
-claude 2-code-review/10-test-coverage-analysis.md
-claude 2-code-review/16-production-readiness-audit.md
-claude 2-code-review/17-deployment-preparation.md
+# Phases 1, 3, and 5 only
+claude 4-code-review/1-foundation-analysis.mdc
+claude 4-code-review/3-quality-operations.mdc
+claude 4-code-review/5-production-readiness.mdc
 ```
 
-## 📊 Output Organization
+### Quick Review
+```bash
+# Phases 1 and 5 only
+claude 4-code-review/1-foundation-analysis.mdc
+claude 4-code-review/5-production-readiness.mdc
+```
 
-All analysis outputs are systematically organized:
+## Output Organization
 
 ```
 docs/code-review/
-├── code-review-todo-list.md           # Consolidated todo list (NEW!)
-├── 1-CODEBASE_OVERVIEW.md
-├── 2-ARCHITECTURE_ANALYSIS.md
-├── 3-API_CONTRACT_ANALYSIS.md
-├── 4-DATABASE_OPTIMIZATION.md
-├── 5-SEQUENCE_DIAGRAM_VISUALIZATION.md
-├── 6-BUSINESS_ANALYSIS.md
-├── 7-SECURITY_ANALYSIS.md
-├── 8-DEPENDENCY_SECURITY_ANALYSIS.md
-├── 9-PRIVACY_COMPLIANCE_ANALYSIS.md
-├── 10-TEST_COVERAGE_ANALYSIS.md
-├── 11-OBSERVABILITY_MONITORING.md
-├── 12-PRE_COMMIT_QUALITY_CHECKS.md
-├── 13-DOCUMENTATION.md
-├── 14-API_DOCUMENTATION.md
-├── 15-BUSINESS_WORKFLOW_CONSISTENCY.md
-├── 16-PRODUCTION_READINESS_AUDIT.md
-├── 17-DEPLOYMENT_PREPARATION.md
-├── 18-COMPREHENSIVE_TODO_LIST.md
-└── components/, api/, monitoring/, diagrams/
+├── review-summary.md              # Executive summary
+├── 1-foundation-analysis.md       # Technical foundation
+├── 2-security-compliance.md       # Security findings
+├── 3-quality-operations.md        # Quality assessment
+├── 4-business-documentation.md    # Business alignment
+├── 5-production-readiness.md      # Final validation
+├── code-review-todos.md           # Consolidated action items
+└── artifacts/                     # Diagrams, reports, etc.
 ```
 
-## 💡 Key Features
+## Todo Prioritization
 
-### Todo List Generation
-Each analysis prompt now generates entries in a consolidated `code-review-todo-list.md` file with:
-- 🔴 CRITICAL - Immediate action required
-- 🟡 HIGH - Sprint priority
-- 🟢 MEDIUM - Backlog
-- 🔵 LOW - Future consideration
+### 🔴 CRITICAL - Production Blockers
+- Security vulnerabilities
+- Data loss risks
+- Service unavailability
+- Compliance violations
 
-### Developer Comment Integration
-The comprehensive todo generation (prompt #18) includes:
-- Search for `///AUTHOR` comment tags
-- Context extraction from code location
-- Priority assessment based on criticality
-- Integration with memory_tasks todo system
+### 🟡 HIGH - Sprint Priorities  
+- Performance issues
+- Missing critical tests
+- Important monitoring gaps
+- Key documentation missing
 
-### Cross-Reference Analysis
-Each prompt builds upon previous findings:
-- Sequential dependencies tracked
-- Findings referenced across analyses
-- Patterns detected and consolidated
+### 🟢 MEDIUM - Backlog Items
+- Code quality improvements
+- Non-critical documentation
+- Enhancement opportunities
+- Technical debt
 
-## 🛠️ Tool Integration
+### 🔵 LOW - Future Considerations
+- Nice-to-have features
+- Minor optimizations
+- Style improvements
+- Long-term refactoring
 
-### 🧩 Memory MCP Integration
-All prompts include comprehensive Memory MCP integration:
-- **Context Retrieval:** Access existing patterns and decisions
-- **Finding Storage:** Persist critical issues for future reference
-- **Pattern Building:** Learn from recurring issues
-- **Knowledge Continuity:** Maintain context across sessions
+## Best Practices
 
-### 🧠 Zen MCP Integration (NEW)
-Enhanced analysis capabilities throughout all prompts:
-- **`codereview`:** Deep code quality analysis with severity prioritization
-- **`analyze`:** Architecture and pattern analysis across directories
-- **`thinkdeep`:** Complex problem exploration and solution validation
-- **`debug`:** Root cause analysis for identified issues
-- **`chat`:** Collaborative validation and brainstorming
+1. **Always Start with Memory**: Check for previous reviews and patterns
+2. **Use All Tools**: Combine Task for search, Zen for analysis, Sequential for reasoning
+3. **Document at Gates**: Record validation decisions and rationale
+4. **Generate Todos Continuously**: Don't wait until the end
+5. **Prioritize Ruthlessly**: Focus on what blocks production
+6. **Store Insights**: Use Memory MCP for future reviews
 
-### 🚀 Task Tool Usage (NEW)
-Efficient parallel exploration in every prompt:
-- **Pattern Discovery:** Finding code patterns comprehensively
-- **Security Scanning:** Identifying vulnerabilities systematically
-- **Dependency Mapping:** Understanding system-wide relationships
-- **Performance Analysis:** Discovering bottlenecks and issues
-- **Documentation Gaps:** Finding missing or outdated docs
+## Success Metrics
 
-### 🔄 Sequential Thinking MCP
-Complex reasoning for all analyses:
-- **Multi-step Analysis:** Breaking down complex problems
-- **Hypothesis Testing:** Validating assumptions systematically
-- **Pattern Recognition:** Identifying recurring issues
-- **Solution Synthesis:** Building comprehensive fixes
+- **Review Completeness**: All phases executed or consciously skipped
+- **Issue Discovery**: Critical issues identified early
+- **Action Clarity**: Clear, prioritized todo list
+- **Knowledge Capture**: Insights stored for future use
+- **Team Enablement**: Review enables immediate action
 
-## 🔗 Integration Points
+## Key Differences from Previous 18-File System
 
-### With Pre-Development
-```bash
-# After planning, analyze integration points
-claude 1-pre-development/1-create-prd.mdc
-claude 2-code-review/01-codebase-overview.md
-claude 2-code-review/02-architecture-analysis.md
-```
+| Aspect | Previous (18 files) | Current (5 phases) |
+|--------|-------------------|-------------------|
+| Files | 18 separate analyses | 5 comprehensive phases |
+| Execution | Sequential, lengthy | Streamlined with gates |
+| Validation | End-only | Gate at each phase |
+| Flexibility | Fixed path | Confidence-based |
+| Output | 18 separate docs | 5 consolidated reports |
+| Time | 4-6 hours | 2-3 hours |
+| Cognitive Load | High | Manageable |
 
-### With Memory System
-```bash
-# Store review findings
-claude 0-memory-related/m4-memory-workflow.md
-# Tags: ["code-review", "findings", "project-name"]
+## Common Issues and Solutions
 
-# Track review todos
-claude 0-memory-related/m3-task-management.md
-```
+### Large Codebases
+- Start with targeted analysis of critical paths
+- Use Task tool extensively for parallel search
+- Focus on high-risk areas first
 
-## 📈 Success Metrics
+### Legacy Code
+- Lower confidence score triggers guided approach
+- Extra focus on documentation gaps
+- Emphasize security and quality phases
 
-### Review Completeness
-- All 18 analyses completed
-- Todo list generated and prioritized
-- Critical issues identified
-- Production blockers resolved
+### Time Constraints
+- Use quick review pattern (phases 1 & 5)
+- Focus on production blockers only
+- Generate critical todos only
 
-### Quality Indicators
-- Architecture compliance verified
-- Security vulnerabilities < threshold
-- Test coverage > 80%
-- Documentation complete
+## Version History
 
-## 🚨 Common Issues
+- **v2.0**: Streamlined 5-phase workflow with mandatory gates
+- **v1.0**: Original 18-file comprehensive analysis
 
-### 1. Large Codebases
-- Start with targeted analysis
-- Use focused workflows
-- Leverage memory for patterns
+## Related Workflows
 
-### 2. Legacy Code
-- Begin with architecture analysis
-- Focus on critical paths
-- Document technical debt
-
-### 3. Time Constraints
-- Use quick analysis workflows
-- Focus on critical areas
-- Generate essential todos only
-
-## 📋 Best Practices
-
-1. **Always Start with Overview** - File 01 provides essential context
-2. **Follow Phase Order** - Each phase builds on previous findings
-3. **Generate Todos Continuously** - Each analysis contributes to todo list
-4. **Use Memory Integration** - Store patterns and decisions
-5. **Validate with Production Audit** - Ensure deployment readiness
-
-## 🧠 Tool Usage Guidelines
-
-### When to Use Task Tool
-- **Initial Discovery:** Codebase exploration in phases 1-2
-- **Pattern Search:** Finding similar code patterns across files
-- **Security Scanning:** Comprehensive vulnerability discovery
-- **Performance Issues:** Finding bottlenecks and slow operations
-- **Example:** `Task(description="Find API endpoints", prompt="Search for all REST, GraphQL, and RPC endpoints")`
-
-### When to Use Zen MCP
-- **Deep Analysis:** Use `codereview` for quality assessment
-- **Architecture Review:** Use `analyze` for pattern identification
-- **Problem Solving:** Use `debug` for root cause analysis
-- **Strategic Planning:** Use `thinkdeep` for complex decisions
-- **Validation:** Use `chat` for quick validation of findings
-
-### When to Combine Tools
-- **Security Reviews:** Task finds patterns → Zen analyzes risks → Memory stores findings
-- **Architecture Analysis:** Task maps structure → Zen evaluates design → Sequential reasons about improvements
-- **Performance Optimization:** Task identifies issues → Zen analyzes causes → Memory tracks solutions
-
----
-
-*Part of the AI Prompts for LerianStudio ecosystem - Systematic code analysis for quality improvement*
+- `0-memory-system/`: Context and pattern storage
+- `1-pre-dev-product/`: New product development
+- `2-pre-dev-feature/`: Feature addition workflow
+- `3-frontend/`: Frontend-specific development
+- `5-generate-docs/`: Documentation generation
