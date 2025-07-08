@@ -15,7 +15,7 @@ This is the **AI Prompts for LerianStudio Ecosystem** - a comprehensive collecti
 1-pre-dev-product/   → Comprehensive planning from idea to implementation (Dynamic 4-phase, 2 checkpoints)
 2-pre-dev-feature/   → Streamlined feature addition to existing products (Adaptive 4-phase)
 3-frontend/          → Complete frontend development with flexible design inputs
-4-code-review/       → 18-point systematic code analysis across 6 phases
+4-code-review/       → Streamlined 5-phase analysis with validation gates
 5-generate-docs/     → Comprehensive documentation generation and distribution
 ```
 
@@ -37,7 +37,7 @@ Each system has a `0-*-orchestrator.mdc` entry point that manages phase executio
 claude 0-memory-system/m0-memory-orchestrator.mdc
 claude 1-pre-dev-product/0-pre-dev-orchestrator.mdc
 claude 3-frontend/0-frontend-orchestrator.mdc
-claude 4-code-review/00-code-review-orchestrator.mdc
+claude 4-code-review/0-review-orchestrator.mdc
 claude 5-generate-docs/0-docs-orchestrator.mdc
 
 # Quick feature addition
@@ -48,13 +48,13 @@ claude 2-pre-dev-feature/0-feature-orchestrator.mdc
 ### Analyzing Existing Code
 
 ```bash
-# Full 18-point code review
-claude 4-code-review/00-code-review-orchestrator.mdc
+# Full streamlined code review
+claude 4-code-review/0-review-orchestrator.mdc
 
 # Security-focused analysis
-claude 4-code-review/01-codebase-overview.md
-claude 4-code-review/07-security-vulnerability-analysis.md
-claude 4-code-review/08-dependency-security-analysis.md
+claude 4-code-review/1-foundation-analysis.mdc
+claude 4-code-review/2-security-compliance.mdc
+claude 4-code-review/5-production-readiness.mdc
 ```
 
 ### Memory Operations
@@ -103,8 +103,13 @@ docs/
 │   └── tasks/
 │       └── MT-[XX]-[name]/
 ├── code-review/
-│   ├── code-review-todo-list.md
-│   └── [1-18]-[ANALYSIS].md
+│   ├── review-summary.md
+│   ├── 1-foundation-analysis.md
+│   ├── 2-security-compliance.md
+│   ├── 3-quality-operations.md
+│   ├── 4-business-documentation.md
+│   ├── 5-production-readiness.md
+│   └── code-review-todos.md
 ├── frontend-development/
 │   └── tasks/frontend-[feature]/
 └── documentation/
@@ -121,9 +126,9 @@ docs/
 - Complexity Assessment → Brief✓ → Technical Approach✓ → Implementation Plan → Test Strategy✓
 - Workflow adapts based on feature complexity
 
-**Code Review (Systematic):**
-- Foundation (01-06) → Security (07-09) → Quality (10-12) → Documentation (13-15) → Production (16-17) → Synthesis (18)
-- Each phase builds on previous findings
+**Code Review (Streamlined with Gates):**
+- Foundation → Gate 1 → Security → Gate 2 → Quality → Gate 3 → Business → Gate 4 → Production → Gate 5
+- Each phase has comprehensive validation gates with quantitative scoring
 
 ## Repository Context
 

@@ -12,7 +12,7 @@ This repository provides integrated systems that work together to support the en
 | **Product Development** | Comprehensive planning from idea to implementation | **Dynamic (4 phases, 2 checkpoints)** | `claude 1-pre-dev-product/0-pre-dev-orchestrator.mdc` |
 | **Feature Development** | Adaptive feature addition with complexity-based flow | **Adaptive (4 phases, complexity-based)** | `claude 2-pre-dev-feature/0-feature-orchestrator.mdc` |
 | **Frontend Development** | Complete frontend development with flexible design inputs | Flexible (5 phases) | `claude 3-frontend/0-frontend-orchestrator.mdc` |
-| **Code Review** | 18-point systematic code analysis | Systematic (6 phases) | `claude 4-code-review/00-code-review-orchestrator.mdc` |
+| **Code Review** | Streamlined 5-phase analysis with validation gates | Systematic (5 phases, 5 gates) | `claude 4-code-review/0-review-orchestrator.mdc` |
 | **Documentation Generation** | Comprehensive documentation generation and distribution | Comprehensive (5 phases) | `claude 5-generate-docs/0-docs-orchestrator.mdc` |
 
 ## 📚 Documentation
@@ -67,8 +67,8 @@ claude 0-memory-system/m0-memory-orchestrator.mdc
 # Plan the feature interactively
 claude 1-pre-dev-product/0-pre-dev-orchestrator.mdc
 
-# Analyze integration points
-claude 4-code-review/01-codebase-overview.md
+# Analyze integration points with foundation analysis
+claude 4-code-review/1-foundation-analysis.mdc
 ```
 
 ### 2. Frontend Development
@@ -79,14 +79,14 @@ claude 3-frontend/1-design-input-analysis.mdc
 # Complete frontend implementation
 claude 3-frontend/0-frontend-orchestrator.mdc
 
-# Validate with code review
-claude 4-code-review/00-code-review-orchestrator.mdc
+# Validate with streamlined code review
+claude 4-code-review/0-review-orchestrator.mdc
 ```
 
 ### 3. Existing Code Analysis
 ```bash
-# Full code review
-claude 4-code-review/00-code-review-orchestrator.mdc
+# Full streamlined code review
+claude 4-code-review/0-review-orchestrator.mdc
 
 # Store findings
 claude 0-memory-system/m4-memory-workflow.md
@@ -103,10 +103,10 @@ claude 0-memory-system/m4-memory-workflow.md
 
 ### 5. Quick Security Check
 ```bash
-# Security-focused analysis
-claude 4-code-review/01-codebase-overview.md
-claude 4-code-review/07-security-vulnerability-analysis.md
-claude 4-code-review/08-dependency-security-analysis.md
+# Security-focused analysis (phases 1, 2, and 5 only)
+claude 4-code-review/1-foundation-analysis.mdc
+claude 4-code-review/2-security-compliance.mdc
+claude 4-code-review/5-production-readiness.mdc
 ```
 
 ## 🔄 Development Lifecycle Integration
@@ -172,11 +172,13 @@ docs/pre-development/
 ### Code Review Outputs
 ```
 docs/code-review/
-├── code-review-todo-list.md     # Consolidated todos
-├── 1-CODEBASE_OVERVIEW.md       # Foundation analysis
-├── 2-ARCHITECTURE_ANALYSIS.md   # Architecture patterns
-├── ...
-└── 18-COMPREHENSIVE_TODO_LIST.md # Final synthesis
+├── review-summary.md             # Executive summary
+├── 1-foundation-analysis.md      # Technical foundation
+├── 2-security-compliance.md      # Security findings
+├── 3-quality-operations.md       # Quality assessment
+├── 4-business-documentation.md   # Business alignment
+├── 5-production-readiness.md     # Final validation
+└── code-review-todos.md          # Consolidated action items
 ```
 
 ### Documentation Generation Outputs
@@ -200,7 +202,7 @@ docs/documentation/
 2. **Follow Phase Dependencies**: 
    - Pre-Development: Discovery (conditional) → Strategic Decision✓ → Autonomous Refinement → Final Validation✓
    - **Feature Development**: Phase 0 Complexity Assessment → Adaptive Brief (1-7 questions) → Technical Approach✓ → Deliverable Planning → Test Strategy
-   - Code Review: Foundation → Security → Quality → Documentation → Production → Synthesis
+   - **Code Review**: Foundation → Gate 1✓ → Security → Gate 2✓ → Quality → Gate 3✓ → Business → Gate 4✓ → Production → Gate 5✓
    - Frontend: Design✓ → Tech✓ → Architecture → Tasks → Validation
    - Documentation: Discovery✓ → Planning✓ → Generation✓ → Validation✓ → Distribution
 3. **Leverage AI Autonomy**: Let confidence scores guide interaction needs
@@ -214,7 +216,7 @@ docs/documentation/
 - **Feature Enhancement**: Memory → Pre-Development Feature → Implementation → Code Review → Documentation → Memory  
 - **Existing Analysis**: Memory → Code Review → Memory
 - **Documentation Focus**: Memory → Documentation Generation → Distribution → Memory
-- **Security Focus**: Memory → Code Review (phases 1,7,8,9) → Memory
+- **Security Focus**: Memory → Code Review (phases 1,2,5) → Memory
 
 ## 🏗️ Integration with LerianStudio
 
@@ -256,7 +258,7 @@ repository="github.com/lerianstudio/monorepo"
 1. **Read CLAUDE.md First**: Complete orchestrator architecture and execution patterns
 2. **Choose Your Workflow**:
    - New project? Start with Pre-Development Product (4-phase dynamic, only 2 checkpoints!)
-   - Existing code? Begin with Code Review (6-phase systematic with Zen MCP)
+   - Existing code? Begin with Code Review (5-phase streamlined with validation gates)
    - Frontend focus? Use Frontend Development (5-phase flexible)
    - Feature addition? Use Pre-Development Feature (4-phase adaptive with complexity assessment)
 3. **Leverage Tools Strategically**:
@@ -282,7 +284,7 @@ repository="github.com/lerianstudio/monorepo"
 claude 0-memory-system/m0-memory-orchestrator.mdc
 claude 2-pre-dev-feature/0-feature-orchestrator.mdc  # Now with Phase 0 complexity assessment
 claude 3-frontend/0-frontend-orchestrator.mdc
-claude 4-code-review/00-code-review-orchestrator.mdc  # Enhanced with Zen MCP integration
+claude 4-code-review/0-review-orchestrator.mdc  # Streamlined 5-phase with validation gates
 claude 5-generate-docs/0-docs-orchestrator.mdc
 
 # Quick feature addition with risk assessment
