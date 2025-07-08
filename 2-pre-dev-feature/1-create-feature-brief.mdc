@@ -1,0 +1,299 @@
+---
+description: Generate Feature Brief focusing on WHAT feature and WHY it matters
+globs: 
+alwaysApply: false
+---
+# Rule: Creating a Feature Brief
+
+## Goal
+
+To capture the feature vision, user value, and integration requirements for adding new functionality to an existing product. The Feature Brief answers WHAT we're adding and WHY it matters to users and the business.
+
+## 🧠 Enhanced Analysis Tools
+
+### Memory MCP Integration
+```yaml
+Operations:
+  - Search: Find similar features, product context, user feedback
+  - Store: Save feature decisions, scope, constraints
+  - Retrieve: Get product vision, existing features, patterns
+  
+Tags: ["feature-brief", "feature", "user-value", "integration", "feature-name"]
+```
+
+### Sequential Thinking MCP
+```yaml
+Use For:
+  - Analyzing feature impact on existing system
+  - Breaking down user scenarios
+  - Identifying integration touchpoints
+  - Evaluating scope creep risks
+
+Pattern: Feature → Impact → Integration → Value → Scope
+```
+
+### Zen MCP Tools
+- **chat**: Explore feature ideas and user scenarios
+- **thinkdeep**: Analyze integration complexity
+- **analyze**: Assess impact on existing features
+
+## Process: Feature-First Discovery
+
+### Phase 1: Context Loading
+```yaml
+Required Context:
+  1. Product Overview:
+     - Current product vision
+     - Existing feature set
+     - User base characteristics
+  
+  2. Architecture Context:
+     - Current tech stack
+     - System boundaries
+     - Integration patterns
+  
+  3. Historical Patterns:
+     - Similar features built
+     - Common pitfalls
+     - Success patterns
+```
+
+### Phase 2: Feature Definition
+Based on confidence from context:
+- **High Confidence (80%+)**: Generate complete brief from patterns
+- **Medium (50-79%)**: Present feature variations for selection
+- **Low (<50%)**: Deep discovery with user
+
+## Feature Brief Structure
+
+### 1. Executive Summary
+- Feature name and description (1-2 sentences)
+- Primary user value (1-2 sentences)
+- Expected impact (metrics)
+
+### 2. Feature Context
+- **Current State**: How users handle this need today
+- **Pain Points**: Specific frustrations with current approach
+- **Opportunity**: Why add this feature now?
+- **Product Fit**: How it enhances the product vision
+
+### 3. User Scenarios
+```markdown
+**Primary Scenario: [Name]**
+- User: [Specific user type from existing personas]
+- Context: Current workflow
+- New Capability: What feature enables
+- Value: Time saved/friction reduced
+
+**Edge Cases**:
+- Scenario 1: [Description]
+- Scenario 2: [Description]
+```
+
+### 4. Feature Requirements
+```markdown
+**FR-F-001: [Feature Component]**
+- Description: What it does (not how)
+- User Value: Why users need this
+- Success Criteria: How we measure adoption
+- Priority: Must-have / Should-have / Nice-to-have
+```
+
+### 5. Integration Points
+```markdown
+**Existing Features Affected**:
+- Feature A: How it integrates/changes
+- Feature B: Dependencies or modifications
+- Feature C: Potential conflicts
+
+**Data Considerations**:
+- Existing data used: [List]
+- New data required: [List]
+- Migration needs: [If any]
+```
+
+### 6. Success Metrics
+- **Adoption Metrics**: Target usage rates
+- **Performance Metrics**: Acceptable impact
+- **Business Metrics**: Revenue/retention impact
+- **Quality Metrics**: Error rate targets
+
+### 7. Scope & Anti-Scope
+```markdown
+**In Scope**:
+- Capability 1: [Description]
+- Capability 2: [Description]
+
+**Out of Scope** (with reasoning):
+- Capability X: [Why excluded]
+- Capability Y: [Future consideration]
+
+**Assumptions**:
+- Existing capability 1 remains unchanged
+- Infrastructure can support X
+```
+
+### 8. Risks & Dependencies
+```markdown
+**Technical Risks**:
+- Risk: [Description]
+  - Impact: [High/Medium/Low]
+  - Mitigation: [Approach]
+
+**Product Risks**:
+- Risk: Feature complexity
+  - Impact: User confusion
+  - Mitigation: Phased rollout
+
+**Dependencies**:
+- Depends on: [Existing feature/service]
+- Blocks: [Future features]
+```
+
+### 9. Rollout Strategy
+- Target user segments
+- Phasing approach
+- Feature flags needed
+- Success criteria for full rollout
+
+## What NOT to Include in Feature Brief
+
+❌ **Technical Implementation**:
+- Architecture diagrams
+- Technology choices
+- Code structure
+- Database schemas
+
+❌ **Detailed Specifications**:
+- API designs
+- Data models
+- Component details
+- Package selections
+
+## Confidence Scoring
+
+```yaml
+Component: "Feature Definition"
+Confidence Factors:
+  Product Fit: [0-25]
+    - Perfect alignment: 25
+    - Good fit: 15
+    - Unclear fit: 5
+  
+  User Value: [0-25]
+    - Validated need: 25
+    - Assumed need: 15
+    - Speculative: 5
+  
+  Integration Clarity: [0-25]
+    - Clear touchpoints: 25
+    - Some complexity: 15
+    - Many unknowns: 5
+  
+  Scope Definition: [0-25]
+    - Well-bounded: 25
+    - Some ambiguity: 15
+    - Unclear boundaries: 5
+
+Total: [0-100]
+Action:
+  80+: Proceed with brief
+  50-79: Clarify uncertainties
+  <50: More discovery needed
+```
+
+## User Interaction Model
+
+### High-Confidence Path (80%+)
+```markdown
+"Based on the existing product context, I've drafted a feature brief for [feature].
+
+Key insights:
+- Similar to: [Previous feature] which achieved [result]
+- Integrates with: [Existing features]
+- Expected impact: [Specific metric]
+
+Proceeding with brief generation..."
+```
+
+### Medium-Confidence Path (50-79%)
+```markdown
+"I see several ways to implement [feature idea]:
+
+Option A: Lightweight integration
+- Pros: Quick to build, minimal risk
+- Cons: Limited functionality
+
+Option B: Deep integration
+- Pros: Powerful capabilities
+- Cons: More complex, longer timeline
+
+Which aligns better with current priorities?"
+```
+
+### Low-Confidence Path (<50%)
+```markdown
+"To create an effective feature brief, I need clarity on:
+
+1. **User Need**: What specific problem does this solve?
+2. **Integration**: Which existing features will this touch?
+3. **Success**: What does successful adoption look like?
+4. **Scope**: What's the minimum valuable implementation?
+
+Let's explore these together..."
+```
+
+## Gate 1: Feature Validation
+
+Before proceeding to Technical Design:
+
+```yaml
+Gate 1 Checklist:
+  Feature Definition:
+    - [ ] Clear user value proposition
+    - [ ] Fits product vision
+    - [ ] Scope is well-defined
+  
+  Integration Planning:
+    - [ ] Touchpoints identified
+    - [ ] No critical conflicts
+    - [ ] Data needs understood
+  
+  Business Case:
+    - [ ] Success metrics defined
+    - [ ] ROI is reasonable
+    - [ ] Risks identified
+  
+  User Impact:
+    - [ ] Scenarios validated
+    - [ ] Edge cases considered
+    - [ ] Rollout strategy exists
+
+Gate Actions:
+  PASS: Proceed to Technical Design
+  CONDITIONAL: Address gaps first
+  FAIL: Refine feature concept
+```
+
+## Output
+
+**Location**: `/docs/pre-development/features/briefs/feature-[name].md`
+
+## Next Steps
+
+After Gate 1 approval:
+1. Feature Brief becomes reference
+2. Proceed to Technical Design
+3. No implementation details yet
+4. Keep feature/technical separated
+
+## Quality Checklist
+
+- [ ] No technical implementation details
+- [ ] User value clearly articulated
+- [ ] Integration points identified
+- [ ] Success metrics measurable
+- [ ] Scope boundaries explicit
+- [ ] Risks have mitigations
+- [ ] Rollout strategy defined
+- [ ] Gate 1 criteria met

@@ -1,0 +1,397 @@
+---
+description: Generate atomic subtasks requiring zero context for feature implementation
+globs: 
+alwaysApply: false
+---
+# Rule: Creating Atomic Subtasks for Features
+
+## Goal
+
+To decompose feature implementation tasks into atomic, self-contained units that can be executed without understanding the broader system or feature context. Each subtask must be completable by any developer or AI agent.
+
+## 🧠 Enhanced Analysis Tools
+
+### Memory MCP Integration
+```yaml
+Operations:
+  - Search: Find code patterns, existing implementations
+  - Store: Save subtask templates, common patterns
+  - Retrieve: Get coding standards, test patterns
+  
+Tags: ["subtasks", "atomic", "feature-implementation", "zero-context", "task-id"]
+```
+
+### Sequential Thinking MCP
+```yaml
+Use For:
+  - Breaking tasks to atomic level
+  - Ensuring complete instructions
+  - Creating reproducible steps
+  - Validating zero-context requirement
+
+Pattern: Task → Files → Steps → Verification → Rollback
+```
+
+### Zen MCP Tools
+- **analyze**: Verify atomicity and completeness
+- **codereview**: Validate implementation approach
+- **testgen**: Generate comprehensive tests
+
+## Process: Zero-Context Decomposition
+
+### Phase 1: Atomic Analysis
+```yaml
+Inputs Required:
+  - Approved Implementation Plan (Gate 3 passed)
+  - Task list with dependencies
+  - Current codebase structure
+  - Coding standards
+  - Existing patterns
+
+For Each Task:
+  1. Identify Exact Changes:
+     - Which files to create/modify?
+     - What specific code changes?
+     - What tests needed?
+  
+  2. Remove All Context:
+     - No "update the service"
+     - No "integrate with X"
+     - Everything explicit
+  
+  3. Include Everything:
+     - All imports
+     - All configurations
+     - All dependencies
+```
+
+## Subtask Structure
+
+### 1. Subtask Header
+```yaml
+Subtask ID: ST-F[feature-id]-[task-number]-[subtask-number]
+Parent Task: T-F-[task-id]
+Title: [Specific action - zero context needed]
+Type: [Create/Modify/Test/Configure]
+Estimated Time: [1-4 hours max]
+
+Files Affected:
+  - Create: [new files with paths]
+  - Modify: [existing files with paths]
+  - Delete: [if any]
+```
+
+### 2. Feature Subtask Template
+
+```markdown
+## ST-F001-01: Add User Preference Field to Database Schema
+
+### Objective
+Add a new column 'notification_preferences' to the users table to store user notification settings as JSON.
+
+### Prerequisites
+```bash
+# Ensure you're in the project root
+cd /path/to/project
+
+# Ensure database migrations are up to date
+npm run db:migrate:status
+```
+
+### Implementation Steps
+
+#### Step 1: Create Migration File
+Create file: `src/infrastructure/database/migrations/20240115_add_notification_preferences.ts`
+
+```typescript
+// src/infrastructure/database/migrations/20240115_add_notification_preferences.ts
+import { MigrationInterface, QueryRunner, TableColumn } from 'typeorm';
+
+export class AddNotificationPreferences20240115 implements MigrationInterface {
+  name = 'AddNotificationPreferences20240115';
+
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.addColumn(
+      'users',
+      new TableColumn({
+        name: 'notification_preferences',
+        type: 'jsonb',
+        isNullable: false,
+        default: "'{\"email\": true, \"push\": false, \"sms\": false}'",
+        comment: 'User notification preferences'
+      })
+    );
+
+    // Add index for users who have email notifications enabled
+    await queryRunner.query(`
+      CREATE INDEX idx_users_email_notifications 
+      ON users ((notification_preferences->>'email')) 
+      WHERE (notification_preferences->>'email')::boolean = true
+    `);
+  }
+
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query('DROP INDEX IF EXISTS idx_users_email_notifications');
+    await queryRunner.dropColumn('users', 'notification_preferences');
+  }
+}
+```
+
+#### Step 2: Update User Entity
+Modify file: `src/domain/entities/User.ts`
+
+Find this section (around line 45):
+```typescript
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  updatedAt: Date;
+}
+```
+
+Replace with:
+```typescript
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  updatedAt: Date;
+
+  @Column({ 
+    type: 'jsonb', 
+    default: { email: true, push: false, sms: false },
+    comment: 'User notification preferences'
+  })
+  notificationPreferences: {
+    email: boolean;
+    push: boolean;
+    sms: boolean;
+  };
+}
+```
+
+#### Step 3: Update User Interface
+Modify file: `src/domain/interfaces/IUser.ts`
+
+Find this section (around line 15):
+```typescript
+  createdAt: Date;
+  updatedAt: Date;
+}
+```
+
+Replace with:
+```typescript
+  createdAt: Date;
+  updatedAt: Date;
+  notificationPreferences: {
+    email: boolean;
+    push: boolean;
+    sms: boolean;
+  };
+}
+```
+
+#### Step 4: Add Migration to Index
+Modify file: `src/infrastructure/database/migrations/index.ts`
+
+Add this import at the top:
+```typescript
+import { AddNotificationPreferences20240115 } from './20240115_add_notification_preferences';
+```
+
+Find the migrations array and add the new migration:
+```typescript
+export const migrations = [
+  // ... existing migrations
+  AddNotificationPreferences20240115,
+];
+```
+
+### Verification Steps
+
+1. **Run Migration Test**:
+```bash
+# Test migration up
+npm run db:migrate:up
+
+# Verify the column exists
+npm run db:query "SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'users' AND column_name = 'notification_preferences'"
+
+# Test migration down
+npm run db:migrate:down
+
+# Verify the column is removed
+npm run db:query "SELECT column_name FROM information_schema.columns WHERE table_name = 'users' AND column_name = 'notification_preferences'"
+
+# Run migration up again for permanent change
+npm run db:migrate:up
+```
+
+2. **Run Type Checks**:
+```bash
+npm run typecheck
+# Should pass without errors
+```
+
+3. **Run Tests**:
+```bash
+npm test src/domain/entities/__tests__/User.test.ts
+# All tests should pass
+```
+
+### Success Criteria
+- [ ] Migration file created and runs successfully
+- [ ] User entity updated with new field
+- [ ] User interface updated to match
+- [ ] Migration registered in index
+- [ ] Type checking passes
+- [ ] Existing tests still pass
+- [ ] Column visible in database
+
+### Rollback Plan
+If issues occur:
+```bash
+# Rollback the migration
+npm run db:migrate:down
+
+# Revert file changes
+git checkout -- src/domain/entities/User.ts
+git checkout -- src/domain/interfaces/IUser.ts
+git checkout -- src/infrastructure/database/migrations/index.ts
+git rm src/infrastructure/database/migrations/20240115_add_notification_preferences.ts
+```
+
+### Notes
+- Uses JSONB type for flexibility in PostgreSQL
+- Default values ensure backward compatibility
+- Index improves query performance for email notifications
+- No changes to existing functionality
+```
+
+### 3. Common Feature Subtask Patterns
+
+#### API Endpoint Addition
+```markdown
+1. Create route file
+2. Create controller method
+3. Add validation schema
+4. Create integration test
+5. Update API documentation
+6. Add to route registry
+```
+
+#### UI Component Integration
+```markdown
+1. Create component file
+2. Add component styles
+3. Create component tests
+4. Add to parent component
+5. Update component exports
+6. Add feature flag check
+```
+
+#### Service Integration
+```markdown
+1. Create service client
+2. Add configuration
+3. Create adapter interface
+4. Implement error handling
+5. Add retry logic
+6. Create integration tests
+```
+
+#### Database Schema Change
+```markdown
+1. Create migration file
+2. Update entity model
+3. Update interfaces
+4. Register migration
+5. Test up/down migration
+6. Update related queries
+```
+
+### 4. Zero-Context Validation
+
+Each subtask must pass these checks:
+- [ ] Can be understood without reading other files
+- [ ] All file paths are absolute or from project root
+- [ ] All code is complete (no TODOs or placeholders)
+- [ ] All imports are explicit
+- [ ] Success can be verified independently
+- [ ] Rollback doesn't require context
+
+### 5. Integration-Specific Considerations
+
+Since we're adding to an existing system:
+- Always show "before" and "after" for modifications
+- Include enough context lines to find the right spot
+- Test that existing functionality still works
+- Provide rollback for every change
+- Consider feature flags for risky changes
+
+## Gate 4: Deployment Readiness
+
+```yaml
+Gate 4 Checklist:
+  Atomicity:
+    - [ ] Each subtask <4 hours
+    - [ ] Single responsibility
+    - [ ] No context required
+  
+  Completeness:
+    - [ ] All code provided
+    - [ ] All steps explicit
+    - [ ] Verification included
+  
+  Safety:
+    - [ ] Rollback plan exists
+    - [ ] No breaking changes
+    - [ ] Tests included
+  
+  Integration:
+    - [ ] Works with existing code
+    - [ ] Feature flags where needed
+    - [ ] Backwards compatible
+
+Gate Actions:
+  PASS: Ready for implementation
+  CONDITIONAL: Add missing details
+  FAIL: Not atomic enough
+```
+
+## Common Pitfalls to Avoid
+
+❌ **Vague Instructions**: "Update the user service to handle preferences"
+✅ **Specific Instructions**: "Modify src/services/UserService.ts, add method getUserPreferences() at line 150"
+
+❌ **Missing Context**: "Add the new field to the model"
+✅ **Complete Context**: "In src/domain/entities/User.ts, after line 45, add: @Column() preferences: string;"
+
+❌ **No Verification**: "The feature should work"
+✅ **Clear Verification**: "Run: npm test user.test.ts - all 15 tests should pass"
+
+## Output Structure
+
+```
+docs/pre-development/features/subtasks/
+└── F-[feature-id]/
+    └── T-F-[task-id]/
+        ├── ST-F[id]-01-01-[description].md
+        ├── ST-F[id]-01-02-[description].md
+        └── ST-F[id]-01-03-[description].md
+```
+
+## Next Steps
+
+After Gate 4 approval:
+1. Subtasks ready for assignment
+2. Can be parallelized where possible
+3. Implementation can begin
+4. Progress tracked per subtask
+
+## Quality Checklist
+
+- [ ] Every subtask truly atomic
+- [ ] Zero context required
+- [ ] All code complete
+- [ ] File paths explicit
+- [ ] Verification steps included
+- [ ] Rollback plan provided
+- [ ] Integration safe
+- [ ] Gate 4 criteria met

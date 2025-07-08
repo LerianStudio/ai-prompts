@@ -1,301 +1,287 @@
-# 2-pre-dev-feature: Streamlined Feature Development Workflow
+# Pre-Development Feature Workflow
 
 ## Overview
 
-The **2-pre-dev-feature** workflow is designed for rapid feature development within existing products. This streamlined 4-phase process assumes established architecture and focuses on efficient integration rather than foundational design.
+The Pre-Development Feature workflow is a streamlined 4-phase system designed for adding features to existing products. It leverages existing architecture and patterns to accelerate development while maintaining quality through validation gates.
 
-## When to Use This Workflow
+## Architecture
 
-### ✅ Use 2-pre-dev-feature for:
-- Adding new functionality to existing products
-- Enhancing existing features  
-- Integration with new third-party services
-- Performance improvements
-- Bug fixes requiring significant changes
+### 4-Phase Structure
 
-### ❌ Use 1-pre-dev-product instead for:
-- New products or applications
-- Major architectural changes
-- Complete system redesigns
-- New technology stack adoption
-- Complex multi-feature initiatives
-
-## Workflow Phases
-
-### 🔍 Phase 0: Complexity Assessment (NEW - 15-30 minutes)
-**File:** Handled by `0-feature-orchestrator.mdc`
-
-**Purpose:** Evaluate feature complexity to determine optimal workflow path
-
-**Key Activities:**
-- Analyze feature scope and integration requirements
-- Search Memory MCP for similar past features
-- Propose adapted workflow (Simple/Medium/Complex)
-- Get user approval for workflow structure
-
-**Adaptive Paths:**
-- **Simple (1-2 days):** Merge phases for speed
-- **Medium (3-5 days):** Standard 4-phase workflow
-- **Complex (5+ days):** Add architecture review phase
-
-### 🚀 Phase 1: Feature Brief (Complexity-Scaled)
-**File:** `1-feature-brief.mdc`
-
-**Purpose:** Capture requirements with appropriate depth
-
-**Key Outputs:**
-- User stories and acceptance criteria
-- Integration points with existing features
-- **[NEW]** Risk assessment for complex features
-- **[NEW]** Pattern references from similar features
-- Scope boundaries and assumptions
-
-**User Interaction:** Required - questions scaled to complexity (1-7 based on assessment)
-
-### 🔧 Phase 2: Technical Approach (With Estimates)  
-**File:** `2-technical-approach.mdc`
-
-**Purpose:** Define implementation strategy with cost analysis
-
-**Key Outputs:**
-- Architecture integration strategy
-- **[NEW]** Cost estimates for each approach
-- **[NEW]** Pattern reuse opportunities
-- **[NEW]** Multiple options for complex features
-- Technology choices within existing stack
-
-**User Interaction:** Required for medium/complex, optional for simple
-
-### 📝 Phase 3: Implementation Plan (Deliverable-Focused)
-**File:** `3-implementation-plan.mdc`
-
-**Purpose:** Define deliverables and decompose into work units
-
-**Key Outputs:**
-- **[NEW]** Hierarchical deliverable structure
-- **[NEW]** Flexible task sizing (2-8 hours)
-- Work units demonstrating measurable progress
-- Complete git workflow for each deliverable
-- Integration specifications
-
-**User Interaction:** Optional - scaled to complexity
-
-### 🧪 Phase 4: Test Strategy (Acceptance-Linked)
-**File:** `4-test-strategy.mdc`
-
-**Purpose:** Define test coverage directly from acceptance criteria
-
-**Key Outputs:**
-- **[NEW]** Direct mapping to acceptance criteria
-- **[NEW]** Risk-based test prioritization
-- **[NEW]** Reusable test pattern references
-- Feature-specific test coverage targets
-- Performance and security thresholds
-
-**User Interaction:** Required for complex, optional for simple/medium
-
-## Key Advantages
-
-### ⚡ Speed
-- **Adaptive workflow** adjusts to feature complexity
-- **1-2 days** for most features (vs 1-2 weeks)
-- **Pattern reuse** accelerates implementation
-
-### 🎯 Smart Adaptation
-- **[NEW] Complexity assessment** guides workflow depth
-- **[NEW] Flexible phase structure** merges/expands as needed
-- **[NEW] Agent discretion points** for autonomous optimization
-
-### 📏 Enhanced Planning
-- **[NEW] Deliverable-focused** rather than task-focused
-- **[NEW] Cost estimates** for informed decisions
-- **[NEW] Direct acceptance criteria mapping** for tests
-
-### 🤖 AI-Optimized
-- **[NEW] Pattern matching** from past implementations
-- **[NEW] Risk-based prioritization** for complex features
-- **[NEW] Hierarchical task decomposition** for clarity
-
-## Tool Integration
-
-### 🧩 Memory MCP Integration
-All phases include comprehensive Memory MCP integration:
-- **Context Retrieval:** Access existing product decisions and patterns
-- **Decision Storage:** Store feature choices for future reference
-- **Pattern Building:** Learn from successful integration approaches
-- **Knowledge Continuity:** Maintain context across development sessions
-
-### 🧠 Zen MCP Integration (NEW)
-Enhanced analysis and validation throughout:
-- **`thinkdeep`:** Complex decision analysis and alternative exploration
-- **`analyze`:** Codebase pattern identification and architecture review
-- **`codereview`:** Approach validation and quality assurance
-- **`chat`:** Collaborative brainstorming and idea validation
-
-### 🚀 Task Tool Usage (NEW)
-Efficient parallel exploration:
-- **Pattern Search:** Find similar implementations across codebase
-- **Comprehensive Results:** Parallel search reduces context usage
-- **Example Discovery:** Learn from existing successful patterns
-- **Reduced Tokens:** More efficient than sequential searches
-
-## File Size Guidelines
-
-All generated code follows LLM-optimized guidelines:
-- **Target:** <300 lines per file
-- **Maximum:** 500 lines per file (hard limit)
-- **Strategy:** Logical splitting when approaching limits
-
-## Git Workflow Integration
-
-Every implementation task includes complete git workflow:
-
-```bash
-# Before starting each task
-git checkout -b feature/FT-[feature-id]-[num]-[desc]
-
-# After completing each task  
-git commit -m "feat(FT-[feature-id]-[num]): [description]
-Implemented: [what was built]
-Integration: [how it connects]
-Notes: [implementation details]"
-
-git push -u origin feature/FT-[feature-id]-[num]-[desc]
+```
+1. Feature Brief → Gate 1 → 
+2. Technical Design → Gate 2 → 
+3. Implementation Plan → Gate 3 → 
+4. Subtasks → Gate 4 → Implementation Ready
 ```
 
-## Quick Start
+### Key Design Principles
 
-### Express Workflow
-```bash
-# 1. Feature Brief (Required user interaction)
-claude 2-pre-dev-feature/1-feature-brief.mdc
+1. **Context Awareness**: Leverages existing product architecture and patterns
+2. **Integration Focus**: Emphasizes seamless integration with existing features
+3. **Streamlined Process**: 4 phases instead of 5 (no separate dependency phase)
+4. **Mandatory Gate Validation**: All 4 gates are mandatory quality checkpoints
+5. **Zero-Context Output**: Final subtasks require no system knowledge
 
-# 2. Technical Approach (Required user interaction)  
-claude 2-pre-dev-feature/2-technical-approach.mdc
+## File Structure
 
-# 3. Implementation Plan (Optional user review)
-claude 2-pre-dev-feature/3-implementation-plan.mdc
-
-# 4. Test Strategy (Required user interaction)
-claude 2-pre-dev-feature/4-test-strategy.mdc
+```
+2-pre-dev-feature/
+├── 0-feature-orchestrator.mdc    # Entry point - manages workflow execution
+├── 1-create-feature-brief.mdc    # Feature definition (WHAT/WHY)
+├── 2-create-technical-design.mdc # Integration approach (HOW)
+├── 3-create-implementation-plan.mdc # Task breakdown
+├── 4-create-subtasks.mdc         # Atomic work units
+└── README.md                     # This file
 ```
 
-### Full Workflow with Orchestrator
+## Phase Details
+
+### Phase 1: Feature Brief
+
+**Purpose**: Define the feature and its value proposition within the existing product context.
+
+**Key Components**:
+- Feature description and user value
+- Integration with existing features
+- Success metrics
+- Scope boundaries
+- Rollout strategy
+
+**Gate 1 Validation**:
+- Feature aligns with product vision
+- User value clearly defined
+- Integration points identified
+- Success metrics measurable
+
+**Output**: `/docs/pre-development/features/briefs/feature-[name].md`
+
+### Phase 2: Technical Design
+
+**Purpose**: Design how the feature integrates with existing architecture without breaking current functionality.
+
+**Key Components**:
+- Component modifications
+- API changes with backwards compatibility
+- Data model updates
+- Integration patterns
+- Performance impact analysis
+
+**Gate 2 Validation**:
+- Integration approach sound
+- No unmanaged breaking changes
+- Performance impact acceptable
+- Security maintained
+
+**Output**: `/docs/pre-development/features/designs/design-[feature-name].md`
+
+### Phase 3: Implementation Plan
+
+**Purpose**: Break down the integration work into manageable tasks with clear dependencies.
+
+**Key Components**:
+- Task definitions with dependencies
+- Phased implementation approach
+- Testing strategy
+- Rollback procedures
+- Resource allocation
+
+**Gate 3 Validation**:
+- All integration work captured
+- Dependencies clearly mapped
+- Rollback strategy comprehensive
+- Timeline realistic
+
+**Output**: `/docs/pre-development/features/plans/plan-[feature-name].md`
+
+### Phase 4: Subtasks
+
+**Purpose**: Create atomic, zero-context work units that can be executed independently.
+
+**Key Components**:
+- Complete implementation steps
+- Before/after code for modifications
+- Verification procedures
+- Rollback instructions
+- Integration safety checks
+
+**Gate 4 Validation**:
+- Each subtask <4 hours
+- Zero context required
+- Rollback plan included
+- Integration safe
+
+**Output**: `/docs/pre-development/features/subtasks/F-[id]/T-F-[id]/ST-F[id]-XX-XX-[description].md`
+
+## Workflow Execution
+
+### Starting the Workflow
+
 ```bash
-# Start with orchestrator for complete guidance
+# Load product context first
+claude 0-memory-system/m0-memory-orchestrator.mdc
+
+# Begin feature development
 claude 2-pre-dev-feature/0-feature-orchestrator.mdc
 ```
 
-## Output Organization
+### Context Loading
+
+The feature workflow always starts by loading:
+1. Current product architecture
+2. Existing feature set
+3. Technology stack and patterns
+4. Team conventions
+
+This context informs all subsequent phases.
+
+### Gate Processing
+
+All 4 gates are mandatory validation checkpoints:
+- **PASS**: Proceed to next phase
+- **CONDITIONAL**: Address specific issues before proceeding
+- **FAIL**: Return to previous phase for revision
+
+**The 4 Mandatory Gates**:
+1. **Gate 1** - Feature Validation (after Feature Brief)
+2. **Gate 2** - Technical Validation (after Technical Design)
+3. **Gate 3** - Implementation Readiness (after Implementation Plan)
+4. **Gate 4** - Deployment Readiness (after Subtasks)
+
+### Confidence-Based Flow
+
+The system adapts based on confidence scores:
+
+1. **High Confidence (80%+)**: Similar features exist, proceed autonomously
+2. **Medium Confidence (50-79%)**: Present integration options for selection
+3. **Low Confidence (<50%)**: Request additional context and guidance
+
+## Folder Structures
+
+### Documentation Output Structure
 
 ```
-docs/pre-development/
-├── feature-brief-[feature-name].md       # Feature requirements
-├── tech-approach-[feature-name].md       # Implementation strategy
-├── features/
-│   └── test-plan-[feature-name].md      # Feature-specific test strategy  
-└── tasks/
-    └── feature-[feature-name]/           # Implementation tasks
-        ├── overview.md                   # Implementation overview
-        └── FT-[XX]-[task-name].md        # Individual tasks
+docs/pre-development/features/
+├── briefs/
+│   └── feature-[name].md
+├── designs/
+│   └── design-[feature-name].md
+├── plans/
+│   └── plan-[feature-name].md
+└── subtasks/
+    └── F-[feature-id]/
+        └── T-F-[task-id]/
+            ├── ST-F[id]-01-01-[description].md
+            ├── ST-F[id]-01-02-[description].md
+            └── ...
 ```
 
-## Integration with Other Workflows
+### Integration with Existing Code
 
-### Code Review Chain
-After feature implementation:
-```bash
-claude 2-code-review/00-code-review-orchestrator.mdc
+Features integrate with the existing hexagonal architecture:
+
+```
+src/
+├── adapters/        # API endpoints, controllers
+├── application/     # Use cases, business logic
+├── domain/          # Entity modifications
+├── infrastructure/  # Service integrations
+└── config/          # Feature flags, settings
 ```
 
-### Memory Management
-Throughout development:
-```bash
-claude 0-memory-related/m0-memory-orchestrator.mdc
-```
+## MCP Tool Integration
+
+### Memory MCP
+- **Essential**: Always starts by loading product context
+- **Search**: Find similar features and patterns
+- **Store**: Save integration decisions and learnings
+
+### Sequential Thinking MCP
+- Analyze integration complexity
+- Break down feature impacts
+- Plan migration strategies
+
+### Zen MCP Tools
+- **thinkdeep**: Complex integration analysis
+- **analyze**: Impact assessment
+- **planner**: Task sequencing
+- **testgen**: Test generation for modifications
+
+## Key Differences from Product Workflow
+
+| Aspect | Product Workflow | Feature Workflow |
+|--------|-----------------|------------------|
+| Phases | 5 (includes dependency map) | 4 (integrated into design) |
+| Context | Starts from scratch | Assumes existing system |
+| Architecture | Defines new | Works within existing |
+| Dependencies | Separate phase | Part of technical design |
+| Risk | Higher (new system) | Lower (incremental) |
+| Testing | Full suite creation | Integration focus |
 
 ## Success Metrics
 
-### Speed Metrics
-- Feature brief: <2 hours
-- Technical approach: <3 hours  
-- Implementation plan: <4 hours
-- **Total planning: <1 day**
-
-### Quality Metrics
-- Features integrate seamlessly with existing system
-- Implementation tasks are atomic and completable
-- No major architectural disruption
-- Clear path from request to implementation
+- **Gate Pass Rate**: Target >90% (higher due to existing context)
+- **Integration Issues**: <5% post-deployment
+- **Pattern Reuse**: >80% from existing codebase
+- **Time to Deploy**: 60% faster than new features
 
 ## Best Practices
 
-### For Teams
-1. **Use for incremental development** - perfect for sprint-based feature development
-2. **Maintain context** - leverage Memory MCP for consistency across features
-3. **Review integration points** - always validate how features connect with existing system
-4. **Follow git discipline** - use provided git workflow for all tasks
+1. **Always Load Context**: Start with Memory MCP to understand the product
+2. **Respect Existing Patterns**: Don't reinvent what already works
+3. **Plan for Rollback**: Every change must be reversible
+4. **Test Incrementally**: Verify at each integration point
+5. **Use Feature Flags**: For risky or large features
+6. **Document Decisions**: Store integration choices in Memory MCP
 
-### For Solo Developers
-1. **Quick iteration** - rapid prototyping and validation
-2. **Integration confidence** - systematic approach reduces integration risk
-3. **Knowledge building** - Memory MCP captures learnings for future features
-4. **Quality maintenance** - structured approach maintains code quality
+## Common Integration Patterns
 
-## Comparison with Product Workflow
+### Adding API Endpoints
+```
+1. Extend existing controllers
+2. Follow current authentication
+3. Match response formats
+4. Version if breaking changes
+```
 
-| Aspect | 2-pre-dev-feature | 1-pre-dev-product |
-|--------|-------------------|-------------------|
-| **Phases** | 4 | 6 |
-| **Planning Time** | 1 day | 1-2 weeks |
-| **Documentation** | Focused | Comprehensive |
-| **User Interaction** | Targeted | Extensive |
-| **Architecture** | Assumes existing | Designs new |
-| **Use Case** | Feature addition | Product creation |
+### Modifying Data Models
+```
+1. Use migrations for schema changes
+2. Provide default values
+3. Plan data backfill if needed
+4. Test rollback procedures
+```
+
+### UI Component Integration
+```
+1. Follow existing component patterns
+2. Use current styling system
+3. Implement behind feature flags
+4. Plan gradual rollout
+```
 
 ## Troubleshooting
 
-### Common Issues
+### Gate Failures
+- **Gate 1**: Review product-feature fit and user value
+- **Gate 2**: Simplify integration approach, check for breaking changes
+- **Gate 3**: Break down complex tasks, clarify dependencies
+- **Gate 4**: Ensure true atomicity, add missing context
 
-**"Feature seems too complex for this workflow"**
-- Consider using 1-pre-dev-product for major architectural changes
-- Break large features into smaller, incremental features
+### Integration Issues
+- Load more context from Memory MCP
+- Review similar features for patterns
+- Consider phased approach
+- Add more comprehensive rollback plans
 
-**"Integration points are unclear"**
-- Use Memory MCP to retrieve more architecture context
-- Ask more specific technical questions in Phase 2
+## Version History
 
-**"Tasks are too large"**
-- Revisit task boundaries in Phase 3
-- Aim for 2-4 hour atomic tasks
-- Consider file size limits when splitting tasks
+- **v1.0**: Initial 4-phase streamlined workflow for feature additions
 
-**"Feature conflicts with existing system"**
-- Review existing architecture patterns in Memory MCP
-- Consider technical debt or refactoring before feature development
-- Validate assumptions in technical approach phase
+## Related Workflows
 
-## Recent Enhancements Summary
-
-### 🚀 What's New
-1. **Complexity Assessment Phase** - Automatically evaluates feature scope and adapts workflow
-2. **Flexible Phase Structure** - Merges or expands phases based on complexity
-3. **Deliverable-Focused Planning** - Shifts from tasks to outcomes
-4. **Enhanced MCP Integration** - Better pattern matching and reuse
-5. **Agent Discretion Points** - [FLEX], [ADAPT], [OPTIMIZE] markers for autonomous decisions
-
-### 💡 Key Improvements
-- **Risk Assessment** integrated into Feature Brief for complex features
-- **Cost Estimates** in Technical Approach for informed decisions  
-- **Pattern References** throughout for faster implementation
-- **Acceptance Criteria Mapping** in Test Strategy for complete coverage
-- **Hierarchical Task Structure** for better work organization
-- **Zen MCP Integration** for deeper analysis and validation
-- **Task Tool Usage** for efficient pattern discovery
-
-### 🎯 Result
-This enhanced workflow provides the perfect balance of structure, flexibility, and speed for feature development within established systems. The adaptive approach ensures appropriate depth without over-engineering, while the combination of Memory MCP, Zen MCP, and Task tool accelerates delivery through:
-- **Intelligent Pattern Reuse** - Learn from past implementations
-- **Deep Analysis** - Uncover non-obvious requirements and risks
-- **Efficient Search** - Parallel exploration reduces time and tokens
-- **Validated Approaches** - Multiple perspectives ensure quality
+- `0-memory-system/`: Context and pattern storage
+- `1-pre-dev-product/`: Full product development
+- `3-frontend/`: Frontend-specific development
+- `4-code-review/`: Code quality validation
+- `5-generate-docs/`: Documentation generation

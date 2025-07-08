@@ -1,0 +1,328 @@
+---
+description: Generate Technical Design focusing on HOW to integrate the feature
+globs: 
+alwaysApply: false
+---
+# Rule: Creating a Technical Design for Features
+
+## Goal
+
+To translate feature requirements into technical integration plans that work within the existing system architecture. The Technical Design answers HOW we'll integrate the feature while maintaining system integrity.
+
+## 🧠 Enhanced Analysis Tools
+
+### Memory MCP Integration
+```yaml
+Operations:
+  - Search: Find integration patterns, architectural decisions
+  - Store: Save design choices, integration approaches
+  - Retrieve: Get current architecture, API patterns, data models
+  
+Tags: ["technical-design", "integration", "architecture", "feature-name"]
+```
+
+### Sequential Thinking MCP
+```yaml
+Use For:
+  - Analyzing integration complexity
+  - Identifying system impacts
+  - Planning data migrations
+  - Evaluating performance implications
+
+Pattern: Feature → Components → Integration → Data → Performance
+```
+
+### Zen MCP Tools
+- **thinkdeep**: Complex integration analysis
+- **analyze**: System impact assessment
+- **planner**: Component modification planning
+
+## Process: Integration-First Design
+
+### Phase 1: System Analysis
+```yaml
+Inputs Required:
+  - Approved Feature Brief (Gate 1 passed)
+  - Current system architecture
+  - Existing API contracts
+  - Data models
+  - Performance baselines
+
+Analysis Focus:
+  1. Component Impact:
+     - Which components need changes?
+     - What new components needed?
+     - Integration complexity?
+  
+  2. Data Flow:
+     - Current data paths
+     - Required modifications
+     - New data needs
+  
+  3. System Constraints:
+     - Performance limits
+     - Security boundaries
+     - Scaling considerations
+```
+
+### Phase 2: Integration Design
+Design approach based on existing patterns and constraints.
+
+## Technical Design Structure
+
+### 1. Integration Overview
+- Feature integration summary
+- Affected system components
+- High-level approach
+- Key design decisions
+
+### 2. Component Modifications
+```yaml
+Component: [Existing Component Name]
+Current State:
+  - Responsibility: What it does today
+  - Interfaces: Current API/contracts
+  - Dependencies: What it uses
+
+Modifications Required:
+  - New Responsibilities: Additional capabilities
+  - Interface Changes: API modifications
+  - New Dependencies: What it will need
+  
+Impact Analysis:
+  - Breaking Changes: None/List them
+  - Performance Impact: Estimated
+  - Security Considerations: Any new risks
+```
+
+### 3. New Components (if needed)
+```yaml
+Component: [New Component Name]
+Purpose: Why this component is needed
+Responsibilities:
+  - Primary: Core functionality
+  - Secondary: Supporting features
+  
+Interfaces:
+  - Inbound: How others interact
+  - Outbound: What it depends on
+  
+Integration Points:
+  - Component A: How they interact
+  - Component B: Data exchange
+```
+
+### 4. API Modifications
+```markdown
+**Existing Endpoint: [Path]**
+- Current Contract: [Brief description]
+- Modifications:
+  - New Parameters: [List]
+  - Response Changes: [List]
+  - Backwards Compatibility: [Approach]
+
+**New Endpoints: [If any]**
+- Path: /api/v1/[resource]
+- Purpose: [What it enables]
+- Contract: [Request/Response overview]
+- Authentication: [Requirements]
+```
+
+### 5. Data Model Updates
+```yaml
+Existing Models:
+  Model: [Name]
+    Current Fields: [List key fields]
+    New Fields:
+      - field_name: type, purpose
+      - field_name: type, purpose
+    Migration Required: Yes/No
+    Default Values: [For new fields]
+
+New Models: [If any]
+  Model: [Name]
+    Purpose: [Why needed]
+    Fields: [Key fields]
+    Relationships: [To existing models]
+```
+
+### 6. Integration Patterns
+```markdown
+**Pattern: [e.g., Event-Driven Integration]**
+- Why This Pattern: [Reasoning]
+- Implementation Approach:
+  - Step 1: [Description]
+  - Step 2: [Description]
+- Fallback Strategy: [If pattern fails]
+
+**Data Consistency Strategy**:
+- Approach: [e.g., Eventually consistent]
+- Conflict Resolution: [Method]
+- Rollback Capability: [Yes/No, approach]
+```
+
+### 7. Performance Considerations
+```yaml
+Expected Impact:
+  - API Latency: +X ms estimated
+  - Database Load: Y% increase
+  - Memory Usage: Z MB additional
+
+Optimization Strategies:
+  - Caching: [Approach if needed]
+  - Indexing: [New indexes required]
+  - Async Processing: [If applicable]
+
+Performance Targets:
+  - Response Time: <X ms (p95)
+  - Throughput: Y requests/second
+  - Resource Usage: Within current limits
+```
+
+### 8. Security Analysis
+```yaml
+New Security Considerations:
+  - Authentication: Changes required?
+  - Authorization: New permissions?
+  - Data Privacy: New PII handling?
+
+Threat Model Updates:
+  - New Attack Vectors: [List]
+  - Mitigation Strategies: [For each]
+  
+Compliance Impact:
+  - GDPR: [Any new considerations]
+  - Other: [Industry-specific]
+```
+
+### 9. Migration Strategy
+```markdown
+**Phase 1: Preparation**
+- Database schema updates
+- Configuration changes
+- Feature flags setup
+
+**Phase 2: Rollout**
+- Step 1: Deploy with feature disabled
+- Step 2: Enable for internal testing
+- Step 3: Gradual user rollout
+
+**Rollback Plan**:
+- Trigger: [Conditions for rollback]
+- Steps: [Specific rollback actions]
+- Data Handling: [How to handle new data]
+```
+
+### 10. Testing Requirements
+```yaml
+Unit Tests:
+  - Component A: New test scenarios
+  - Component B: Modified test cases
+
+Integration Tests:
+  - API Tests: New endpoints + modifications
+  - Data Flow: End-to-end scenarios
+
+Performance Tests:
+  - Load Testing: New thresholds
+  - Stress Testing: Failure points
+
+Security Tests:
+  - Penetration Testing: New vectors
+  - Authorization Tests: Permission matrix
+```
+
+## What NOT to Include
+
+❌ **Implementation Details**:
+- Specific code
+- Package versions
+- Detailed algorithms
+- Framework specifics
+
+❌ **Infrastructure Changes**:
+- Server specifications
+- Deployment configs
+- CI/CD modifications
+
+## Integration Complexity Scoring
+
+```yaml
+Complexity Factors:
+  Component Changes: [0-25]
+    - 1-2 components: 25
+    - 3-5 components: 15
+    - 6+ components: 5
+  
+  Breaking Changes: [0-25]
+    - None: 25
+    - Backwards compatible: 15
+    - Breaking changes: 5
+  
+  Data Migration: [0-25]
+    - No migration: 25
+    - Simple migration: 15
+    - Complex migration: 5
+  
+  Performance Risk: [0-25]
+    - Negligible impact: 25
+    - Moderate impact: 15
+    - Significant impact: 5
+
+Total: [0-100]
+```
+
+## Gate 2: Technical Validation
+
+Before proceeding to Implementation Plan:
+
+```yaml
+Gate 2 Checklist:
+  Integration Soundness:
+    - [ ] All touchpoints identified
+    - [ ] No architectural violations
+    - [ ] Patterns consistent with existing
+  
+  System Integrity:
+    - [ ] No breaking changes (or managed)
+    - [ ] Performance impact acceptable
+    - [ ] Security maintained/enhanced
+  
+  Data Consistency:
+    - [ ] Migration path clear
+    - [ ] No data loss scenarios
+    - [ ] Rollback preserves data
+  
+  Technical Feasibility:
+    - [ ] Team has expertise
+    - [ ] Timeline realistic
+    - [ ] Dependencies available
+
+Gate Actions:
+  PASS: Proceed to Implementation Plan
+  CONDITIONAL: Refine approach
+  FAIL: Redesign integration
+```
+
+## Output
+
+**Location**: `/docs/pre-development/features/designs/design-[feature-name].md`
+
+## Next Steps
+
+After Gate 2 approval:
+1. Technical Design locked
+2. Proceed to Implementation Plan
+3. Begin task breakdown
+4. Maintain integration focus
+
+## Quality Checklist
+
+- [ ] All integration points mapped
+- [ ] No unmanaged breaking changes
+- [ ] Performance impact assessed
+- [ ] Security implications addressed
+- [ ] Migration strategy defined
+- [ ] Testing approach comprehensive
+- [ ] Rollback plan exists
+- [ ] Gate 2 criteria met

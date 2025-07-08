@@ -1,0 +1,341 @@
+---
+description: Generate Implementation Plan with tasks and dependencies for feature integration
+globs: 
+alwaysApply: false
+---
+# Rule: Creating an Implementation Plan for Features
+
+## Goal
+
+To break down the technical design into executable tasks that integrate the feature while maintaining system stability. Each task delivers incremental value and can be tested independently.
+
+## 🧠 Enhanced Analysis Tools
+
+### Memory MCP Integration
+```yaml
+Operations:
+  - Search: Find task patterns, estimation data, team velocity
+  - Store: Save task breakdowns, dependencies, learnings
+  - Retrieve: Get similar feature implementations, timelines
+  
+Tags: ["implementation-plan", "tasks", "feature", "dependencies", "feature-name"]
+```
+
+### Sequential Thinking MCP
+```yaml
+Use For:
+  - Breaking down integration work
+  - Identifying task dependencies
+  - Optimizing delivery sequence
+  - Planning rollback points
+
+Pattern: Components → Tasks → Dependencies → Sequence → Rollback
+```
+
+### Zen MCP Tools
+- **planner**: Task breakdown and sequencing
+- **analyze**: Dependency and risk analysis
+- **thinkdeep**: Complex integration planning
+
+## Process: Integration-Focused Planning
+
+### Phase 1: Task Identification
+```yaml
+Inputs Required:
+  - Approved Technical Design (Gate 2 passed)
+  - Component modifications list
+  - Integration points
+  - Current team capacity
+  - Existing codebase structure
+
+Analysis Focus:
+  1. Integration Order:
+     - What must be done first?
+     - What can be parallel?
+     - What are the dependencies?
+  
+  2. Risk Mitigation:
+     - High-risk changes first?
+     - Or stable foundation first?
+     - Rollback points needed
+  
+  3. Testing Strategy:
+     - How to test incrementally?
+     - Integration test points
+     - Performance checkpoints
+```
+
+## Implementation Plan Structure
+
+### 1. Plan Overview
+```yaml
+Feature: [Name]
+Total Tasks: [Number]
+Estimated Duration: [Sprints/Days]
+Team Required: [Roles needed]
+Risk Level: [High/Medium/Low]
+
+Integration Strategy:
+  - Approach: [e.g., Behind feature flag]
+  - Phases: [Number and brief description]
+  - Rollback Points: [Where we can safely stop]
+```
+
+### 2. Task Definitions
+
+```markdown
+## T-F-001: [Task Name]
+
+### Deliverable
+[What working functionality this provides]
+
+### Scope
+**Includes**:
+- Modification 1: [Specific change]
+- Modification 2: [Specific change]
+- Tests: [What tests included]
+
+**Excludes**:
+- [What's in other tasks]
+
+### Integration Points
+- Touches: [Components/APIs affected]
+- Dependencies: [What must be complete first]
+- Enables: [What tasks this unblocks]
+
+### Success Criteria
+- [ ] Functionality works as designed
+- [ ] Existing features unaffected
+- [ ] Tests pass (new and existing)
+- [ ] Performance within limits
+- [ ] No security regressions
+
+### Effort Estimate
+- Size: [S/M/L/XL]
+- Points: [Story points]
+- Duration: [Days]
+
+### Risks
+- Risk: [Description]
+  - Mitigation: [Approach]
+  - Fallback: [If mitigation fails]
+
+### Testing Approach
+- Unit Tests: [What to test]
+- Integration Tests: [Scenarios]
+- Manual Testing: [If needed]
+```
+
+### 3. Task Dependency Matrix
+
+```mermaid
+graph TD
+    T-F-001[Database Schema Update] --> T-F-002[API Modifications]
+    T-F-002 --> T-F-003[Service Integration]
+    T-F-002 --> T-F-004[Frontend Components]
+    T-F-003 --> T-F-005[End-to-End Testing]
+    T-F-004 --> T-F-005
+    T-F-005 --> T-F-006[Performance Validation]
+    T-F-006 --> T-F-007[Feature Flag Configuration]
+```
+
+### 4. Implementation Phases
+
+```yaml
+Phase 1 - Foundation (Sprint 1):
+  Tasks:
+    - T-F-001: Database updates
+    - T-F-002: Core API changes
+  Goal: Backend ready for integration
+  Rollback: Revert schema changes
+
+Phase 2 - Integration (Sprint 2):
+  Tasks:
+    - T-F-003: Service connections
+    - T-F-004: UI components
+  Goal: Feature functional behind flag
+  Rollback: Disable feature flag
+
+Phase 3 - Validation (Sprint 3):
+  Tasks:
+    - T-F-005: Full testing
+    - T-F-006: Performance tuning
+    - T-F-007: Rollout configuration
+  Goal: Production ready
+  Rollback: Keep feature disabled
+```
+
+### 5. Testing Strategy
+
+```yaml
+Progressive Testing:
+  After Each Task:
+    - Run existing test suite
+    - Verify no regressions
+    - Add new tests for changes
+  
+  Integration Points:
+    - T-F-002 + T-F-003: API integration tests
+    - T-F-003 + T-F-004: End-to-end tests
+    - T-F-006: Performance benchmarks
+  
+  Feature Testing:
+    - Behind flag: Internal testing
+    - Limited rollout: Beta users
+    - Full rollout: All users
+```
+
+### 6. Rollback Strategy
+
+```markdown
+**Rollback Triggers**:
+1. Performance degradation >20%
+2. Error rate increase >5%
+3. Critical bug discovered
+4. Data inconsistency detected
+
+**Rollback Levels**:
+1. **Feature Flag**: Disable feature (immediate)
+2. **Code Rollback**: Revert deployment (30 min)
+3. **Data Rollback**: Restore schema (2 hours)
+
+**Rollback Procedures**:
+- Level 1: Toggle feature flag off
+- Level 2: Deploy previous version
+- Level 3: Run migration rollback scripts
+```
+
+### 7. Resource Allocation
+
+```yaml
+Team Requirements:
+  Backend Developer:
+    - Tasks: T-F-001, T-F-002, T-F-003
+    - Effort: 8 days
+  
+  Frontend Developer:
+    - Tasks: T-F-004
+    - Effort: 5 days
+  
+  QA Engineer:
+    - Tasks: T-F-005, T-F-006
+    - Effort: 4 days
+  
+  DevOps:
+    - Tasks: T-F-007
+    - Effort: 2 days
+```
+
+### 8. Risk Management
+
+```yaml
+High Risks:
+  - Database migration affecting existing data
+    - Mitigation: Extensive testing in staging
+    - Contingency: Rollback scripts ready
+  
+Medium Risks:
+  - API changes affecting external integrations
+    - Mitigation: Versioning strategy
+    - Contingency: Support both versions temporarily
+
+Low Risks:
+  - UI changes confusing users
+    - Mitigation: User communication
+    - Contingency: Quick UI adjustments
+```
+
+### 9. Communication Plan
+
+```markdown
+**Internal Communication**:
+- Daily: Stand-ups during implementation
+- Weekly: Progress updates to stakeholders
+- Per Phase: Go/No-go decisions
+
+**External Communication**:
+- Pre-launch: Feature announcement
+- Soft launch: Beta user notification
+- Full launch: All user communication
+```
+
+## Task Sizing Guidelines
+
+### Small (S) - 1-2 days
+- Single component change
+- Clear requirements
+- Minimal dependencies
+- Low risk
+
+### Medium (M) - 3-5 days
+- Multiple components
+- Some integration complexity
+- Moderate dependencies
+- Medium risk
+
+### Large (L) - 5-8 days
+- Complex integration
+- Multiple systems
+- High dependencies
+- High risk
+
+### Extra Large (XL) - 8+ days
+- Should be broken down
+- Very complex
+- Critical path
+- Very high risk
+
+## Gate 3: Implementation Readiness
+
+Before proceeding to Subtasks:
+
+```yaml
+Gate 3 Checklist:
+  Task Completeness:
+    - [ ] All integration work identified
+    - [ ] Dependencies mapped clearly
+    - [ ] No missing tasks
+  
+  Risk Management:
+    - [ ] All risks identified
+    - [ ] Mitigation strategies defined
+    - [ ] Rollback plan comprehensive
+  
+  Resource Planning:
+    - [ ] Team capacity confirmed
+    - [ ] Skills match requirements
+    - [ ] Timeline realistic
+  
+  Testing Coverage:
+    - [ ] Test strategy complete
+    - [ ] Integration points covered
+    - [ ] Performance criteria set
+
+Gate Actions:
+  PASS: Proceed to Subtasks
+  CONDITIONAL: Refine plan
+  FAIL: Restructure tasks
+```
+
+## Output
+
+**Location**: `/docs/pre-development/features/plans/plan-[feature-name].md`
+
+## Next Steps
+
+After Gate 3 approval:
+1. Plan becomes execution guide
+2. Proceed to atomic subtasks
+3. Teams can start planning
+4. Track progress by task
+
+## Quality Checklist
+
+- [ ] All integration work captured
+- [ ] Dependencies clearly mapped
+- [ ] Rollback strategy defined
+- [ ] Testing approach comprehensive
+- [ ] Resource needs realistic
+- [ ] Risks have mitigations
+- [ ] Timeline is achievable
+- [ ] Gate 3 criteria met
