@@ -1,520 +1,273 @@
 ---
-description: Master orchestrator for pre-development workflow with user feedback loops
+description: Master orchestrator for pre-development workflow with revolving gates
 globs: 
 alwaysApply: false
 ---
-# Rule: Pre-Development Workflow Orchestration (Hybrid Dynamic Pattern)
+# Rule: Pre-Development Workflow Orchestration (Revolving Cycle Pattern)
 
 ## Goal
 
-To guide an AI assistant through a dynamic, confidence-based pre-development planning process that transforms user ideas into detailed, implementable technical specifications. This orchestrator manages an adaptive workflow that balances AI autonomy with strategic human oversight, maximizing efficiency while maintaining quality.
+To guide development from business idea to atomic implementation units through a systematic, gated workflow that ensures quality at each phase transition. All 5 gates are mandatory validation checkpoints - each gate validates outputs before allowing progression, creating a revolving cycle of continuous improvement.
 
-## 🔗 Enhanced Reasoning Integration
+## 🔄 The Revolving Cycle Architecture
 
-**IMPORTANT**: Use both Memory MCP and Sequential Thinking MCP for enhanced analysis:
+### 5 Mandatory Gates
 
-### Memory MCP Integration
-- Store requirements and decisions using `mcp__lerian-memory__memory_create` with `operation="store_decision"`
-- Reference previous projects using `mcp__lerian-memory__memory_read` with `operation="search"`
-- Tag entries appropriately using tags like `["prd", "trd", "architecture", "project-name"]`
+This workflow enforces **5 mandatory validation gates**:
+1. **Gate 1** - Business Validation (after PRD)
+2. **Gate 2** - Technical Feasibility (after TRD)
+3. **Gate 3** - Stack Validation (after Dependency Map)
+4. **Gate 4** - Implementation Readiness (after Tasks)
+5. **Gate 5** - Deployment Readiness (after Subtasks)
 
-### Sequential Thinking MCP Usage
-- Use `mcp__sequential-thinking__sequentialthinking` for complex requirement analysis
-- Break down complex features into systematic thinking steps
-- Allow requirements to evolve through user feedback
-- Question assumptions and explore alternative approaches
-- Generate and verify solution hypotheses through structured reasoning
+Each gate must pass before proceeding to the next phase. This ensures quality and prevents cascade failures.
 
-### 🤖 Zen MCP Integration (HIGHLY RECOMMENDED)
-**Why Use Zen MCP:**
-- **Deep Analysis**: Use `mcp__zen__thinkdeep` for complex architectural decisions and trade-off analysis
-- **Code Quality**: Use `mcp__zen__codereview` to validate implementation approaches early
-- **Problem Solving**: Use `mcp__zen__debug` when encountering blockers or complex issues
-- **Collaboration**: Use `mcp__zen__chat` to explore ideas and get second opinions
-
-**Example Usage:**
 ```
-mcp__zen__thinkdeep
-  prompt="Analyzing trade-offs between microservice vs monolithic for [feature]"
-  model="pro"
-  thinking_mode="high"
-  focus_areas=["architecture", "scalability", "complexity"]
+┌─────────────────────┐
+│  REVOLVING CYCLE    │ ← Continuous learning feeds back
+└──────────┬──────────┘
+           │
+    ┌──────▼──────┐        ┌────────────┐
+    │     PRD     │───────►│   GATE 1   │ Business Validation
+    │  (What/Why) │◄───────│  Complete? │ What problems solved?
+    └──────┬──────┘        └────────────┘
+           │
+    ┌──────▼──────┐        ┌────────────┐
+    │     TRD     │───────►│   GATE 2   │ Technical Feasibility
+    │  (How/Where)│◄───────│  Feasible? │ Can we build this?
+    └──────┬──────┘        └────────────┘
+           │
+    ┌──────▼──────┐        ┌────────────┐
+    │ DEPENDENCY  │───────►│   GATE 3   │ Stack Validation
+    │     MAP     │◄───────│Compatible? │ Dependencies work?
+    └──────┬──────┘        └────────────┘
+           │
+    ┌──────▼──────┐        ┌────────────┐
+    │    TASKS    │───────►│   GATE 4   │ Implementation Ready
+    │ (Macro Units)│◄───────│  Atomic?  │ Can teams execute?
+    └──────┬──────┘        └────────────┘
+           │
+    ┌──────▼──────┐        ┌────────────┐
+    │   SUBTASKS  │───────►│   GATE 5   │ Deployment Ready
+    │   (Atomic)  │◄───────│Deployable? │ Zero context needed?
+    └──────┬──────┘        └────────────┘
+           │
+           └────────────────────┘ Patterns stored in Memory MCP
 ```
 
-### 🔍 Task Tool Usage (USE LIBERALLY)
-**When to Use Task():**
-- Searching for patterns across multiple files
-- Finding similar implementations in the codebase
-- Exploring architectural decisions in existing code
-- Parallel search operations for efficiency
+## Phase Definitions & Gates
 
-**Example:**
-```
-Task
-  description="Find authentication patterns"
-  prompt="Search for existing authentication implementations, JWT usage, and security patterns across the codebase"
-```
+### 📋 Phase 1: PRD (Product Requirements Document)
+**Focus**: WHAT are we building and WHY does it matter?
+- Business problem definition
+- User needs and personas
+- Success metrics
+- Feature requirements (functional)
+- User stories and journeys
+- Market/competitive context
 
-## Process Overview - Hybrid Dynamic Workflow
+**NOT in PRD**: Technical implementation, architecture, dependencies, how to build
 
-This orchestrator implements an **adaptive workflow** with confidence-based checkpoints:
-
-### 🚀 Core Principles
-- **Memory-First**: Always start by searching for similar patterns
-- **Parallel Processing**: Explore multiple approaches simultaneously  
-- **Confidence-Based Interaction**: AI decides when human input is needed
-- **Rapid Prototyping**: Generate working examples early for validation
-- **Dynamic Depth**: Complexity drives process depth, not rigid phases
-
-### 📊 Confidence Scoring System
+**Gate 1 - Business Validation**:
 ```yaml
-High Confidence (80-100%):
-  - Pattern found in Memory MCP with >90% similarity
-  - Clear requirements with minimal ambiguity
-  - Standard implementation patterns apply
-  Action: Proceed autonomously, notify user of decisions
-
-Medium Confidence (50-79%):
-  - Partial pattern matches in Memory
-  - Some ambiguity in requirements
-  - Multiple viable approaches exist
-  Action: Present 2-3 options with trade-offs for user selection
-
-Low Confidence (<50%):
-  - No similar patterns found
-  - High ambiguity or novel requirements
-  - Critical architectural decisions needed
-  Action: Request specific guidance before proceeding
+Validation Criteria:
+  - [ ] Clear problem statement exists
+  - [ ] Target users are well-defined
+  - [ ] Success metrics are measurable
+  - [ ] All features have user value
+  - [ ] Scope boundaries are explicit
+  - [ ] Business ROI is justified
 ```
 
-### 🔄 Adaptive Phase Structure
+### 🔧 Phase 2: TRD (Technical Requirements Document)
+**Focus**: HOW will we build it and WHERE will components live?
+- System architecture design
+- Component breakdown
+- API contracts
+- Data models and schemas
+- Security approach
+- Performance requirements
 
-#### Phase 1: Discovery & Rapid Prototyping (Parallel Execution)
-**Objectives**: 
-- Search memory for similar implementations
-- Analyze requirements using Sequential Thinking
-- Generate PRD + initial code/architecture prototypes
-- Identify confidence levels for each component
+**NOT in TRD**: Specific packages, infrastructure choices, implementation details
 
-**User Interaction**: Conditional based on confidence scores
-
-#### Phase 2: Strategic Decision Point (Single Checkpoint)
-**Objectives**:
-- Present synthesis of findings with confidence scores
-- Show 2-3 viable approaches with prototypes
-- Highlight areas needing human expertise
-
-**User Interaction**: Required - select direction and constraints
-
-#### Phase 3: Autonomous Refinement (AI-Driven)
-**Objectives**:
-- Deep dive into chosen approach
-- Generate TRD, tasks, and test strategy
-- Use Sequential Thinking for complex areas
-- Request help only for low-confidence items
-
-**User Interaction**: On-demand based on confidence
-
-#### Phase 4: Validation & Optimization
-**Objectives**:
-- Cross-validate all documents
-- Optimize task breakdown
-- Prepare implementation roadmap
-
-**User Interaction**: Final approval only
-
-## Execution Patterns - Dynamic Workflow
-
-### 🚀 Phase 1: Discovery & Rapid Prototyping
-
-```bash
-# New approach: Parallel discovery and prototyping
-claude 1-pre-development/1-create-prd.mdc
-
-# AI Process (Parallel Execution):
-# 1. Memory search for similar features/patterns
-# 2. Sequential thinking to decompose requirements  
-# 3. Generate initial PRD structure
-# 4. Create 2-3 approach prototypes (code snippets/architecture)
-# 5. Calculate confidence scores for each component
-# 6. Present findings with confidence indicators
-```
-
-**Dynamic Interaction Model:**
+**Gate 2 - Technical Feasibility**:
 ```yaml
-IF confidence_score >= 80%:
-  - AI proceeds with PRD generation
-  - Notifies user: "Found similar pattern [X], proceeding with approach [Y]"
-  - User can intervene if needed
-  
-ELIF confidence_score >= 50%:
-  - AI presents 2-3 options with prototypes
-  - User selects preferred approach
-  - AI refines based on selection
-  
-ELSE:
-  - AI requests specific guidance
-  - Presents what it understands and gaps
-  - User provides targeted input
+Validation Criteria:
+  - [ ] Architecture supports all PRD requirements
+  - [ ] Component interfaces are defined
+  - [ ] Data flow is clear and complete
+  - [ ] Security model addresses all risks
+  - [ ] Performance targets are achievable
+  - [ ] Integration points are identified
 ```
 
-**Outputs**: 
-- `docs/pre-development/prd-[feature-name].md`
-- `docs/pre-development/prototypes/[approach-1,2,3].md` (when applicable)
+### 🗺️ Phase 3: Dependency Map
+**Focus**: WHAT specific technologies and infrastructure?
+- Language and framework choices
+- Package dependencies with versions
+- Infrastructure requirements
+- External service integrations
+- Development tool requirements
+- Deployment environment specs
 
-### 💡 Phase 2: Strategic Decision Point
+**NOT in Dependency Map**: Implementation logic, business rules, feature details
 
-```bash
-# Single consolidated checkpoint for user direction
-claude 1-pre-development/2-create-trd.mdc
-
-# AI presents synthesis:
-# 1. Summary of Memory MCP findings
-# 2. 2-3 technical approaches with prototypes
-# 3. Confidence scores and risk assessment
-# 4. Areas requiring human expertise
-```
-
-**Streamlined User Decision:**
+**Gate 3 - Stack Validation**:
 ```yaml
-User Reviews:
-  - Approach comparison matrix
-  - Risk/benefit analysis
-  - Resource implications
-  
-User Provides (in one interaction):
-  - Selected approach
-  - Key constraints
-  - Non-negotiable requirements
-  - Timeline/resource boundaries
+Validation Criteria:
+  - [ ] All dependencies are compatible
+  - [ ] No conflicting version requirements
+  - [ ] Security vulnerabilities checked
+  - [ ] License compliance verified
+  - [ ] Infrastructure costs acceptable
+  - [ ] Team has required expertise
 ```
 
-**Output**: User decision captured in Memory MCP for future reference
+### 📦 Phase 4: Tasks (Macro Implementation Units)
+**Focus**: WHAT are the major implementation chunks?
+- Feature-based task breakdown
+- Clear deliverables per task
+- Dependency ordering
+- Acceptance criteria
+- Estimated effort (T-shirt sizes)
+- Testing requirements
 
-### 🤖 Phase 3: Autonomous Refinement
+**NOT in Tasks**: Code details, specific implementations, micro-steps
 
-```bash
-# AI-driven deep dive with selective interaction
-claude 1-pre-development/3-generate-tasks.mdc
-claude 1-pre-development/4-validate-chain.mdc
-claude 1-pre-development/5-generate-sub-tasks.mdc
-claude 1-pre-development/6-test-strategy.mdc
-
-# Parallel AI execution:
-# 1. Generate comprehensive TRD based on selection
-# 2. Create task breakdown with confidence scores
-# 3. Develop test strategy
-# 4. Validate consistency across documents
-# 5. Identify low-confidence areas needing input
-```
-
-**Confidence-Based Interactions:**
+**Gate 4 - Implementation Readiness**:
 ```yaml
-High Confidence Areas:
-  - AI generates complete sections
-  - Stores decisions in Memory MCP
-  - Notifies user of progress
-  
-Medium Confidence Areas:
-  - AI generates draft with alternatives
-  - Flags for user review in batch
-  
-Low Confidence Areas:
-  - AI requests specific input
-  - Provides context and options
-  - Waits for user guidance
+Validation Criteria:
+  - [ ] Each task has clear boundaries
+  - [ ] Dependencies are properly ordered
+  - [ ] Acceptance criteria are testable
+  - [ ] No task exceeds team capacity
+  - [ ] All PRD features are covered
+  - [ ] Risk mitigation is planned
 ```
 
-**Batch Review Points:**
-- Technical decisions summary
-- Risk areas identification  
-- Resource requirements
-- Critical path dependencies
+### ⚛️ Phase 5: Atomic Subtasks
+**Focus**: HOW to implement with minimal context?
+- Self-contained work units
+- Zero-assumption instructions
+- Specific file changes
+- Test requirements
+- Code examples/patterns
+- Deployment steps
 
-**Outputs**:
-- `docs/pre-development/trd-[feature-name].md`
-- `docs/pre-development/tasks/tasks-[feature-name].md`
-- `docs/pre-development/tasks/MT-*/` (sub-tasks)
-- `docs/pre-development/test-strategy-[feature-name].md`
+**NOT in Subtasks**: Business context, architectural decisions, why explanations
 
-### ✅ Phase 4: Final Validation & Optimization
-
-```bash
-# Comprehensive validation and optimization
-claude 1-pre-development/4-validate-chain.mdc
-
-# AI Process:
-# 1. Cross-validate all documents
-# 2. Optimize task dependencies
-# 3. Identify implementation risks
-# 4. Generate implementation roadmap
-# 5. Present final package
-```
-
-**Single Approval Checkpoint:**
+**Gate 5 - Deployment Readiness**:
 ```yaml
-User Reviews Complete Package:
-  - Executive summary
-  - Implementation roadmap
-  - Risk mitigation plan
-  - Resource allocation
-  - Success metrics
-  
-User Decision:
-  - Approve and proceed
-  - Request specific adjustments
-  - Major pivot (rare - return to Phase 2)
+Validation Criteria:
+  - [ ] Each subtask is truly atomic
+  - [ ] No external context required
+  - [ ] Clear success criteria exists
+  - [ ] Can be completed in <4 hours
+  - [ ] Includes verification steps
+  - [ ] Rollback plan included
 ```
 
-**Output**: 
-- `docs/pre-development/validation-report-[feature-name].md`
-- `docs/pre-development/implementation-roadmap-[feature-name].md`
+## 🧠 Enhanced Tool Integration
 
-## Dynamic Interaction Model
-
-### Confidence-Based Checkpoints
-
-**Only 2 Mandatory Checkpoints:**
-1. **Strategic Direction** (Phase 2) - User selects approach and sets constraints
-2. **Final Approval** (Phase 4) - User approves complete package
-
-**Conditional Interactions:**
-- Low confidence areas trigger targeted questions
-- Medium confidence presents options in batches
-- High confidence proceeds with notification
-
-### Intelligent Feedback System
-
+### Memory MCP Usage Pattern
 ```yaml
-Confidence Score Calculation:
-  memory_match: 0-40 points
-    - Exact pattern match: 40
-    - Similar pattern: 20-35
-    - Partial match: 10-20
-    - No match: 0
-    
-  requirement_clarity: 0-30 points
-    - Unambiguous specs: 30
-    - Minor ambiguities: 20
-    - Significant gaps: 10
-    - Vague requirements: 0
-    
-  technical_complexity: 0-30 points
-    - Standard patterns: 30
-    - Known challenges: 20
-    - Novel solutions: 10
-    - Experimental: 0
-    
-  total_confidence = sum(scores)
+Each Phase:
+  Start: 
+    - Retrieve similar patterns
+    - Load previous decisions
+    - Check for constraints
+  
+  During:
+    - Store key decisions
+    - Track confidence scores
+    - Note uncertainties
+  
+  End:
+    - Save validated outputs
+    - Store gate decisions
+    - Record learnings
 ```
 
-### Batch Review Optimization
+### Sequential Thinking MCP
+- Use for complex breakdowns at each phase
+- Especially valuable for PRD→TRD and Tasks→Subtasks transitions
+- Helps identify hidden dependencies and edge cases
 
-```markdown
-## Efficient Review Process
+### Zen MCP Tools
+- `thinkdeep`: For architectural decisions in TRD
+- `analyze`: For dependency compatibility checks
+- `planner`: For task breakdown and ordering
 
-1. AI groups similar confidence items
-2. Presents decisions in context
-3. User reviews in one pass:
-   - ✅ Approve high confidence
-   - 🔄 Select from medium options
-   - 📝 Provide input for low confidence
-4. AI processes all feedback simultaneously
-5. Generates final artifacts
-```
+## Confidence-Based Autonomy
 
-## Quick Execution Commands
+### High Confidence (80%+)
+- Found exact patterns in memory
+- Clear requirements with precedent
+- Proceed autonomously, notify user
 
-### 🚀 Rapid Discovery Mode (Memory-First)
+### Medium Confidence (50-79%)
+- Partial patterns found
+- Some ambiguity exists
+- Present options for user selection
+
+### Low Confidence (<50%)
+- Novel requirements
+- High uncertainty
+- Request specific guidance
+
+## Quick Start Commands
+
 ```bash
-# Start with pattern search and rapid prototyping
-claude 1-pre-development/1-create-prd.mdc
-# AI searches memory, generates options, shows confidence
-# User interaction only if confidence < 80%
-```
+# Start new product development
+claude 1-pre-dev-product/1-create-prd.mdc
 
-### 💡 Strategic Planning Mode (2 Checkpoints)
-```bash
-# Phase 1: Discovery and options
-claude 1-pre-development/1-create-prd.mdc
-# [AI presents findings and prototypes]
+# After PRD approval (Gate 1 passed)
+claude 1-pre-dev-product/2-create-trd.mdc
 
-# Phase 2: Strategic decision 
-claude 1-pre-development/2-create-trd.mdc
-# [User selects approach - ONLY MANDATORY CHECKPOINT]
+# After TRD approval (Gate 2 passed)
+claude 1-pre-dev-product/3-create-dependency-map.mdc
 
-# Phase 3-4: Autonomous refinement
-claude 1-pre-development/3-generate-tasks.mdc
-claude 1-pre-development/4-validate-chain.mdc
-claude 1-pre-development/5-generate-sub-tasks.mdc
-claude 1-pre-development/6-test-strategy.mdc
-# [AI works autonomously, requests help only for low confidence]
-```
+# After Dependency validation (Gate 3 passed)
+claude 1-pre-dev-product/4-create-tasks.mdc
 
-### 🤖 Full Autonomous Mode (High Confidence)
-```bash
-# When similar pattern exists with >90% match
-claude 1-pre-development/1-create-prd.mdc
-# AI notifies: "Found exact match for [pattern], proceeding..."
-# Generates complete package autonomously
-# Single review at end
-```
-
-### 🔍 Exploration Mode (Novel Requirements)
-```bash
-# For unprecedented features
-claude 1-pre-development/1-create-prd.mdc
-# AI uses Sequential Thinking to explore
-# Presents multiple hypotheses
-# More interaction points based on discoveries
+# After Task approval (Gate 4 passed)
+claude 1-pre-dev-product/5-create-subtasks.mdc
 ```
 
 ## Output Organization
 
-All pre-development outputs are systematically organized:
-
 ```
 docs/pre-development/
-├── prd-[feature-name].md              # Product Requirements Document
-├── trd-[feature-name].md              # Technical Requirements Document
-├── validation-report-[feature-name].md # Consistency validation report
-├── test-strategy-[feature-name].md    # Comprehensive test strategy
-└── tasks/
-    ├── tasks-[feature-name].md        # Main atomic tasks
-    └── MT-[XX]-[task-name]/           # Sub-tasks for each main task
-        ├── overview.md                # Task overview and context
-        └── ST-[XX]-[subtask-name].md  # Individual sub-tasks
+├── prd/
+│   └── prd-[feature-name].md
+├── trd/
+│   └── trd-[feature-name].md
+├── dependencies/
+│   └── dep-map-[feature-name].md
+├── tasks/
+│   └── tasks-[feature-name].md
+└── subtasks/
+    └── T-[task-id]/
+        ├── ST-[task-id]-01-[description].md
+        ├── ST-[task-id]-02-[description].md
+        └── ST-[task-id]-03-[description].md
 ```
 
-## Memory Integration
+## Gate Failure Learning Loop
 
-Store planning decisions and patterns with appropriate tags:
-- `["pre-dev", "requirements", "prd", "feature-name"]` for PRD decisions
-- `["pre-dev", "technical", "trd", "feature-name"]` for technical choices
-- `["pre-dev", "tasks", "breakdown", "feature-name"]` for task organization
-- `["pre-dev", "validation", "consistency"]` for validation findings
-- `["pre-dev", "feedback", "user-decisions"]` for user preferences
-- `["pre-dev", "testing", "strategy", "feature-name"]` for test approach
+When any gate fails:
+1. Document specific failure reasons
+2. Store in Memory MCP with tags
+3. Suggest remediation options
+4. Update phase to address issues
+5. Re-attempt gate validation
 
-## Success Criteria
+This creates a revolving cycle where each failure improves future attempts.
 
-### Dynamic Success Metrics
-- **Time to First Prototype**: < 30 minutes (vs 2-3 hours traditional)
-- **User Interaction Points**: 2-3 strategic (vs 7+ tactical)
-- **Pattern Reuse Rate**: >60% from Memory MCP
-- **Confidence Accuracy**: >85% correlation with user satisfaction
-- **Autonomous Completion**: >70% of phases without intervention
+## Success Metrics
 
-### Quality Indicators
-- **High Confidence Decisions**: Validated by user approval rate >90%
-- **Memory Integration**: Each session contributes 3+ reusable patterns
-- **Requirement Coverage**: 100% traceable through all documents
-- **Risk Identification**: Proactive flagging of edge cases
-- **Implementation Readiness**: Tasks immediately executable
-
-## Best Practices
-
-### For Dynamic AI Collaboration
-
-1. **Memory-First Always** - Start every phase with pattern search
-2. **Prototype Early** - Show working examples within first interaction
-3. **Confidence Transparency** - Always display confidence scores
-4. **Batch Decisions** - Group similar confidence items for efficiency
-5. **Progressive Disclosure** - Detail increases with complexity
-6. **Fail Fast** - Flag uncertainties early in the process
-
-### For Optimal Efficiency
-
-1. **Parallel Processing** - Use Sequential Thinking for simultaneous exploration
-2. **Smart Defaults** - Apply patterns from Memory MCP when confident
-3. **Context Preservation** - Store all decisions for future sessions
-4. **Risk-Based Depth** - Spend time where uncertainty is highest
-5. **Continuous Learning** - Every interaction improves future confidence
-
-## Integration with Other Chains
-
-### With Code Review Chain
-```bash
-# After implementation begins
-# 1. Complete pre-development planning (this chain)
-# 2. Implement features based on tasks
-# 3. Run code review chain to validate implementation
-claude 2-code-review/00-code-review-orchestrator.mdc
-```
-
-### With Memory Management
-```bash
-# Store project context for future reference
-# Initialize memory with project patterns
-claude 0-memory-related/m1-memory-initialization.md
-
-# After pre-development completion
-# Store architectural decisions and patterns
-claude 0-memory-related/m3-memory-storage.md
-```
-
-## Confidence Scoring Template
-
-### How to Calculate and Present Confidence
-
-```yaml
-Component Confidence Assessment:
-  requirement: "[Feature/Component Name]"
-  
-  memory_match_score: [0-40]
-    found_patterns: 
-      - pattern: "[Pattern name]"
-        similarity: [percentage]
-        source: "[Project/Context]"
-    
-  clarity_score: [0-30]
-    ambiguities: ["list any unclear aspects"]
-    assumptions: ["list assumptions made"]
-    
-  complexity_score: [0-30]
-    technical_challenges: ["list identified challenges"]
-    novel_aspects: ["list unprecedented elements"]
-    
-  total_confidence: [sum]
-  confidence_level: "[High/Medium/Low]"
-  
-  recommended_action:
-    High: "Proceeding with implementation based on [pattern]"
-    Medium: "Presenting options for your selection"
-    Low: "Need your input on [specific aspects]"
-```
-
-### Example Confidence Report
-
-```markdown
-## Confidence Analysis for User Authentication Feature
-
-### High Confidence (85%) Components:
-- JWT token implementation (exact match from 3 projects)
-- Password hashing with bcrypt (standard pattern)
-- Session management (95% similar to project-X)
-
-### Medium Confidence (65%) Components:
-- OAuth integration approach (2 viable patterns found)
-  - Option A: Passport.js (used in 5 projects)
-  - Option B: Custom implementation (used in 2 projects)
-- Rate limiting strategy (multiple approaches available)
-
-### Low Confidence (30%) Components:
-- Biometric authentication (no prior patterns)
-- Custom SSO with legacy system (novel requirement)
-- Compliance with new regulation (unclear requirements)
-
-**Recommended Approach**: Proceed autonomously with high-confidence components, present options for medium-confidence items, and request specific guidance for low-confidence areas.
-```
-
-## Final Instructions
-
-1. **Start with Memory** - Always search for patterns before planning
-2. **Calculate Confidence** - Be transparent about certainty levels
-3. **Minimize Interruptions** - Batch questions by confidence level
-4. **Prototype Rapidly** - Show working examples early
-5. **Learn Continuously** - Store patterns for future use
-6. **Optimize for Outcomes** - Focus on results, not process
-
-This dynamic orchestrator balances AI autonomy with strategic human oversight, reducing interaction overhead by 70% while maintaining quality through confidence-based decision making.
+- **Gate Pass Rate**: Target >85% first attempt
+- **Revision Cycles**: <2 per phase
+- **Pattern Reuse**: >60% from memory
+- **Time to Implementation**: 40% faster than traditional
+- **Context Switches**: Minimized through atomic design

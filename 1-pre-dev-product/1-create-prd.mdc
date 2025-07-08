@@ -1,582 +1,293 @@
-# Rule: Generating a Product Requirements Document (PRD)
-
-## 🧠 Enhanced Analysis Tools - USE THESE!
-
-**CRITICAL:** Leverage these tools throughout the PRD creation process:
-
-### 🧩 Memory MCP Integration
-- **Store insights:** Use `mcp__lerian-memory__memory_create` with `operation="store_chunk"` for key requirements, user preferences, and design decisions
-- **Reference patterns:** Use `mcp__lerian-memory__memory_read` with `operation="search"` for similar features from past projects
-- **Build knowledge:** Use `mcp__lerian-memory__memory_create` with `operation="store_decision"` for rationale behind feature choices
-- **Session tracking:** Use `mcp__lerian-memory__memory_tasks` with `operation="todo_write"` for PRD creation workflow management
-- **Tags to use:** `["prd", "requirements", "feature-name", "user-research"]`
-
-### 🔄 Sequential Thinking MCP
-- **Tool:** Use `mcp__sequential-thinking__sequentialthinking` for complex requirement analysis
-- **Use for:** Breaking down vague requests, user journey mapping, feature prioritization, finding hidden complexity
-- **Pattern:** Initial understanding → User needs analysis → Business mapping → Technical constraints → Synthesis
-- **Example Usage:**
-  ```
-  mcp__sequential-thinking__sequentialthinking
-    thought="The user wants [feature]. Let me break this down: 1) Core functionality needed, 2) User personas affected, 3) Business value. I need to explore each aspect."
-    nextThoughtNeeded=true
-    thoughtNumber=1
-    totalThoughts=5
-  ```
-- **When:** During clarifying questions formulation, requirement analysis, and complexity assessment
-
-### 🤖 Zen MCP Integration (HIGHLY RECOMMENDED)
-**Why Use Zen MCP:**
-- **Deep Analysis**: Use `mcp__zen__thinkdeep` for exploring complex feature requirements and user needs
-- **Architecture Planning**: Use `mcp__zen__chat` to brainstorm architectural approaches early
-- **Problem Solving**: Use `mcp__zen__analyze` when decomposing vague requirements
-- **Trade-off Analysis**: Use `mcp__zen__thinkdeep` to evaluate different approaches
-
-**Example Usage:**
-```
-mcp__zen__thinkdeep
-  prompt="Analyzing user requirement for [feature]: exploring use cases, edge cases, and potential approaches"
-  model="pro"
-  thinking_mode="high"
-  focus_areas=["requirements", "user-experience", "architecture"]
-```
-
-### 🔍 Task Tool Usage (USE LIBERALLY)
-**When to Use Task():**
-- Searching for similar PRDs or features across the codebase
-- Finding existing implementations that match requirements
-- Discovering design patterns used in similar features
-- Parallel exploration of multiple requirement areas
-
-**Example:**
-```
-Task
-  description="Find similar feature implementations"
-  prompt="Search for existing notification systems, messaging features, or alert mechanisms across the codebase to understand patterns"
-```
-
-**Pro tip:** Store every user answer and design decision in memory for future reference!
+---
+description: Generate Product Requirements Document focusing on WHAT and WHY
+globs: 
+alwaysApply: false
+---
+# Rule: Creating a Product Requirements Document (PRD)
 
 ## Goal
 
-To guide an AI assistant in creating a detailed Product Requirements Document (PRD) in Markdown format, based on an initial user prompt. The PRD should be clear, actionable, and suitable for a junior developer to understand and implement the feature.
+To capture the business vision, user needs, and feature requirements without technical implementation details. The PRD answers WHAT we're building and WHY it matters to users and the business.
 
-## Process - Dynamic Confidence-Based Flow
+## 🧠 Enhanced Analysis Tools
 
-### Phase 1: Parallel Discovery & Analysis
-
-1. **Memory-First Pattern Search** (Execute simultaneously):
-   ```yaml
-   Parallel Actions:
-     - Memory Search: Find similar features/implementations
-     - Sequential Thinking: Decompose the request
-     - Confidence Assessment: Calculate initial confidence
-     - Prototype Generation: Create 2-3 approach examples
-   ```
-   
-   🧩 **Memory Actions:**
-   ```
-   # Search for patterns
-   mcp__lerian-memory__memory_read
-     operation="search"
-     options={
-       "query": "[feature type] implementation patterns",
-       "repository": "github.com/[org]/[repo]"
-     }
-   
-   # Store initial request
-   mcp__lerian-memory__memory_create
-     operation="store_chunk"
-     options={
-       "content": "[initial request with context]",
-       "repository": "github.com/[org]/[repo]",
-       "session_id": "[current-session]"
-     }
-   ```
-
-2. **Confidence-Based Interaction Decision**:
-   ```yaml
-   IF total_confidence >= 80%:
-     - Generate complete PRD based on found patterns
-     - Include prototypes/examples
-     - Notify user: "Found similar pattern in [project], proceeding with proven approach"
-     - Allow user to intervene if desired
-   
-   ELIF total_confidence >= 50%:
-     - Present 2-3 approach options with prototypes
-     - Show confidence breakdown for each
-     - Request user selection of preferred approach
-     - Generate targeted clarifying questions for gaps
-   
-   ELSE (confidence < 50%):
-     - Use Sequential Thinking to explore the problem space
-     - Generate comprehensive clarifying questions
-     - Present initial understanding and gaps
-     - Request specific user guidance
-   ```
-
-3. **Smart Question Generation** (Only if confidence < 80%):
-   - Group questions by confidence level
-   - Prioritize high-impact questions
-   - Provide example answers
-   - Allow partial responses
-   
-   🔄 **Sequential Thinking Usage:**
-   ```
-   mcp__sequential-thinking__sequentialthinking
-     thought="Breaking down [feature] into core components: 1) User need, 2) Business value, 3) Technical approach"
-     nextThoughtNeeded=true
-     thoughtNumber=1
-     totalThoughts=5  # Adjust based on complexity
-   ```
-
-4. **Rapid PRD Generation with Prototypes**:
-   - Generate PRD structure immediately
-   - Include working examples/prototypes
-   - Show confidence indicators for each section
-   - Flag areas needing review
-
-5. **Efficient Review Process**:
-   ```yaml
-   Present to User:
-     - Executive summary with confidence score
-     - High-confidence sections (green)
-     - Medium-confidence options (yellow)
-     - Low-confidence questions (red)
-     - Prototype implementations
-   
-   User Actions:
-     - Approve high-confidence sections in bulk
-     - Select from medium-confidence options
-     - Provide input for low-confidence areas
-   ```
-        "rationale": "[specific changes and why]",
-        "repository": "github.com/[org]/[repo]",
-        "session_id": "[current-session]"
-      }
-      ```
-
-6.  **Save PRD:** Only after user approval, save the generated document as `prd-[feature-name].md` inside the `/docs/pre-development/` directory.
-    - 🧩 **Memory Action:** Use `mcp__lerian-memory__memory_create` with:
-      ```
-      operation="create_thread"
-      options={
-        "name": "PRD: [feature-name]",
-        "description": "Complete PRD development for [feature-name]",
-        "chunk_ids": ["[previous-chunk-ids]"],
-        "repository": "github.com/[org]/[repo]"
-      }
-      ```
-
-## User Interaction Guidelines
-
-### Feedback Checkpoints
-1. **After Initial Request:** Ask clarifying questions and WAIT
-2. **After PRD Generation:** Request review and WAIT for approval
-3. **After Any Changes:** Confirm updates meet expectations
-
-### Example Interaction Flow
-```
-User: "I need a feature for user notifications"
-
-AI: "I'll help you create a PRD for user notifications. Let me ask some clarifying questions:
-
-1. What problem does this notification feature solve?
-2. Who is the primary user of these notifications?
-3. What types of notifications should be supported?
-4. How should users receive notifications (email, in-app, SMS)?
-5. What are the key success criteria?
-
-Please provide your answers and I'll create a comprehensive PRD."
-
-[WAIT FOR USER RESPONSE]
-
-User: [provides answers]
-
-AI: "Thank you for the detailed answers. Based on your input, I've created a PRD draft..."
-
-[AI generates PRD]
-
-AI: "Please review this PRD draft. What would you like to change or add?"
-
-[WAIT FOR USER APPROVAL]
+### Memory MCP Integration
+```yaml
+Operations:
+  - Search: Find similar products/features built before
+  - Store: Save user research, decisions, requirements
+  - Retrieve: Get market insights, user feedback patterns
+  
+Tags: ["prd", "requirements", "user-needs", "business-case", "feature-name"]
 ```
 
-## Confidence Scoring Framework
+### Sequential Thinking MCP
+```yaml
+Use For:
+  - Breaking down vague user requests
+  - Exploring problem space systematically
+  - Identifying hidden user needs
+  - Mapping user journeys
 
-### Calculate Confidence for Each PRD Component
+Pattern: Problem → Users → Needs → Features → Value
+```
+
+### Zen MCP Tools
+- **chat**: Brainstorm feature ideas and user scenarios
+- **thinkdeep**: Explore problem space and user psychology
+- **analyze**: Competitive analysis and market positioning
+
+## Process: Business-First Discovery
+
+### Phase 1: Problem Discovery
+```yaml
+Parallel Actions:
+  1. Memory Search:
+     - Similar problems solved
+     - User feedback patterns
+     - Market analysis data
+  
+  2. User Analysis:
+     - Who has this problem?
+     - How painful is it?
+     - Current workarounds?
+  
+  3. Business Context:
+     - Market opportunity
+     - Competitive landscape
+     - Strategic alignment
+```
+
+### Phase 2: Requirement Definition
+Based on confidence from Phase 1:
+- **High Confidence (80%+)**: Generate complete PRD from patterns
+- **Medium (50-79%)**: Present problem/solution options
+- **Low (<50%)**: Deep discovery questions
+
+### Phase 3: Validation & Gate 1
+
+## PRD Structure (Business-Focused)
+
+### 1. Executive Summary
+- Problem statement (1-2 sentences)
+- Proposed solution (1-2 sentences)
+- Expected impact (metrics)
+
+### 2. Problem Definition
+- **Current State**: How things work today
+- **Pain Points**: Specific user frustrations
+- **Opportunity**: Why solve this now?
+
+### 3. User Personas
+```markdown
+**Primary Persona: [Name]**
+- Demographics: Age, role, experience
+- Goals: What they want to achieve
+- Frustrations: Current pain points
+- Quote: "I wish I could..."
+```
+
+### 4. User Stories
+Format: "As a [persona], I want to [action] so that [benefit]"
+- Group by persona
+- Prioritize by value/effort
+- Include acceptance criteria
+
+### 5. Feature Requirements
+```markdown
+**FR-001: [Feature Name]**
+- Description: What it does (not how)
+- User Value: Why users need this
+- Success Criteria: How we measure success
+- Priority: Must-have / Should-have / Nice-to-have
+```
+
+### 6. User Journey Maps
+```
+Current Journey:
+1. User tries to [goal]
+2. User encounters [problem]
+3. User works around by [current solution]
+4. User feels [emotion]
+
+Proposed Journey:
+1. User wants to [goal]
+2. User uses [feature]
+3. User achieves [outcome]
+4. User feels [positive emotion]
+```
+
+### 7. Success Metrics
+- **User Metrics**: Adoption, satisfaction, task completion
+- **Business Metrics**: Revenue, cost savings, market share
+- **Leading Indicators**: Early signals of success
+
+### 8. Scope & Constraints
+- **In Scope**: What we WILL deliver
+- **Out of Scope**: What we WON'T deliver (and why)
+- **Assumptions**: What we believe to be true
+- **Constraints**: Budget, timeline, resources
+
+### 9. Risks & Mitigations
+```markdown
+**Risk: [Description]**
+- Impact: High/Medium/Low
+- Probability: High/Medium/Low
+- Mitigation: How we'll address it
+- Owner: Who's responsible
+```
+
+### 10. Go-to-Market Considerations
+- Target audience segments
+- Value proposition
+- Differentiation
+- Launch strategy outline
+
+## What NOT to Include in PRD
+
+❌ **Technical Details**:
+- Architecture diagrams
+- Technology choices
+- Implementation approaches
+- Database schemas
+- API specifications
+
+❌ **Implementation Specifics**:
+- Code examples
+- Package dependencies
+- Infrastructure needs
+- Deployment strategies
+
+❌ **How-to-Build**:
+- Component design
+- Integration patterns
+- Technical workflows
+- System dependencies
+
+## Confidence Scoring
 
 ```yaml
-Feature Confidence Assessment:
-  component: "[Feature/Section Name]"
+Component: "[Feature/Section]"
+Confidence Factors:
+  Market Validation: [0-25]
+    - Direct user feedback: 25
+    - Market research: 15
+    - Assumptions: 5
   
-  memory_match_score: [0-40]
-    - Exact pattern match: 40 points
-    - Similar implementation: 20-35 points
-    - Partial match: 10-20 points
-    - No match found: 0 points
-    
-  requirement_clarity_score: [0-30]
-    - Crystal clear specs: 30 points
-    - Minor ambiguities: 20 points  
-    - Significant gaps: 10 points
-    - Vague requirements: 0 points
-    
-  technical_complexity_score: [0-30]
-    - Standard pattern: 30 points
-    - Known challenges: 20 points
-    - Novel approach needed: 10 points
-    - Experimental/R&D: 0 points
-    
-  total_confidence: [sum of scores]
-  action_threshold:
-    - 80-100: Proceed autonomously
-    - 50-79: Present options
-    - 0-49: Request guidance
+  Problem Clarity: [0-25]
+    - Quantified pain: 25
+    - Qualitative only: 15
+    - Hypothetical: 5
+  
+  Solution Fit: [0-25]
+    - Proven pattern: 25
+    - Adjacent pattern: 15
+    - Novel approach: 5
+  
+  Business Value: [0-25]
+    - Clear ROI: 25
+    - Indirect value: 15
+    - Uncertain: 5
+
+Total: [0-100]
+Action:
+  80+: Proceed with PRD
+  50-79: Validate assumptions
+  <50: More discovery needed
 ```
 
-### Example Confidence Presentation
+## User Interaction Model
 
+### High-Confidence Path (80%+)
 ```markdown
-## PRD Confidence Analysis
+"Based on similar successful products, I've drafted a PRD that addresses [problem] for [users]. 
 
-### 🟢 High Confidence (85%+) - Proceeding Autonomously:
-- **User Authentication Module** (92% confidence)
-  - Found: JWT implementation in 5 similar projects
-  - Pattern: Standard OAuth2 flow with refresh tokens
-  - Decision: Using proven pattern from project-auth-service
+Key insights from memory:
+- Pattern: [Similar product] achieved [result]
+- Users typically need [key features]
+- Success metric: [specific metric]
 
-### 🟡 Medium Confidence (65%) - Your Input Needed:
-- **Data Synchronization Approach**
-  - Option A: Real-time WebSocket (used in 3 projects)
-  - Option B: Polling with exponential backoff (used in 2 projects)
-  - Option C: Server-Sent Events (newer, used in 1 project)
-  - **Please select preferred approach**
-
-### 🔴 Low Confidence (30%) - Guidance Required:
-- **Integration with Legacy System**
-  - No similar patterns found
-  - Unknown API specifications
-  - **Need: API documentation, authentication method, data format**
+Proceeding with PRD generation..."
 ```
 
-## Smart Clarifying Questions (Confidence-Based)
+### Medium-Confidence Path (50-79%)
+```markdown
+"I've identified several approaches to [problem]:
 
-### Priority 1: High-Impact Questions (Ask First)
-- What is the single most important outcome this feature must achieve?
-- Are there any non-negotiable constraints or requirements?
-- Do you have examples of similar features you like/dislike?
+Option A: Focus on [aspect] for [user group]
+- Pros: [benefits]
+- Similar to: [example]
 
-### Priority 2: Scoping Questions (Ask if Confidence < 60%)
-- What specific user actions trigger this feature?
-- What data inputs/outputs are involved?
-- How does this fit into the user's broader workflow?
+Option B: Broader solution for [multiple groups]
+- Pros: [benefits]
+- Trade-offs: [considerations]
 
-### Priority 3: Technical Questions (Ask if Confidence < 40%)
-- What existing systems must this integrate with?
-- Are there performance requirements (response time, scale)?
-- What are the security/compliance considerations?
-
-### Traditional Clarifying Questions (Reference)
-
-The AI should adapt its questions based on confidence scores, but here are areas to explore:
-
-*   **Problem/Goal:** "What problem does this feature solve for the user?" or "What is the main goal we want to achieve with this feature?"
-*   **Target User:** "Who is the primary user of this feature?"
-*   **Core Functionality:** "Can you describe the key actions a user should be able to perform with this feature?"
-*   **User Stories:** "Could you provide a few user stories? (e.g., As a [type of user], I want to [perform an action] so that [benefit].)"
-*   **Acceptance Criteria:** "How will we know when this feature is successfully implemented? What are the key success criteria?"
-*   **Scope/Boundaries:** "Are there any specific things this feature *should not* do (non-goals)?"
-*   **Data Requirements:** "What kind of data does this feature need to display or manipulate?"
-*   **Data Relationships:** "How does this feature's data relate to existing entities in the system?"
-*   **API Requirements:** "What API endpoints will this feature need? Should it follow REST conventions?"
-*   **User Flow:** "Can you walk me through the step-by-step user journey for this feature?"
-*   **User Personas:** "Who are the different types of users for this feature? What are their characteristics and goals?"
-*   **System Integration:** "How should this feature integrate with existing system components?"
-*   **Development Phases:** "How would you prioritize the development? What's the minimum viable version?"
-*   **Dependencies:** "What needs to be built first before this feature can work? What's the logical order?"
-*   **Technical Risks:** "What technical challenges do you foresee? What could go wrong during development?"
-*   **Design/UI:** "Are there any existing design mockups or UI guidelines to follow?" or "Can you describe the desired look and feel?"
-*   **Edge Cases:** "Are there any potential edge cases or error conditions we should consider?"
-
-## PRD Structure with Confidence Indicators
-
-The generated PRD should include confidence scores for each section and the following structure:
-
-0. **Confidence Summary**: Overall confidence score and breakdown by section
-1. **Index**: ///REVIEW
-1.  **Introduction/Overview:** Briefly describe the feature and the problem it solves. State the goal.
-2.  **Goals:** List the specific, measurable objectives for this feature.
-3.  **User Stories:** Detail the user narratives describing feature usage and benefits.
-4.  **User Experience:** Describe user personas, key user flows, and UI/UX considerations. Include target user characteristics, user journey mapping, and interaction patterns.
-5.  **Functional Requirements:** List the specific functionalities the feature must have. Use clear, concise language (e.g., "The system must allow users to upload a profile picture."). Number these requirements.
-6.  **Non-Goals (Out of Scope):** Clearly state what this feature will *not* include to manage scope.
-7.  **Design Considerations:** Link to mockups, describe UI/UX requirements, or mention relevant components/styles if applicable.
-8.  **Technical Considerations:** Mention any known technical constraints, dependencies, or suggestions (e.g., "Should integrate with the existing Auth module").
-9.  **Success Metrics:** How will the success of this feature be measured? (e.g., "Increase user engagement by 10%", "Reduce support tickets related to X").
-10. **Data Modeling:** Define the core data entities, their relationships, and key attributes needed for the feature. Include entity descriptions, primary relationships, and data validation rules. Use simple entity-relationship descriptions suitable for junior developers (e.g., "User has many Workflows", "Workflow belongs to User").
-11. **API Modeling:** Outline the key API endpoints needed for the feature, including HTTP methods, request/response structures, and basic validation rules. Focus on the business logic and data flow rather than implementation details. Include examples of request/response payloads in JSON format.
-12. **Sequence Diagrams:** Provide three types of interaction flows using mermaid syntax:
-    - **User Interaction Flow:** Step-by-step user journey through the feature UI/UX
-    - **System Internal Flow:** How different system components interact to fulfill the user's request
-    - **Full API Workflow:** Complete request-response cycle including authentication, validation, processing, and response
-13. **Development Roadmap:** Break down the development process into logical phases focusing on scope and deliverables. Define MVP requirements and future enhancements without specific timelines. Focus on what needs to be built in each phase for proper task breakdown.
-14. **Logical Dependency Chain:** Define the logical order of development, identifying which features need to be built first (foundation), how to get quickly to a usable/visible frontend, and proper pacing/scoping of each feature to be atomic yet buildable.
-15. **Risks and Mitigations:** Identify potential risks and mitigation strategies, including technical challenges, MVP scope definition, and resource constraints.
-16. **Prototype Examples** (When confidence > 50%): Include code snippets or architectural diagrams showing potential implementation approaches. Mark each with confidence level.
-17. **Architecture Patterns & Principles:** Define the mandatory architectural patterns, principles, and standards that must be followed during implementation, including Hexagonal Architecture requirements, repository patterns, and lib-commons integration.
-18. **Open Questions:** List any remaining questions or areas needing further clarification.
-
-## Detailed Section Guidelines
-
-### Data Modeling Guidelines
-- **Entity Definitions:** List each core entity with a brief description
-- **Relationships:** Use simple language (e.g., "User has many Orders", "Order belongs to User")
-- **Key Attributes:** Include essential fields for each entity with data types
-- **Validation Rules:** Basic constraints (required fields, format requirements, etc.)
-- **Example Format:**
-  ```
-  **User Entity:**
-  - id: UUID (required, unique)
-  - email: String (required, unique, valid email format)
-  - name: String (required, max 255 characters)
-  
-  **Relationships:**
-  - User has many Workflows
-  - Workflow belongs to User
-  ```
-
-### API Modeling Guidelines
-- **Endpoint Structure:** Use RESTful conventions where applicable
-- **HTTP Methods:** GET, POST, PUT, DELETE with clear purposes
-- **Request/Response Examples:** Include realistic JSON examples
-- **Error Responses:** Common error scenarios and status codes
-- **Authentication:** Specify if endpoints require authentication
-- **Example Format:**
-  ```
-  **POST /api/v1/workflows**
-  Purpose: Create a new workflow
-  Authentication: Required
-  
-  Request Body:
-  {
-    "name": "Payment Processing",
-    "description": "Handle payment workflows"
-  }
-  
-  Response (201):
-  {
-    "id": "uuid-here",
-    "name": "Payment Processing",
-    "status": "active"
-  }
-  ```
-
-### Sequence Diagrams Guidelines
-- **User Interaction Flow:** Focus on user actions and UI responses
-- **System Internal Flow:** Show component interactions (services, databases, etc.)
-- **Full API Workflow:** Include authentication, validation, processing, and response
-- **Format:** Use simple text-based sequence descriptions or mermaid syntax
-- **Example:**
-  ```
-  User Interaction Flow:
-  1. User clicks "Create Workflow" button
-  2. System displays workflow creation form
-  3. User fills form and clicks "Save"
-  4. System validates input and shows success message
-  5. User is redirected to workflow list
-  ```
-
-### User Experience Guidelines
-- **User Personas:** Define primary and secondary user types with characteristics
-- **User Journey Mapping:** Step-by-step user experience from start to finish
-- **Interaction Patterns:** Common UI patterns and behaviors expected
-- **Accessibility:** Consider accessibility requirements and inclusive design
-- **Example Format:**
-  ```
-  **Primary Persona: Application Developer**
-  - Experience: 2-5 years in software development
-  - Goals: Integrate workflow automation into existing applications
-  - Pain Points: Complex setup processes, poor documentation
-  - Preferred Interaction: API-first, clear error messages
-  ```
-
-### Development Roadmap Guidelines
-- **Phase-based Approach:** Break development into logical phases (MVP, Enhancement, Advanced); max of 5 phases properly labeled
-- **Scope Definition:** Clearly define what's included in each phase
-- **Value Delivery:** Each phase should deliver usable value and be atomic
-- **No Timelines:** Focus on scope and dependencies, not time estimates
-- **Example Format:**
-  ```
-  **Phase 1 - MVP:**
-  - Core workflow creation and execution
-  - Basic authentication
-  - Essential API endpoints
-  
-  **Phase 2 - Enhancement:**
-  - Advanced workflow features
-  - Improved UI/UX
-  - Additional integrations
-  ```
-
-### Logical Dependency Chain Guidelines
-- **Foundation First:** Identify core infrastructure and foundational components
-- **Quick Wins:** Define path to earliest usable/visible functionality
-- **Atomic Features:** Each feature should be complete and testable independently
-- **Build-Upon Strategy:** Features should enable and enhance subsequent features
-- **Example Format:**
-  ```
-  **Foundation Layer:**
-  1. Database schema and basic models
-  2. Authentication system
-  3. Core API framework
-  
-  **Usable Frontend Path:**
-  4. Basic workflow creation UI
-  5. Workflow execution trigger
-  6. Status monitoring dashboard
-  ```
-
-### Risks and Mitigations Guidelines
-- **Technical Risks:** Technology challenges, integration complexity, performance concerns
-- **Product Risks:** User adoption, feature complexity, scope creep
-- **Resource Risks:** Team capacity, skill gaps, external dependencies
-- **Mitigation Strategies:** Specific actions to address each identified risk
-- **Example Format:**
-  ```
-  **Risk: Complex authentication integration**
-  - Impact: High - Could delay MVP delivery
-  - Probability: Medium
-  - Mitigation: Start with simple auth, plan phased approach
-  - Contingency: Use existing auth service as fallback
-  ```
-
-### Architecture Patterns & Principles Guidelines
-
-#### Hexagonal Architecture (Mandatory)
-**ALL transactional plugins MUST follow Hexagonal Architecture principles.**
-
-**Core Components:**
-```
-src/
-├── domain/           # Business logic (pure, no external dependencies)
-│   ├── entities/     # Core business entities
-│   ├── services/     # Domain services
-│   └── ports/        # Interfaces for external dependencies
-├── adapters/         # External integrations
-│   ├── primary/      # Controllers, handlers (inbound)
-│   ├── secondary/    # Database, APIs, external services (outbound)
-│   └── config/       # Configuration adapters
-└── infrastructure/   # Cross-cutting concerns
-    ├── database/     # Database setup and migrations
-    ├── observability/# Logging, metrics, tracing
-    └── security/     # Authentication, authorization
+Which direction aligns with your vision?"
 ```
 
-**Validation Checklist:**
-- [ ] **Domain Isolation**: Domain layer has no external dependencies
-- [ ] **Port Interfaces**: All external dependencies defined as interfaces
-- [ ] **Adapter Implementation**: Clear separation of inbound/outbound adapters
-- [ ] **Dependency Injection**: Proper DI container configuration
-- [ ] **Testing Strategy**: Easy to unit test domain logic in isolation
+### Low-Confidence Path (<50%)
+```markdown
+"To create an effective PRD, I need to understand:
 
-#### Repository Patterns
+1. **Users**: Who specifically has this problem?
+2. **Pain**: How are they measuring the impact?
+3. **Value**: What would success look like?
+4. **Scope**: What's the minimum valuable solution?
 
-**REQUIRED**: Use established boilerplate repositories for new plugins.
+Let's explore these together..."
+```
 
-**Standard Repositories:**
-- `@plugin-boilerplate-golang`: For Go-based transactional plugins
+## Gate 1: Business Validation
 
-**Boilerplate Requirements:**
-- [ ] **Hexagonal Structure**: Pre-configured directory structure
-- [ ] **lib-commons Integration**: Shared utilities and patterns
-- [ ] **Observability Setup**: OpenTelemetry, logging, metrics
-- [ ] **Security Baseline**: Authentication, authorization, validation
-- [ ] **Testing Framework**: Unit, integration, and e2e test setup
+Before proceeding to TRD:
 
-#### lib-commons Integration
+```yaml
+Gate 1 Checklist:
+  Problem Definition:
+    - [ ] Problem is clearly articulated
+    - [ ] Impact is quantified/qualified
+    - [ ] Users are specifically identified
+  
+  Solution Value:
+    - [ ] Features address core problem
+    - [ ] Success metrics are measurable
+    - [ ] ROI case is reasonable
+  
+  Scope Clarity:
+    - [ ] In/out of scope is explicit
+    - [ ] Dependencies are identified
+    - [ ] Timeline expectations set
+  
+  Market Fit:
+    - [ ] Differentiation is clear
+    - [ ] User value is validated
+    - [ ] Business case is sound
 
-**MANDATORY**: Use lib-commons for all shared functionality (https://github.com/LerianStudio/lib-commons or https://github.com/LerianStudio/lib-commons-js).
-
-#### lib-auth Integration (Midaz Projects)
-
-**MANDATORY FOR MIDAZ PROJECTS**: Use lib-auth for authentication and authorization (https://github.com/LerianStudio/lib-auth).
-
-**Required lib-commons Components:**
-- [ ] **Error Handling**: Standardized error types and handling
-- [ ] **Validation**: Common validation patterns and utilities
-- [ ] **Database Utilities**: Connection pooling, migration tools
-- [ ] **Observability**: Logging, metrics, tracing utilities
-- [ ] **Configuration**: Environment and config management
-
-**Required lib-auth Components (Midaz Projects):**
-- [ ] **Authentication**: JWT token validation and management
-- [ ] **Authorization**: RBAC utilities and permission management
-- [ ] **Security Middleware**: Request authentication and authorization
-- [ ] **User Management**: User context and session handling
-
-**Integration Checklist:**
-- [ ] **Version Compatibility**: Use latest stable lib-commons and lib-auth versions
-- [ ] **API Compliance**: Follow lib-commons and lib-auth interface contracts
-- [ ] **Error Propagation**: Use lib-commons error types consistently
-- [ ] **Authentication Flow**: Implement lib-auth authentication patterns (Midaz projects)
-- [ ] **Authorization Patterns**: Use lib-auth RBAC utilities (Midaz projects)
-- [ ] **Testing Integration**: Use lib-commons and lib-auth test utilities
-
-### Architectural Principles
-
-#### SOLID Principles Enforcement
-- [ ] **Single Responsibility**: Each class/function has one reason to change
-- [ ] **Open/Closed**: Open for extension, closed for modification
-- [ ] **Liskov Substitution**: Subtypes must be substitutable for base types
-- [ ] **Interface Segregation**: No client depends on unused interfaces
-- [ ] **Dependency Inversion**: Depend on abstractions, not concretions
-
-#### YAGNI, DRY, KISS Compliance
-- [ ] **YAGNI**: You Aren't Gonna Need It - no premature abstractions
-- [ ] **DRY**: Don't Repeat Yourself - extract common patterns to lib-commons
-- [ ] **KISS**: Keep It Simple, Stupid - prefer simple, clear solutions
-
-#### Domain-Driven Design (DDD)
-- [ ] **Bounded Contexts**: Clear domain boundaries and contexts
-- [ ] **Ubiquitous Language**: Consistent terminology across team and code
-- [ ] **Domain Models**: Rich domain models with business logic
-- [ ] **Repository Pattern**: Data access abstraction
-- [ ] **Domain Events**: Event-driven communication between contexts
-
-## Target Audience
-
-Assume the primary reader of the PRD is a **junior developer**. Therefore, requirements should be explicit, unambiguous, and avoid jargon where possible. Provide enough detail for them to understand the feature's purpose and core logic.
+Gate Actions:
+  PASS: Proceed to TRD
+  CONDITIONAL: Address gaps first
+  FAIL: Return to discovery
+```
 
 ## Output
 
-*   **Format:** Markdown (`.md`)
-*   **Location:** `/docs/pre-development/`
-*   **Filename:** `prd-[feature-name].md`
+**Location**: `/docs/pre-development/prd/prd-[feature-name].md`
 
-## Final Instructions
+## Next Steps
 
-1. **Do NOT start implementing the PRD** - Focus on gathering requirements first
-2. **Ask comprehensive clarifying questions** - Include questions about data modeling, API design, and user flows
-3. **Create detailed sections** - Ensure Data Modeling, API Modeling, and Sequence Diagrams are well-defined
-4. **Keep it junior-developer friendly** - Use clear language and provide concrete examples
-5. **Validate completeness** - Ensure all sections provide enough detail for technical implementation
-6. **After completing the PRD** - Inform the user that the next step is to create a TRD using `@create-trd.mdc`
-7. **Chain Continuation** - The PRD serves as foundation for TRD; maintain consistency in architecture patterns and requirements
+After Gate 1 approval:
+1. PRD becomes locked reference
+2. Proceed to TRD (technical how)
+3. No implementation details in PRD
+4. Keep business/technical separated
 
 ## Quality Checklist
 
-Before finalizing the PRD, ensure:
-- [ ] All functional requirements are numbered and clearly stated
-- [ ] User personas and experience are well-defined
-- [ ] Data entities and relationships are well-defined
-- [ ] API endpoints have clear request/response examples
-- [ ] User interaction flows are step-by-step and detailed
-- [ ] Development roadmap has clear phases with scope definition
-- [ ] Logical dependency chain shows foundation-first approach
-- [ ] Risks are identified with specific mitigation strategies
-- [ ] Success metrics are measurable and specific
-- [ ] Non-goals clearly define scope boundaries
-- [ ] Architecture patterns specify Hexagonal Architecture compliance
-- [ ] lib-commons integration requirements are documented
-- [ ] SOLID, DRY, KISS, YAGNI principles are addressed
+- [ ] No technical implementation details
+- [ ] User needs clearly articulated  
+- [ ] Success metrics are measurable
+- [ ] Scope boundaries are explicit
+- [ ] Business value is justified
+- [ ] User journeys are complete
+- [ ] Risks are identified
+- [ ] Gate 1 criteria met

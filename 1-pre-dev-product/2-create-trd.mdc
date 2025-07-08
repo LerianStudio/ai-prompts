@@ -1,536 +1,322 @@
 ---
-description: 
+description: Generate Technical Requirements Document focusing on HOW and WHERE
 globs: 
 alwaysApply: false
 ---
-# Rule: Generating a Technical Requirements Document (TRD)
-
-## 🧠 Enhanced Analysis Tools - USE THESE!
-
-**CRITICAL:** Leverage these tools throughout the TRD creation process:
-
-### 🧩 Memory MCP Integration
-- **Retrieve PRD context:** Use `mcp__lerian-memory__memory_read` with `operation="search"` for related requirements and design decisions
-- **Store technical choices:** Use `mcp__lerian-memory__memory_create` with `operation="store_decision"` for architecture, technology stack, and patterns
-- **Reference best practices:** Use `mcp__lerian-memory__memory_read` with `operation="search"` for proven technical approaches from past projects
-- **Session tracking:** Use `mcp__lerian-memory__memory_tasks` with `operation="todo_write"` for TRD development workflow
-- **Tags to use:** `["trd", "technical", "architecture", "feature-name", "technology-stack"]`
-
-### 🔄 Sequential Thinking MCP
-- **Use for:** Architecture analysis, technology evaluation, system design validation
-- **Pattern:** Business requirements → technical constraints → architecture options → implementation approach
-- **Benefit:** Ensures technical decisions align with business needs and scale requirements
-- **When:** During technology stack analysis and architecture decision-making
-
-**Pro tip:** Reference memory for PRD decisions and store all technical rationale for future TRDs!
+# Rule: Creating a Technical Requirements Document (TRD)
 
 ## Goal
 
-To serve as the **Strategic Decision Point** in the pre-development workflow. This prompt synthesizes the discovery phase findings and presents viable technical approaches for user selection, minimizing interaction overhead while ensuring strategic alignment.
+To translate business requirements into technical architecture and design decisions. The TRD answers HOW we'll build the solution and WHERE components will live, without specifying exact implementation details.
 
-## Process - Strategic Decision Gateway
+## 🧠 Enhanced Analysis Tools
 
-### Phase 1: Synthesis & Analysis (AI-Driven)
+### Memory MCP Integration
+```yaml
+Operations:
+  - Search: Find architectural patterns, design decisions
+  - Store: Save technical choices, trade-offs, constraints
+  - Retrieve: Get proven architectures, integration patterns
+  
+Tags: ["trd", "architecture", "design", "technical", "feature-name"]
+```
 
-1. **Gather All Discovery Inputs:**
-   ```yaml
-   Inputs to Process:
-     - PRD with confidence scores
-     - Memory MCP pattern matches
-     - Initial prototypes/approaches
-     - Technical constraints identified
-     - Risk assessments
-   ```
-   
-   🧩 **Memory Actions:**
-   ```
-   # Retrieve all relevant patterns
-   mcp__lerian-memory__memory_read
-     operation="search"
-     options={
-       "query": "technical decisions [feature-type] architecture",
-       "repository": "github.com/[org]/[repo]"
-     }
-   ```
+### Sequential Thinking MCP
+```yaml
+Use For:
+  - Decomposing features into components
+  - Analyzing technical trade-offs
+  - Identifying integration challenges
+  - Mapping data flows
 
-2. **Generate Technical Options Matrix:**
-   - Create 2-3 viable technical approaches
-   - Calculate confidence for each approach
-   - Include working prototypes/examples
-   - Map risks and benefits
-   
-   🔄 **Sequential Thinking:**
-   ```
-   mcp__sequential-thinking__sequentialthinking
-     thought="Comparing technical approaches: 1) Microservice vs Monolithic, 2) SQL vs NoSQL, 3) Sync vs Async processing"
-     nextThoughtNeeded=true
-     thoughtNumber=1
-     totalThoughts=4
-   ```
+Pattern: Requirements → Components → Interfaces → Data → Security
+```
 
-3. **Prepare Strategic Decision Package:**
-   ```yaml
-   Decision Package Contents:
-     - Executive Summary (1 paragraph)
-     - Approach Comparison Matrix
-     - Confidence Scores per Approach
-     - Resource Implications
-     - Risk Assessment
-     - Recommended Approach (if confidence > 85%)
-   ```
+### Zen MCP Tools
+- **thinkdeep**: Architectural decisions and trade-offs
+- **analyze**: System design and complexity analysis
+- **planner**: Component breakdown and dependencies
 
-### Phase 2: Strategic User Checkpoint (ONLY Mandatory Interaction)
+## Process: Architecture-First Design
 
-**Present Consolidated Decision Interface:**
+### Phase 1: Technical Analysis
+```yaml
+Inputs Required:
+  - Approved PRD (Gate 1 passed)
+  - Business constraints
+  - Non-functional requirements
 
+Parallel Actions:
+  1. Pattern Search:
+     - Similar architectures
+     - Proven patterns
+     - Anti-patterns to avoid
+  
+  2. Component Design:
+     - Identify bounded contexts
+     - Define service boundaries
+     - Plan data ownership
+  
+  3. Quality Attributes:
+     - Performance needs
+     - Security requirements
+     - Scalability targets
+```
+
+### Phase 2: Architecture Definition
+Based on PRD requirements, design:
+- System architecture
+- Component interfaces
+- Data models
+- Integration patterns
+
+## TRD Structure (Technical-Focused)
+
+### 1. Technical Overview
+- Solution architecture summary
+- Key design decisions
+- Technical constraints addressed
+
+### 2. System Architecture
+```yaml
+Architecture Style: [e.g., Microservices, Modular Monolith, Serverless]
+Pattern: [e.g., Hexagonal, Layered, Event-Driven]
+
+High-Level Components:
+  - Component A: Purpose and responsibility
+  - Component B: Purpose and responsibility
+  - Component C: Purpose and responsibility
+
+Communication Patterns:
+  - Synchronous: REST/GraphQL/gRPC
+  - Asynchronous: Events/Messages/Queues
+```
+
+### 3. Component Design
 ```markdown
-## Strategic Technical Decision Required
-
-### Summary of Findings
-[1-2 paragraphs summarizing discovery phase]
-
-### Technical Approaches Identified
-
-#### Option A: [Approach Name] (Confidence: XX%)
-- **Architecture**: [Brief description]
-- **Stack**: [Key technologies]
-- **Pros**: [Top 3 benefits]
-- **Cons**: [Top 3 drawbacks]
-- **Example**: [Code snippet or diagram]
-
-#### Option B: [Approach Name] (Confidence: XX%)
-[Similar structure]
-
-#### Option C: [Approach Name] (Confidence: XX%)
-[Similar structure]
-
-### Recommendation
-[If confidence > 85%, include AI recommendation with rationale]
-
-### Your Input Needed:
-1. **Select Approach**: A, B, or C
-2. **Key Constraints**: [Any non-negotiables]
-3. **Resource Boundaries**: [Time/budget/team]
-4. **Additional Concerns**: [Optional]
+**Component: [Name]**
+- **Purpose**: What it does
+- **Responsibilities**: 
+  - Business logic it owns
+  - Data it manages
+  - Services it provides
+- **Interfaces**:
+  - Inbound: How others interact with it
+  - Outbound: What it depends on
+- **Quality Attributes**:
+  - Performance: Targets and constraints
+  - Security: Requirements and measures
+  - Scalability: Growth considerations
 ```
 
-### Phase 3: Rapid TRD Generation (Post-Decision)
+### 4. Data Architecture
+```yaml
+Data Stores:
+  - Store 1:
+      Type: [Relational/Document/Key-Value]
+      Purpose: What data and why
+      Ownership: Which component owns it
+  
+Data Models:
+  - Entity 1:
+      Attributes: Key fields (no implementation)
+      Relationships: How it connects
+      Constraints: Business rules
 
-Once user provides strategic direction:
+Data Flow:
+  - Flow 1: Source → Transform → Destination
+  - Flow 2: Event → Process → Store
+```
 
-1. **Lock in Technical Decisions**
-   - Store selected approach in Memory MCP
-   - Generate detailed technical specifications
-   - Create comprehensive TRD document
-   
-2. **Autonomous TRD Completion**
-   - Fill in all technical details
-   - Reference established patterns
-   - Complete all TRD sections
-   - No further user interaction needed
-
-## User Interaction Model - Single Strategic Checkpoint
-
-### The ONE Critical Decision Point
-
-This TRD phase represents the **ONLY mandatory user interaction** in the entire pre-development workflow. Make it count!
-
-### Interaction Principles
-1. **Consolidate Everything**: Present all options in one comprehensive view
-2. **Minimize Cognitive Load**: Use visual comparison matrices
-3. **Enable Fast Decision**: Clear recommendations when confidence is high
-4. **Respect User Time**: One interaction, not multiple rounds
-
-### Example Strategic Interaction
-
+### 5. API Design
 ```markdown
-## 🎯 Strategic Technical Decision Point
+**API: [Name]**
+- **Purpose**: What capability it exposes
+- **Style**: REST/GraphQL/gRPC/WebSocket
+- **Authentication**: How clients authenticate
+- **Key Operations**:
+  - Operation 1: Purpose and contract
+  - Operation 2: Purpose and contract
+- **Rate Limiting**: Targets and strategy
+- **Versioning**: Approach and compatibility
+```
 
-Based on analysis of the "User Notification System" PRD and similar implementations in 3 previous projects, I've identified three viable technical approaches:
-
-### 📊 Quick Comparison Matrix
-
-| Aspect | Option A: Event-Driven | Option B: Queue-Based | Option C: Hybrid |
-|--------|----------------------|---------------------|-----------------|
-| **Confidence** | 🟢 92% | 🟡 78% | 🟡 65% |
-| **Complexity** | Medium | Low | High |
-| **Scalability** | Excellent | Good | Excellent |
-| **Time to MVP** | 2 weeks | 1 week | 3 weeks |
-| **Similar Projects** | auth-service, billing | reports, analytics | marketplace |
-
-### 🚀 Detailed Options
-
-**Option A: Event-Driven Architecture** (Recommended - 92% confidence)
+### 6. Security Architecture
 ```yaml
-Stack: Node.js, RabbitMQ, PostgreSQL
-Pattern: Pub/Sub with event sourcing
-Example: await eventBus.publish('user.notification', payload)
-```
-✅ Pros: Highly scalable, decoupled, proven pattern
-❌ Cons: More initial setup, requires message broker
+Security Layers:
+  - Network: Boundaries and controls
+  - Application: Authentication/Authorization
+  - Data: Encryption at rest/transit
 
-**Option B: Queue-Based Processing** (78% confidence)
+Threat Model:
+  - Threat 1: Description and mitigation
+  - Threat 2: Description and mitigation
+
+Compliance Requirements:
+  - Requirement 1: How addressed
+  - Requirement 2: How addressed
+```
+
+### 7. Integration Architecture
+```markdown
+**External Systems**:
+- System A: 
+  - Purpose: Why we integrate
+  - Pattern: How we integrate
+  - Data Exchange: What we share
+
+**Internal Integrations**:
+- Between Component A & B:
+  - Protocol: Communication method
+  - Contract: Interface agreement
+  - Error Handling: Failure scenarios
+```
+
+### 8. Performance & Scalability
 ```yaml
-Stack: Python, Redis Queue, PostgreSQL  
-Pattern: Job queue with workers
-Example: notification_queue.enqueue(send_notification, user_id)
-```
-✅ Pros: Simple, reliable, easy debugging
-❌ Cons: Less real-time, scaling limitations
+Performance Targets:
+  - Response Time: p50, p95, p99
+  - Throughput: Requests/second
+  - Concurrency: Simultaneous users
 
-**Option C: Hybrid Approach** (65% confidence)
+Scalability Strategy:
+  - Horizontal: Which components scale out
+  - Vertical: Which components scale up
+  - Data Partitioning: Sharding strategy
+```
+
+### 9. Operational Considerations
+```markdown
+**Monitoring**:
+- Key metrics to track
+- Alert thresholds
+- Dashboard requirements
+
+**Deployment**:
+- Deployment topology
+- Environment requirements
+- Configuration management
+
+**Disaster Recovery**:
+- RTO/RPO targets
+- Backup strategy
+- Failover approach
+```
+
+### 10. Technical Risks
 ```yaml
-Stack: Go, NATS + Redis, PostgreSQL
-Pattern: Streaming for real-time, queue for batch
-Example: stream.Publish("notifications", msg)
+Risk: [Description]
+  Impact: Technical consequence
+  Mitigation: Architectural approach
+  Monitoring: How we'll detect
 ```
-✅ Pros: Best of both worlds, flexible
-❌ Cons: Complex, higher maintenance
 
-### 💡 My Recommendation
-Given the 92% pattern match with your successful auth-service implementation, **Option A (Event-Driven)** will provide the best balance of scalability and maintainability.
+## What NOT to Include in TRD
 
-### ⏱️ Your Quick Decision Needed:
+❌ **Implementation Details**:
+- Specific packages/libraries
+- Code examples
+- Framework versions
+- Language specifics
+
+❌ **Infrastructure Specifics**:
+- Cloud provider details
+- Specific services (e.g., AWS RDS)
+- Container orchestration
+- CI/CD pipelines
+
+❌ **Business Logic**:
+- PRD requirements (reference only)
+- User stories
+- Business rules details
+
+## Architecture Decision Records (ADRs)
+
+For each major decision:
+```markdown
+**ADR-001: [Decision Title]**
+- **Context**: Why this decision is needed
+- **Options Considered**:
+  - Option A: Description, pros, cons
+  - Option B: Description, pros, cons
+- **Decision**: What we chose and why
+- **Consequences**: What this means for the system
+```
+
+## Gate 2: Technical Feasibility
+
+Before proceeding to Dependency Map:
+
 ```yaml
-selected_approach: A  # Just type A, B, or C
-constraints: []       # Any deal-breakers?
-timeline: standard    # Rush/Standard/Relaxed
-concerns: []          # Anything I should know?
+Gate 2 Checklist:
+  Architecture Completeness:
+    - [ ] All PRD features mapped to components
+    - [ ] Component boundaries are clear
+    - [ ] Interfaces are well-defined
+  
+  Data Design:
+    - [ ] Data ownership is clear
+    - [ ] Models support requirements
+    - [ ] Consistency approach defined
+  
+  Quality Attributes:
+    - [ ] Performance targets achievable
+    - [ ] Security requirements addressed
+    - [ ] Scalability path is clear
+  
+  Integration Readiness:
+    - [ ] External dependencies identified
+    - [ ] Integration patterns selected
+    - [ ] Error scenarios considered
+
+Gate Actions:
+  PASS: Proceed to Dependency Map
+  CONDITIONAL: Refine architecture
+  FAIL: Redesign approach
 ```
+
+## Confidence Scoring
+
+```yaml
+Component: "[Architecture Element]"
+Confidence Factors:
+  Pattern Match: [0-40]
+    - Exact pattern used before: 40
+    - Similar pattern adapted: 25
+    - Novel but researched: 10
+  
+  Complexity Management: [0-30]
+    - Simple, proven approach: 30
+    - Moderate complexity: 20
+    - High complexity: 10
+  
+  Risk Level: [0-30]
+    - Low risk, proven path: 30
+    - Moderate risk, mitigated: 20
+    - High risk, accepted: 10
+
+Total: [0-100]
 ```
-
-### After User Decision
-
-NO further interaction needed. The AI will:
-1. Generate complete TRD based on selection
-2. Apply all patterns from Memory MCP
-3. Create detailed specifications
-4. Proceed to task generation phase
-
-## Clarifying Questions (Technical Deep Dive)
-
-The AI should ask targeted technical questions based on the PRD analysis and only ask the user for further information when the PRD is not clear about something:
-
-### Infrastructure & Deployment
-- **Environment:** "What environments will this run in (development, staging, production)?"
-- **Deployment:** "How will this be deployed (Docker, Kubernetes, bare metal)?"
-- **Scaling:** "What are the expected load patterns and scaling requirements?"
-- **Configuration:** "How should configuration be managed? (Preferred: environment variables via .env/.env.example, Alternative: config files)"
-
-### Technology Stack
-- **Language/Framework:** "What programming language and frameworks should be used?"
-- **Database:** "What database technology is preferred (PostgreSQL, MongoDB, etc.)?"
-- **Caching:** "Will caching be needed? What technology (Redis, Memcached)?"
-- **Message Queue:** "Are async operations needed? What messaging system?"
-
-### Integration & Dependencies
-- **External Services:** "What external services/APIs will this integrate with?"
-- **Internal Services:** "Which existing microservices will this interact with?"
-- **Libraries:** "Are there specific libraries or SDKs to use?"
-- **Version Constraints:** "Any specific version requirements for dependencies?"
-
-### Performance & Reliability
-- **Response Time:** "What are the performance SLAs (e.g., <200ms p95)?"
-- **Availability:** "What's the required uptime (99.9%, 99.99%)?"
-- **Data Volume:** "What data volumes are expected (requests/sec, data size)?"
-- **Concurrency:** "How many concurrent users/operations?"
-
-### Security & Compliance
-- **Authentication:** "What authentication method (JWT, OAuth, API keys)?"
-- **Authorization:** "What authorization model (RBAC, ABAC)?"
-- **Data Protection:** "Any encryption requirements (at rest, in transit)?"
-- **Compliance:** "Any regulatory requirements (GDPR, HIPAA, SOC2)?"
-
-### Development & Testing
-- **Testing Strategy:** "What testing levels are required (unit, integration, e2e)?"
-- **Code Coverage:** "What's the minimum code coverage requirement?"
-- **Development Tools:** "Any specific development tools or practices?"
-- **CI/CD:** "What CI/CD pipeline requirements?"
-
-## TRD Structure - Post-Decision Autonomous Generation
-
-After the strategic decision, generate a comprehensive TRD with NO further user interaction:
-
-0. **Decision Summary**: Selected approach and key constraints from user
-1. **Index**
-1. **Executive Summary:** Technical overview linking to PRD objectives
-2. **System Architecture:** High-level architecture diagram and component overview
-3. **Technology Stack:** Complete list of technologies, languages, frameworks, and tools (including lib-commons and lib-auth for Midaz projects)
-4. **Data Architecture:** Detailed database schema, data flow, and storage strategy
-5. **API Specifications:** Complete API documentation with OpenAPI/Swagger specs
-6. **Component Design:** Detailed design of each system component
-7. **Integration Architecture:** How components integrate with each other and external systems
-8. **Security Architecture:** Authentication, authorization, encryption, and security measures (referencing lib-auth for Midaz projects)
-9. **Performance Requirements:** Specific metrics, benchmarks, and optimization strategies
-10. **Infrastructure Requirements:** Servers, networking, storage, and deployment needs
-11. **Development Standards:** Coding standards, patterns, and best practices (including lib-commons integration requirements)
-12. **Testing Strategy:** Comprehensive testing plan including unit, integration, and e2e tests
-13. **Deployment Architecture:** CI/CD pipeline, deployment strategy, and rollback procedures
-14. **Monitoring & Observability:** Logging, metrics, tracing, and alerting requirements
-15. **Technical Risks:** Technical challenges and mitigation strategies
-16. **Implementation Roadmap:** Technical tasks breakdown aligned with PRD phases
-17. **Technical Decisions:** Key technical decisions and their rationale
-
-## Detailed Section Guidelines
-
-### System Architecture Guidelines
-- **Architecture Diagram:** Use mermaid or ASCII art for system overview
-- **Component Breakdown:** List all major components and their responsibilities
-- **Communication Patterns:** Synchronous vs asynchronous, protocols used
-- **Data Flow:** How data moves through the system
-- **Example Format:**
-  ```mermaid
-  graph TB
-    Client[Web Client] --> LB[Load Balancer]
-    LB --> API[API Gateway]
-    API --> Auth[Auth Service]
-    API --> Core[Core Service]
-    Core --> DB[(PostgreSQL)]
-    Core --> Cache[(Redis)]
-    Core --> Queue[Message Queue]
-  ```
-
-### Data Architecture Guidelines
-- **Entity Relationship Diagram:** Visual representation of data model
-- **Database Schema:** Complete DDL with indexes and constraints
-- **Data Migration:** Strategy for schema changes
-- **Backup Strategy:** Backup frequency and retention
-- **Example Format:**
-  ```sql
-  CREATE TABLE users (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    email VARCHAR(255) UNIQUE NOT NULL,
-    name VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-  );
-  
-  CREATE INDEX idx_users_email ON users(email);
-  ```
-
-### API Specifications Guidelines
-- **OpenAPI Spec:** Complete OpenAPI 3.0 specification
-- **Authentication:** How each endpoint is secured
-- **Rate Limiting:** Limits per endpoint
-- **Versioning Strategy:** How API versions are managed
-- **Example Format:**
-  ```yaml
-  openapi: 3.0.0
-  paths:
-    /api/v1/users:
-      post:
-        summary: Create a new user
-        security:
-          - bearerAuth: []
-        requestBody:
-          required: true
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CreateUserRequest'
-        responses:
-          '201':
-            description: User created successfully
-  ```
-
-### Component Design Guidelines
-- **Class Diagrams:** Key classes and interfaces
-- **Sequence Diagrams:** Component interactions for main flows
-- **State Diagrams:** For stateful components
-- **Design Patterns:** Patterns used (Repository, Factory, etc.)
-- **Example Format:**
-  ```
-  UserService (Hexagonal Architecture)
-  ├── domain/
-  │   ├── entities/User.go
-  │   ├── services/UserService.go
-  │   └── ports/UserRepository.go
-  ├── adapters/
-  │   ├── primary/UserHTTPHandler.go
-  │   └── secondary/UserPostgresRepo.go
-  └── infrastructure/
-      └── UserDIContainer.go
-  ```
-
-### Security Architecture Guidelines
-- **Authentication Flow:** Complete auth flow diagram
-- **Authorization Matrix:** Roles and permissions
-- **Encryption:** What's encrypted and how
-- **Security Headers:** Required HTTP security headers
-- **Example Format:**
-  ```
-  Authentication Flow:
-  1. Client sends credentials to /auth/login
-  2. Server validates credentials against database
-  3. Server generates JWT with user claims
-  4. Client includes JWT in Authorization header
-  5. Server validates JWT on each request
-  ```
-
-### Performance Requirements Guidelines
-- **Metrics Table:** Specific performance targets
-- **Load Testing:** Expected load patterns
-- **Optimization Strategies:** Caching, indexing, etc.
-- **Capacity Planning:** Resource requirements at scale
-- **Example Format:**
-  ```
-  | Metric | Target | Measurement |
-  |--------|--------|-------------|
-  | API Response Time | <200ms p95 | Prometheus histogram |
-  | Throughput | 1000 req/s | Load test results |
-  | Database Query Time | <50ms p95 | Query profiler |
-  | Cache Hit Rate | >90% | Redis metrics |
-  ```
-
-### Development Standards Guidelines
-- **Configuration Management:** Prefer environment variables via .env files
-- **Code Organization:** Follow clean architecture principles
-- **Error Handling:** Comprehensive error handling with proper logging
-- **Security Practices:** Input validation, output sanitization
-- **Example Format:**
-  ```
-  Configuration Management:
-  - Use .env files for local development
-  - Use .env.example for configuration template
-  - Environment variables for production
-  - Avoid YAML/TOML config files when possible
-  
-  Go-Specific Standards:
-  - Test files alongside implementation (*_test.go)
-  - Migrations as separate service (cmd/migrate/main.go)
-  - Use standard library over third-party when possible
-  ```
-
-### Testing Strategy Guidelines
-- **Test Pyramid:** Unit, integration, e2e test distribution
-- **Test Data:** How test data is managed
-- **Test Environments:** Environment strategy
-- **Coverage Requirements:** Minimum coverage per type
-- **Example Format:**
-  ```
-  Test Distribution:
-  - Unit Tests: 70% (minimum 80% coverage)
-  - Integration Tests: 20% (API and database)
-  - E2E Tests: 10% (critical user flows)
-  
-  Critical Test Scenarios:
-  1. User registration flow
-  2. Authentication and authorization
-  3. Core business logic
-  4. Error handling paths
-  ```
-
-### Deployment Architecture Guidelines
-- **Deployment Diagram:** Infrastructure layout
-- **Container Strategy:** Docker/Kubernetes specs
-- **Blue-Green Deployment:** Zero-downtime strategy
-- **Rollback Plan:** How to revert deployments
-- **Example Format:**
-  ```yaml
-  # Kubernetes Deployment
-  apiVersion: apps/v1
-  kind: Deployment
-  metadata:
-    name: api-service
-  spec:
-    replicas: 3
-    strategy:
-      type: RollingUpdate
-      rollingUpdate:
-        maxSurge: 1
-        maxUnavailable: 0
-  ```
-
-### Monitoring & Observability Guidelines
-- **Metrics:** What to measure (RED metrics, USE metrics)
-- **Logging:** Log levels, structured logging format
-- **Tracing:** Distributed tracing implementation
-- **Alerting:** Alert rules and escalation
-- **Example Format:**
-  ```
-  Metrics to Track:
-  - Request rate by endpoint
-  - Error rate by status code
-  - Request duration percentiles
-  - Database connection pool usage
-  - Cache hit/miss rates
-  
-  Alert Rules:
-  - Error rate > 1% for 5 minutes
-  - Response time p95 > 500ms for 10 minutes
-  - CPU usage > 80% for 15 minutes
-  ```
-
-## Technical Standards
-
-### Code Quality Standards
-- **Linting:** Required linters and rules
-- **Formatting:** Code formatting standards
-- **Documentation:** Code documentation requirements
-- **Review Process:** Code review checklist
-
-### Git Workflow
-- **Branching Strategy:** GitFlow, GitHub Flow, etc.
-- **Commit Messages:** Conventional commits format
-- **PR Requirements:** What must be included in PRs
-
-### Dependency Management
-- **Version Pinning:** How dependencies are versioned
-- **Update Strategy:** When and how to update
-- **Security Scanning:** Dependency vulnerability scanning
-
-## Implementation Roadmap Alignment
-
-The TRD must align with the PRD's development phases:
-
-1. **Map PRD Phases to Technical Tasks:** Each PRD phase becomes a technical milestone
-2. **Define Technical Dependencies:** What must be built first technically
-3. **Identify Technical Quick Wins:** Early deliverables that provide value
-4. **Ensure Atomic Deployments:** Each phase results in a deployable system
 
 ## Output
 
-- **Format:** Markdown (`.md`)
-- **Location:** `/docs/pre-development/`
-- **Filename:** `trd-[feature-name].md` and other files like `trd-openapi-[feature-name].yaml` (and any other accessory file when necessary)
-- **Diagrams:** Use mermaid for inline diagrams
-- **Code Examples:** Use appropriate syntax highlighting
+**Location**: `/docs/pre-development/trd/trd-[feature-name].md`
 
-## Final Instructions
+## Next Steps
 
-1. **Read PRD First** - Always read the corresponding PRD before starting
-2. **Build Upon PRD** - Reference PRD architecture patterns, don't duplicate them
-3. **Ask Technical Questions** - Don't assume technical decisions not covered in PRD
-4. **Be Specific** - Provide exact versions, configurations, and commands
-5. **Include Examples** - Every section should have concrete examples
-6. **Consider Operations** - Think about deployment, monitoring, and maintenance
-7. **Validate Completeness** - Ensure a developer can implement from this document alone
-8. **Reference lib-commons/lib-auth** - Specify concrete integration patterns for Midaz projects
+After Gate 2 approval:
+1. TRD becomes technical blueprint
+2. Proceed to Dependency Map
+3. No technology choices in TRD
+4. Keep architecture/implementation separated
 
 ## Quality Checklist
 
-Before finalizing the TRD, ensure:
-- [ ] All PRD requirements have corresponding technical specifications
-- [ ] Architecture diagrams clearly show component relationships
-- [ ] Database schema is complete with all constraints
-- [ ] API specifications include all endpoints from PRD
-- [ ] Security measures address all identified risks
-- [ ] Performance targets are specific and measurable
-- [ ] Testing strategy covers all critical paths
-- [ ] Deployment process is fully automated
-- [ ] Monitoring covers all key metrics
-- [ ] Technical decisions are justified
-- [ ] Implementation tasks map to PRD phases
-- [ ] Document is self-contained (no external references needed)
-
-## Relationship to PRD
-
-The TRD must:
-1. Reference the PRD by name and location
-2. Map each PRD requirement to technical specifications
-3. Ensure technical phases align with PRD phases
-4. Address all risks identified in the PRD
-5. Implement all architectural patterns specified in the PRD
-6. **Build Upon PRD:** TRD should reference PRD Architecture Patterns (Section 16) rather than duplicating them
-7. **Add Implementation Details:** Focus on technical implementation specifics, not repeating architectural principles
-8. **lib-commons/lib-auth Integration:** Specify concrete usage of lib-commons and lib-auth as defined in PRD
+- [ ] No specific technology products named
+- [ ] All PRD requirements have technical solution
+- [ ] Component boundaries follow DDD principles
+- [ ] Interfaces are technology-agnostic
+- [ ] Data ownership is explicit
+- [ ] Security is designed in
+- [ ] Performance targets are set
+- [ ] Gate 2 criteria met

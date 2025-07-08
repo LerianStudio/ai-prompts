@@ -1,0 +1,432 @@
+---
+description: Generate atomic subtasks requiring zero context for implementation
+globs: 
+alwaysApply: false
+---
+# Rule: Creating Atomic Subtasks
+
+## Goal
+
+To decompose macro tasks into atomic, self-contained units that can be implemented with minimal context. Each subtask should be completable by a developer or AI agent without needing to understand the broader system.
+
+## 🧠 Enhanced Analysis Tools
+
+### Memory MCP Integration
+```yaml
+Operations:
+  - Search: Find atomic patterns, code templates
+  - Store: Save subtask templates, implementation patterns
+  - Retrieve: Get code examples, test patterns
+  
+Tags: ["subtasks", "atomic", "implementation", "code-patterns", "task-id"]
+```
+
+### Sequential Thinking MCP
+```yaml
+Use For:
+  - Breaking tasks to atomic level
+  - Ensuring zero dependencies
+  - Creating step-by-step instructions
+  - Validating completeness
+
+Pattern: Task → Files → Changes → Tests → Verification
+```
+
+### Zen MCP Tools
+- **analyze**: Verify atomicity and completeness
+- **codereview**: Validate implementation approach
+- **testgen**: Generate test cases
+
+## Process: Zero-Context Decomposition
+
+### Phase 1: Atomic Analysis
+```yaml
+Inputs Required:
+  - Approved Tasks (Gate 4 passed)
+  - Dependency Map (technologies)
+  - Code patterns/examples
+  - File structure
+
+For Each Task:
+  1. Identify Changes:
+     - What files need creation?
+     - What files need modification?
+     - What tests are required?
+  
+  2. Remove Context:
+     - Extract all assumptions
+     - Make instructions explicit
+     - Include all imports/setup
+  
+  3. Verify Atomicity:
+     - Can complete in <4 hours?
+     - Single responsibility?
+     - Clear success criteria?
+```
+
+## Subtask Structure
+
+### 1. Subtask Header
+```yaml
+Subtask ID: ST-[task-id]-[number]
+Parent Task: T-[task-id]
+Title: [Specific action - no context needed]
+Type: [Create/Modify/Test/Configure]
+Estimated Time: [1-4 hours max]
+
+Files Affected:
+  - Create: [new files]
+  - Modify: [existing files]
+  - Delete: [if any]
+```
+
+### 2. Atomic Subtask Template
+```markdown
+## ST-001-01: Create User Model with Validation
+
+### Objective
+Create a User model class with email and password validation in the auth service.
+
+### Prerequisites
+```bash
+# Ensure you're in the project root
+cd /path/to/project
+
+# Install dependencies if not already installed
+npm install
+```
+
+### Implementation Steps
+
+#### Step 1: Create User Model File
+Create file: `src/domain/entities/User.ts`
+
+```typescript
+// src/domain/entities/User.ts
+import { z } from 'zod';
+import bcrypt from 'bcrypt';
+
+// Validation schema
+export const UserSchema = z.object({
+  email: z.string().email('Invalid email format'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+  firstName: z.string().min(1, 'First name is required'),
+  lastName: z.string().min(1, 'Last name is required'),
+  createdAt: z.date().default(() => new Date()),
+  updatedAt: z.date().default(() => new Date())
+});
+
+// Type inference
+export type User = z.infer<typeof UserSchema>;
+
+// User model class
+export class UserModel {
+  private data: User;
+
+  constructor(data: Partial<User>) {
+    // Validate and create user
+    this.data = UserSchema.parse({
+      ...data,
+      createdAt: data.createdAt || new Date(),
+      updatedAt: data.updatedAt || new Date()
+    });
+  }
+
+  // Hash password before saving
+  async hashPassword(): Promise<void> {
+    const saltRounds = 10;
+    this.data.password = await bcrypt.hash(this.data.password, saltRounds);
+  }
+
+  // Compare password for login
+  async comparePassword(candidatePassword: string): Promise<boolean> {
+    return bcrypt.compare(candidatePassword, this.data.password);
+  }
+
+  // Get user data (without password)
+  toJSON(): Omit<User, 'password'> {
+    const { password, ...userWithoutPassword } = this.data;
+    return userWithoutPassword;
+  }
+
+  // Get all data (internal use)
+  getData(): User {
+    return this.data;
+  }
+}
+```
+
+#### Step 2: Create User Model Tests
+Create file: `src/domain/entities/__tests__/User.test.ts`
+
+```typescript
+// src/domain/entities/__tests__/User.test.ts
+import { UserModel, UserSchema } from '../User';
+
+describe('UserModel', () => {
+  const validUserData = {
+    email: 'test@example.com',
+    password: 'securePassword123',
+    firstName: 'John',
+    lastName: 'Doe'
+  };
+
+  describe('constructor', () => {
+    it('should create user with valid data', () => {
+      const user = new UserModel(validUserData);
+      expect(user.getData().email).toBe(validUserData.email);
+    });
+
+    it('should throw on invalid email', () => {
+      const invalidData = { ...validUserData, email: 'invalid-email' };
+      expect(() => new UserModel(invalidData)).toThrow('Invalid email format');
+    });
+
+    it('should throw on short password', () => {
+      const invalidData = { ...validUserData, password: 'short' };
+      expect(() => new UserModel(invalidData)).toThrow('Password must be at least 8 characters');
+    });
+  });
+
+  describe('password methods', () => {
+    it('should hash password', async () => {
+      const user = new UserModel(validUserData);
+      await user.hashPassword();
+      const data = user.getData();
+      expect(data.password).not.toBe(validUserData.password);
+      expect(data.password).toMatch(/^\$2b\$/); // bcrypt hash format
+    });
+
+    it('should compare password correctly', async () => {
+      const user = new UserModel(validUserData);
+      await user.hashPassword();
+      
+      const isValid = await user.comparePassword(validUserData.password);
+      expect(isValid).toBe(true);
+      
+      const isInvalid = await user.comparePassword('wrongPassword');
+      expect(isInvalid).toBe(false);
+    });
+  });
+
+  describe('toJSON', () => {
+    it('should exclude password from JSON', () => {
+      const user = new UserModel(validUserData);
+      const json = user.toJSON();
+      
+      expect(json.email).toBe(validUserData.email);
+      expect(json).not.toHaveProperty('password');
+    });
+  });
+});
+```
+
+#### Step 3: Update Exports
+Modify file: `src/domain/entities/index.ts`
+
+```typescript
+// Add this line to src/domain/entities/index.ts
+export { UserModel, UserSchema, type User } from './User';
+```
+
+### Verification Steps
+
+1. **Run Type Check**:
+```bash
+npm run typecheck
+# Should pass without errors
+```
+
+2. **Run Tests**:
+```bash
+npm test src/domain/entities/__tests__/User.test.ts
+# All tests should pass
+```
+
+3. **Run Linter**:
+```bash
+npm run lint src/domain/entities/User.ts
+# Should pass without warnings
+```
+
+### Success Criteria
+- [ ] User.ts file created with all methods
+- [ ] All validation rules implemented
+- [ ] Password hashing works correctly
+- [ ] All tests passing (6 tests)
+- [ ] Type checking passes
+- [ ] Linting passes
+- [ ] Exports updated
+
+### Rollback Plan
+If issues occur:
+```bash
+git checkout -- src/domain/entities/User.ts
+git checkout -- src/domain/entities/__tests__/User.test.ts
+git checkout -- src/domain/entities/index.ts
+```
+
+### Notes
+- Uses bcrypt for password hashing (already in dependencies)
+- Uses zod for validation (already in dependencies)
+- Follows existing code patterns in the project
+- No additional dependencies required
+```
+
+### 3. Subtask Categories
+
+#### Create File Subtasks
+```yaml
+Pattern:
+  - Exact file path
+  - Complete file content
+  - All imports included
+  - No placeholders
+```
+
+#### Modify File Subtasks
+```yaml
+Pattern:
+  - Exact file path
+  - Before code (to find)
+  - After code (to replace)
+  - Context lines for safety
+```
+
+#### Configuration Subtasks
+```yaml
+Pattern:
+  - File to modify
+  - Exact changes
+  - Validation steps
+  - Restart requirements
+```
+
+#### Test Subtasks
+```yaml
+Pattern:
+  - Test file creation
+  - Test cases included
+  - Mock data provided
+  - Coverage targets
+```
+
+### 4. Zero-Context Checklist
+Each subtask must:
+- [ ] Include all file paths (absolute or from root)
+- [ ] Provide complete code (no "..." or "TODO")
+- [ ] List all imports explicitly
+- [ ] Include verification commands
+- [ ] Define clear success criteria
+- [ ] Provide rollback instructions
+- [ ] Work without understanding the system
+
+### 5. Common Atomic Patterns
+
+#### API Endpoint Creation
+```markdown
+1. Create route file
+2. Create controller with handler
+3. Add validation middleware
+4. Create integration test
+5. Update route registry
+```
+
+#### Database Migration
+```markdown
+1. Create migration file
+2. Define up/down methods
+3. Add to migration list
+4. Create rollback script
+5. Test migration locally
+```
+
+#### UI Component
+```markdown
+1. Create component file
+2. Add styles/CSS
+3. Create story file
+4. Add unit tests
+5. Update component index
+```
+
+## Gate 5: Deployment Readiness
+
+```yaml
+Gate 5 Checklist:
+  Atomicity:
+    - [ ] Each subtask <4 hours
+    - [ ] Single responsibility
+    - [ ] No external context needed
+  
+  Completeness:
+    - [ ] All code provided
+    - [ ] All steps explicit
+    - [ ] Success criteria clear
+  
+  Verifiability:
+    - [ ] Test commands included
+    - [ ] Success measurable
+    - [ ] Rollback possible
+  
+  Implementation Ready:
+    - [ ] Can assign to anyone
+    - [ ] No assumptions made
+    - [ ] Self-contained
+
+Gate Actions:
+  PASS: Ready for implementation
+  CONDITIONAL: Add missing details
+  FAIL: Not atomic enough
+```
+
+## Anti-Patterns to Avoid
+
+❌ **Context Required**: "Update the user service" (which part?)
+❌ **Incomplete Code**: "Add validation here..." (be specific)
+❌ **Missing Steps**: Assuming setup is done
+❌ **No Verification**: How to know it works?
+
+## Implementation Tips
+
+### For AI Agents
+- Every command should be copy-pasteable
+- Include full file paths
+- Provide exact code, not descriptions
+- Include all error handling
+
+### For Developers
+- Can complete without asking questions
+- All tools/commands specified
+- Success is measurable
+- Can work in isolation
+
+## Output Structure
+
+```
+docs/pre-development/subtasks/
+└── T-001/
+    ├── ST-001-01-create-user-model.md
+    ├── ST-001-02-create-auth-controller.md
+    ├── ST-001-03-add-login-endpoint.md
+    └── ST-001-04-create-integration-tests.md
+```
+
+## Next Steps
+
+After Gate 5 approval:
+1. Subtasks ready for assignment
+2. Can be parallelized
+3. Progress tracking enabled
+4. Implementation begins!
+
+## Quality Checklist
+
+- [ ] Every subtask is truly atomic
+- [ ] Zero context required
+- [ ] All code is complete
+- [ ] Verification steps included
+- [ ] Success criteria explicit
+- [ ] Time estimate <4 hours
+- [ ] Rollback plan provided
+- [ ] Gate 5 criteria met

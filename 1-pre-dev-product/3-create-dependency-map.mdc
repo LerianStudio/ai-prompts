@@ -1,0 +1,338 @@
+---
+description: Generate Dependency Map with specific technology and infrastructure choices
+globs: 
+alwaysApply: false
+---
+# Rule: Creating a Dependency Map
+
+## Goal
+
+To make concrete technology decisions and map all dependencies required to implement the technical architecture. This phase selects specific packages, services, and infrastructure components.
+
+## 🧠 Enhanced Analysis Tools
+
+### Memory MCP Integration
+```yaml
+Operations:
+  - Search: Find proven tech stacks, compatibility issues
+  - Store: Save stack decisions, version constraints
+  - Retrieve: Get dependency conflicts, security advisories
+  
+Tags: ["dependencies", "tech-stack", "infrastructure", "packages", "feature-name"]
+```
+
+### Sequential Thinking MCP
+```yaml
+Use For:
+  - Evaluating technology alternatives
+  - Checking compatibility matrices
+  - Planning upgrade paths
+  - Identifying hidden dependencies
+
+Pattern: Component → Technology → Dependencies → Compatibility → Security
+```
+
+### Zen MCP Tools
+- **analyze**: Dependency compatibility and security analysis
+- **chat**: Explore technology trade-offs
+- **thinkdeep**: Complex dependency resolution
+
+## Process: Stack Selection
+
+### Phase 1: Technology Evaluation
+```yaml
+Inputs Required:
+  - Approved TRD (Gate 2 passed)
+  - Architecture components
+  - Performance requirements
+  - Team expertise
+
+Parallel Actions:
+  1. Stack Research:
+     - Proven combinations
+     - Team experience
+     - Community support
+  
+  2. Compatibility Check:
+     - Version matrices
+     - Known conflicts
+     - Upgrade paths
+  
+  3. Security Scan:
+     - Vulnerability databases
+     - License compliance
+     - Supply chain risks
+```
+
+## Dependency Map Structure
+
+### 1. Technology Stack Overview
+```yaml
+Core Stack:
+  Language: [e.g., Go 1.24+]
+  Framework: [e.g., Fiber v2.52+]
+  Runtime: [e.g., Go runtime]
+
+Architecture Implementation:
+  - TRD Pattern: [e.g., Hexagonal]
+  - Folder Structure:
+    - adapters/     # External interfaces (HTTP, gRPC, DB)
+    - application/  # Use cases and business rules
+    - bootstrap/    # App initialization and config
+    - config/       # Configuration management
+    - domain/       # Core business entities
+    - infrastructure/ # External service implementations
+  - Approach: Modular Monolith (single repo, separate builds)
+```
+
+### 2. Core Dependencies
+```yaml
+Component: [From TRD]
+  Primary Technology:
+    - Package: name@version
+    - Purpose: Why this choice
+    - Alternatives Considered: What else we looked at
+    - Trade-offs: What we accepted
+  
+  Supporting Libraries:
+    - Library 1: name@version (purpose)
+    - Library 2: name@version (purpose)
+  
+  Development Dependencies:
+    - Tool 1: name@version (purpose)
+    - Tool 2: name@version (purpose)
+```
+
+### 3. Infrastructure Map
+```yaml
+Compute:
+  - Type: [Containers/Serverless/VMs]
+  - Orchestration: [K8s/ECS/Lambda]
+  - Scaling: [Auto-scaling config]
+
+Storage:
+  - Database: [Specific: PostgreSQL 16]
+  - Cache: [Specific: Valkey 8]
+  - Object Storage: [MinIO - S3-compatible]
+
+Networking:
+  - Load Balancer: [ALB/NLB at cloud level]
+  - CDN: [CloudFront/Cloudflare]
+  - Service Mesh: [Istio if applicable]
+
+Message/Queue:
+  - Type: [Specific: RabbitMQ/Kafka]
+  - Configuration: [Key settings]
+```
+
+### 4. External Services
+```yaml
+Service: [Name]
+  Provider: [Specific vendor/version]
+  SDK: [Client library@version]
+  Integration Type: [REST/GraphQL/etc]
+  Rate Limits: [Known constraints]
+  Pricing Tier: [If relevant]
+```
+
+### 5. Development Environment
+```yaml
+Required Tools:
+  - IDE/Editor: [VSCode/GoLand]
+  - Build Tools: [Go 1.24+, Make]
+  - Container Runtime: [Docker/Podman]
+  - Local Services: [PostgreSQL, Valkey, MinIO]
+
+Environment Setup:
+  - OS Support: [Windows/Mac/Linux]
+  - Hardware Requirements: [Min specs]
+  - Network Requirements: [Ports/protocols]
+```
+
+### 6. Security Dependencies
+```yaml
+Authentication:
+  - Library: [e.g., passport.js@version]
+  - Token Type: [JWT/OAuth2]
+  - Session Store: [Redis/Memory]
+
+Encryption:
+  - TLS: [Version requirements]
+  - At Rest: [Library choices]
+  - Key Management: [HSM/KMS choice]
+
+Security Scanning:
+  - SAST: [Tool choice]
+  - Dependency Scan: [Dependabot]
+  - Runtime Protection: [If applicable]
+```
+
+### 7. Monitoring & Observability
+```yaml
+Metrics:
+  - Collector: [Prometheus/CloudWatch]
+  - Library: [Client library@version]
+
+Logging:
+  - Framework: [e.g., Zap for Go]
+  - Aggregator: [Fluentd/CloudWatch]
+
+Tracing:
+  - Implementation: [OpenTelemetry]
+  - Backend: [Jaeger/X-Ray]
+```
+
+### 8. Version Constraints
+```yaml
+Compatibility Matrix:
+  - Package A requires: Package B >= 2.0
+  - Package C conflicts: Package D < 3.0
+  - Runtime requires: OS library X
+
+Upgrade Constraints:
+  - Package E: Cannot upgrade past 4.x due to Y
+  - Package F: Security updates only
+```
+
+### 9. License Compliance
+```yaml
+License Summary:
+  - MIT: [Count] packages
+  - Apache 2.0: [Count] packages
+  - GPL: [Count] packages (list them)
+  - Commercial: [List with terms]
+
+Compliance Notes:
+  - GPL implications: [If any]
+  - Attribution required: [List]
+  - Commercial restrictions: [If any]
+```
+
+### 10. Cost Analysis
+```yaml
+Infrastructure Costs:
+  - Compute: $X/month estimated
+  - Storage: $Y/month estimated
+  - Network: $Z/month estimated
+  - Third-party Services: $W/month
+
+Scaling Costs:
+  - Per 1000 users: $Additional
+  - Per TB data: $Additional
+```
+
+## Dependency Resolution Rules
+
+### For Midaz/LerianStudio Projects
+```yaml
+Required Dependencies:
+  - lib-commons: Latest stable
+  - lib-auth: Latest stable (Midaz only)
+  - Hexagonal structure: Via boilerplate
+  - Fiber v2: Web framework
+  - Zap: Structured logging
+
+Prohibited:
+  - Heavy ORMs (use sqlc)
+  - Custom auth (use lib-auth)
+  - Direct panic() calls
+  - Application-level proxy (handled at cloud level)
+```
+
+### General Best Practices
+```yaml
+Prefer:
+  - Stable versions over latest
+  - Well-maintained packages
+  - Minimal dependency trees
+  - Standard library when possible
+
+Avoid:
+  - Deprecated packages
+  - Single-maintainer projects
+  - Excessive dependencies
+  - Conflicting licenses
+```
+
+## Gate 3: Stack Validation
+
+```yaml
+Gate 3 Checklist:
+  Compatibility:
+    - [ ] All dependencies compatible
+    - [ ] No version conflicts
+    - [ ] Upgrade path exists
+  
+  Security:
+    - [ ] No critical vulnerabilities
+    - [ ] Licenses are compliant
+    - [ ] Supply chain verified
+  
+  Feasibility:
+    - [ ] Team has expertise
+    - [ ] Costs are acceptable
+    - [ ] Performance meets needs
+  
+  Completeness:
+    - [ ] All TRD components mapped
+    - [ ] Dev environment defined
+    - [ ] Monitoring planned
+
+Gate Actions:
+  PASS: Proceed to Tasks
+  CONDITIONAL: Resolve conflicts
+  FAIL: Re-evaluate choices
+```
+
+## Common Dependency Patterns
+
+### Microservices Stack
+```yaml
+Go Service:
+  - fiber v2 (router)
+  - sqlc (database)
+  - otel (observability)
+  - lib-commons (shared)
+  - zap (logging)
+
+Node.js Service:
+  - express/fastify
+  - prisma (database)
+  - winston (logging)
+  - lib-commons-js
+```
+
+### Modular Monolith Stack
+```yaml
+Go Modular Monolith:
+  - Fiber v2 (HTTP router)
+  - PostgreSQL 16 (main database)
+  - Valkey 8 (cache/sessions)
+  - MinIO (object storage)
+  - Hexagonal architecture
+  - Separate modules per domain
+  - Shared lib-commons
+```
+
+## Output
+
+**Location**: `/docs/pre-development/dependencies/dep-map-[feature-name].md`
+
+## Next Steps
+
+After Gate 3 approval:
+1. Lock dependency versions
+2. Create setup scripts
+3. Proceed to task breakdown
+4. No implementation in this phase
+
+## Quality Checklist
+
+- [ ] Every TRD component has dependencies mapped
+- [ ] All versions are explicitly specified
+- [ ] Compatibility is verified
+- [ ] Security scan is clean
+- [ ] Costs are calculated
+- [ ] Team can support choices
+- [ ] Upgrade paths exist
+- [ ] Gate 3 criteria met

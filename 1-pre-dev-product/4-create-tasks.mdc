@@ -1,0 +1,321 @@
+---
+description: Generate macro implementation tasks that deliver working increments
+globs: 
+alwaysApply: false
+---
+# Rule: Creating Implementation Tasks
+
+## Goal
+
+To break down the technical solution into macro implementation units that can be assigned to teams. Each task delivers a working increment of the system that provides user value.
+
+## 🧠 Enhanced Analysis Tools
+
+### Memory MCP Integration
+```yaml
+Operations:
+  - Search: Find task breakdown patterns, estimation data
+  - Store: Save task dependencies, effort estimates
+  - Retrieve: Get velocity data, task templates
+  
+Tags: ["tasks", "implementation", "planning", "estimation", "feature-name"]
+```
+
+### Sequential Thinking MCP
+```yaml
+Use For:
+  - Breaking down components into deliverables
+  - Identifying task dependencies
+  - Optimizing delivery sequence
+  - Finding critical path
+
+Pattern: Component → Features → Tasks → Dependencies → Sequence
+```
+
+### Zen MCP Tools
+- **planner**: Task breakdown and sequencing
+- **analyze**: Effort estimation and risk assessment
+- **thinkdeep**: Complex dependency resolution
+
+## Process: Value-Driven Decomposition
+
+### Phase 1: Task Identification
+```yaml
+Inputs Required:
+  - Approved Dependency Map (Gate 3 passed)
+  - TRD components
+  - PRD priorities
+  - Team structure
+
+Analysis:
+  1. Value Streams:
+     - What delivers user value?
+     - What enables other work?
+     - What reduces risk early?
+  
+  2. Technical Dependencies:
+     - What must come first?
+     - What can be parallel?
+     - What blocks progress?
+  
+  3. Team Allocation:
+     - Who has expertise?
+     - What's the capacity?
+     - How to minimize handoffs?
+```
+
+## Task Structure
+
+### 1. Task Overview
+```yaml
+Task ID: T-[feature]-[number]
+Title: [Descriptive name - what it delivers]
+Type: [Foundation/Feature/Integration/Polish]
+Priority: [Critical/High/Medium/Low]
+Size: [S/M/L/XL] (T-shirt sizing)
+
+Delivers:
+  - User Value: What users can do after this
+  - Technical Value: What this enables
+  - Risk Reduction: What unknowns this resolves
+```
+
+### 2. Task Definition Template
+```markdown
+## T-001: User Authentication Foundation
+
+### Deliverable
+Working authentication system allowing users to register, login, and manage sessions.
+
+### Scope
+**Includes**:
+- User registration with email/password
+- Login with JWT tokens
+- Session management
+- Password reset flow
+- Basic user profile
+
+**Excludes**:
+- OAuth providers (T-002)
+- Two-factor auth (T-003)
+- Advanced permissions (T-004)
+
+### Success Criteria
+- [ ] Users can register new accounts
+- [ ] Users can login and receive JWT
+- [ ] Sessions persist across requests
+- [ ] Password reset emails sent
+- [ ] All endpoints have tests
+- [ ] Security scan passes
+
+### Technical Components
+From TRD:
+- Auth Service component
+- User data model
+- Session management
+
+From Dependencies:
+- bcrypt for passwords
+- JWT library
+- Email service
+
+### Dependencies
+- **Blocks**: T-002, T-003, T-004
+- **Requires**: Database setup (T-000)
+- **Optional**: Email templates (T-010)
+
+### Effort Estimate
+- **Size**: Large (L)
+- **Points**: 13
+- **Duration**: 1-2 sprints
+- **Team**: Backend + Frontend
+
+### Risks
+- **Risk**: Email delivery issues
+  - Mitigation: Use reliable provider
+  - Fallback: Console logging initially
+
+### Testing Strategy
+- Unit tests: Auth logic
+- Integration tests: API endpoints
+- E2E tests: Full auth flows
+- Security tests: OWASP Top 10
+
+### Definition of Done
+- [ ] Code complete and reviewed
+- [ ] All tests passing
+- [ ] Documentation updated
+- [ ] Security scan clean
+- [ ] Deployed to staging
+- [ ] Product owner acceptance
+```
+
+### 3. Task Dependency Graph
+```mermaid
+graph TD
+    T-000[Database Setup] --> T-001[Auth Foundation]
+    T-001 --> T-002[OAuth Integration]
+    T-001 --> T-003[Two-Factor Auth]
+    T-001 --> T-004[Permissions System]
+    T-001 --> T-005[User Dashboard]
+    T-005 --> T-006[Profile Management]
+```
+
+### 4. Delivery Sequence
+```yaml
+Sprint 1 - Foundation:
+  - T-000: Database setup
+  - T-001: Auth foundation (start)
+
+Sprint 2 - Core Features:
+  - T-001: Auth foundation (complete)
+  - T-005: User dashboard
+  - T-002: OAuth integration (start)
+
+Sprint 3 - Enhancements:
+  - T-002: OAuth integration (complete)
+  - T-003: Two-factor auth
+  - T-006: Profile management
+
+Sprint 4 - Advanced:
+  - T-004: Permissions system
+  - T-007: Admin interface
+```
+
+### 5. Task Categories
+
+#### Foundation Tasks
+- Database setup
+- Core services
+- Basic infrastructure
+- Development environment
+
+#### Feature Tasks
+- User-facing functionality
+- Business logic
+- API endpoints
+- UI components
+
+#### Integration Tasks
+- Third-party services
+- System integration
+- Data migration
+- External APIs
+
+#### Polish Tasks
+- Performance optimization
+- UI refinements
+- Advanced features
+- Nice-to-haves
+
+### 6. Acceptance Criteria Template
+```yaml
+Functional:
+  - Given: [Context]
+    When: [Action]
+    Then: [Expected Result]
+
+Technical:
+  - Performance: [Metric targets]
+  - Security: [Requirements]
+  - Quality: [Standards]
+
+Operational:
+  - Monitoring: [What to track]
+  - Logging: [What to log]
+  - Alerts: [Thresholds]
+```
+
+### 7. Cross-Functional Requirements
+Each task must address:
+- **Accessibility**: WCAG compliance
+- **Internationalization**: i18n ready
+- **Security**: Threat model addressed
+- **Performance**: Targets met
+- **Observability**: Metrics/logs/traces
+
+## Gate 4: Implementation Readiness
+
+```yaml
+Gate 4 Checklist:
+  Task Completeness:
+    - [ ] All TRD components covered
+    - [ ] Dependencies mapped correctly
+    - [ ] Effort estimates realistic
+  
+  Delivery Value:
+    - [ ] Each task delivers value
+    - [ ] Sequence optimizes value
+    - [ ] Risks are mitigated
+  
+  Team Readiness:
+    - [ ] Skills match requirements
+    - [ ] Capacity is available
+    - [ ] Handoffs minimized
+  
+  Technical Clarity:
+    - [ ] Success criteria clear
+    - [ ] Testing approach defined
+    - [ ] DoD is comprehensive
+
+Gate Actions:
+  PASS: Proceed to Subtasks
+  CONDITIONAL: Refine tasks
+  FAIL: Re-decompose
+```
+
+## Task Sizing Guidelines
+
+### Small (S) - 1-3 points
+- Single component
+- Well-understood
+- Minimal dependencies
+- 1-3 days effort
+
+### Medium (M) - 5-8 points
+- Multiple components
+- Some unknowns
+- Few dependencies
+- 3-5 days effort
+
+### Large (L) - 13 points
+- Complex feature
+- Multiple unknowns
+- Many dependencies
+- 1-2 weeks effort
+
+### Extra Large (XL) - 21 points
+- Should be broken down
+- High complexity
+- Critical path
+- 2+ weeks effort
+
+## Anti-Patterns to Avoid
+
+❌ **Technical Tasks**: "Setup Redux" (no user value)
+❌ **Vague Tasks**: "Improve performance" (not measurable)
+❌ **Giant Tasks**: 3+ week efforts (break down)
+❌ **Dependency Chains**: Sequential bottlenecks
+
+## Output
+
+**Location**: `/docs/pre-development/tasks/tasks-[feature-name].md`
+
+## Next Steps
+
+After Gate 4 approval:
+1. Tasks become sprint backlog
+2. Proceed to atomic subtasks
+3. Teams can start planning
+4. No implementation yet
+
+## Quality Checklist
+
+- [ ] Every task delivers working software
+- [ ] Dependencies are clearly mapped
+- [ ] Effort estimates are realistic
+- [ ] Success criteria are measurable
+- [ ] Testing approach is defined
+- [ ] Risks have mitigations
+- [ ] Sequence optimizes value delivery
+- [ ] Gate 4 criteria met
