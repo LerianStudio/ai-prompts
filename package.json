@@ -1,0 +1,51 @@
+{
+  "name": "lerian-protocol",
+  "version": "1.0.0",
+  "description": "Lerian Protocol - Intelligent agent-based development workflow templates",
+  "main": "lib/installer.js",
+  "bin": {
+    "lerian-protocol": "bin/lerian-cli-wrapper.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LerianStudio/ai-prompts.git#lerian-protocol"
+  },
+  "keywords": [
+    "lerian",
+    "ai",
+    "protocol",
+    "workflow",
+    "claude",
+    "development",
+    "agents"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^11.0.0",
+    "fs-extra": "^11.2.0",
+    "glob": "^10.3.10",
+    "inquirer": "^8.2.6",
+    "js-yaml": "^4.1.0",
+    "ora": "^5.4.1"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "scripts": {
+    "test": "node bin/lerian-protocol.js --help",
+    "test:help": "node bin/lerian-protocol.js --help",
+    "dev": "node bin/lerian-protocol.js",
+    "start": "node bin/lerian-protocol.js",
+    "install:local": "npm pack && echo 'Use: npm install /path/to/lerian-protocol-1.0.0.tgz in your project'",
+    "link:global": "npm link",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.5",
+    "prettier": "^3.6.2"
+  }
+}
