@@ -14,8 +14,6 @@ It creates directory structure with agents, commands, templates, workflows, and 
 - 📚 **Templates** - Directory structure for planning and development templates
 - 🤖 **Agents** - Directory structure for custom agent definitions
 
-<br />
-
 ## ✨ What Gets Installed
 
 The installer creates the following structure:
@@ -68,14 +66,6 @@ npm link
 lerian-protocol install ./my-project
 ```
 
-#### Quick Installation (via npx)
-
-```bash
-npx lerian-protocol install
-```
-
-<br />
-
 ## 📖 Usage
 
 ```bash
@@ -84,8 +74,6 @@ lerian-protocol install ./my-project              # Install in specific director
 lerian-protocol status                            # Show installation status
 lerian-protocol uninstall                         # Remove installation
 ```
-
-<br />
 
 ### Stage-Gate Structure
 
@@ -97,8 +85,6 @@ lerian-protocol uninstall                         # Remove installation
 └── 03.completed/      # Finished features
 ```
 
-<br />
-
 ## 📚 Files Created
 
 | Directory           | Purpose              | Contents                                                |
@@ -108,31 +94,6 @@ lerian-protocol uninstall                         # Remove installation
 | `context/`          | Documentation        | Directory structure and README for project context      |
 | `workflows/`        | Process workflows    | Directory structure and README for workflow definitions |
 | `stage-gate/`       | Project tracking     | Organized folders for feature lifecycle management      |
-
-## 📋 Requirements
-
-- Node.js >= 16.0.0
-- npm
-- Git
-
-## 🔧 Commands
-
-```bash
-lerian-protocol install [directory]               # Install workflow structure
-lerian-protocol status                            # Show installation status
-lerian-protocol uninstall                         # Remove installation
-lerian-protocol --help                            # Show available commands
-lerian-protocol --version                         # Show version number
-```
-
-## Development
-
-```bash
-git clone https://github.com/LerianStudio/ai-prompts.git -b lerian-protocol
-cd ai-prompts
-npm install
-npm run dev --help
-```
 
 ## Repository Structure
 
@@ -148,8 +109,6 @@ npm run dev --help
 └── stage-gate/                  # Stage-gate structure
 ```
 
-<br />
-
 <div align="center">
-   <p>Made with ❤️ by <a href="https://github.com/LerianStudio">Lerian Studio</a></p>
+    <p>Made with ❤️ by <a href="https://github.com/LerianStudio">Lerian Studio</a></p>
 </div>

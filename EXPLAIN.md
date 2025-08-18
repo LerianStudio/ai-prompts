@@ -2,7 +2,7 @@
 
 ## Overview
 
-The **Lerian Protocol** is a generalized workflow orchestration framework for Claude Code that enables automated, template-driven development processes. While currently exemplified through APIdog documentation workflow, the system is designed to support multiple workflow types through modular templates, context knowledge, and specialized agents.
+The **Lerian Protocol** is a generalized workflow orchestration framework for Claude Code that enables automated, template-driven development processes. The system is designed to support multiple workflow types through modular templates, context knowledge, and specialized agents.
 
 ## Workflow Diagram
 
@@ -79,21 +79,11 @@ flowchart TD
 10. **Quality Assurance**: Optional validation and compliance checking
 11. **Workflow Completion**: Standardized output ready for next development phase
 
-### Current Implementation Example (APIdog Documentation)
-
-- **Input**: APIdog OpenAPI specification URL
-- **Workflow**: `apidog-documentation.yaml`
-- **Agent**: tech-writer agent
-- **Template**: `apidog-documentation.md`
-- **Context**: Midaz Console domain knowledge
-- **Output**: `01.planning/[endpoint-name].md`
-
 ## Key Framework Components
 
 - **🎯 Workflow Router**: Intelligent workflow selection based on input type and context
 - **📋 Extensible Workflow Library**: YAML-defined workflows for different automation needs
-  - Current: `apidog-documentation.yaml`
-  - Future: `feature-planning.yaml`, `code-generation.yaml`, custom workflows
+  - `apidog-documentation.yaml`, `feature-planning.yaml`, `code-generation.yaml`
 - **📄 Template System**: Modular, reusable templates for different output formats
   - Documentation templates, code templates, planning templates
 - **🤖 Agent Ecosystem**: Specialized Claude agents for different domains
@@ -119,26 +109,17 @@ flowchart TD
 - **Future-Proof Design**: Framework architecture accommodates new workflows, templates, and integrations
 - **Context-Aware Processing**: Incorporates project-specific patterns, guidelines, and architectural rules
 
-### Current APIdog Implementation Benefits
-
-- Seamless conversion of APIdog OpenAPI specs to structured documentation
-- Midaz Console domain expertise for financial/ledger system context
-- Real-time specification retrieval via APIdog temp-links
-
 ## System Architecture
 
 ### Directory Structure
 
 ```
 ├── context/                    # Domain knowledge base
-│   ├── midaz-console-api-routes.md
-│   ├── midaz-console-folder-structure.md
-│   ├── midaz-console-color-branding.md
-│   └── midaz-console-tanstack-query-patterns.md
+│   ├── knowledge.md
 ├── templates/                  # Documentation templates
-│   └── apidog-documentation.md
+│   └── documentation.md
 ├── workflows/                  # Process definitions
-│   └── apidog-documentation.yaml
+│   └── workflow.yaml
 ├── development/                # Development resources
 └── planning/                   # Planning resources
 ```
@@ -152,47 +133,37 @@ flowchart TD
 - **External Integrations**: MCP-based pluggable external system connections
 - **Context System**: Domain-specific knowledge bases for accurate processing
 
-### Current Workflow: APIdog Documentation
-
-- **Input Format**: APIdog temp-links (api.apidog.com/temp-links/api/...)
-- **Processing Agent**: tech-writer agent
-- **Output Location**: `@stage-gate/01.planning/[endpoint-name].md`
-- **Template Base**: `@templates/apidog-documentation.md`
-- **Validation**: URL accessibility, OpenAPI format, markdown structure compliance
-
-## Future Workflow Possibilities
-
 ### Potential Workflow Types
 
 1. **Feature Planning Workflow**
-   - Input: User stories, requirements
-   - Output: Structured PRDs, technical specifications
-   - Agent: planning-agent
-   - Template: PRD templates, architecture templates
+  - Input: User stories, requirements
+  - Output: Structured PRDs, technical specifications
+  - Agent: planning-agent
+  - Template: PRD templates, architecture templates
 
 2. **Code Generation Workflow**
-   - Input: API specifications, design patterns
-   - Output: Boilerplate code, component scaffolds
-   - Agent: code-gen-agent
-   - Template: Code templates, component templates
+  - Input: API specifications, design patterns
+  - Output: Boilerplate code, component scaffolds
+  - Agent: code-gen-agent
+  - Template: Code templates, component templates
 
 3. **Design System Integration**
-   - Input: Figma designs, component libraries
-   - Output: Component documentation, implementation guides
-   - Agent: design-system-agent
-   - Template: Design documentation templates
+  - Input: Figma designs, component libraries
+  - Output: Component documentation, implementation guides
+  - Agent: design-system-agent
+  - Template: Design documentation templates
 
 4. **Testing Workflow**
-   - Input: Feature specifications, API definitions
-   - Output: Test plans, automated test code
-   - Agent: qa-agent
-   - Template: Test templates, coverage templates
+  - Input: Feature specifications, API definitions
+  - Output: Test plans, automated test code
+  - Agent: qa-agent
+  - Template: Test templates, coverage templates
 
 5. **Architecture Review Workflow**
-   - Input: Technical designs, architectural decisions
-   - Output: Review documentation, compliance reports
-   - Agent: architect-agent
-   - Template: Review templates, compliance templates
+  - Input: Technical designs, architectural decisions
+  - Output: Review documentation, compliance reports
+  - Agent: architect-agent
+  - Template: Review templates, compliance templates
 
 ### Extensibility Pattern
 
