@@ -39,11 +39,18 @@
     "start": "node bin/lerian-protocol.js",
     "install:local": "npm pack && echo 'Use: npm install /path/to/lerian-protocol-1.0.0.tgz in your project'",
     "link:global": "npm link",
+    "lint": "eslint lib bin --ext .js",
+    "lint:fix": "eslint lib bin --ext .js --fix",
+    "lint:check": "eslint lib bin --ext .js",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky"
   },
   "devDependencies": {
+    "eslint": "^9.33.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^5.5.4",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.5",
     "prettier": "^3.6.2"

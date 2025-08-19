@@ -36,7 +36,7 @@ program
   .command('install')
   .description('Install Lerian Protocol workflow with all agents and templates')
   .argument('[directory]', 'project directory to install in', '.')
-  .action(async (directory, options) => {
+  .action(async (directory) => {
     try {
       const installOptions = {
         directory,
@@ -55,7 +55,7 @@ program
 program
   .command('status')
   .description('Show installation status')
-  .action(async (options) => {
+  .action(async () => {
     try {
       await installer.status({})
     } catch (error) {
@@ -67,7 +67,7 @@ program
 program
   .command('uninstall')
   .description('Remove Lerian Protocol installation')
-  .action(async (options) => {
+  .action(async () => {
     try {
       await installer.uninstall({})
     } catch (error) {
