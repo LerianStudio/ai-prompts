@@ -1,0 +1,12 @@
+version: 1.0.0
+projectName: ai-prompts
+installedAt: '2025-08-21T19:21:02.712Z'
+agents:
+  available:
+    - tech-writer
+workflows:
+  available:
+    - template
+stageGate:
+  enabled: true
+  currentStage: backlog

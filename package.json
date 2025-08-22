@@ -1,6 +1,6 @@
 {
   "name": "lerian-protocol",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Lerian Protocol - Intelligent agent-based development workflow templates",
   "main": "lib/installer.js",
   "bin": {
@@ -21,7 +21,9 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "cfonts": "^3.3.0",
     "chalk": "^4.1.2",
+    "cli-table3": "^0.6.5",
     "commander": "^11.0.0",
     "fs-extra": "^11.2.0",
     "glob": "^10.3.10",

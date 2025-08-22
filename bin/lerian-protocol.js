@@ -3,6 +3,7 @@
 const { program } = require('commander')
 const chalk = require('chalk')
 const path = require('path')
+const { version } = require('../package.json')
 
 const isNpxExecution = __dirname.includes('_npx') || __dirname.includes('.npm')
 
@@ -22,7 +23,7 @@ try {
 
 program
   .name('lerian-protocol')
-  .version('1.0.0')
+  .version(version)
   .description(
     'Intelligent agent-based development workflow templates for Claude Code'
   )
@@ -36,12 +37,16 @@ program
   .command('install')
   .description('Install Lerian Protocol workflow with all agents and templates')
   .argument('[directory]', 'project directory to install in', '.')
-  .action(async (directory) => {
+  .option('--dry-run', 'show what would be installed without making changes')
+  .option('--force', 'force installation without prompts')
+  .action(async (directory, options) => {
     try {
       const installOptions = {
         directory,
         full: true, // Always full installation
-        stageGate: true // Always include stage-gate
+        stageGate: true, // Always include stage-gate
+        dryRun: options.dryRun,
+        force: options.force
       }
       await installer.install(installOptions)
     } catch (error) {

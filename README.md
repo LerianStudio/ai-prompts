@@ -96,12 +96,12 @@ lerian-protocol install ./my-project
 
 ## 📖 Usage
 
-```bash
-lerian-protocol install                           # Install in current directory
-lerian-protocol install ./my-project              # Install in specific directory
-lerian-protocol status                            # Show installation status
-lerian-protocol uninstall                         # Remove installation
-```
+| Command                          | Description                   | Example                                |
+| -------------------------------- | ----------------------------- | -------------------------------------- |
+| `lerian-protocol install`        | Install in current directory  | `lerian-protocol install`              |
+| `lerian-protocol install <path>` | Install in specific directory | `lerian-protocol install ./my-project` |
+| `lerian-protocol status`         | Show installation status      | `lerian-protocol status`               |
+| `lerian-protocol uninstall`      | Remove installation           | `lerian-protocol uninstall`            |
 
 ### Stage-Gate Structure
 
