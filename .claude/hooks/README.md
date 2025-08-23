@@ -137,43 +137,34 @@ ESLint: broken.js ❌ 1 error(s), 1 warning(s)
 
 #### File Operations:
 
-- **File Created** 📄 - When new files are written
-- **File Modified** 📝 - When existing files are edited
-- Shows file-specific icons based on extension
+- **File Created ◉** - When new files are written with Write tool
+- **File Modified ◉** - When existing files are edited with Edit/MultiEdit tools
+- Shows filename in notification message
 
 #### Command Completions:
 
-- **Command Completed** ✅ - For important commands like `npm install`, `git`, `docker`
-- **Command Failed** ❌ - When important commands fail (shown with critical urgency)
+- **Command Completed ◉** - For important commands like `npm install`, `npm run`, `yarn`, `git`, `docker`, `pytest`, `jest`
+- **Command Failed ◉** - When important commands fail (shown with critical urgency)
+- Commands are truncated to 50 characters in notifications
 
 #### Subagent Tasks:
 
-- **Subagent Task Started** 🤖 - When Claude launches a specialized subagent
-
-### File type icons:
-
-- 🐍 Python files (`.py`)
-- 🟨 JavaScript (`.js`)
-- 🔷 TypeScript (`.ts`)
-- ⚛️ React files (`.jsx`, `.tsx`)
-- 🌐 HTML files (`.html`)
-- 🎨 CSS files (`.css`)
-- 📋 JSON files (`.json`)
-- 📝 Markdown (`.md`)
-- 🐚 Shell scripts (`.sh`)
-- 🗄️ SQL files (`.sql`)
+- **Subagent Task Started ◉** - When Claude launches a specialized subagent via Task tool
 
 ### Example notifications:
 
 ```
-File Created 🐍
+File Created ◉
 Created: main.py
 
-Command Completed ✅
+Command Completed ◉
 Executed: npm install express
 
-Subagent Task Started 🤖
+Subagent Task Started ◉
 Task: Search codebase for API endpoints
+
+Command Failed ◉
+Failed: npm run build
 ```
 
 ### Fallback behavior:

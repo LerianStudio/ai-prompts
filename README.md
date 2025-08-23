@@ -6,7 +6,7 @@
                        |   |  > lerian-protocol --init @frontend     |    |
                        |   |                                         |    |
                        |   |  ╔══════════════════════════════════╗   |    |
-                       |   |  ║   LERIAN PROTOCOL v0.1.0-alpha   ║   |    |
+                       |   |  ║   LERIAN PROTOCOL v0.1.0         ║   |    |
                        |   |  ║   AI-Powered Development Suite   ║   |    |
                        |   |  ║                                  ║   |    |
                        |   |  ║    Welcome to @frontend team!    ║   |    |
@@ -65,10 +65,10 @@ The installer creates the following structure:
 ├── workflows/             # YAML workflow definitions
 ├── config.yaml            # Protocol configuration
 └── stage-gate/            # Feature tracking system
-    ├── 00.backlog/        # Ideas and requirements
-    ├── 01.planning/       # PRDs and architecture
-    ├── 02.in-progress/    # Active development
-    └── 03.completed/      # Finished features
+   ├── 00.backlog/        # Ideas and requirements
+   ├── 01.planning/       # PRDs and architecture
+   ├── 02.in-progress/    # Active development
+   └── 03.completed/      # Finished features
 
 .mcp.json                  # MCP configuration
 ```
@@ -138,5 +138,5 @@ lerian-protocol install ./my-project
 ```
 
 <div align="center">
-    <p>Made with ❤️ by <a href="https://github.com/LerianStudio">Lerian Studio</a></p>
+   <p>Made with ❤️ by <a href="https://github.com/LerianStudio">Lerian Studio</a></p>
 </div>

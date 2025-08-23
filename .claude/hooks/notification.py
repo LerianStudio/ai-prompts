@@ -29,26 +29,6 @@ def send_notification(title: str, message: str, urgency: str = "normal"):
             f.write(f"[{title}] {message}\n")
 
 
-def get_file_icon(file_path: str) -> str:
-    """Get appropriate icon based on file extension."""
-    ext = Path(file_path).suffix.lower()
-    icon_map = {
-        '.py': '🐍',
-        '.js': '🟨',
-        '.ts': '🔷',
-        '.jsx': '⚛️',
-        '.tsx': '⚛️',
-        '.html': '🌐',
-        '.css': '🎨',
-        '.json': '📋',
-        '.md': '📝',
-        '.txt': '📄',
-        '.yml': '⚙️',
-        '.yaml': '⚙️',
-        '.sh': '🐚',
-        '.sql': '🗄️',
-    }
-    return icon_map.get(ext, '📄')
 
 
 def main():
@@ -73,13 +53,12 @@ def main():
         file_path = tool_input.get("file_path", "")
         if file_path:
             filename = os.path.basename(file_path)
-            icon = get_file_icon(file_path)
             
             if tool_name == "Write":
-                title = f"File Created {icon}"
+                title = "File Created ◉"
                 message = f"Created: {filename}"
             else:
-                title = f"File Modified {icon}"
+                title = "File Modified ◉"
                 message = f"Modified: {filename}"
             
             send_notification(title, message)
@@ -92,11 +71,11 @@ def main():
         important_commands = ["npm install", "npm run", "yarn", "git", "docker", "pytest", "jest"]
         if any(cmd in command.lower() for cmd in important_commands):
             if success:
-                title = "Command Completed ✅"
+                title = "Command Completed ◉"
                 message = f"Executed: {command[:50]}{'...' if len(command) > 50 else ''}"
                 urgency = "normal"
             else:
-                title = "Command Failed ❌"
+                title = "Command Failed ◉"
                 message = f"Failed: {command[:50]}{'...' if len(command) > 50 else ''}"
                 urgency = "critical"
             
@@ -105,7 +84,7 @@ def main():
     elif tool_name == "Task":
         description = tool_input.get("description", "")
         if description:
-            title = "Subagent Task Started 🤖"
+            title = "Subagent Task Started ◉"
             message = f"Task: {description}"
             send_notification(title, message)
 
