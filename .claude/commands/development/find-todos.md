@@ -1,7 +1,7 @@
 ---
 allowed-tools: ['Grep', 'TodoWrite', 'Bash']
 description: 'Find and organize TODO comments and unfinished work markers in the codebase'
-argument-hint: '[pattern] - optional search pattern or marker type'
+argument-hint: [pattern] (optional search pattern or marker type)
 ---
 
 # Find Development Tasks

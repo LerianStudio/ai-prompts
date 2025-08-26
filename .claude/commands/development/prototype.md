@@ -1,7 +1,7 @@
 ---
 allowed-tools: Bash(*), Read(*), Write(*), MultiEdit(*), Edit(*), Glob(*), Grep(*), LS(*), Task(*), TodoWrite(*)
 description: Create working proof-of-concept implementations to validate ideas and demonstrate functionality
-argument-hint: <feature or concept to prototype>
+argument-hint: [feature or concept to prototype]
 ---
 
 # /prototype

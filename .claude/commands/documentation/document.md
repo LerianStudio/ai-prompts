@@ -1,7 +1,7 @@
 ---
 allowed-tools: [Glob, Read, Edit, MultiEdit, Write, Grep, LS, Task]
-description: 'Intelligent documentation management - analyzes changes and updates ALL relevant docs'
-argument-hint: '[update | overview] [optional: specific docs to focus on]'
+description: Intelligent documentation management - analyzes changes and updates ALL relevant docs
+argument-hint: [update | overview] [optional: specific docs to focus on]
 ---
 
 # Documentation Manager
@@ -53,6 +53,7 @@ When you run `/document update` or after implementations, I'll:
 1. **Run `/analyze-codebase`** to analyze current codebase
 2. **Compare** code reality vs documentation
 3. **Identify** what needs updating:
+
    - New features not documented
    - Changed APIs or interfaces
    - Removed features still in docs

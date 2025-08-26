@@ -1,7 +1,7 @@
 ---
 allowed-tools: Read(*), Grep(*), LS(*)
 description: Summarize everything discussed in the current chat conversation with structured TLDR, bullet points, and code snippets
-argument-hint:
+argument-hint: (no arguments required)
 ---
 
 # /summary

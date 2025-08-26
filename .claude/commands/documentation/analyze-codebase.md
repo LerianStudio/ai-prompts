@@ -1,7 +1,7 @@
 ---
 allowed-tools: [Glob, Read, Grep, LS]
-description: 'Comprehensive codebase analysis to understand architecture, patterns, and project structure'
-argument-hint: '[optional: specific directory or component to focus analysis]'
+description: Comprehensive codebase analysis to understand architecture, patterns, and project structure
+argument-hint: [optional: specific directory or component to focus analysis]
 ---
 
 # Understand Project

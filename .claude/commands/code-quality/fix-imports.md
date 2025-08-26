@@ -1,18 +1,7 @@
 ---
-allowed-tools:
-  [
-    'Grep',
-    'Glob',
-    'Read',
-    'Edit',
-    'MultiEdit',
-    'Write',
-    'Bash',
-    'LS',
-    'TodoWrite'
-  ]
-description: 'Systematically fix import statements broken by file moves or renames'
-argument-hint: "[paths/patterns] - specific paths or import patterns to fix, or 'resume', 'status', 'new'"
+allowed-tools: [Grep, Glob, Read, Edit, MultiEdit, Write, Bash, LS, TodoWrite]
+description: Systematically fix import statements broken by file moves or renames
+argument-hint: [paths/patterns] (specific paths or import patterns to fix)
 ---
 
 # Fix Broken Imports
