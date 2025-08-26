@@ -10,7 +10,6 @@ import os
 from pathlib import Path
 
 
-# File extensions that Prettier can format
 PRETTIER_EXTENSIONS = {
     '.js', '.jsx', '.ts', '.tsx', '.json', '.css', '.scss', '.less',
     '.html', '.htm', '.vue', '.md', '.mdx', '.yaml', '.yml'
@@ -18,12 +17,9 @@ PRETTIER_EXTENSIONS = {
 
 
 def is_prettier_available() -> bool:
-    """Check if Prettier is available in the project or globally."""
-    # Check for local prettier in node_modules
     if os.path.exists("node_modules/.bin/prettier"):
         return True
     
-    # Check for global prettier
     try:
         subprocess.run(["prettier", "--version"], 
                       capture_output=True, check=True, timeout=5)
@@ -33,21 +29,16 @@ def is_prettier_available() -> bool:
 
 
 def get_prettier_command() -> str:
-    """Get the appropriate Prettier command (local or global)."""
     if os.path.exists("node_modules/.bin/prettier"):
         return "node_modules/.bin/prettier"
     return "prettier"
 
 
 def should_format_file(file_path: str) -> bool:
-    """Check if file should be formatted by Prettier."""
     path = Path(file_path)
-    
-    # Check extension
     if path.suffix.lower() not in PRETTIER_EXTENSIONS:
         return False
     
-    # Skip files in common ignore patterns
     ignore_patterns = [
         'node_modules/', '.git/', 'dist/', 'build/', '.next/',
         'coverage/', '.nyc_output/', 'lib/', 'es/', 'umd/'
@@ -57,7 +48,6 @@ def should_format_file(file_path: str) -> bool:
     if any(pattern in str_path for pattern in ignore_patterns):
         return False
     
-    # Check if file exists and is readable
     if not path.exists() or not path.is_file():
         return False
     
@@ -65,11 +55,8 @@ def should_format_file(file_path: str) -> bool:
 
 
 def format_file(file_path: str) -> tuple[bool, str]:
-    """Format a file with Prettier. Returns (success, message)."""
     try:
         prettier_cmd = get_prettier_command()
-        
-        # Run prettier with --write to format in place
         result = subprocess.run([
             prettier_cmd,
             "--write",
@@ -89,7 +76,6 @@ def format_file(file_path: str) -> tuple[bool, str]:
 
 
 def main():
-    """Main Prettier hook function."""
     try:
         input_data = json.load(sys.stdin)
     except json.JSONDecodeError as e:
@@ -100,38 +86,30 @@ def main():
     tool_name = input_data.get("tool_name", "")
     tool_input = input_data.get("tool_input", {})
 
-    # Only handle PostToolUse events for file operations
     if hook_event != "PostToolUse":
         sys.exit(0)
     
-    # Only process Write, Edit, and MultiEdit operations
     if tool_name not in ["Write", "Edit", "MultiEdit"]:
         sys.exit(0)
     
-    # Check if Prettier is available
     if not is_prettier_available():
-        # Don't fail - just skip formatting
         sys.exit(0)
     
-    # Get file path
     file_path = tool_input.get("file_path", "")
     if not file_path:
         sys.exit(0)
     
-    # Check if file should be formatted
     if not should_format_file(file_path):
         sys.exit(0)
     
-    # Format the file
     success, message = format_file(file_path)
     
     if success:
         print(f"✨ {message}", file=sys.stdout)
         sys.exit(0)
     else:
-        # Print warning but don't block the operation
         print(f"⚠️  {message}", file=sys.stderr)
-        sys.exit(1)  # Non-blocking error
+        sys.exit(1)
 
 
 if __name__ == "__main__":

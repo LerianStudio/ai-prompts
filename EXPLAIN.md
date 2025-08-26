@@ -10,10 +10,10 @@ flowchart TD
     TEMPLATES[Template Library] --> AGENTS
     WFN --> AGENTS
 
-    AGENTS --> STAGEGATE[Stage-Gate System]
-    STAGEGATE -.-> QA[Quality Assurance]
+    AGENTS --> BOARD[Board System]
+    BOARD -.-> QA[Quality Assurance]
     QA -.-> AGENTS
-    STAGEGATE --> OUTPUT[Workflow Output]
+    BOARD --> OUTPUT[Workflow Output]
 
 ```
 
@@ -27,7 +27,7 @@ flowchart TD
 6. **Template Selection**: Templates chosen based on workflow requirements
 7. **Agent Orchestration**: Specialized agents assigned based on workflow needs
 8. **Processing**: Template application with context integration
-9. **Stage-Gate Integration**: Output routed to appropriate stage-gate directory
+9. **Board Integration**: Output routed to appropriate board directory
 10. **Quality Assurance**: Optional validation and compliance checking
 11. **Completion**: Standardized output ready for next phase
 
@@ -40,7 +40,7 @@ flowchart TD
   - Documentation templates, code templates, planning templates
 - **🤖 Agent Ecosystem**: Specialized Claude agents optimized for specific workflow domains
   - Tech-writer, planning, code generation, custom domain agents
-- **📂 Universal Stage-Gate System**: Consistent project lifecycle management across all workflows
+- **📂 Universal Board System**: Consistent project lifecycle management across all workflows
   - `00.backlog/`, `01.planning/`, `02.in-progress/`, `03.completed/`
 - **🔧 MCP Integration Layer**: Pluggable external system integrations supporting any API or service
   - APIdog, GitHub, design systems, custom APIs
@@ -77,14 +77,24 @@ Workflows reference tasks to coordinate execution:
 ### Directory Structure
 
 ```
+├── .claude/                    # Claude Code native configuration
+│   ├── agents/                 # AI agent definitions
+│   ├── commands/               # Development commands organized by function
+│   ├── hooks/                  # Git hooks and validation
+│   └── CLAUDE.md               # Claude Code configuration
 ├── context/                    # Domain knowledge base
-│   ├── knowledge.md
-├── templates/                  # Documentation templates
-│   └── documentation.md
+│   ├── anthropic/              # Claude Code patterns and references
+│   └── console/                # Project-specific conventions
+├── templates/                  # All templates and checklists
+│   ├── documents/              # Documentation templates
+│   └── board-todos.md          # Board task template
 ├── workflows/                  # Process definitions
-│   └── workflow.yaml
-├── development/                # Development resources
-└── planning/                   # Planning resources
+│   └── README.md               # Workflow system documentation
+└── board/                      # Task tracking and project management
+    ├── 00.backlog/             # Ideas and requirements
+    ├── 01.planning/            # PRDs and architecture
+    ├── 02.in-progress/         # Active development
+    └── 03.completed/           # Finished features
 ```
 
 ### Potential Workflow Types

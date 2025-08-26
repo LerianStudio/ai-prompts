@@ -10,10 +10,8 @@ const isNpxExecution = __dirname.includes('_npx') || __dirname.includes('.npm')
 let installer
 try {
   if (isNpxExecution) {
-    // When run via npx, adjust path
     installer = require(path.join(__dirname, '..', 'lib', 'installer'))
   } else {
-    // Local execution
     installer = require('../lib/installer')
   }
 } catch (error) {
@@ -43,8 +41,8 @@ program
     try {
       const installOptions = {
         directory,
-        full: true, // Always full installation
-        stageGate: true, // Always include stage-gate
+        full: true,
+        stageGate: true,
         dryRun: options.dryRun,
         force: options.force
       }
@@ -54,8 +52,6 @@ program
       process.exit(1)
     }
   })
-
-// Update command removed - not needed for a setup tool
 
 program
   .command('status')
@@ -81,13 +77,8 @@ program
     }
   })
 
-// List command removed - users can check .claude/ directory directly
-
-// No global options - completely flag-free CLI
-
 program.parse(process.argv)
 
-// Show help if no command provided
 if (!process.argv.slice(2).length) {
   program.outputHelp()
   process.exit(0)

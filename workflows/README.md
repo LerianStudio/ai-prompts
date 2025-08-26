@@ -15,7 +15,7 @@ The workflows folder serves as a centralized location for:
 
 ## Structure
 
-This directory is organized to provide workflow definitions that control how agents, templates, and context knowledge are combined to produce automated outputs through the stage-gate system.
+This directory is organized to provide workflow definitions that control how agents, templates, and context knowledge are combined to produce automated outputs through the board system.
 
 ## Workflow Skeleton Template
 

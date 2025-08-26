@@ -1,22 +1,27 @@
 # Commands
 
-This directory contains custom Claude Code commands that extend the development workflow capabilities.
+This directory contains custom Claude Code commands organized by functional purpose to enhance development workflows.
 
 ## Purpose
 
-The commands folder serves as a centralized location for:
+These commands provide comprehensive tools for **JavaScript/TypeScript (React) frontend development**:
 
-- Custom development workflow commands
-- Automated analysis and processing tools
-- Code quality and maintenance utilities
-- Project-specific automation scripts
-- Claude Code command definitions
-- Workflow enhancement commands
+- **Code Quality & Analysis** - Review React components, refactor hooks, optimize performance
+- **Documentation & Understanding** - Analyze component structure, explain React patterns
+- **Development Workflow** - Create React features, debug frontend errors, optimize builds
+- **Project Planning & Analysis** - Create PRDs for frontend features, estimate development work
+- **Utilities** - Create, update, and manage the command system itself
+
+All commands are optimized for modern frontend development workflows with React, TypeScript, and related ecosystems.
 
 ## Structure
 
-This directory is organized to provide reusable commands that enhance the development experience and integrate with the Lerian Protocol workflow system, enabling developers to automate common tasks and processes.
+Commands are organized into subdirectories by their primary function:
 
-## Getting Started
+- `code-quality/` - Code improvement and standardization tools
+- `documentation/` - Code analysis and documentation generation
+- `development/` - Day-to-day development workflow support
+- `planning/` - Strategic planning and analysis tools
+- `utils/` - Command system management and utilities
 
-To add new commands for your development workflows, create command definition files in this folder following the Claude Code command format and naming conventions as outlined in the Claude Code documentation.
+Each command follows the official Anthropic slash command format for Claude Code integration.

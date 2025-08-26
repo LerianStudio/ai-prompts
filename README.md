@@ -48,7 +48,7 @@ The installer creates the following structure:
 
 - **Directory Structure** - Organized folders for workflow management
 - **Configuration** - Project metadata and settings
-- **Stage-Gate System** - Feature lifecycle tracking folders
+- **Board System** - Feature lifecycle tracking folders
 - **Documentation** - README files and best practices
 - **Context Base** - Directory for project documentation and examples
 
@@ -57,20 +57,36 @@ The installer creates the following structure:
 ```
 .claude/
 ├── agents/                # AI agent definitions
-├── commands/              # Development commands
+│   ├── tech-writer.md     # Technical writing specialist
+│   ├── todo-manager.md    # Task management agent
+│   └── user-story-generator.md # Agile story creation
+├── commands/              # Development commands organized by function
+│   ├── code-quality/      # Code review, refactoring, security
+│   ├── documentation/     # Analysis, diagrams, code explanation
+│   ├── development/       # Scaffolding, debugging, prototyping
+│   ├── planning/          # Estimation, issue prediction
+│   └── utils/             # Setup, cleaning, command management
+├── hooks/                 # Git hooks and validation
 └── CLAUDE.md              # Claude Code configuration
 
-.workflow/
-├── context/               # Context base and examples
-├── workflows/             # YAML workflow definitions
-├── config.yaml            # Protocol configuration
-└── stage-gate/            # Feature tracking system
-   ├── 00.backlog/        # Ideas and requirements
-   ├── 01.planning/       # PRDs and architecture
-   ├── 02.in-progress/    # Active development
-   └── 03.completed/      # Finished features
+context/                   # Domain knowledge base
+├── anthropic/             # Claude Code references and patterns
+└── console/               # Project-specific patterns and conventions
 
-.mcp.json                  # MCP configuration
+templates/                 # Document templates and checklists
+├── documents/             # PRD, workflow, API documentation templates
+└── board-todos.md         # Board task template
+
+workflows/                 # YAML workflow definitions
+└── README.md              # Workflow system documentation
+
+board/                     # Feature lifecycle tracking
+├── 00.backlog/           # Ideas and requirements
+├── 01.planning/          # PRDs and architecture
+├── 02.in-progress/       # Active development
+└── 03.completed/         # Finished features
+
+.mcp.json                 # MCP server configuration
 ```
 
 ## 🚀 Quick Start
@@ -103,10 +119,10 @@ lerian-protocol install ./my-project
 | `lerian-protocol status`         | Show installation status      | `lerian-protocol status`               |
 | `lerian-protocol uninstall`      | Remove installation           | `lerian-protocol uninstall`            |
 
-### Stage-Gate Structure
+### Board Structure
 
 ```
-.workflow/stage-gate/
+board/
 ├── 00.backlog/        # Ideas and requirements
 ├── 01.planning/       # PRDs and architecture
 ├── 02.in-progress/    # Active development
@@ -121,20 +137,29 @@ lerian-protocol install ./my-project
 | `.claude/commands/` | Development commands | Directory structure and README for custom commands      |
 | `context/`          | Documentation        | Directory structure and README for project context      |
 | `workflows/`        | Process workflows    | Directory structure and README for workflow definitions |
-| `stage-gate/`       | Project tracking     | Organized folders for feature lifecycle management      |
+| `board/`            | Project tracking     | Organized folders for feature lifecycle management      |
 
 ## Repository Structure
 
 ```
 ├── .claude/                     # Claude Code configuration
-│   ├── agents/                  # Agent definitions
-│   └── commands/                # Development commands
+│   ├── agents/                  # AI agent definitions
+│   ├── commands/                # Development commands (organized by function)
+│   ├── hooks/                   # Git hooks and validation
+│   └── CLAUDE.md                # Claude Code configuration
 ├── bin/                         # CLI entry points
 ├── lib/                         # Installation logic
-├── context/                     # Example documentation
+├── context/                     # Domain knowledge base
+│   ├── anthropic/               # Claude Code patterns and references
+│   └── console/                 # Project-specific conventions
 ├── workflows/                   # YAML workflow definitions
-├── templates/                   # Document templates
-└── stage-gate/                  # Stage-gate structure
+├── templates/                   # Document templates and checklists
+│   └── documents/               # PRD, API, and workflow templates
+└── board/                       # Feature lifecycle tracking
+    ├── 00.backlog/             # Ideas and requirements
+    ├── 01.planning/            # PRDs and architecture
+    ├── 02.in-progress/         # Active development
+    └── 03.completed/           # Finished features
 ```
 
 <div align="center">

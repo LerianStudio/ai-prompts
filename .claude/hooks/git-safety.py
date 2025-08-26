@@ -8,65 +8,52 @@ import re
 import sys
 
 
-# Define dangerous Git operations that should be blocked
 DANGEROUS_GIT_PATTERNS = [
-    # Staging and committing changes
     (r'\bgit\s+add\b', "git add is blocked - use read-only git commands only"),
     (r'\bgit\s+commit\b', "git commit is blocked - use read-only git commands only"),
     
-    # Remote operations
     (r'\bgit\s+push\b', "git push is blocked - use read-only git commands only"),
     (r'\bgit\s+pull\b', "git pull is blocked - use read-only git commands only"),
     (r'\bgit\s+fetch\b(?!\s+--dry-run)', "git fetch is blocked - use read-only git commands only"),
     
-    # Branch and history manipulation
     (r'\bgit\s+merge\b', "git merge is blocked - use read-only git commands only"),
     (r'\bgit\s+rebase\b', "git rebase is blocked - use read-only git commands only"),
     (r'\bgit\s+cherry-pick\b', "git cherry-pick is blocked - use read-only git commands only"),
     
-    # Destructive operations
     (r'\bgit\s+reset\s+--hard\b', "git reset --hard is blocked - use read-only git commands only"),
     (r'\bgit\s+clean\b', "git clean is blocked - use read-only git commands only"),
     (r'\bgit\s+rm\b', "git rm is blocked - use read-only git commands only"),
     (r'\bgit\s+mv\b', "git mv is blocked - use read-only git commands only"),
     
-    # Branch management
     (r'\bgit\s+branch\s+(?:.*\s+)?-[dD]\b', "git branch deletion is blocked - use read-only git commands only"),
     (r'\bgit\s+checkout\s+(?!--\s|\.)', "git checkout for branch switching is blocked - use read-only git commands only"),
     (r'\bgit\s+switch\b', "git switch is blocked - use read-only git commands only"),
     
-    # Tag management  
     (r'\bgit\s+tag\s+(?:.*\s+)?-d\b', "git tag deletion is blocked - use read-only git commands only"),
     (r'\bgit\s+tag\s+[^-\s]', "git tag creation is blocked - use read-only git commands only"),
     
-    # Repository manipulation
     (r'\bgit\s+clone\b', "git clone is blocked - use read-only git commands only"),
     (r'\bgit\s+init\b', "git init is blocked - use read-only git commands only"),
     
-    # Stash operations (potentially destructive)
     (r'\bgit\s+stash\s+(?:drop|clear|pop|apply)', "destructive git stash operations are blocked - use read-only git commands only"),
     
-    # Submodule operations
     (r'\bgit\s+submodule\s+(?:add|update|sync)', "git submodule modifications are blocked - use read-only git commands only"),
     
-    # Configuration changes
     (r'\bgit\s+config\s+(?!--list|--get)', "git config modifications are blocked - use read-only git commands only"),
     
-    # Remote management
     (r'\bgit\s+remote\s+(?:add|remove|set-url)', "git remote modifications are blocked - use read-only git commands only"),
 ]
 
-# Define safe Git operations that are explicitly allowed
 SAFE_GIT_PATTERNS = [
     r'\bgit\s+status\b',
     r'\bgit\s+log\b',
     r'\bgit\s+diff\b',
     r'\bgit\s+show\b',
-    r'\bgit\s+branch\s*$',  # List branches only
+    r'\bgit\s+branch\s*$',
     r'\bgit\s+branch\s+--list\b',
-    r'\bgit\s+tag\s*$',  # List tags only
+    r'\bgit\s+tag\s*$',
     r'\bgit\s+tag\s+--list\b',
-    r'\bgit\s+remote\s*$',  # List remotes only
+    r'\bgit\s+remote\s*$',
     r'\bgit\s+remote\s+-v\b',
     r'\bgit\s+config\s+--list\b',
     r'\bgit\s+config\s+--get\b',
@@ -91,7 +78,6 @@ SAFE_GIT_PATTERNS = [
 
 
 def is_safe_git_command(command: str) -> bool:
-    """Check if a git command is explicitly in the safe list."""
     for pattern in SAFE_GIT_PATTERNS:
         if re.search(pattern, command, re.IGNORECASE):
             return True
@@ -104,48 +90,38 @@ def validate_git_command(command: str) -> list[str]:
     Returns a list of issues found.
     """
     issues = []
-    
-    # First check if it's a safe command
     if is_safe_git_command(command):
         return issues
     
-    # Check for dangerous patterns, but only if git is actually being executed
-    # Look for patterns where git is the actual command, not just mentioned in strings
     git_execution_pattern = r'(?:^|\s|;|\||&|`|\$\()\s*git\s+'
     
     if re.search(git_execution_pattern, command, re.IGNORECASE):
         for pattern, message in DANGEROUS_GIT_PATTERNS:
             if re.search(pattern, command, re.IGNORECASE):
                 issues.append(message)
-                break  # Only report the first match to avoid spam
+                break
     
     return issues
 
 
 def main():
-    """Main hook execution function."""
     try:
         input_data = json.load(sys.stdin)
     except json.JSONDecodeError as e:
         print(f"Error: Invalid JSON input: {e}", file=sys.stderr)
         sys.exit(1)
 
-    # Extract command information
     tool_name = input_data.get("tool_name", "")
     tool_input = input_data.get("tool_input", {})
     command = tool_input.get("command", "")
 
-    # Only validate Bash commands
     if tool_name != "Bash" or not command:
         sys.exit(0)
 
-    # Check if command starts with git or has git after command separators
-    # This avoids blocking commands that just mention git in strings
     git_execution_pattern = r'(?:^|;|\||&&|\|\||`|\$\()\s*git\s+'
     if not re.search(git_execution_pattern, command, re.IGNORECASE):
         sys.exit(0)
 
-    # Validate the git command
     issues = validate_git_command(command)
 
     if issues:
@@ -161,10 +137,8 @@ def main():
         print("  • git remote -v, git config --list", file=sys.stderr)
         print("  • git ls-files, git blame, git grep", file=sys.stderr)
         
-        # Exit code 2 blocks the tool call and shows stderr to Claude
         sys.exit(2)
 
-    # Command is safe, allow it to proceed
     sys.exit(0)
 
 

@@ -11,7 +11,6 @@ from pathlib import Path
 
 
 def send_notification(title: str, message: str, urgency: str = "normal"):
-    """Send a desktop notification using notify-send."""
     try:
         subprocess.run([
             "notify-send",
@@ -22,7 +21,6 @@ def send_notification(title: str, message: str, urgency: str = "normal"):
             message
         ], check=False, timeout=5)
     except (subprocess.TimeoutExpired, FileNotFoundError):
-        # Fallback: log to file if notify-send is not available
         log_file = Path.home() / ".claude" / "notifications.log"
         log_file.parent.mkdir(exist_ok=True)
         with open(log_file, "a") as f:
@@ -32,7 +30,6 @@ def send_notification(title: str, message: str, urgency: str = "normal"):
 
 
 def main():
-    """Main notification hook function."""
     try:
         input_data = json.load(sys.stdin)
     except json.JSONDecodeError as e:
@@ -44,11 +41,9 @@ def main():
     tool_input = input_data.get("tool_input", {})
     tool_response = input_data.get("tool_response", {})
 
-    # Only handle PostToolUse events for file operations
     if hook_event != "PostToolUse":
         sys.exit(0)
 
-    # Handle different tool types
     if tool_name in ["Write", "Edit", "MultiEdit"]:
         file_path = tool_input.get("file_path", "")
         if file_path:
@@ -67,7 +62,6 @@ def main():
         command = tool_input.get("command", "")
         success = tool_response.get("success", True)
         
-        # Only notify for important commands
         important_commands = ["npm install", "npm run", "yarn", "git", "docker", "pytest", "jest"]
         if any(cmd in command.lower() for cmd in important_commands):
             if success:
@@ -88,7 +82,6 @@ def main():
             message = f"Task: {description}"
             send_notification(title, message)
 
-    # Success - no output needed
     sys.exit(0)
 
 
