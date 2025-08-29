@@ -1,0 +1,138 @@
+workflow:
+  id: backlog-to-ready
+  name: Backlog to Ready Transformation (Design-First)
+  description: >-
+    Transforms raw backlog items into development-ready sub-tasks using a design-first approach.
+    It generates user stories, creates UI/UX specifications, builds detailed technical sub-tasks, 
+    and moves the completed package to the 02.ready folder.
+
+  agents:
+    - user-story-generator
+    - ui-ux-specialist
+    - task-breakdown-specialist
+    - todo-manager
+
+  steps:
+    - id: story-generation
+      title: Generate User Stories from Backlog Tasks
+      agent: user-story-generator
+      requires: 01.backlog/*/description.md
+      creates: user-stories
+
+    - id: ui-design
+      title: Design UI/UX and Create Specifications
+      agent: ui-ux-specialist
+      requires:
+        - user-stories
+      creates: 01.backlog/[task-number]/ui-spec.md
+
+    - id: task-breakdown
+      title: Break Down Stories into Development Sub-tasks
+      agent: task-breakdown-specialist
+      requires:
+        - user-stories
+        - 01.backlog/[task-number]/ui-spec.md
+      creates: 02.ready/[task-number] folder with nested sub-task folders
+      structure: |
+        02.ready/task-N/
+        ├── description.md (original)
+        ├── ui-spec.md (from ui-design step)
+        ├── sub-task-1/
+        │   ├── description.md
+        │   └── todos.md
+        ├── sub-task-2/
+        │   ├── description.md
+        │   └── todos.md
+        └── sub-task-N/
+            ├── description.md
+            └── todos.md
+
+    - id: todo-generation
+      title: Generate Implementation Todos for Sub-tasks
+      agent: todo-manager
+      requires:
+        - 02.ready/[task-number]/sub-task-*/description.md files
+      creates: todos.md files in each sub-task folder
+
+handoff_prompts:
+  user-story-generator-to-ui-ux-specialist: >-
+    I've analyzed the backlog tasks and generated the following user stories:
+    {user_stories_summary}
+
+    Please act as the UI/UX specialist. For each task, create a comprehensive UI specification file named `ui-spec.md` 
+    inside its original folder in `01.backlog`. This file should include high-fidelity mockups, user flows, component 
+    breakdowns, and accessibility checklists, serving as the definitive source of truth for the user interface.
+
+  ui-ux-specialist-to-task-breakdown-specialist: >-
+    I have completed the UI/UX design phase for the user stories. The UI specification file (`ui-spec.md`) has been created 
+    and is located in each task's folder. This file is now the source of truth for all UI implementation.
+
+    Generated UI Specs:
+    {ui_spec_files_summary}
+
+    Your task is to break down these user stories into development-ready sub-tasks, using the `ui-spec.md` as your guide. 
+    Create individual sub-task files (200-500 lines each) with detailed technical specifications based on the provided designs.
+
+    CRITICAL FOLDER STRUCTURE REQUIREMENTS:
+    1. Move the entire task folder from `01.backlog` to `02.ready` (e.g., `task-392` -> `02.ready/task-392`).
+    2. Move the `ui-spec.md` along with the original `description.md` to the task root in `02.ready`.
+    3. Create numbered sub-task folders with simple names: `sub-task-1`, `sub-task-2`, `sub-task-3`, etc.
+    4. Each sub-task folder MUST contain exactly two files: `description.md` and `todos.md` (todos.md added in next step).
+    5. DO NOT use verbose folder names - keep them simple and numbered.
+
+    Required final structure:
+    ```
+    02.ready/task-N/
+    ├── description.md
+    ├── ui-spec.md  
+    ├── sub-task-1/
+    │   └── description.md
+    ├── sub-task-2/
+    │   └── description.md
+    └── sub-task-N/
+        └── description.md
+    ```
+
+  task-breakdown-specialist-to-todo-manager: >-
+    I've successfully broken down the user stories into comprehensive development sub-tasks based on the UI specifications.
+    The task folder and its new sub-task structure have been moved to `02.ready`. Each sub-task file contains detailed 
+    technical specifications ready for implementation.
+
+    Created structure in 02.ready:
+    {subtask_files_list}
+
+    Please analyze each `sub-task-N/description.md` file and create corresponding `todos.md` files within each 
+    sub-task folder. Generate actionable implementation todos that developers can immediately act upon.
+
+    IMPORTANT: Create `todos.md` files using simple folder structure:
+    - Read from: `02.ready/task-N/sub-task-1/description.md`, `02.ready/task-N/sub-task-2/description.md`, etc.
+    - Create: `02.ready/task-N/sub-task-1/todos.md`, `02.ready/task-N/sub-task-2/todos.md`, etc.
+
+    Final structure should be:
+    ```
+    02.ready/task-N/
+    ├── description.md
+    ├── ui-spec.md
+    ├── sub-task-1/
+    │   ├── description.md
+    │   └── todos.md
+    ├── sub-task-2/
+    │   ├── description.md
+    │   └── todos.md
+    └── sub-task-N/
+        ├── description.md
+        └── todos.md
+    ```
+
+  workflow-completion: >-
+    Backlog processing (Design-First) workflow completed successfully!
+
+    Summary of processed work:
+    - Processed backlog tasks from 01.backlog/*/description.md
+    - Generated comprehensive user stories with INVEST principles.
+    - Created detailed `ui-spec.md` files based on the design-first principle.
+    - Moved the task folder from `01.backlog` to `02.ready`.
+    - Created numbered sub-task folders (sub-task-1, sub-task-2, etc.) with technical specification files.
+    - Generated implementation `todos.md` files for each sub-task folder.
+
+    All tasks in `02.ready` are now fully specified, designed, and ready for development.

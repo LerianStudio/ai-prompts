@@ -1,8 +1,7 @@
 ---
 allowed-tools: Read(*), Grep(*), LS(*), Bash(*), Task(*)
 description: Comprehensive code quality review with actionable recommendations and git diff analysis
-argument-hint: [directory-or-file] (optional target for focused review)
-model: sonnet
+argument-hint: [directory-or-file]
 ---
 
 # Comprehensive Code Quality Review

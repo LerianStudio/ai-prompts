@@ -1,7 +1,7 @@
 ---
 allowed-tools: Bash(*), Read(*), Grep(*), Glob(*), LS(*), Task(*), TodoWrite(*), Write(*), MultiEdit(*), Edit(*)
 description: Assess and prioritize technical debt with actionable remediation strategies
-argument-hint: <project-path or component>
+argument-hint: [project-path-or-component]
 ---
 
 # /technical-debt
@@ -40,26 +40,10 @@ This command performs comprehensive technical debt analysis across multiple dime
 
 ```bash
 # Multi-language static analysis
-if [ -f "Cargo.toml" ]; then
-  cargo clippy -- -D warnings
-  cargo audit
-  cargo outdated
-fi
-
-if [ -f "go.mod" ]; then
-  golangci-lint run
-  staticcheck ./...
-  go mod tidy && git diff --exit-code go.mod go.sum
-fi
-
 if [ -f "package.json" ]; then
   npm audit
   npx eslint . --max-warnings 0
-fi
-
-if [ -f "deno.json" ]; then
-  deno lint
-  deno check **/*.ts
+  npm run type-check 2>/dev/null || tsc --noEmit
 fi
 ```
 
@@ -73,7 +57,7 @@ rg "if|else|while|for|match|switch|case|catch|\?\?" --count-matches
 rg "fn |func |def |function " -A 30 -B 1 | rg "^--$" --count
 
 # Large files (>500 lines)
-find . -name "*.rs" -o -name "*.go" -o -name "*.java" -o -name "*.ts" -o -name "*.py" |
+find . -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" |
   xargs wc -l | sort -nr | head -15
 ```
 
@@ -105,20 +89,19 @@ rg "\([^)]*,[^)]*,[^)]*,[^)]*," -n
 rg "^[[:space:]]{16,}" --count-matches
 
 # Magic numbers
-rg "\b\d{2,}\b" --type rust --type go --type java | head -15
+rg "\b\d{2,}\b" --type js --type ts | head -15
 ```
 
 **Language-Specific Issues:**
 
 ```bash
-# Rust: Unsafe patterns
-rg "unwrap\(\)|expect\(|panic!" --type rust -n
-rg "Rc<RefCell|Arc<Mutex" --type rust -n
-rg "clone\(\)" --type rust -c
+# TypeScript: Type safety issues
+rg "any|unknown|@ts-ignore|@ts-nocheck" --type ts -n
+rg "as.*any|\!.*\!" --type ts -n
 
-# Go: Common issues
-rg "interface\{\}" --type go -n
-rg "panic\(|recover\(\)" --type go -n
+# JavaScript: Common issues
+rg "eval\(|new Function\(" --type js -n
+rg "== |!= " --type js -n
 
 # General: TODO debt
 rg "TODO|FIXME|XXX|HACK" -n --max-count 20
@@ -130,14 +113,13 @@ rg "TODO|FIXME|XXX|HACK" -n --max-count 20
 
 ```bash
 # Security vulnerabilities
-cargo audit 2>/dev/null || echo "Rust: cargo-audit not available"
-govulncheck ./... 2>/dev/null || echo "Go: govulncheck not available"
-npm audit 2>/dev/null || echo "Node.js: npm not available"
+npm audit
+yarn audit 2>/dev/null || echo "Yarn not available"
+npx audit-ci --moderate 2>/dev/null || echo "audit-ci not available"
 
 # Outdated dependencies
-cargo outdated --root-deps-only 2>/dev/null
-go list -u -m all 2>/dev/null | grep "\["
-npm outdated 2>/dev/null
+npm outdated
+yarn outdated 2>/dev/null || echo "Yarn not available"
 ```
 
 **Unused Dependencies:**
@@ -146,8 +128,8 @@ npm outdated 2>/dev/null
 # Potentially unused imports
 rg "^use |^import |^from.*import" | sort | uniq -c | sort -n | tail -10
 
-# Unused crate features (Rust)
-rg "features.*=.*\[" Cargo.toml 2>/dev/null
+# Unused dependencies and features
+npm list --depth=0 2>/dev/null | grep "UNMET DEPENDENCY" || echo "All dependencies met"
 ```
 
 ### 4. Performance Analysis
@@ -156,9 +138,8 @@ rg "features.*=.*\[" Cargo.toml 2>/dev/null
 
 ```bash
 # Memory allocation in loops
-rg "Vec::new\(\).*loop|String::new\(\).*loop" --type rust
-rg "make\(.*\).*for|append.*loop" --type go
-rg "new.*\[\].*for|ArrayList.*loop" --type java
+rg "new Array\(\).*for|\[\].*for.*push" --type js --type ts
+rg "useState.*map|useEffect.*map" --type tsx
 
 # Synchronous bottlenecks
 rg "\.block\(\)|\.wait\(\)|Thread\.sleep" -n
@@ -171,12 +152,12 @@ rg "query.*loop|select.*for.*in" -n
 
 ```bash
 # Missing cleanup patterns
-rg "File\.|Connection\.|Stream\." --type java -A 3 | rg -v "try|finally|resources"
-rg "os\.Open|http\.Get" --type go -A 3 | rg -v "defer.*Close"
+rg "addEventListener" --type js --type ts -A 3 | rg -v "removeEventListener"
+rg "setInterval|setTimeout" --type js --type ts -A 3 | rg -v "clear"
 
 # Large allocations
-rg "Vec::with_capacity\([0-9]{4,}" --type rust
-rg "make.*[0-9]{4,}" --type go
+rg "new Array\([0-9]{4,}" --type js --type ts
+rg "Array\([0-9]{4,}\)" --type js --type ts
 ```
 
 ### 5. Test Quality Assessment
@@ -184,16 +165,16 @@ rg "make.*[0-9]{4,}" --type go
 **Coverage Analysis:**
 
 ```bash
-# Test coverage (language-specific)
-cargo tarpaulin --ignore-tests 2>/dev/null || echo "Rust: Install cargo-tarpaulin"
-go test -cover ./... 2>/dev/null || echo "Go: No tests found"
-npm test -- --coverage 2>/dev/null || echo "Node.js: No coverage config"
+# Test coverage (frontend-specific)
+npm test -- --coverage 2>/dev/null || echo "No Jest coverage config"
+yarn test --coverage 2>/dev/null || echo "No Yarn test script"
+npx vitest run --coverage 2>/dev/null || echo "No Vitest coverage config"
 
 # Find untested files
-find src/ -name "*.rs" -o -name "*.go" -o -name "*.java" -o -name "*.ts" |
+find src/ -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" |
   while read f; do
     base=$(basename "$f" | sed 's/\.[^.]*$//')
-    if ! find . -name "*test*$base*" -o -name "*$base*test*" | grep -q .; then
+    if ! find . -name "*test*$base*" -o -name "*$base*test*" -o -name "*.spec.*" | grep -q .; then
       echo "Missing tests: $f"
     fi
   done | head -10
@@ -250,9 +231,8 @@ rg "//.*fn |//.*function|//.*def |//.*class" -n | head -5
 
 ```bash
 # Circular dependencies
-cargo check 2>&1 | grep "cyclic" 2>/dev/null
-go mod graph 2>/dev/null | awk '{print $1, $2}' | sort | uniq |
-  awk '{print $2, $1}' | sort | comm -12 - <(go mod graph 2>/dev/null | sort)
+npx madge --circular src/ 2>/dev/null || echo "Install madge: npm i -D madge"
+npx dpdm --circular src/**/*.ts 2>/dev/null || echo "Install dpdm: npm i -D dpdm"
 
 # Layer violations (domain depending on infrastructure)
 rg "use.*database|import.*database" src/domain/ -n 2>/dev/null | head -5
@@ -275,10 +255,10 @@ rg "feature.*flag|if.*enabled|toggle" -c
 ```bash
 # Hardcoded secrets detection
 rg "password.*=|secret.*=|key.*=|token.*=" -n | head -5
-rg "\b[A-Za-z0-9]{25,}\b" --type rust --type go | head -8
+rg "\b[A-Za-z0-9]{25,}\b" --type js --type ts | head -8
 
 # Unsafe operations
-rg "unsafe|\.unwrap\(\)|panic!" --type rust -c
+rg "eval\(|innerHTML|dangerouslySetInnerHTML" --type js --type ts -c
 rg "eval\(|exec\(|system\(" -n | head -5
 
 # SQL injection risks
@@ -324,9 +304,9 @@ rg "query.*\+|SELECT.*\+|INSERT.*\+" -n | head -5
 echo "=== Technical Debt Metrics ==="
 
 # Lines of code
-total_loc=$(find . -name "*.rs" -o -name "*.go" -o -name "*.java" -o -name "*.ts" -o -name "*.py" |
+total_loc=$(find . -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" |
            xargs wc -l 2>/dev/null | tail -1 | awk '{print $1}' || echo "0")
-test_loc=$(find test* -name "*.rs" -o -name "*.go" -o -name "*.java" -o -name "*.ts" -o -name "*.py" 2>/dev/null |
+test_loc=$(find . -name "*.test.*" -o -name "*.spec.*" 2>/dev/null |
           xargs wc -l 2>/dev/null | tail -1 | awk '{print $1}' || echo "0")
 
 echo "📊 Total LOC: $total_loc"
@@ -334,7 +314,7 @@ echo "🧪 Test LOC: $test_loc"
 echo "📈 Test Ratio: $(echo "scale=2; $test_loc * 100 / $total_loc" | bc 2>/dev/null || echo "N/A")%"
 
 # Complexity indicators
-complex_files=$(find . -name "*.rs" -o -name "*.go" -o -name "*.java" -o -name "*.ts" |
+complex_files=$(find . -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" |
                xargs wc -l | awk '$1 > 500 {print $2}' | wc -l)
 echo "🏗️ Large files (>500 LOC): $complex_files"
 

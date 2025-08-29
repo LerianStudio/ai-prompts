@@ -1,6 +1,6 @@
 ---
 allowed-tools: Read(*), Grep(*), LS(*), Task(*)
-description: Analyze and explain code functionality with detailed breakdown
+description: Analyze and explain code functionality with detailed breakdown and architectural context
 argument-hint: [file-path-or-code-snippet]
 ---
 
@@ -18,7 +18,7 @@ Analyze and explain code functionality with line-by-line breakdown and architect
 
 ## Instructions
 
-Follow this systematic approach to explain JavaScript/TypeScript code: **$ARGUMENTS**
+Follow this systematic approach to explain JavaScript/TypeScript/React code: **$ARGUMENTS**
 
 1. **Code Context Analysis**
    - Identify if it's JavaScript or TypeScript

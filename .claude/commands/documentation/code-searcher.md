@@ -1,6 +1,6 @@
 ---
 allowed-tools: Glob(*), Grep(*), Read(*), Task(*)
-description: Comprehensive codebase analysis, forensic examination, and detailed code mapping with optional Chain of Draft methodology
+description: Comprehensive codebase analysis and forensic examination with optional Chain of Draft methodology
 argument-hint: [search-target-or-pattern]
 ---
 

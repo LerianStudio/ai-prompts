@@ -1,7 +1,7 @@
 ---
 allowed-tools: Read(*), Write(*), Grep(*), LS(*), Task(*)
-description: Analyze directory structure and create comprehensive documentation
-argument-hint: [directory-path] (defaults to current directory)
+description: Analyze directory structure and create comprehensive CLAUDE.md documentation
+argument-hint: [directory-path]
 ---
 
 # Directory Deep Dive

@@ -1,7 +1,7 @@
 ---
-allowed-tools: [Read, Write, Edit, MultiEdit, Glob, Grep, LS, Bash, TodoWrite]
+allowed-tools: Read(*), Write(*), Edit(*), MultiEdit(*), Glob(*), Grep(*), LS(*), Bash(*), TodoWrite(*)
 description: Create complete feature structures based on project patterns
-argument-hint: [feature-name or component-name]
+argument-hint: [feature-name-or-component-name]
 ---
 
 # Intelligent Scaffolding

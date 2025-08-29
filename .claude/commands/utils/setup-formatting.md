@@ -27,25 +27,6 @@ Follow this systematic approach to setup code formatting: **$ARGUMENTS**
    npm install -D @prettier/plugin-typescript
    ```
 
-   **Python:**
-
-   ```bash
-   pip install black autopep8 yapf
-   ```
-
-   **Go:**
-
-   ```bash
-   go install mvdan.cc/gofumpt@latest
-   go install golang.org/x/tools/cmd/goimports@latest
-   ```
-
-   **Rust:**
-
-   ```bash
-   rustup component add rustfmt
-   ```
-
 3. **Configuration Setup**
 
    **Prettier (.prettierrc.json):**
@@ -59,15 +40,6 @@ Follow this systematic approach to setup code formatting: **$ARGUMENTS**
      "tabWidth": 2,
      "useTabs": false
    }
-   ```
-
-   **Python (pyproject.toml):**
-
-   ```toml
-   [tool.black]
-   line-length = 88
-   target-version = ['py38']
-   include = '\.pyi?$'
    ```
 
 4. **IDE Integration**

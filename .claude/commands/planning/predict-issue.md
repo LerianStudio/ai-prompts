@@ -1,7 +1,7 @@
 ---
-allowed-tools: ['Grep', 'Glob', 'Read', 'TodoWrite', 'Bash']
-description: 'Analyze codebase to predict potential problems before they impact the project'
-argument-hint: '[scope] - specific areas to analyze (performance, security, maintainability, scalability)'
+allowed-tools: Grep(*), Glob(*), Read(*), TodoWrite(*), Bash(*)
+description: Analyze codebase to predict potential problems before they impact the project
+argument-hint: [scope]
 ---
 
 # Predictive Code Analysis

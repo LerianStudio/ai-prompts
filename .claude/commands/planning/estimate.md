@@ -1,6 +1,6 @@
 ---
 allowed-tools: Bash(*), Read(*), Grep(*), Task(*), WebSearch(*)
-description: Generate accurate project time estimates using historical data and ML patterns
+description: Generate accurate project time estimates using historical data and machine learning patterns
 argument-hint: [task-description]
 ---
 

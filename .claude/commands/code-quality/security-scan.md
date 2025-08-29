@@ -1,116 +1,113 @@
-# Security Analysis
+---
+allowed-tools: Read(*), Glob(*), Grep(*), Edit(*), MultiEdit(*), Write(*), Bash(*), WebSearch(*), WebFetch(*)
+description: Comprehensive security analysis and remediation with vulnerability detection and automated fixing
+argument-hint: [focus-area] | [paths] | --full
+---
 
-I'll perform comprehensive security analysis and remediation of your codebase.
+# Security Analysis & Remediation
 
-Arguments: `$ARGUMENTS` - specific paths or security focus areas
+Perform comprehensive security assessment and automated remediation: $ARGUMENTS
 
-## Phase 1: Security Assessment
+## Current Environment
 
-### Extended Thinking for Security Analysis
+- Dependency scan: !`npm audit --audit-level=moderate 2>/dev/null || pip check 2>/dev/null || echo "No package manager detected"`
+- Environment files: @.env\* (if exists)
+- Security config: @.github/workflows/security.yml or @security/ (if exists)
+- Recent commits: !`git log --oneline --grep="security\|fix" -10`
 
-For complex security scenarios, I'll use extended thinking to identify sophisticated vulnerabilities:
+## Security Analysis Process
 
-<think>
-When analyzing security:
-- Attack vectors that aren't immediately obvious
-- Chain vulnerabilities that individually seem harmless
-- Business logic flaws that enable exploitation
-- Timing attacks and race conditions
-- Supply chain vulnerabilities in dependencies
-- Architectural weaknesses that enable lateral movement
-</think>
+I'll perform comprehensive security analysis using a structured 10-step approach with automated remediation:
 
-**Triggers for Extended Analysis:**
+### Step 1: Environment Setup & Assessment
 
-- Authentication and authorization systems
-- Financial transaction processing
-- Cryptographic implementations
-- Multi-tenant architectures
-- API security boundaries
+- Identify the technology stack and framework
+- Check for existing security tools and configurations
+- Review deployment and infrastructure setup
 
-**SECURITY ANALYSIS PROCESS:**
+### Step 2: Dependency Security Analysis
 
-1. Scan the specified paths or entire codebase
-2. Identify vulnerabilities across all security dimensions
-3. Categorize risks by severity level
-4. Create comprehensive vulnerability report
-5. Develop prioritized remediation plan
+- Scan all dependencies for known vulnerabilities using `npm audit`, `pip check`, `cargo audit`
+- Check for outdated packages with security issues
+- Review dependency sources and integrity
 
-I'll analyze security across dimensions:
+### Step 3: Authentication & Authorization Review
 
-**Vulnerability Detection:**
+- Review authentication mechanisms and implementation
+- Check for proper session management
+- Verify authorization controls and access restrictions
+- Examine password policies and storage
 
-- Hardcoded secrets and credentials
-- Dependency vulnerabilities
-- Insecure configurations
-- Input validation issues
-- Authentication weaknesses
+### Step 4: Input Validation & Sanitization Assessment
+
+- Check all user input validation and sanitization
+- Look for SQL injection vulnerabilities
+- Identify potential XSS (Cross-Site Scripting) issues
+- Review file upload security and validation
+
+### Step 5: Data Protection Analysis
+
+- Identify sensitive data handling practices
+- Check encryption implementation for data at rest and in transit
+- Review data masking and anonymization practices
+- Verify secure communication protocols (HTTPS, TLS)
+
+### Step 6: Secrets Management Audit
+
+- Scan for hardcoded secrets, API keys, and passwords
+- Check for proper secrets management practices
+- Review environment variable security
+- Identify exposed configuration files
+
+### Step 7: Error Handling & Logging Review
+
+- Review error messages for information disclosure
+- Check logging practices for security events
+- Verify sensitive data is not logged
+- Assess error handling robustness
+
+### Step 8: Infrastructure Security Assessment
+
+- Review containerization security (Docker, etc.)
+- Check CI/CD pipeline security
+- Examine cloud configuration and permissions
+- Assess network security configurations
+
+### Step 9: Security Headers & CORS Analysis
+
+- Check security headers implementation
+- Review CORS configuration
+- Verify CSP (Content Security Policy) settings
+- Examine cookie security attributes
+
+### Step 10: Vulnerability Categorization & Remediation
 
 **Risk Categorization:**
 
-- **Critical**: Immediate exploitation possible
-- **High**: Serious vulnerabilities
-- **Medium**: Should be addressed
+- **Critical**: Immediate exploitation possible - Fix immediately
+- **High**: Serious vulnerabilities requiring prompt attention
+- **Medium**: Should be addressed in near term
 - **Low**: Best practice improvements
 
-## Phase 2: Remediation Planning
+## Automated Remediation Process
 
-Based on findings, I'll create remediation plan:
+**Common Remediation Patterns:**
 
-**Priority Order:**
-
-1. Critical credential exposures
-2. High-risk vulnerabilities
-3. Dependency updates
-4. Configuration hardening
-5. Code pattern improvements
-
-I'll create a detailed remediation plan with:
-
-- Each vulnerability details
-- Risk assessment
-- Remediation approach
-- Verification method
-
-## Phase 3: Intelligent Remediation
-
-I'll fix vulnerabilities appropriately:
-
-**Remediation Patterns:**
-
-- Secrets → Environment variables
-- Hardcoded values → Configuration files
-- Weak validation → Strong patterns
-- Outdated deps → Safe updates
-
-**Safe Practices:**
-
-- Never log sensitive data
-- Use secure defaults
-- Apply principle of least privilege
-- Implement defense in depth
-
-## Phase 4: Incremental Fixing
-
-I'll remediate systematically:
+- API keys → Environment variables
+- Hardcoded endpoints → Configuration files
+- XSS vulnerabilities → Input sanitization
+- Outdated packages → Security updates
+- Unsafe operations → Secure alternatives
 
 **Execution Process:**
 
-1. Create git checkpoint
-2. Fix vulnerability safely
+1. Create git checkpoint before fixes
+2. Fix vulnerability safely with code changes
 3. Verify fix doesn't break functionality
-4. Update plan with completion
-5. Move to next vulnerability
+4. Document remediation steps
+5. Move to next vulnerability by priority
 
-**Progress Tracking:**
-
-- Document each vulnerability fix
-- Verify remediation effectiveness
-- Create security-focused commits
-
-## Phase 5: Verification
-
-After each remediation:
+**Validation Steps:**
 
 - Test functionality preserved
 - Verify vulnerability resolved
@@ -119,30 +116,27 @@ After each remediation:
 
 ## Security Report
 
-After completing the analysis, I'll provide:
+**Final Deliverables:**
 
-- **Vulnerability Summary**: Total issues found by severity
+- **Vulnerability Summary**: Issues found by severity level (Critical, High, Medium, Low)
 - **Risk Assessment**: Overall security posture evaluation
-- **Priority Fixes**: Critical vulnerabilities requiring immediate attention
-- **Remediation Plan**: Step-by-step fix implementation
-- **Verification Results**: Confirmation that fixes work properly
+- **Remediation Results**: Fixes implemented and verified
+- **Recommendations**: Future security improvements with specific remediation steps
+- **Code References**: Include file references and line numbers for all findings
 
-## Practical Examples
+## Usage Examples
 
-**Start Scanning:**
+```bash
+# Full project security scan
+/security-scan --full
 
-```
-/security-scan                # Full project scan
-/security-scan src/api/       # Focus on API
-/security-scan "credentials"  # Credential focus
-```
+# Focus on specific paths
+/security-scan src/api/
 
-**Focused Analysis:**
-
-```
-/security-scan auth/     # Focus on authentication code
-/security-scan api/      # Analyze API endpoints only
-/security-scan database/ # Database security review
+# Target specific security areas
+/security-scan auth
+/security-scan secrets-management
+/security-scan dependencies
 ```
 
 ## Safety Guarantees
@@ -150,24 +144,23 @@ After completing the analysis, I'll provide:
 **Protection Measures:**
 
 - Git checkpoint before fixes
-- Functionality preservation
+- Functionality preservation testing
 - No security regression
 - Clear audit trail
 
-**Important:** I will NEVER:
+**Never Will:**
 
 - Expose secrets in commits
-- Break existing security
-- Add AI attribution
+- Break existing functionality
 - Log sensitive data
 
-## Core Security Analysis Process
+## Process Summary
 
-1. **Comprehensive Scanning** - Analyze all code for security vulnerabilities
-2. **Risk Assessment** - Categorize findings by severity and impact
-3. **Prioritized Remediation** - Address critical issues first
-4. **Safe Implementation** - Fix vulnerabilities without breaking functionality
-5. **Thorough Verification** - Ensure all fixes are effective and complete
-6. **Documentation** - Provide clear security improvement summary
+1. **Assessment** - Analyze codebase using 10-step security audit approach
+2. **Detection** - Identify vulnerabilities across all security domains
+3. **Categorization** - Classify risks by severity and impact
+4. **Remediation** - Implement secure solutions with automated fixing
+5. **Verification** - Ensure fixes work without breaking functionality
+6. **Reporting** - Document all findings and improvements made
 
-I'll deliver complete security analysis and remediation for your codebase with detailed reporting on all vulnerabilities found and fixed.
+Use automated security scanning tools when available and provide manual review for complex security patterns.

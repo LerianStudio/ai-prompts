@@ -59,7 +59,12 @@ The installer creates the following structure:
 ├── agents/                # AI agent definitions
 │   ├── tech-writer.md     # Technical writing specialist
 │   ├── todo-manager.md    # Task management agent
-│   └── user-story-generator.md # Agile story creation
+│   ├── user-story-generator.md # Agile story creation
+│   ├── react-state-management.md # React state management
+│   ├── react-performance-optimization.md # React performance
+│   ├── task-breakdown-specialist.md # Task breakdown
+│   ├── ui-ux-specialist.md # UI/UX design specialist
+│   └── ui-validator.md    # Visual UI testing specialist
 ├── commands/              # Development commands organized by function
 │   ├── code-quality/      # Code review, refactoring, security
 │   ├── documentation/     # Analysis, diagrams, code explanation
@@ -67,26 +72,40 @@ The installer creates the following structure:
 │   ├── planning/          # Estimation, issue prediction
 │   └── utils/             # Setup, cleaning, command management
 ├── hooks/                 # Git hooks and validation
+│   ├── auto-test.py       # Automated testing hooks
+│   ├── dependency-monitor.py # Dependency monitoring
+│   ├── security.py        # Security validation
+│   └── backup.py          # Backup automation
 └── CLAUDE.md              # Claude Code configuration
 
 context/                   # Domain knowledge base
 ├── anthropic/             # Claude Code references and patterns
 └── console/               # Project-specific patterns and conventions
 
+lib/                       # Core library components
+├── commands/              # Command implementations
+├── components/            # UI components and enhanced selectors
+├── config.js              # Configuration management
+├── design/                # Design system and themes
+├── detection/             # Change detection utilities
+├── installer/             # Installation system
+├── interaction/           # User interaction handlers
+├── safety/                # Safety checks and validation
+├── security/              # Security utilities
+├── selection/             # File selection management
+├── sync/                  # Synchronization utilities
+├── types/                 # TypeScript type definitions
+└── utils/                 # General utilities
+
+protocol-assets/           # Protocol assets and resources
+├── content/               # Documentation and templates
+├── media/                 # Media assets
+├── quality/               # Quality assurance resources
+└── system/                # System configuration
+
+src/                       # Source code
 templates/                 # Document templates and checklists
-├── documents/             # PRD, workflow, API documentation templates
-└── board-todos.md         # Board task template
-
-workflows/                 # YAML workflow definitions
-└── README.md              # Workflow system documentation
-
-board/                     # Feature lifecycle tracking
-├── 00.backlog/           # Ideas and requirements
-├── 01.planning/          # PRDs and architecture
-├── 02.in-progress/       # Active development
-└── 03.completed/         # Finished features
-
-.mcp.json                 # MCP server configuration
+workflows/                 # Process workflow definitions
 ```
 
 ## 🚀 Quick Start
@@ -119,47 +138,53 @@ lerian-protocol install ./my-project
 | `lerian-protocol status`         | Show installation status      | `lerian-protocol status`               |
 | `lerian-protocol uninstall`      | Remove installation           | `lerian-protocol uninstall`            |
 
-### Board Structure
+### Protocol Assets Structure
 
 ```
-board/
-├── 00.backlog/        # Ideas and requirements
-├── 01.planning/       # PRDs and architecture
-├── 02.in-progress/    # Active development
-└── 03.completed/      # Finished features
+protocol-assets/
+├── content/           # Documentation and template content
+├── media/             # Media assets and resources
+├── quality/           # Quality assurance and standards
+└── system/            # System configurations and workflows
 ```
 
-## 📚 Files Created
+## 📚 Key Components
 
-| Directory           | Purpose              | Contents                                                |
-| ------------------- | -------------------- | ------------------------------------------------------- |
-| `.claude/agents/`   | AI agent definitions | Directory structure and README for custom agents        |
-| `.claude/commands/` | Development commands | Directory structure and README for custom commands      |
-| `context/`          | Documentation        | Directory structure and README for project context      |
-| `workflows/`        | Process workflows    | Directory structure and README for workflow definitions |
-| `board/`            | Project tracking     | Organized folders for feature lifecycle management      |
+| Directory           | Purpose                  | Contents                                                  |
+| ------------------- | ------------------------ | --------------------------------------------------------- |
+| `.claude/agents/`   | AI agent definitions     | Specialized agents for different development tasks        |
+| `.claude/commands/` | Development commands     | Organized command system for code quality and development |
+| `.claude/hooks/`    | Git hooks and validation | Automated testing, security, and backup hooks             |
+| `lib/`              | Core library             | Installation system, UI components, and utilities         |
+| `protocol-assets/`  | Protocol resources       | Documentation templates, media, and quality standards     |
+| `context/`          | Domain knowledge base    | Claude Code patterns and project-specific conventions     |
 
 ## Repository Structure
 
 ```
-├── .claude/                     # Claude Code configuration
-│   ├── agents/                  # AI agent definitions
-│   ├── commands/                # Development commands (organized by function)
-│   ├── hooks/                   # Git hooks and validation
-│   └── CLAUDE.md                # Claude Code configuration
-├── bin/                         # CLI entry points
-├── lib/                         # Installation logic
+├── .claude/                     # Claude Code native configuration
+│   ├── agents/                  # AI agent definitions with specialized roles
+│   ├── commands/                # Development commands organized by function
+│   ├── hooks/                   # Git hooks for automation and validation
+│   └── CLAUDE.md                # Main Claude Code configuration
+├── bin/                         # CLI entry points and executables
+├── lib/                         # Core library and implementation
+│   ├── components/              # UI components and enhanced selectors
+│   ├── installer/               # Installation system and utilities
+│   ├── safety/                  # Safety checks and validation
+│   ├── security/                # Security utilities and sanitization
+│   ├── sync/                    # Synchronization and file operations
+│   └── utils/                   # General utilities and helpers
+├── protocol-assets/             # Protocol resources and assets
+│   ├── content/                 # Documentation and template content
+│   ├── quality/                 # Quality assurance and standards
+│   └── system/                  # System configurations and workflows
 ├── context/                     # Domain knowledge base
 │   ├── anthropic/               # Claude Code patterns and references
 │   └── console/                 # Project-specific conventions
-├── workflows/                   # YAML workflow definitions
+├── src/                         # Source code implementations
 ├── templates/                   # Document templates and checklists
-│   └── documents/               # PRD, API, and workflow templates
-└── board/                       # Feature lifecycle tracking
-    ├── 00.backlog/             # Ideas and requirements
-    ├── 01.planning/            # PRDs and architecture
-    ├── 02.in-progress/         # Active development
-    └── 03.completed/           # Finished features
+└── workflows/                   # Process workflow definitions
 ```
 
 <div align="center">

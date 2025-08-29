@@ -1,6 +1,6 @@
 ---
 allowed-tools: Read(*), Glob(*), Grep(*), Bash(*), Write(*)
-description: Generate architecture, flow, and relationship diagrams from code structure and documentation using ASCII art and mermaid syntax
+description: Generate architecture, flow, and relationship diagrams using ASCII art and mermaid syntax
 argument-hint: [type:architecture|flow|sequence|class|entity] [scope]
 ---
 
@@ -28,7 +28,7 @@ Generate architecture, flow, and relationship diagrams from code structure and d
 ```bash
 # Analyze project structure
 fd "main|index|app" --type f
-rg "class|interface|struct|type" --type-add 'code:*.{rs,go,ts,java}'
+rg "class|interface|type" --type ts --type js
 
 # Find relationships
 rg "import|require|use|extends|implements" -A 1 -B 1

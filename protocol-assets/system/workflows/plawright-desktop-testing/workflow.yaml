@@ -1,0 +1,53 @@
+workflow:
+  id: playwright-desktop-testing
+  name: Playwright Desktop UI Testing Workflow
+  description: >-
+    Automated desktop visual testing workflow using Playwright MCP for
+    comprehensive UI component validation at 1920×1080 resolution.
+
+  agents:
+    - ui-validator
+    - standards-validator
+    - report-generator
+
+  steps:
+    - id: environment-setup
+      title: Initialize Desktop Testing Environment
+      agent: ui-validator
+      uses: playwright-mcp-initialization
+      requires: component-specification
+      creates: desktop-browser-session
+
+    - id: component-discovery
+      title: Discover and Navigate to Component
+      agent: ui-validator
+      requires: desktop-browser-session
+      creates: component-inventory
+
+    - id: desktop-visual-testing
+      title: Execute Desktop Visual Testing and Interactions
+      agent: ui-validator
+      requires: component-inventory
+      creates: desktop-screenshots-and-metrics
+
+    - id: compliance-validation
+      title: Apply Standards and Accessibility Validation
+      agent: standards-validator
+      requires: desktop-screenshots-and-metrics
+      creates: compliance-scores-and-issues
+
+    - id: report-generation
+      title: Generate Validation Report and Recommendations
+      agent: report-generator
+      requires:
+        - compliance-scores-and-issues
+        - desktop-screenshots-and-metrics
+      creates: actionable-validation-report
+
+handoff_prompts:
+  ui-validator_to_standards-validator: 'Desktop visual testing complete at 1920×1080 resolution. Screenshots captured, performance metrics collected, accessibility audit completed, and interaction testing finished. Component evidence package includes: desktop screenshot, accessibility snapshot, performance timing data, console logs, and interaction behavior documentation. Please validate against design system standards, accessibility requirements, and performance benchmarks using protocol-assets validation rules.'
+
+  standards-validator_to_report-generator: 'Standards validation complete with detailed compliance analysis. Results: Design System Compliance (X%), Accessibility Compliance (X%), Performance Standards (X%). Issues identified and categorized by severity: X Critical, X Warnings, X Advisory. Each issue includes specific measurements, evidence location, and severity assessment. Please generate comprehensive validation report with actionable recommendations, specific code fixes, and implementation guidance.'
+
+  workflow_completion: 'Desktop UI validation workflow completed successfully. Overall quality score: X%. Component validation report generated with visual evidence, compliance analysis, and actionable improvement recommendations. Report saved to protocol-assets/screenshots/{component-name}/validation-report.md with complete issue breakdown and implementation guidance for development team.'
+</file>

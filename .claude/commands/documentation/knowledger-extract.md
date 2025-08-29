@@ -34,11 +34,11 @@ Follow these steps to extract comprehensive knowledge from the codebase:
 
    ```bash
    # Find domain models and entities
-   rg "struct|class|interface|type.*=" --type rust --type go --type java --type ts
-   rg "enum|const.*=" --type rust --type go --type java --type ts
+   rg "class|interface|type.*=" --type ts --type js
+   rg "enum|const.*=" --type ts --type js
 
    # Look for data transfer objects
-   rg "DTO|Request|Response|Model|Entity" --type-add 'config:*.{rs,go,java,ts,js}'
+   rg "DTO|Request|Response|Model|Entity" --type ts --type js
    ```
 
    **Business Logic Patterns:**
@@ -58,7 +58,7 @@ Follow these steps to extract comprehensive knowledge from the codebase:
 
    ```bash
    # Find HTTP routes and handlers
-   rg "GET|POST|PUT|DELETE|PATCH" --type rust --type go --type java --type ts
+   rg "GET|POST|PUT|DELETE|PATCH" --type ts --type js
    rg "Route|Path|Endpoint|@.*Mapping" -A 2 -B 1
 
    # Look for OpenAPI/Swagger definitions
@@ -89,7 +89,7 @@ Follow these steps to extract comprehensive knowledge from the codebase:
 
    # Look for ORM models and queries
    rg "Model|Entity|@Table|@Column" -A 2
-   rg "SELECT|INSERT|UPDATE|DELETE" --type sql --type rust --type go
+   rg "SELECT|INSERT|UPDATE|DELETE" --type sql
    ```
 
    **Data Flow Patterns:**
@@ -97,8 +97,8 @@ Follow these steps to extract comprehensive knowledge from the codebase:
    ```bash
    # Find data transformation and mapping
    rg "map|transform|convert|serialize|deserialize" -A 2 -B 1
-   rg "From.*Into|TryFrom|AsRef" --type rust
-   rg "json:|yaml:|toml:" --type rust --type go
+   rg "JSON.parse|JSON.stringify" --type ts --type js
+   rg "yaml:|toml:" --type ts --type js
    ```
 
 5. **Business Rules and Workflows:**
@@ -177,7 +177,7 @@ Follow these steps to extract comprehensive knowledge from the codebase:
    ```bash
    # Find test patterns and examples
    fd "test|spec" --type d
-   rg "test|Test|spec|Spec" --type rust --type go --type java --type ts -A 2
+   rg "test|Test|spec|Spec|describe|it" --type ts --type js -A 2
 
    # Look for test data and fixtures
    fd "fixture|mock|stub|testdata" --type f

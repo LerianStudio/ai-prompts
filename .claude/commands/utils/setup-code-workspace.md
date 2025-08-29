@@ -1,7 +1,7 @@
 ---
-allowed-tools: [Write]
-description: Create a VSCode workspace configuration file with recommended settings for JavaScript/TypeScript development
-argument-hint: (no arguments required)
+allowed-tools: Write(*)
+description: Create VSCode workspace configuration with recommended settings for JavaScript/TypeScript development
+argument-hint: []
 ---
 
 # Setup Code Workspace

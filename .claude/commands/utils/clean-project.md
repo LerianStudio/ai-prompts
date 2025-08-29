@@ -1,7 +1,7 @@
 ---
 allowed-tools: Bash(*), Read(*), Edit(*), Glob(*), Grep(*), LS(*), TodoWrite(*)
 description: Clean up development artifacts while preserving working code with safety checkpoints
-argument-hint: [--dry-run | --verbose]
+argument-hint: [--dry-run|--verbose]
 ---
 
 # Clean Project

@@ -1,6 +1,6 @@
 ---
 allowed-tools: Read(*), Grep(*), LS(*), WebFetch(*), WebSearch(*)
-description: Deep analysis and problem solving mode for complex challenges
+description: Deep analysis and problem solving mode for complex challenges and decisions
 argument-hint: [problem-or-question]
 ---
 

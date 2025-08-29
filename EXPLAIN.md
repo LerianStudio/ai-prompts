@@ -40,8 +40,8 @@ flowchart TD
   - Documentation templates, code templates, planning templates
 - **🤖 Agent Ecosystem**: Specialized Claude agents optimized for specific workflow domains
   - Tech-writer, planning, code generation, custom domain agents
-- **📂 Universal Board System**: Consistent project lifecycle management across all workflows
-  - `00.backlog/`, `01.planning/`, `02.in-progress/`, `03.completed/`
+- **🏗️ Protocol Assets System**: Organized resource management for quality and standards
+  - `content/`, `quality/`, `system/`, `media/`
 - **🔧 MCP Integration Layer**: Pluggable external system integrations supporting any API or service
   - APIdog, GitHub, design systems, custom APIs
 - **📚 Context Knowledge Base**: Domain-specific knowledge providing accurate, context-aware processing
@@ -78,23 +78,27 @@ Workflows reference tasks to coordinate execution:
 
 ```
 ├── .claude/                    # Claude Code native configuration
-│   ├── agents/                 # AI agent definitions
+│   ├── agents/                 # AI agent definitions with specialized roles
 │   ├── commands/               # Development commands organized by function
-│   ├── hooks/                  # Git hooks and validation
-│   └── CLAUDE.md               # Claude Code configuration
+│   ├── hooks/                  # Git hooks for automation and validation
+│   └── CLAUDE.md               # Main Claude Code configuration
+├── lib/                        # Core library and implementation
+│   ├── components/             # UI components and enhanced selectors
+│   ├── installer/              # Installation system and utilities
+│   ├── safety/                 # Safety checks and validation
+│   ├── security/               # Security utilities and sanitization
+│   ├── sync/                   # Synchronization and file operations
+│   └── utils/                  # General utilities and helpers
+├── protocol-assets/            # Protocol resources and assets
+│   ├── content/                # Documentation and template content
+│   ├── quality/                # Quality assurance and standards
+│   └── system/                 # System configurations and workflows
 ├── context/                    # Domain knowledge base
 │   ├── anthropic/              # Claude Code patterns and references
 │   └── console/                # Project-specific conventions
-├── templates/                  # All templates and checklists
-│   ├── documents/              # Documentation templates
-│   └── board-todos.md          # Board task template
-├── workflows/                  # Process definitions
-│   └── README.md               # Workflow system documentation
-└── board/                      # Task tracking and project management
-    ├── 00.backlog/             # Ideas and requirements
-    ├── 01.planning/            # PRDs and architecture
-    ├── 02.in-progress/         # Active development
-    └── 03.completed/           # Finished features
+├── src/                        # Source code implementations
+├── templates/                  # Document templates and checklists
+└── workflows/                  # Process workflow definitions
 ```
 
 ### Potential Workflow Types

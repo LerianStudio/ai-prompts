@@ -27,19 +27,6 @@ Follow this systematic approach to setup linting: **$ARGUMENTS**
    npm install -D prettier eslint-config-prettier eslint-plugin-prettier
    ```
 
-   **Python:**
-
-   ```bash
-   pip install flake8 black isort mypy pylint
-   ```
-
-   **Java:**
-
-   ```bash
-   # Add to pom.xml or build.gradle
-   # Checkstyle, SpotBugs, PMD
-   ```
-
 3. **Configuration Setup**
 
    **ESLint (.eslintrc.json):**

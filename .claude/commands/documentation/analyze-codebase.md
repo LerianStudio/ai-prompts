@@ -1,7 +1,7 @@
 ---
-allowed-tools: [Glob, Read, Grep, LS]
+allowed-tools: Glob(*), Read(*), Grep(*), LS(*)
 description: Comprehensive codebase analysis to understand architecture, patterns, and project structure
-argument-hint: [optional: specific directory or component to focus analysis]
+argument-hint: [directory-or-component]
 ---
 
 # Understand Project

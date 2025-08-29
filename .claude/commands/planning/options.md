@@ -1,6 +1,6 @@
 ---
 allowed-tools: Read(*), Glob(*), Grep(*), WebSearch(*), Task(*)
-description: Analyze different approaches for tasks or problems, providing comprehensive comparisons with benefits, trade-offs, and effort estimates
+description: Analyze different approaches for tasks or problems with comprehensive comparisons and effort estimates
 argument-hint: [task-or-problem-description]
 ---
 
