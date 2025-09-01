@@ -68,9 +68,12 @@ program
 program
   .command('uninstall')
   .description('Remove Lerian Protocol installation')
-  .action(async () => {
+  .option('--force', 'force uninstall without prompts')
+  .action(async (options) => {
     try {
-      await installer.uninstall({})
+      await installer.uninstall({
+        force: options.force
+      })
     } catch (error) {
       console.error(chalk.red('✗ Uninstall failed:'), error.message)
       process.exit(1)
