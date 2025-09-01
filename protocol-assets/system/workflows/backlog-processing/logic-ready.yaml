@@ -1,0 +1,232 @@
+workflow:
+  id: logic-ready
+  name: Logic-Only Backlog to Ready (Pure Backend Workflow)
+  description: >-
+    Specialized workflow for pure backend/logic tasks that require no UI changes.
+    Transforms logic-focused backlog items through architecture-first approach to create implementation-ready
+    backend tasks with comprehensive business logic specifications and Clean Architecture implementation guides.
+
+  triggers:
+    - task_type: 'logic'
+    - labels:
+        [
+          'backend',
+          'api',
+          'database',
+          'business-logic',
+          'integration',
+          'service'
+        ]
+    - keywords:
+        [
+          'algorithm',
+          'business rule',
+          'API',
+          'database',
+          'integration',
+          'service',
+          'validation'
+        ]
+
+  agents:
+    - user-story-generator
+    - logic-architect
+    - golang-pro
+    - python-pro
+    - task-breakdown-specialist
+    - todo-manager
+
+  steps:
+    - id: backend-pattern-discovery
+      title: Analyze Backend Architecture and Business Logic Patterns
+      agent: general-purpose
+      requires: protocol-assets/system/board/01.backlog/*/description.md
+      creates: backend-patterns.md
+      action: Execute /analyze-backend command to understand business logic patterns, API structure, and data flow
+      description: >
+        Analyze the backend codebase to understand Clean Architecture implementation,
+        business logic patterns, API design, data persistence, and integration points.
+        Focus on domain modeling, service patterns, and architectural boundaries.
+
+    - id: logic-story-generation
+      title: Generate Logic-Focused User Stories
+      agent: user-story-generator
+      requires:
+        - protocol-assets/system/board/01.backlog/*/description.md
+        - backend-patterns.md
+      creates: logic-user-stories
+      description: >
+        Generate user stories specifically focused on business logic outcomes, data processing,
+        API behavior, and system integration. Stories should emphasize business rules,
+        data validation, performance requirements, and integration contracts.
+
+    - id: business-logic-architecture
+      title: Design Business Logic and System Architecture
+      agent: logic-architect
+      requires:
+        - logic-user-stories
+        - backend-patterns.md
+      creates: protocol-assets/system/board/02.ready/[task-number]/logic-spec.md
+      moves: protocol-assets/system/board/01.backlog/[task-number] → protocol-assets/system/board/02.ready/[task-number]
+      action: MOVE from protocol-assets/system/board/01.backlog to protocol-assets/system/board/02.ready (removes original)
+      description: >-
+        Create comprehensive logic specifications including business rules, data models,
+        API contracts, service interactions, performance requirements, security considerations,
+        and integration patterns. Focus on Clean Architecture principles and domain modeling.
+
+    - id: backend-task-breakdown
+      title: Break Down Logic Architecture into Backend Implementation Tasks
+      agent: task-breakdown-specialist
+      requires:
+        - logic-user-stories
+        - backend-patterns.md
+        - protocol-assets/system/board/02.ready/[task-number]/logic-spec.md
+        - protocol-assets/content/docs/console/architecture-patterns.md
+        - protocol-assets/content/docs/console/api-integration-patterns.md
+      creates: protocol-assets/system/board/02.ready/[task-number] folder with Backend-specific task folders
+      # Tasks already in 02.ready - no additional move needed
+      structure: |
+        protocol-assets/system/board/02.ready/task-N/
+        ├── description.md (original)
+        ├── logic-spec.md (comprehensive logic architecture)
+        ├── backend-patterns.md (pattern analysis)
+        ├── domain-task-1/ (Domain layer - entities, value objects, business rules)
+        │   ├── description.md
+        │   └── todos.md
+        ├── application-task-1/ (Application layer - use cases, DTOs, controllers)
+        │   ├── description.md
+        │   └── todos.md
+        ├── infrastructure-task-1/ (Infrastructure layer - repositories, external integrations)
+        │   ├── description.md
+        │   └── todos.md
+        ├── api-task-1/ (API endpoints and contract implementation)
+        │   ├── description.md
+        │   └── todos.md
+        └── integration-task-1/ (External service integration and data mapping)
+            ├── description.md
+            └── todos.md
+
+    - id: backend-todo-generation
+      title: Generate Backend Implementation Todos
+      agent: todo-manager
+      requires:
+        - protocol-assets/system/board/02.ready/[task-number]/domain-task-*/description.md files
+        - protocol-assets/system/board/02.ready/[task-number]/application-task-*/description.md files
+        - protocol-assets/system/board/02.ready/[task-number]/infrastructure-task-*/description.md files
+        - protocol-assets/system/board/02.ready/[task-number]/api-task-*/description.md files
+        - protocol-assets/system/board/02.ready/[task-number]/integration-task-*/description.md files
+        - protocol-assets/system/board/02.ready/[task-number]/logic-spec.md (complete logic architecture reference)
+        - protocol-assets/system/board/02.ready/[task-number]/backend-patterns.md (pattern analysis)
+        - protocol-assets/content/docs/console/architecture-patterns.md
+      creates: todos.md files in each Backend task folder
+
+handoff_prompts:
+  general-purpose-to-user-story-generator: >-
+    I've completed comprehensive backend analysis using the analyze-backend command. The analysis reveals:
+
+    **Backend Architecture Patterns:**
+    {backend_architecture_summary}
+
+    **Domain Model Patterns:**
+    {domain_model_summary}
+
+    **API Design Patterns:**
+    {api_design_summary}
+
+    **Data Persistence Patterns:**
+    {data_persistence_summary}
+
+    **Integration Patterns:**
+    {integration_patterns_summary}
+
+    Generated: `backend-patterns.md` with complete backend pattern analysis including:
+    - Clean Architecture layer separation (Domain/Application/Infrastructure)
+    - Business logic and domain modeling patterns
+    - API design and RESTful resource patterns
+    - Data persistence and repository patterns
+    - External service integration patterns
+    - Error handling and validation strategies
+
+    Please proceed with logic-focused user story generation, ensuring stories emphasize business outcomes,
+    data processing requirements, and system integration goals.
+
+  user-story-generator-to-logic-architect: >-
+    I've analyzed the logic-focused backlog tasks and generated backend-specific user stories:
+    {logic_user_stories_summary}
+
+    **Backend Pattern Context:**
+    - Architecture: Clean Architecture with clear layer separation
+    - Domain Model: Rich domain entities with business rule encapsulation
+    - API Design: RESTful resources with standardized error handling
+    - Data Layer: Repository pattern with domain-driven data access
+    - Integration: External service patterns with proper error handling and retry logic
+
+    Please create comprehensive logic specifications that focus purely on business logic and system
+    architecture. Since this is a logic-only workflow, emphasize:
+    1. Business rule definitions and domain logic
+    2. Data model specifications and validation rules
+    3. API contract definitions and error scenarios
+    4. Service interaction patterns and integration points
+    5. Performance requirements and scalability considerations
+    6. Security requirements and authentication/authorization patterns
+
+  logic-architect-to-task-breakdown-specialist: >-
+    I have completed the comprehensive logic architecture phase for the backend-focused user stories.
+    The logic specification file (`logic-spec.md`) contains complete business logic designs optimized for backend implementation.
+
+    Generated Logic Specs:
+    {logic_spec_files_summary}
+
+    **Logic Architecture Highlights:**
+    - Complete business rule definitions with domain model alignment
+    - Comprehensive API contract specifications
+    - Data persistence and repository pattern designs
+    - Service integration and external API specifications
+    - Performance and scalability requirements
+    - Security and authentication requirements
+
+    Your task is to break down these logic specifications into BACKEND-SPECIFIC implementation tasks.
+    Focus on creating specialized task types that align with Clean Architecture principles:
+
+    BACKEND-SPECIFIC TASK BREAKDOWN REQUIREMENTS:
+    1. Tasks are already in `protocol-assets/system/board/02.ready`
+    2. Create BACKEND-SPECIFIC task folders aligned with Clean Architecture:
+       - `domain-task-N/` for Domain layer implementation (entities, value objects, business rules)
+       - `application-task-N/` for Application layer implementation (use cases, DTOs, controllers)
+       - `infrastructure-task-N/` for Infrastructure layer implementation (repositories, external integrations)
+       - `api-task-N/` for API endpoint implementation and contract adherence
+       - `integration-task-N/` for external service integration and data mapping
+    3. Each task should be implementable by a backend specialist without UI knowledge
+    4. Follow established architecture patterns and Clean Architecture principles
+    5. Ensure tasks focus on business logic outcomes and system reliability
+
+  task-breakdown-specialist-to-todo-manager: >-
+    I've successfully broken down the logic specifications into backend-specific development tasks.
+    The task folder has been moved to `protocol-assets/system/board/02.ready` with specialized backend task structure.
+
+    Created backend-specific structure in protocol-assets/system/board/02.ready:
+    {backend_task_files_list}
+
+    Please analyze each backend task description file and create corresponding `todos.md` files.
+    Generate actionable implementation todos that are BACKEND-SPECIFIC:
+    - Domain tasks: Focus on entity implementation, business rule logic, domain service patterns
+    - Application tasks: Focus on use case implementation, DTO mapping, controller logic, validation
+    - Infrastructure tasks: Focus on repository implementation, database queries, external API clients
+    - API tasks: Focus on endpoint implementation, request/response mapping, error handling, documentation
+    - Integration tasks: Focus on external service clients, data transformation, error handling, retry logic
+
+    Each todo should be implementable by a backend developer without requiring frontend changes.
+
+  workflow-completion: >-
+    Logic-Only Backlog processing workflow completed successfully!
+
+    Summary of processed backend work:
+    - Analyzed backend patterns and Clean Architecture implementation
+    - Generated logic-focused user stories with business rule acceptance criteria
+    - Created comprehensive `logic-spec.md` files with complete business logic designs
+    - Moved task folders to `protocol-assets/system/board/02.ready`
+    - Created backend-specific task folders (domain, application, infrastructure, api, integration)
+    - Generated backend-specific implementation `todos.md` files
+
+    All tasks are now ready for pure backend implementation using specialized logic workflows
+    and can be assigned to backend developers without frontend dependencies.

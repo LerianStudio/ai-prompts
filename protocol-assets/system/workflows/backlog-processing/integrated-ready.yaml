@@ -1,0 +1,273 @@
+workflow:
+  id: integrated-ready
+  name: Backlog to Ready Transformation (Layer-Aware Design-First)
+  description: >-
+    Transforms raw backlog items through sequential design phases using the design-first approach.
+    It generates user stories, creates comprehensive UI designs, plans logic architecture, then creates
+    layer-aware implementation-ready sub-tasks (UI tasks and Logic tasks) with locked design specifications.
+
+  agents:
+    - user-story-generator
+    - ui-ux-specialist
+    - logic-architect
+    - task-breakdown-specialist
+    - todo-manager
+
+  steps:
+    - id: pattern-discovery
+      title: Analyze Codebase Patterns and Architecture
+      agent: general-purpose
+      requires: protocol-assets/system/board/01.backlog/*/description.md
+      creates: codebase-patterns.md
+      action: Execute /analyze-codebase command to understand project architecture, patterns, and conventions
+      description: >
+        Analyze the target codebase to understand established patterns, architecture,
+        naming conventions, and integration approaches. This analysis will inform
+        pattern-aware task creation throughout the workflow.
+
+    - id: story-generation
+      title: Generate User Stories from Backlog Tasks
+      agent: user-story-generator
+      requires:
+        - protocol-assets/system/board/01.backlog/*/description.md
+        - codebase-patterns.md
+      creates: user-stories
+
+    - id: ui-design
+      title: Design UI/UX and Create Pixel-Perfect Specifications
+      agent: ui-ux-specialist
+      requires:
+        - user-stories
+      creates: protocol-assets/system/board/02.ready/[task-number]/ui-spec.md
+      moves: protocol-assets/system/board/01.backlog/[task-number] → protocol-assets/system/board/02.ready/[task-number]
+      action: MOVE from protocol-assets/system/board/01.backlog to protocol-assets/system/board/02.ready (removes original)
+      description: >-
+        Create comprehensive UI specifications including wireframes, pixel-perfect mockups,
+        component breakdowns, interaction states, and accessibility requirements.
+
+    - id: logic-architecture
+      title: Design Logic Architecture and Data Flow
+      agent: logic-architect
+      requires:
+        - user-stories
+        - protocol-assets/system/board/02.ready/[task-number]/ui-spec.md
+      creates: protocol-assets/system/board/02.ready/[task-number]/logic-spec.md
+      description: >-
+        Analyze UI specifications to design business logic architecture, data flow,
+        API requirements, state management, and integration points with UI layer.
+
+    - id: pattern-aware-task-breakdown
+      title: Break Down Designs into Pattern-Aware Implementation Sub-tasks
+      agent: task-breakdown-specialist
+      requires:
+        - user-stories
+        - codebase-patterns.md
+        - protocol-assets/system/board/02.ready/[task-number]/ui-spec.md
+        - protocol-assets/system/board/02.ready/[task-number]/logic-spec.md
+        - protocol-assets/content/docs/console/ (architecture patterns reference)
+      creates: protocol-assets/system/board/02.ready/[task-number] folder with Pattern-Aware sub-task folders
+      # Tasks already in 02.ready - no additional move needed
+      structure: |
+        protocol-assets/system/board/02.ready/task-N/
+        ├── description.md (original)
+        ├── ui-spec.md (complete UI design)
+        ├── logic-spec.md (logic architecture)
+        ├── codebase-patterns.md (pattern analysis)
+        ├── component-task-1/ (shadcn/ui component following component-patterns)
+        │   ├── description.md
+        │   └── todos.md
+        ├── client-api-task-1/ (React Query hooks following api-integration-patterns)
+        │   ├── description.md
+        │   └── todos.md
+        ├── domain-task-1/ (Clean Architecture Domain layer)
+        │   ├── description.md
+        │   └── todos.md
+        ├── application-task-1/ (Clean Architecture Application layer)
+        │   ├── description.md
+        │   └── todos.md
+        └── infrastructure-task-1/ (Clean Architecture Infrastructure layer)
+            ├── description.md
+            └── todos.md
+
+    - id: pattern-aware-todo-generation
+      title: Generate Pattern-Aware Implementation Todos
+      agent: todo-manager
+      requires:
+        - protocol-assets/system/board/02.ready/[task-number]/component-task-*/description.md files
+        - protocol-assets/system/board/02.ready/[task-number]/client-api-task-*/description.md files
+        - protocol-assets/system/board/02.ready/[task-number]/domain-task-*/description.md files
+        - protocol-assets/system/board/02.ready/[task-number]/application-task-*/description.md files
+        - protocol-assets/system/board/02.ready/[task-number]/infrastructure-task-*/description.md files
+        - protocol-assets/system/board/02.ready/[task-number]/ui-spec.md (complete UI design reference)
+        - protocol-assets/system/board/02.ready/[task-number]/logic-spec.md (logic architecture reference)
+        - protocol-assets/system/board/02.ready/[task-number]/codebase-patterns.md (pattern analysis)
+        - protocol-assets/content/docs/console/ (architecture patterns reference)
+      creates: todos.md files in each Pattern-Aware task folder
+
+handoff_prompts:
+  general-purpose-to-user-story-generator: >-
+    I've completed comprehensive codebase analysis using the analyze-codebase command. The analysis reveals:
+
+    **Architecture Patterns Discovered:**
+    {architecture_summary}
+
+    **Component Patterns:**
+    {component_patterns_summary}
+
+    **API Integration Patterns:**
+    {api_patterns_summary}
+
+    **Coding Conventions:**
+    {conventions_summary}
+
+    **Key Integration Points:**
+    {integration_points}
+
+    Generated: `codebase-patterns.md` with complete pattern analysis including:
+    - Clean Architecture layer patterns (Domain/Application/Infrastructure)
+    - Component patterns (shadcn/ui with Radix primitives, compound components)
+    - API patterns (React Query hooks, fetcher utilities)
+    - Naming conventions (kebab-case, resource naming)
+    - File structure patterns (index.tsx, barrel exports)
+
+    Please proceed with user story generation, incorporating these discovered patterns to ensure 
+    stories align with the established architecture and can be implemented using existing patterns.
+
+  user-story-generator-to-ui-ux-specialist: >-
+    I've analyzed the backlog tasks and generated pattern-aware user stories:
+    {user_stories_summary}
+
+    **Codebase Pattern Context:**
+    - Architecture: {architecture_type}
+    - Component Library: shadcn/ui with Radix primitives
+    - Established Patterns: {key_patterns}
+    - Reference Documentation: protocol-assets/content/docs/console/
+
+    Please act as the UI/UX specialist. For each task, create a comprehensive UI specification file named `ui-spec.md` 
+    inside its original folder in `protocol-assets/system/board/01.backlog`. This file should:
+    1. Follow established component patterns from protocol-assets/content/docs/console/component-patterns.md
+    2. Use existing component library (shadcn/ui with Radix primitives)
+    3. Align with discovered architectural patterns
+    4. Include integration points with existing systems
+    5. Specify component variants using Class Variance Authority (CVA) patterns
+    6. Follow established naming conventions (kebab-case)
+    7. Include accessibility specifications matching existing standards
+
+  ui-ux-specialist-to-logic-architect: >-
+    I have completed the UI/UX design phase for the user stories. The UI specification file (`ui-spec.md`) has been created 
+    with comprehensive wireframes, pixel-perfect mockups, component breakdowns, and interaction specifications.
+
+    Generated UI Specs:
+    {ui_spec_files_summary}
+
+    Your task is to analyze these UI specifications and design the corresponding logic architecture. Create a `logic-spec.md` 
+    file that defines business logic requirements, data flow, API specifications, state management, and integration points 
+    with the UI layer.
+
+  logic-architect-to-task-breakdown-specialist: >-
+    I have completed the logic architecture design based on the UI specifications. Both UI and Logic specifications 
+    are now available as the foundation for implementation planning.
+
+    Generated Specifications:
+    - UI Specs: {ui_spec_files_summary}
+    - Logic Specs: {logic_spec_files_summary}
+    - Codebase Patterns: codebase-patterns.md (architecture analysis)
+
+    **Pattern-Aware Context Available:**
+    - Architecture: Clean Architecture with Domain/Application/Infrastructure layers
+    - Component Library: shadcn/ui with Radix primitives, compound component patterns
+    - API Integration: React Query hooks with standardized fetcher utilities
+    - Conventions: kebab-case naming, resource-based file organization
+    - Reference Documentation: protocol-assets/content/docs/console/
+
+    Your task is to break down these specifications into PATTERN-AWARE development sub-tasks that follow the 
+    discovered codebase architecture and established patterns. Create architecture-layer-aware tasks instead of 
+    generic UI/Logic tasks, ensuring each task follows established conventions and integrates with existing systems.
+
+    CRITICAL PATTERN-AWARE FOLDER STRUCTURE REQUIREMENTS:
+    1. MOVE (not copy) the entire task folder from `protocol-assets/system/board/02.ui-design` to `protocol-assets/system/board/02.ready` (e.g., `ui-design/task-392` -> `02.ready/task-392`).
+    2. ENSURE the original folder is REMOVED from `protocol-assets/system/board/02.ui-design` after the move.
+    3. Move `ui-spec.md`, `logic-spec.md`, `codebase-patterns.md`, and original `description.md` to the task root.
+    4. Create PATTERN-AWARE task folders following discovered architecture:
+       - `component-task-N/` for shadcn/ui components (kebab-case naming, compound patterns)
+       - `client-api-task-N/` for React Query hooks (resource naming, pagination patterns)
+       - `domain-task-N/` for Domain layer (entities, repositories)
+       - `application-task-N/` for Application layer (use-cases, DTOs, controllers)
+       - `infrastructure-task-N/` for Infrastructure layer (external integrations)
+    5. Each task folder MUST contain: `description.md` and `todos.md` (todos.md added in next step).
+    6. Tasks MUST follow established patterns from codebase-patterns.md and console documentation.
+    7. Component tasks follow component-patterns.md (UI primitives, compound components).
+    8. API tasks follow api-integration-patterns.md (React Query, fetcher utilities).
+    9. Architecture tasks follow architecture-patterns.md (Clean Architecture layers).
+    10. All naming follows coding-conventions.md (kebab-case, resource naming).
+
+    Tasks remain in `protocol-assets/system/board/02.ready` throughout the process.
+
+    Required final PATTERN-AWARE structure:
+    ```
+    02.ready/task-N/
+    ├── description.md
+    ├── ui-spec.md
+    ├── logic-spec.md
+    ├── codebase-patterns.md
+    ├── component-task-1/ (follows component-patterns.md)
+    │   └── description.md
+    ├── client-api-task-1/ (follows api-integration-patterns.md)
+    │   └── description.md
+    ├── domain-task-1/ (follows architecture-patterns.md - Domain layer)
+    │   └── description.md
+    ├── application-task-1/ (follows architecture-patterns.md - Application layer)
+    │   └── description.md
+    └── infrastructure-task-1/ (follows architecture-patterns.md - Infrastructure layer)
+        └── description.md
+    └── logic-task-2/
+        └── description.md
+    ```
+
+  task-breakdown-specialist-to-todo-manager: >-
+    I've successfully broken down the user stories into layer-aware development tasks based on both UI and Logic specifications.
+    The task folder with its new layer-specific task structure has been moved to `protocol-assets/system/board/02.ready`. Each task file contains detailed 
+    technical specifications ready for layer-specific implementation.
+
+    Created layer-aware structure in protocol-assets/system/board/02.ready:
+    {layer_aware_task_files_list}
+
+    Please analyze each UI and Logic task description file and create corresponding `todos.md` files within each 
+    task folder. Generate actionable implementation todos that are layer-specific:
+    - UI tasks: Focus on components, styling, interactions, and visual validation
+    - Logic tasks: Focus on business logic, data processing, APIs, and integration
+
+    IMPORTANT: Create `todos.md` files using layer-aware folder structure:
+    - Read from: `protocol-assets/system/board/02.ready/task-N/ui-task-1/description.md`, `protocol-assets/system/board/02.ready/task-N/logic-task-1/description.md`, etc.
+    - Create: `protocol-assets/system/board/02.ready/task-N/ui-task-1/todos.md`, `protocol-assets/system/board/02.ready/task-N/logic-task-1/todos.md`, etc.
+
+    Final structure should be:
+    ```
+    02.ready/task-N/
+    ├── description.md
+    ├── ui-spec.md
+    ├── logic-spec.md
+    ├── ui-task-1/
+    │   ├── description.md
+    │   └── todos.md
+    ├── logic-task-1/
+    │   ├── description.md
+    │   └── todos.md
+    └── logic-task-2/
+        ├── description.md
+        └── todos.md
+    ```
+
+  workflow-completion: >-
+    Backlog processing (Design-First) workflow completed successfully!
+
+    Summary of processed work:
+    - Processed backlog tasks from protocol-assets/system/board/01.backlog/*/description.md
+    - Generated comprehensive user stories with INVEST principles
+    - Created detailed `ui-spec.md` files with pixel-perfect design specifications
+    - Created comprehensive `logic-spec.md` files with business logic architecture
+    - Moved task folders from `protocol-assets/system/board/01.backlog` to `protocol-assets/system/board/02.ready`
+    - Created layer-aware task folders (ui-task-N, logic-task-N) with clear separation of concerns
+    - Generated layer-specific implementation `todos.md` files for each task folder
+
+    All tasks in `protocol-assets/system/board/02.ready` are now fully specified with both UI and Logic designs, and ready for layer-specific development using implement-ui-subtask and implement-logic-subtask workflows.

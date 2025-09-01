@@ -1,12 +1,12 @@
 ---
-allowed-tools: Bash(*), Read(*), Grep(*)
-description: Generate conventional commit messages based on git changes that can be copy-pasted
+allowed-tools: Bash(*), Read(*), Grep(*), Write(*)
+description: Generate conventional commit messages based on git changes and save as commit-message.txt
 argument-hint: [scope] (optional scope for the commit, e.g., api, ui, docs)
 ---
 
 # Commit Generator
 
-Analyzes current git changes and generates conventional commit messages following the Conventional Commits 1.0.0 specification that you can copy and paste.
+Analyzes current git changes and generates conventional commit messages following the Conventional Commits 1.0.0 specification, then saves them to `commit-message.txt` in the project root.
 
 ## Usage
 
@@ -41,6 +41,7 @@ This command examines your git staging area and working directory to suggest pro
      [optional footer(s)]
      ```
 
+   - Saves the generated message to `commit-message.txt` in the project root
    - Provides multiple suggestions when appropriate
    - Includes guidance on breaking changes
 
@@ -108,3 +109,4 @@ BREAKING CHANGE: user endpoint now returns user object instead of user array
 - Multiple commit suggestions may be provided for complex changesets
 - Breaking changes are detected and flagged
 - The command respects conventional commit standards for consistent git history
+- Generated commit messages are saved to `commit-message.txt` for easy copying or use with `git commit -F commit-message.txt`

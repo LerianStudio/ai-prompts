@@ -1,0 +1,159 @@
+workflow:
+  id: ui-subtask
+  name: Automated UI Sub-task Implementation with Visual Validation
+  description: >-
+    Takes a UI sub-task from 02.ready, implements all todos automatically using UI-specialized agents,
+    integrates with ui-first-development workflow for visual validation, tracks progress with TodoWrite,
+    and moves through board states (ready → in-progress → completed).
+
+  agents:
+    - todo-manager
+    - frontend-developer
+    - visual-validator
+
+  steps:
+    - id: load-and-move-ui-subtask
+      title: Load UI Sub-task Todos and Move to In-Progress
+      agent: todo-manager
+      requires: protocol-assets/system/board/02.ready/[task]/ui-task-[N]/todos.md
+      creates: protocol-assets/system/board/03.in-progress/[task]/ui-task-[N]
+      action: MOVE from protocol-assets/system/board/02.ready to protocol-assets/system/board/03.in-progress (removes original)
+      description: >-
+        Load UI-specific todos from ready phase and move task folder to in-progress board.
+        Initialize TodoWrite with UI implementation tasks focused on visual components,
+        styling, interactions, and user experience.
+
+    - id: implement-ui-todos-with-validation
+      title: Implement UI Todos with Iterative Visual Validation
+      agent: frontend-developer
+      requires:
+        - protocol-assets/system/board/03.in-progress/[task]/ui-task-[N]/todos.md
+        - protocol-assets/system/board/03.in-progress/[task]/ui-spec.md (reference design)
+      creates:
+        - ui-implementation-code
+        - visual-validation-reports
+      description: >-
+        Implement UI todos sequentially with continuous visual validation using ui-first-development
+        principles. For complex visual components, trigger ui-first-development workflow to ensure
+        pixel-perfect implementation against reference designs.
+
+    - id: final-ui-validation
+      title: Final UI Validation and Quality Gates
+      agent: visual-validator
+      requires:
+        - ui-implementation-code
+        - protocol-assets/system/board/03.in-progress/[task]/ui-spec.md
+      creates:
+        - final-ui-validation-report.md
+        - ui-quality-metrics.json
+      description: >-
+        Perform comprehensive final validation of UI implementation including visual fidelity,
+        accessibility compliance, responsive behavior, and design system adherence.
+
+    - id: finalize-and-move-ui-completed
+      title: Update Final UI Progress and Move to Completed
+      agent: todo-manager
+      requires:
+        - ui-implementation-code
+        - final-ui-validation-report.md
+        - ui-quality-metrics.json
+      creates: protocol-assets/system/board/05.completed/[task]/ui-task-[N]
+      action: MOVE from protocol-assets/system/board/03.in-progress to protocol-assets/system/board/05.completed (removes original)
+      description: >-
+        Update todos.md with completion status, package final UI implementation with
+        validation reports, and move to completed board for integration with logic layer.
+
+handoff_prompts:
+  todo-manager-to-frontend-developer: >-
+    I've loaded the UI sub-task todos and MOVED (not copied) the folder from 02.ready to 03.in-progress. 
+    The original folder has been removed from 02.ready. The UI-specific todos have been loaded into TodoWrite 
+    for active management during UI implementation.
+
+    UI Sub-task details:
+    - Location: protocol-assets/system/board/03.in-progress/[task]/ui-task-[N]/
+    - Original location REMOVED: protocol-assets/system/board/02.ready/[task]/ui-task-[N]/ ✅
+    - UI Design Reference: protocol-assets/system/board/03.in-progress/[task]/ui-spec.md
+    - Total UI todos: {total_ui_todos}
+    - Ready for UI implementation: {pending_ui_todos}
+
+    Your task: Implement all UI todos sequentially with visual validation using TodoWrite to track progress:
+    1. Mark each UI todo as "in_progress" when you start working on it
+    2. Implement UI components, styling, interactions, and visual elements
+    3. For complex visual components, integrate ui-first-development workflow for pixel-perfect validation
+    4. Use reference designs from ui-spec.md to ensure visual fidelity
+    5. Mark todo as "completed" when UI implementation is finished and visually validated
+    6. Continue to next UI todo until all are implemented
+
+    Focus on creating pixel-perfect, accessible, responsive UI implementations that match the design specifications.
+
+    CRITICAL: Ensure all steps use MOVE operations (mv command), not COPY operations (cp command).
+
+  frontend-developer-to-visual-validator: >-
+    I have completed implementing all UI todos in the sub-task. All UI components, styling, interactions,
+    and visual elements have been implemented with continuous validation against the reference design.
+    TodoWrite shows all UI todos as completed.
+
+    UI Implementation summary:
+    {ui_implementation_summary}
+
+    Generated UI Assets:
+    - Component implementations: {ui_component_files}
+    - Styling and CSS: {ui_styling_files}
+    - Interactive behaviors: {ui_interaction_files}
+    - Visual validation screenshots: {ui_screenshots}
+
+    Please perform comprehensive final UI validation including:
+    1. Visual fidelity against reference design (ui-spec.md)
+    2. Accessibility compliance (WCAG 2.1 AA)
+    3. Responsive behavior across viewports
+    4. Design system compliance
+    5. Interactive state validation (hover, focus, active, disabled)
+    6. Performance analysis for UI rendering
+
+    Generate detailed validation report with quality metrics and any final recommendations.
+
+  visual-validator-to-todo-manager: >-
+    Comprehensive UI validation completed with detailed quality analysis. All UI implementation
+    has been validated against reference designs, accessibility standards, and performance benchmarks.
+
+    Final UI Quality Results:
+    - Visual Fidelity Score: {visual_fidelity_score}%
+    - Accessibility Compliance: {accessibility_score}%
+    - Responsive Behavior: {responsive_score}%
+    - Design System Compliance: {design_compliance_score}%
+    - Interactive States: {interaction_score}%
+    - Performance Score: {ui_performance_score}%
+
+    Generated Validation Reports:
+    - Final validation report: {final_ui_validation_report_path}
+    - Quality metrics: {ui_quality_metrics_path}
+    - Visual evidence: {ui_validation_screenshots}
+
+    Please finalize the UI sub-task by:
+    1. Updating the todos.md file with final completed status and quality metrics
+    2. MOVING (not copying) the sub-task from protocol-assets/system/board/03.in-progress to protocol-assets/system/board/05.completed using mv command
+    3. VERIFY the original folder is REMOVED from 03.in-progress after the move
+    4. Package UI implementation with validation reports for logic layer integration
+    5. Clean up TodoWrite state for this UI sub-task
+
+    CRITICAL: Use mv command to ensure proper MOVE operation, then verify removal from source location.
+
+  workflow-completion: >-
+    UI Sub-task implementation workflow completed successfully!
+
+    Summary of automated UI implementation:
+    - Loaded UI sub-task todos directly from files using Read tool
+    - MOVED (not copied) UI sub-task through board states: protocol-assets/system/board/02.ready → protocol-assets/system/board/03.in-progress → protocol-assets/system/board/05.completed
+    - Verified original folders are REMOVED from previous locations after each move
+    - Implemented all UI todos with TodoWrite progress tracking and visual validation
+    - Created pixel-perfect, accessible, responsive UI components matching design specifications
+    - Performed comprehensive UI validation including visual fidelity, accessibility, and performance
+    - Generated validation reports and quality metrics for logic layer integration
+    - Updated todos.md files with completion status and quality scores
+
+    The UI sub-task is now fully implemented with comprehensive validation and properly moved to the completed board!
+
+    VERIFICATION: UI sub-task exists ONLY in protocol-assets/system/board/05.completed/ (removed from protocol-assets/system/board/02.ready/ and protocol-assets/system/board/03.in-progress/)
+
+    Ready for integration: The completed UI implementation is ready for logic layer integration
+    through implement-logic-subtask workflow, with clear interface specifications and validation reports.

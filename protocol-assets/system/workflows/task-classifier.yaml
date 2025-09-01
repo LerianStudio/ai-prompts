@@ -1,0 +1,160 @@
+task_classifier:
+  name: Task Classification System
+  description: >-
+    Intelligent task classification system that routes backlog items to appropriate
+    specialized workflows (UI-only vs Logic-only vs Integrated) based on task content,
+    labels, and requirements analysis.
+
+  classification_rules:
+    ui_pure:
+      description: Tasks that require only frontend/UI changes with no business logic modifications
+      triggers:
+        labels:
+          - frontend
+          - ui
+          - component
+          - design-system
+          - styling
+          - responsive
+          - animation
+          - theme
+        keywords:
+          - 'component styling'
+          - 'UI component'
+          - 'design system'
+          - 'responsive design'
+          - 'CSS changes'
+          - 'theme update'
+          - 'animation'
+          - 'layout'
+          - 'visual design'
+        patterns:
+          - '^(Update|Change|Modify) (component|UI|styling|design)'
+          - '^(Create|Add) (component|button|form|modal)'
+          - '^(Fix|Improve) (responsive|mobile|desktop) (design|layout)'
+          - '^(Implement|Add) (animation|transition|hover)'
+        exclusion_keywords:
+          - 'API'
+          - 'database'
+          - 'business logic'
+          - 'validation rules'
+          - 'authentication'
+          - 'authorization'
+      target_workflow: ui-ready
+
+    logic_pure:
+      description: Tasks that require only backend/logic changes with no UI modifications
+      triggers:
+        labels:
+          - backend
+          - api
+          - database
+          - business-logic
+          - integration
+          - service
+          - algorithm
+        keywords:
+          - 'business rule'
+          - 'API endpoint'
+          - 'database schema'
+          - 'data validation'
+          - 'algorithm'
+          - 'integration'
+          - 'service logic'
+          - 'authentication'
+          - 'authorization'
+        patterns:
+          - '^(Create|Add|Implement) (API|endpoint|service)'
+          - '^(Update|Modify) (business|validation) (rule|logic)'
+          - '^(Add|Implement) (authentication|authorization)'
+          - '^(Fix|Update) (database|schema|query)'
+          - '^(Create|Add) (integration|webhook|service)'
+        exclusion_keywords:
+          - 'component'
+          - 'UI'
+          - 'styling'
+          - 'responsive'
+          - 'design'
+          - 'layout'
+      target_workflow: logic-ready
+
+    integrated:
+      description: Tasks that require both UI and logic changes (full-stack features)
+      triggers:
+        labels:
+          - feature
+          - full-stack
+          - end-to-end
+        keywords:
+          - 'new feature'
+          - 'user workflow'
+          - 'complete implementation'
+          - 'end-to-end'
+          - 'full functionality'
+        patterns:
+          - '^(Implement|Create|Add) (new|complete) (feature|functionality)'
+          - '^(Build|Create) (user|customer) (workflow|journey)'
+          - '.*requires.*(UI|frontend).*(API|backend|logic).*'
+          - '.*requires.*(API|backend|logic).*(UI|frontend).*'
+      target_workflow: integrated-ready
+
+  classification_algorithm:
+    steps:
+      - id: content_analysis
+        description: Analyze task title, description, and labels
+        weight: 40
+
+      - id: keyword_matching
+        description: Match against predefined keyword patterns
+        weight: 30
+
+      - id: context_analysis
+        description: Analyze task context and dependencies
+        weight: 20
+
+      - id: exclusion_filtering
+        description: Apply exclusion rules to prevent misclassification
+        weight: 10
+
+    decision_logic: |
+      1. Parse task title, description, labels, and any existing metadata
+      2. Score against UI-pure, Logic-pure, and Integrated patterns
+      3. Apply exclusion filters to prevent false positives
+      4. If scores are close (within 15%), default to 'integrated'
+      5. If confidence < 70%, prompt for manual classification
+      6. Route to appropriate specialized workflow
+
+  confidence_thresholds:
+    high_confidence: 85 # Auto-route without confirmation
+    medium_confidence: 70 # Auto-route with logging
+    low_confidence: 50 # Prompt for manual classification
+
+  fallback_strategy:
+    default_workflow: backlog-to-ready
+    manual_review_required: true
+    escalation_agent: general-purpose
+
+  usage_examples:
+    ui_pure_examples:
+      - 'Update button component styling to match new design system'
+      - 'Create responsive mobile layout for dashboard'
+      - 'Add hover animations to navigation menu'
+      - 'Fix responsive design issues on tablet'
+
+    logic_pure_examples:
+      - 'Implement user authentication API endpoints'
+      - 'Add business validation rules for order processing'
+      - 'Create webhook integration with payment provider'
+      - 'Fix database query performance issues'
+
+    integrated_examples:
+      - 'Implement complete user registration flow'
+      - 'Build order management feature with UI and API'
+      - 'Create customer dashboard with real-time data'
+      - 'Add file upload functionality with progress tracking'
+
+  monitoring:
+    track_classification_accuracy: true
+    log_confidence_scores: true
+    report_misclassifications: true
+    continuous_improvement: true

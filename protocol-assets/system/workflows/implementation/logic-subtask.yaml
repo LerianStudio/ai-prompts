@@ -1,0 +1,187 @@
+workflow:
+  id: logic-subtask
+  name: Automated Logic Sub-task Implementation with Integration Testing
+  description: >-
+    Takes a Logic sub-task from 02.ready, implements all todos automatically using logic-specialized agents,
+    integrates with completed UI layers, performs comprehensive testing, tracks progress with TodoWrite,
+    and moves through board states (ready → in-progress → completed).
+
+  agents:
+    - todo-manager
+    - logic-implementer
+    - integration-tester
+
+  steps:
+    - id: load-and-move-logic-subtask
+      title: Load Logic Sub-task Todos and Move to In-Progress
+      agent: todo-manager
+      requires: protocol-assets/system/board/02.ready/[task]/logic-task-[N]/todos.md
+      creates: protocol-assets/system/board/03.in-progress/[task]/logic-task-[N]
+      action: MOVE from protocol-assets/system/board/02.ready to protocol-assets/system/board/03.in-progress (removes original)
+      description: >-
+        Load Logic-specific todos from ready phase and move task folder to in-progress board.
+        Initialize TodoWrite with logic implementation tasks focused on business logic,
+        data processing, API integration, and state management.
+
+    - id: implement-logic-todos-with-integration
+      title: Implement Logic Todos with UI Layer Integration
+      agent: logic-implementer
+      requires:
+        - protocol-assets/system/board/03.in-progress/[task]/logic-task-[N]/todos.md
+        - protocol-assets/system/board/03.in-progress/[task]/logic-spec.md (logic architecture)
+        - protocol-assets/system/board/05.completed/[task]/ui-task-*/  (completed UI implementations for integration)
+      creates:
+        - logic-implementation-code
+        - integration-interfaces
+        - api-implementations
+      description: >-
+        Implement logic todos sequentially with integration to completed UI layers.
+        Focus on business logic, data processing, API endpoints, state management,
+        and seamless integration with UI components through defined interfaces.
+
+    - id: comprehensive-integration-testing
+      title: Integration Testing and End-to-End Validation
+      agent: integration-tester
+      requires:
+        - logic-implementation-code
+        - protocol-assets/system/board/05.completed/[task]/ui-task-*/ (UI implementations)
+        - protocol-assets/system/board/03.in-progress/[task]/logic-spec.md
+      creates:
+        - integration-test-results.md
+        - end-to-end-validation-report.md
+        - performance-benchmarks.json
+      description: >-
+        Perform comprehensive integration testing between logic and UI layers.
+        Execute end-to-end workflows, validate data flow, test error handling,
+        measure performance, and ensure seamless user experience.
+
+    - id: finalize-and-move-logic-completed
+      title: Update Final Logic Progress and Move to Completed
+      agent: todo-manager
+      requires:
+        - logic-implementation-code
+        - integration-test-results.md
+        - end-to-end-validation-report.md
+        - performance-benchmarks.json
+      creates: protocol-assets/system/board/05.completed/[task]/logic-task-[N]
+      action: MOVE from protocol-assets/system/board/03.in-progress to protocol-assets/system/board/05.completed (removes original)
+      description: >-
+        Update todos.md with completion status, package final logic implementation with
+        integration test results, and move to completed board. Generate handoff documentation
+        for full feature completion.
+
+handoff_prompts:
+  todo-manager-to-logic-implementer: >-
+    I've loaded the Logic sub-task todos and MOVED (not copied) the folder from protocol-assets/system/board/02.ready to protocol-assets/system/board/03.in-progress. 
+    The original folder has been removed from 02.ready. The Logic-specific todos have been loaded into TodoWrite 
+    for active management during logic implementation.
+
+    Logic Sub-task details:
+    - Location: protocol-assets/system/board/03.in-progress/[task]/logic-task-[N]/
+    - Original location REMOVED: protocol-assets/system/board/02.ready/[task]/logic-task-[N]/ ✅
+    - Logic Architecture Reference: protocol-assets/system/board/03.in-progress/[task]/logic-spec.md
+    - UI Integration Points: protocol-assets/system/board/05.completed/[task]/ui-task-*/ (completed UI implementations)
+    - Total Logic todos: {total_logic_todos}
+    - Ready for Logic implementation: {pending_logic_todos}
+
+    Your task: Implement all Logic todos sequentially with UI integration using TodoWrite to track progress:
+    1. Mark each Logic todo as "in_progress" when you start working on it
+    2. Implement business logic, data processing, API endpoints, and state management
+    3. Integrate seamlessly with completed UI implementations through defined interfaces
+    4. Use logic architecture from logic-spec.md and UI integration points from completed UI tasks
+    5. Ensure proper error handling, data validation, and performance optimization
+    6. Mark todo as "completed" when Logic implementation is finished and integrated
+    7. Continue to next Logic todo until all are implemented
+
+    Focus on creating robust, scalable, well-tested logic implementations that seamlessly integrate 
+    with the UI layer while maintaining clear separation of concerns.
+
+    CRITICAL: Ensure all steps use MOVE operations (mv command), not COPY operations (cp command).
+
+  logic-implementer-to-integration-tester: >-
+    I have completed implementing all Logic todos in the sub-task. All business logic, data processing,
+    API endpoints, state management, and UI integration interfaces have been implemented.
+    TodoWrite shows all Logic todos as completed.
+
+    Logic Implementation summary:
+    {logic_implementation_summary}
+
+    Generated Logic Assets:
+    - Business logic implementations: {logic_business_files}
+    - API endpoints and services: {logic_api_files}
+    - Data processing and validation: {logic_data_files}
+    - State management: {logic_state_files}
+    - UI integration interfaces: {logic_ui_integration_files}
+
+    UI Integration Points:
+    - Connected UI components: {connected_ui_components}
+    - Data flow interfaces: {ui_data_interfaces}
+    - Event handling integration: {ui_event_integrations}
+
+    Please perform comprehensive integration testing including:
+    1. End-to-end workflow testing (UI → Logic → Data → UI)
+    2. Data flow validation between UI and Logic layers
+    3. Error handling and edge case testing
+    4. Performance testing under various load conditions
+    5. Security validation for data handling and API access
+    6. Cross-browser compatibility for integrated features
+    7. Accessibility testing for logic-driven UI behaviors
+
+    Generate detailed integration test results with performance benchmarks and validation reports.
+
+  integration-tester-to-todo-manager: >-
+    Comprehensive integration testing completed with detailed analysis of UI-Logic layer integration.
+    All integration points have been validated, end-to-end workflows tested, and performance benchmarked.
+
+    Final Integration Test Results:
+    - End-to-End Workflow Success: {e2e_success_rate}%
+    - Data Flow Integrity: {data_flow_score}%
+    - Error Handling Coverage: {error_handling_score}%
+    - Performance Benchmark: {performance_score}%
+    - Security Validation: {security_score}%
+    - Cross-browser Compatibility: {compatibility_score}%
+    - Accessibility Integration: {accessibility_integration_score}%
+
+    Generated Integration Reports:
+    - Integration test results: {integration_test_results_path}
+    - End-to-end validation: {e2e_validation_report_path}
+    - Performance benchmarks: {performance_benchmarks_path}
+    - Integration evidence: {integration_screenshots_and_logs}
+
+    Please finalize the Logic sub-task by:
+    1. Updating the todos.md file with final completed status and integration test results
+    2. MOVING (not copying) the sub-task from protocol-assets/system/board/03.in-progress to protocol-assets/system/board/05.completed using mv command
+    3. VERIFY the original folder is REMOVED from 03.in-progress after the move
+    4. Package Logic implementation with integration test results for feature completion
+    5. Generate handoff documentation summarizing complete feature implementation
+    6. Clean up TodoWrite state for this Logic sub-task
+
+    CRITICAL: Use mv command to ensure proper MOVE operation, then verify removal from source location.
+
+  workflow-completion: >-
+    Logic Sub-task implementation workflow completed successfully!
+
+    Summary of automated Logic implementation:
+    - Loaded Logic sub-task todos directly from files using Read tool
+    - MOVED (not copied) Logic sub-task through board states: protocol-assets/system/board/02.ready → protocol-assets/system/board/03.in-progress → protocol-assets/system/board/05.completed
+    - Verified original folders are REMOVED from previous locations after each move
+    - Implemented all Logic todos with TodoWrite progress tracking and UI integration
+    - Created robust, scalable business logic with seamless UI layer integration
+    - Performed comprehensive integration testing including end-to-end validation
+    - Generated integration test results, performance benchmarks, and validation reports
+    - Updated todos.md files with completion status and integration test scores
+
+    The Logic sub-task is now fully implemented with comprehensive integration testing and properly moved to the completed board!
+
+    VERIFICATION: Logic sub-task exists ONLY in protocol-assets/system/board/05.completed/ (removed from protocol-assets/system/board/02.ready/ and protocol-assets/system/board/03.in-progress/)
+
+    Feature Completion Status: With both UI and Logic sub-tasks completed, the full feature implementation
+    is now ready for final validation and deployment. All layer integration has been tested and validated,
+    with comprehensive documentation for handoff to deployment pipeline.
+
+    Generated Complete Feature Package:
+    - UI Layer: Pixel-perfect, accessible, responsive components
+    - Logic Layer: Robust business logic with comprehensive integration
+    - Integration: Seamless UI-Logic integration with full test coverage
+    - Documentation: Complete implementation and integration documentation
+    - Validation: Comprehensive quality assurance across all layers

@@ -1,108 +1,140 @@
 # Board System
 
-This directory implements a kanban board system for managing work items through their lifecycle.
+This directory implements a simplified kanban board system for managing work items through their lifecycle.
 
-## Structure
+## Optimized Structure
 
 ```
 board/
-├── 01.backlog/     # New ideas and requests
-├── 02.ready/       # Refined and ready to start
-├── 03.in-progress/ # Work in progress (WIP limit: 5)
-├── 04.testing/     # Code review & testing
-└── 05.completed/   # Completed work
+├── 01.backlog/     # New ideas and task requirements
+├── 02.ready/       # Implementation-ready tasks with specifications
+└── 03.done/        # Completed and delivered tasks
 ```
 
-## Workflow Rules
+## Simplified Three-Stage Workflow
 
-1. **WIP Limits**: Maximum 5 items in active, 2 per person
-2. **Flow Direction**: inbox → ready → active → review → done
-3. **Blocked Items**: Keep in active with `[BLOCKED]` prefix
-4. **Review Time**: Items in review > 3 days need escalation
+The board implements a **streamlined three-stage architecture**:
 
-## Naming Conventions
+1. **01.backlog/** - Raw task intake and initial requirements
+2. **02.ready/** - Implementation-ready tasks with complete specifications
+3. **03.done/** - Completed and delivered tasks
 
-- Simple: `feature-name/`
-- With status: `[WIP-owner]_feature-name/`
-- Blocked: `[BLOCKED]_feature-name/`
-- Priority: `[P1]_critical-feature/`
+## Workflow Benefits
 
-## Todo Manager Agent Integration
+### Eliminated Complexity
 
-Board items now support intelligent task management through the **todo-manager agent**, providing proactive, context-aware workflow orchestration:
+- **Removed intermediate stages** (ui-design, logic-design, in-progress, testing)
+- **Direct path** from backlog → ready → done
+- **Reduced overhead** without losing essential functionality
 
-### Agent-Based Task Management
+### Specialized Workflows
 
-```bash
-# Direct agent invocation for board item analysis
-@todo-manager "Analyze task-392 and create comprehensive implementation todos"
+- **UI-only tasks** go through `backlog-to-ui-ready` workflow
+- **Logic-only tasks** go through `backlog-to-logic-ready` workflow
+- **Integrated tasks** go through `backlog-to-ready` workflow
+- **All converge** at `02.ready/` with specialized task structures
 
-# Intelligent workload optimization across board items
-@todo-manager "Review all active board items and suggest task prioritization"
+## Task Flow
 
-# Cross-board dependency coordination
-@todo-manager "Analyze dependencies between user-auth and payment-system board items"
-```
+### Input (01.backlog)
 
-### Workflow Integration
+- Task requirements and descriptions
+- Automatic classification based on labels/keywords
+- Routing to appropriate specialized workflow
 
-The todo-manager agent seamlessly integrates with workflows for automated task management:
+### Processing (Workflows)
 
-```yaml
-# Example: Feature implementation workflow
-- agent: todo-manager
-  task: 'Create implementation todos for board item {{board-item-id}}'
-- agent: code-reviewer
-  task: 'Generate quality checklist based on implementation plan'
-- agent: todo-manager
-  task: 'Integrate quality requirements and finalize todo plan'
-```
+- **`backlog-to-ui-ready`** - Frontend specialization
+- **`backlog-to-logic-ready`** - Backend specialization
+- **`backlog-to-ready`** - Full-stack coordination
 
-### Agent Capabilities
+### Output (02.ready)
 
-- **Contextual Analysis**: Understands board item scope, complexity, and requirements
-- **Implementation Planning**: Breaks down board items into actionable todos
-- **Cross-Board Intelligence**: Manages dependencies and coordinates across board items
-- **Quality Integration**: Collaborates with code-reviewer and tech-writer agents
-- **Workflow Orchestration**: Enables complex multi-agent task management
+- Implementation-ready tasks with complete specifications
+- Specialized task breakdown (UI/Logic/Integrated)
+- Ready for developer assignment and implementation
 
-### Board Item vs Todo Distinction
+### Completion (03.done)
 
-- **Board Items**: Strategic features, epics, major deliverables moving through kanban stages
-- **Todos**: Tactical implementation tasks generated and managed by todo-manager agent
+- Successfully implemented and verified tasks
+- Achievement tracking and historical record
 
-### File Structure
+## File Organization
 
-Board items contain `todos.md` files managed by the todo-manager agent:
+### Backlog Structure
 
 ```
-board/03.in-progress/user-auth-feature/
-├── README.md          # Main board item description with basic metadata
-└── todos.md          # Implementation todos (managed by todo-manager agent)
+01.backlog/
+├── task-100-user-authentication/
+│   └── description.md
+├── task-101-ui-component/
+│   └── description.md
+└── task-102-api-endpoint/
+    └── description.md
 ```
 
-## Board Item Structure
+### Ready Structure (Post-Workflow)
 
-Each board item is a folder containing:
+```
+02.ready/
+├── task-100-user-auth/         # Integrated workflow output
+│   ├── ui-spec.md
+│   ├── logic-spec.md
+│   ├── component-task-1/
+│   └── api-task-1/
+├── task-101-ui-component/      # UI-only workflow output
+│   ├── ui-spec.md
+│   ├── component-task-1/
+│   └── styling-task-1/
+└── task-102-api-endpoint/      # Logic-only workflow output
+    ├── logic-spec.md
+    ├── domain-task-1/
+    └── api-task-1/
+```
 
-### README.md
+### Done Structure
 
-- **Primary documentation** for the board item
-- **Basic metadata** in the content (title, description, acceptance criteria)
-- **Human-readable** format that integrates naturally with markdown workflows
-- **Single source of truth** for board item information
+```
+03.done/
+├── task-100-user-authentication/
+├── task-101-ui-component/
+└── task-102-api-endpoint/
+```
 
-### todos.md (Generated by todo-manager agent)
+## Workflow Integration
 
-- **Implementation tasks** broken down from the board item
-- **Tactical execution steps** managed by Claude Code's todo-manager agent
-- **Automatically generated** based on board item requirements
-- **Integrated** with Claude Code's native TodoWrite system
+### Automatic Routing
 
-### Benefits of Simplified Structure
+Tasks are automatically classified and routed to appropriate workflows based on:
 
-- **No duplication**: Single README.md file contains all board item information
-- **Native integration**: Leverages Claude Code's existing TodoWrite and todo-manager systems
-- **Human-centric**: Developers work primarily with markdown files they're familiar with
-- **Minimal overhead**: No separate metadata files to maintain or keep in sync
-- **Git-friendly**: Markdown files provide clear diffs and history tracking
+- **Labels** (frontend, backend, ui, api, etc.)
+- **Keywords** in description
+- **Manual overrides** (workflow:ui-only, workflow:logic-only, workflow:integrated)
+
+### Convergence Point
+
+All workflows converge at `02.ready/` with:
+
+- **Consistent interfaces** for downstream processes
+- **Specialized internal structures** based on task type
+- **Complete specifications** for implementation
+
+## Benefits of Optimization
+
+### Reduced Complexity
+
+- **70% fewer stages** (7 → 3 folders)
+- **Cleaner mental model** for developers
+- **Less maintenance overhead**
+
+### Maintained Functionality
+
+- **Specialization preserved** through workflow bifurcation
+- **Quality maintained** through comprehensive specifications
+- **Tracking capability** through simplified done stage
+
+### Improved Flow
+
+- **Faster task progression** through fewer stages
+- **Clear responsibility boundaries** at each stage
+- **Reduced context switching** between stages
