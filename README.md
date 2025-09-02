@@ -1,31 +1,17 @@
 ```
-                         ________________________________________________
-                        /                                                \
-                       |    _________________________________________     |
-                       |   |                                         |    |
-                       |   |  > lerian-protocol --init @frontend     |    |
-                       |   |                                         |    |
-                       |   |  ╔══════════════════════════════════╗   |    |
-                       |   |  ║   LERIAN PROTOCOL v0.1.0         ║   |    |
-                       |   |  ║   AI-Powered Development Suite   ║   |    |
-                       |   |  ║                                  ║   |    |
-                       |   |  ║    Welcome to @frontend team!    ║   |    |
-                       |   |  ║                                  ║   |    |
-                       |   |  ║   @castro, @drax, @biri, @paulo  ║   |    |
-                       |   |  ╚══════════════════════════════════╝   |    |
-                       |   |                                         |    |
-                       |   |_________________________________________|    |
-                       |                                                  |
-                        \_________________________________________________/
-                               \___________________________________/
-                            ___________________________________________
-                         _-'    .-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.  --- `-_
-                      _-'.-.-. .---.-.-.-.-.-.-.-.-.-.-.-.-.-.-.--.  .-.-.`-_
-                   _-'.-.-.-. .---.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-`__`. .-.-.-.`-_
-                _-'.-.-.-.-. .-----.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-----. .-.-.-.-.`-_
-             _-'.-.-.-.-.-. .---.-. .-------------------------. .-.---. .---.-.-.-.`-_
-            :-------------------------------------------------------------------------:
-            `---._.-------------------------------------------------------------._.---'
+██╗      ███████╗ ██████╗  ██╗  █████╗  ███╗   ██╗
+██║      ██╔════╝ ██╔══██╗ ██║ ██╔══██╗ ████╗  ██║
+██║      █████╗   ██████╔╝ ██║ ███████║ ██╔██╗ ██║
+██║      ██╔══╝   ██╔══██╗ ██║ ██╔══██║ ██║╚██╗██║
+███████╗ ███████╗ ██║  ██║ ██║ ██║  ██║ ██║ ╚████║
+╚══════╝ ╚══════╝ ╚═╝  ╚═╝ ╚═╝ ╚═╝  ╚═╝ ╚═╝  ╚═══╝
+
+██████╗  ██████╗   ██████╗  ████████╗ ██████╗  ██████╗  ██████╗  ██╗     
+██╔══██╗ ██╔══██╗ ██╔═══██╗ ╚══██╔══╝ ██╔═══██╗██╔════╝ ██╔═══██╗ ██║     
+██████╔╝ ██████╔╝ ██║   ██║    ██║    ██║   ██║██║      ██║   ██║ ██║     
+██╔═══╝  ██╔══██╗ ██║   ██║    ██║    ██║   ██║██║      ██║   ██║ ██║     
+██║      ██║  ██║ ╚██████╔╝    ██║    ╚██████╔╝╚██████╗ ╚██████╔╝ ███████╗
+╚═╝      ╚═╝  ╚═╝  ╚═════╝     ╚═╝     ╚═════╝  ╚═════╝  ╚═════╝  ╚══════╝
 ```
 
 ## 🎯 Overview
@@ -49,17 +35,17 @@ The installer creates a complete AI-powered development environment:
 
 ### Claude Code Integration
 
-- **9 Specialized Agents** - UI/UX specialist, tech writer, todo manager, frontend developer, etc.
-- **30+ Slash Commands** - Code quality, documentation, development, planning workflows
-- **Python Hook System** - Automated testing, security validation, backup automation
-- **Native Configuration** - Complete `.claude/` directory with CLAUDE.md
+- **Domain-Organized Agents** - Specialized agents organized by frontend, backend, and shared domains
+- **30+ Slash Commands** - Domain-specific commands for development, quality, documentation workflows
+- **Python Hook System** - Domain-organized hooks for automated testing, security, formatting
+- **Native Configuration** - Complete `.claude/` directory with domain separation and CLAUDE.md
 
-### Protocol Asset System (4-Layer Architecture)
+### Modern Architecture System
 
-- **system/** - Board management and workflow orchestration
-- **content/** - Documentation, design system, templates, knowledge base
-- **quality/** - Standards, testing protocols, validation outputs
-- **media/** - Screenshots, visual assets, UI references
+- **Domain Separation** - Frontend, backend, and shared component organization
+- **Service Layer** - Error handling, protocol asset management, and utility services  
+- **Documentation System** - UI workflows, diagrams, and architecture documentation
+- **CLI Tooling** - Interactive terminal components with modern styling
 
 ### Advanced Development Tools
 
@@ -73,60 +59,53 @@ The installer creates a complete AI-powered development environment:
 
 ```
 .claude/                    # Claude Code Native Integration
-├── agents/                # 9 Specialized AI Agents
-│   ├── ui-ux-specialist.md        # UI/UX design and specifications
-│   ├── ui-validator.md            # UI validation and testing
-│   ├── todo-manager.md            # Intelligent task management
-│   ├── tech-writer.md             # Technical documentation
-│   ├── task-breakdown-specialist.md # Complex task decomposition
-│   ├── user-story-generator.md    # Agile story creation
-│   ├── react-state-management.md  # React state patterns
-│   ├── react-performance-optimization.md # Performance optimization
-│   └── frontend-developer.md     # Frontend development specialist
+├── agents/                # Specialized AI Agents (organized by domain)
+│   ├── frontend/          # Frontend-specific agents (React, UI/UX, Playwright)
+│   └── shared/            # Cross-domain agents (Tech Writer, Todo Manager, User Stories)
 ├── commands/              # 30+ Development Commands
-│   ├── code-quality/      # Code review, security scans, refactoring
-│   ├── documentation/     # Codebase analysis, diagrams, explanations
-│   ├── development/       # Scaffolding, debugging, prototyping
-│   ├── planning/          # Estimation, issue prediction, options analysis
-│   └── utils/             # Setup, cleaning, command management
+│   ├── frontend/          # Frontend development commands
+│   └── shared/            # Shared utility commands
 ├── hooks/                 # Python Automation Hooks
-│   ├── auto-test.py       # Automated testing hooks
-│   ├── dependency-monitor.py # Dependency monitoring
-│   ├── security.py        # Security validation
-│   ├── prettier.py        # Code formatting
-│   └── backup.py          # Backup automation
-└── CLAUDE.md              # Main configuration with collaboration guidelines
+│   ├── frontend/          # Frontend-specific hooks
+│   └── shared/            # Shared automation hooks
+├── frontend/              # Frontend-specific configurations
+├── backend/               # Backend-specific configurations (structure created)
+├── shared/                # Shared configurations and utilities
+├── CLAUDE.md              # Main configuration with collaboration guidelines
+└── settings.json          # Claude Code settings
 
-protocol-assets/           # 4-Layer Protocol Asset Architecture
-├── system/                # Core Workflow & Project Management
-│   ├── board/             # 3-stage kanban system (backlog → ready → done)
-│   ├── workflows/         # YAML workflow definitions with task classification
-│   └── templates/         # Design approval, implementation handoff
-├── content/               # Knowledge Base & Documentation
-│   ├── docs/              # Documentation and knowledge base
-│   ├── design-system/     # UI standards, validation rules
-│   └── templates/         # Reusable document templates
-├── quality/               # Standards & Testing Protocols
-│   ├── standards/         # Code quality standards
-│   ├── testing/           # Test scenarios and validation
-│   ├── compatibility/     # Cross-platform guidelines
-│   └── validation-outputs/ # Testing and validation outputs
-└── media/                 # Visual Assets & Screenshots
-    └── ui-references/     # Reference designs and mockups
+docs/                      # Project Documentation
+├── ui-task-flow-example.md # Complete UI workflow examples
+└── diagrams/              # Architecture and workflow diagrams
+    └── flow/              # Workflow visualization diagrams
 
 lib/                       # Core Implementation Library
-├── installer.js           # Main installation orchestrator (1460+ lines)
+├── installer/             # Installation system components
+│   ├── installer.js       # Main installer orchestrator
+│   ├── constants.js       # Installation constants
+│   ├── index.js           # Installer entry point
+│   ├── ui-theme.js        # CLI theming and styling
+│   └── debug.js           # Debug utilities
+├── services/              # Service layer (NEW)
+│   ├── error-handler-service.js    # Error handling service
+│   └── protocol-asset-service.js   # Protocol asset management
 ├── components/            # Interactive CLI Components
+│   └── CommandHeader.js   # Command header component
 ├── sync/                  # File Synchronization System
-│   ├── sync-command.js    # Main sync orchestration
-│   ├── change-detector.js # Intelligent change detection
 │   └── metadata-manager.js # File tracking and synchronization
-├── safety/                # Security & Validation
-├── utils/                 # Shared utilities and helpers
+├── utils/                 # Shared utilities
+│   ├── logger.js          # Logging utilities
+│   └── terminal.js        # Terminal utilities
+├── config.js              # Configuration management
+└── installer.js           # Legacy installer (main entry)
+
+bin/                       # CLI Executables
+├── lerian-protocol.js     # Main CLI entry point
+└── lerian-cli-wrapper.js  # CLI wrapper script
 
 .mcp.json                  # MCP Server Configuration
 ├── context7               # Library documentation and code examples
-├── playwright             # Browser automation with screenshot validation
+├── playwright             # Browser automation with screenshot validation  
 ├── fetch                  # Web content retrieval capabilities
 └── shadcn                 # UI component generation
 ```
@@ -188,35 +167,52 @@ lerian-protocol install ./my-project
 
 ## 📚 Key Components
 
-| Directory           | Purpose                  | Contents                                                      |
-| ------------------- | ------------------------ | ------------------------------------------------------------- |
-| `.claude/agents/`   | 9 specialized AI agents  | UI/UX specialist, UI validator, todo manager, tech writer     |
-| `.claude/commands/` | 30+ development commands | Code quality, documentation, development, planning workflows  |
-| `.claude/hooks/`    | Python automation hooks  | Testing, security, dependency monitoring, formatting          |
-| `lib/`              | Core implementation      | React/TypeScript components, sync system, design system       |
-| `protocol-assets/`  | 4-layer asset system     | System workflows, content knowledge, quality standards, media |
-| `.mcp.json`         | MCP server configuration | Context7, Playwright, Fetch, Shadcn integrations              |
+| Directory           | Purpose                   | Contents                                                      |
+| ------------------- | ------------------------- | ------------------------------------------------------------- |
+| `.claude/agents/`   | Specialized AI agents     | Frontend (React, UI/UX, Playwright) and Shared (Tech Writer, Todo)          |
+| `.claude/commands/` | 30+ development commands  | Frontend development commands and shared utility commands            |
+| `.claude/hooks/`    | Python automation hooks   | Frontend and shared automation hooks for testing, security, formatting     |
+| `.claude/frontend/` | Frontend configurations   | Frontend-specific settings and configurations                 |
+| `.claude/backend/`  | Backend configurations    | Backend-specific settings and configurations (structure created)                  |  
+| `.claude/shared/`   | Shared configurations     | Cross-domain utilities and shared configurations             |
+| `lib/`              | Core implementation       | Installer, services, components, sync system, utilities      |
+| `docs/`             | Project documentation     | UI workflows, diagrams, architecture documentation           |
+| `bin/`              | CLI executables           | Main CLI entry points and wrapper scripts                    |
+| `.mcp.json`         | MCP server configuration  | Context7, Playwright, Fetch, Shadcn integrations             |
 
 ## Repository Structure
 
 ```
 ├── .claude/                     # Claude Code Native Integration
-│   ├── agents/                  # 9 specialized AI agents (ui-ux-specialist, ui-validator, etc.)
-│   ├── commands/                # 30+ development commands organized by function
-│   ├── hooks/                   # Python automation hooks (testing, security, formatting)
-│   └── CLAUDE.md                # Main configuration with collaboration guidelines
+│   ├── agents/                  # Domain-organized specialized AI agents
+│   │   ├── frontend/            # Frontend-specific agents (React, UI/UX, Playwright)
+│   │   └── shared/              # Cross-domain agents (Tech Writer, Todo Manager)
+│   ├── commands/                # 30+ development commands by domain
+│   │   ├── frontend/            # Frontend development commands
+│   │   └── shared/              # Shared utility commands
+│   ├── hooks/                   # Python automation hooks by domain
+│   │   ├── frontend/            # Frontend-specific hooks
+│   │   └── shared/              # Shared automation hooks
+│   ├── frontend/                # Frontend-specific configurations
+│   ├── backend/                 # Backend-specific configurations (structure created)
+│   ├── shared/                  # Shared configurations and utilities
+│   ├── CLAUDE.md                # Main configuration with collaboration guidelines
+│   └── settings.json            # Claude Code settings
+├── docs/                        # Project Documentation  
+│   ├── ui-task-flow-example.md  # Complete UI workflow examples
+│   └── diagrams/                # Architecture and workflow diagrams
 ├── bin/                         # CLI entry points and executables
+│   ├── lerian-protocol.js       # Main CLI entry point
+│   └── lerian-cli-wrapper.js    # CLI wrapper script
 ├── lib/                         # Core Implementation Library
-│   ├── installer.js             # Main installation orchestrator (1460+ lines)
+│   ├── installer/               # Installation system components
+│   ├── services/                # Service layer (error handling, protocol assets)
 │   ├── components/              # Interactive CLI components
 │   ├── sync/                    # File synchronization system
-│   ├── safety/                  # Security validation and safety checks
-│   └── utils/                   # Shared utilities and helpers
-├── protocol-assets/             # 4-Layer Protocol Asset Architecture
-│   ├── system/                  # Core workflow & board management
-│   ├── content/                 # Knowledge base & documentation
-│   ├── quality/                 # Standards & testing protocols
-│   └── media/                   # Visual assets & UI references
+│   ├── utils/                   # Shared utilities and helpers
+│   ├── config.js                # Configuration management
+│   └── installer.js             # Legacy installer (main entry)
+├── CHANGELOG.md                 # Version history and change tracking
 └── .mcp.json                    # MCP server configuration (Context7, Playwright, Fetch, Shadcn)
 ```
 

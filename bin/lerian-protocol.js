@@ -33,15 +33,16 @@ program
 
 program
   .command('install')
-  .description('Install Lerian Protocol workflow with all agents and templates')
+  .description('Install Lerian Protocol workflow with profile-based agents and templates')
   .argument('[directory]', 'project directory to install in', '.')
+  .option('--profile <profile>', 'installation profile: frontend, backend, or full', null)
   .option('--dry-run', 'show what would be installed without making changes')
   .option('--force', 'force installation without prompts')
   .action(async (directory, options) => {
     try {
       const installOptions = {
         directory,
-        full: true,
+        profile: options.profile,
         stageGate: true,
         dryRun: options.dryRun,
         force: options.force

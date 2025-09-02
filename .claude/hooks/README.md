@@ -1,6 +1,28 @@
-# Claude Code Hooks Guide
+# Claude Code Hooks - Domain-Organized Automation
 
-This project uses Claude Code hooks to enhance the development workflow with automatic code quality checks, formatting, and notifications. Here's what each hook does and when it runs.
+This directory contains Python automation hooks organized by development domain (frontend, backend, shared) to provide targeted workflow automation and quality assurance.
+
+## Domain Organization
+
+```
+hooks/
+├── frontend/           # Frontend-specific hooks
+│   ├── prettier.py                 # Frontend code formatting  
+│   ├── eslint.py                  # JavaScript/TypeScript linting
+│   ├── auto-test.py               # Frontend test automation
+│   └── dependency-monitor.py      # Frontend dependency tracking
+├── shared/             # Cross-domain hooks
+│   ├── backup.py                  # File backup automation
+│   ├── git-safety.py             # Git operation protection
+│   ├── notification.py           # Desktop notifications
+│   └── context-monitor.py        # Development context monitoring
+└── backend/            # Backend-specific hooks (structure ready)
+    └── [Backend hooks to be added based on profile needs]
+```
+
+## Hook System Overview
+
+The Lerian Protocol hook system provides domain-specific automation that enhances development workflows without being intrusive. Hooks run automatically based on development actions and provide intelligent feedback.
 
 ## 🛡️ Git Safety Hook
 
@@ -174,20 +196,30 @@ Failed: npm run build
 
 ---
 
-## 🔧 Configuration
+## 🔧 Profile-Based Configuration
 
-All hooks are configured in `.claude/settings.json`:
+Hooks are configured in `.claude/settings.json` based on the installation profile:
 
+### Frontend Profile Configuration
 ```json
 {
   "hooks": {
     "PreToolUse": [
       {
+        "matcher": "Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command", 
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/shared/backup.py"
+          }
+        ]
+      },
+      {
         "matcher": "Bash",
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/git-safety-hook.py"
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/shared/git-safety.py"
           }
         ]
       }
@@ -198,24 +230,19 @@ All hooks are configured in `.claude/settings.json`:
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/prettier-hook.py"
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/frontend/prettier.py"
+          },
+          {
+            "type": "command", 
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/frontend/eslint.py"
           },
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/eslint-hook.py"
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/frontend/auto-test.py"
           },
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/notification-hook.py"
-          }
-        ]
-      },
-      {
-        "matcher": "Bash|Task",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/notification-hook.py"
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/shared/notification.py"
           }
         ]
       }
@@ -224,15 +251,47 @@ All hooks are configured in `.claude/settings.json`:
 }
 ```
 
+### Domain-Specific Hook Paths
+- **Frontend hooks** - `hooks/frontend/` for JavaScript/TypeScript projects
+- **Backend hooks** - `hooks/backend/` for server-side automation  
+- **Shared hooks** - `hooks/shared/` for universal development workflows
+
 ## 🎯 Benefits
 
-- **Safety**: Prevents accidental destructive git operations
-- **Quality**: Automatic code formatting and linting
+- **Domain-Focused**: Hooks targeted to specific development areas (frontend, backend, shared)
+- **Profile-Based**: Only relevant hooks installed based on project needs
+- **Safety**: Prevents accidental destructive git operations across all domains
+- **Quality**: Automatic code formatting and linting for domain-specific file types
 - **Awareness**: Desktop notifications keep you informed of Claude's actions
-- **Consistency**: Enforces code style across the project
+- **Consistency**: Enforces code style standards within each domain
 - **Non-blocking**: Quality checks warn but don't prevent operations
 - **Intelligent**: Skips irrelevant files and handles edge cases gracefully
 
+## 🔄 Profile Integration
+
+The Lerian Protocol installer automatically configures hooks based on your chosen profile:
+
+### Frontend Profile
+- Installs frontend-specific hooks (prettier, eslint, auto-test)
+- Configures hooks for JavaScript/TypeScript file processing
+- Includes shared hooks for universal functionality
+
+### Backend Profile  
+- Will install backend-specific hooks (structure ready)
+- Configure hooks for server-side file processing
+- Includes shared hooks for universal functionality
+
+### Full Profile
+- Installs all available hooks from all domains
+- Provides comprehensive automation coverage
+- Supports mixed frontend/backend development
+
 ## 🛠️ Maintenance
 
-All hook scripts are executable and self-contained. They gracefully handle missing dependencies (Prettier, ESLint) by skipping operations rather than failing. This ensures Claude Code continues to work even if some tools aren't installed.
+All hook scripts are:
+- **Executable and self-contained** - No external Python dependencies required
+- **Graceful fallback** - Handle missing tools by skipping rather than failing
+- **Domain-aware** - Process only relevant file types for their domain
+- **Profile-compatible** - Work seamlessly with Lerian Protocol's installation system
+
+This ensures Claude Code continues to work optimally even when some development tools aren't installed, while providing maximum automation where tools are available.

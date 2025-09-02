@@ -1,121 +1,106 @@
-# Protocol Assets - Layered Architecture
+# Protocol Assets - Domain-Based Architecture
 
-A structured collection of development protocols, standards, and assets organized in a clean 4-layer architecture for maximum clarity and maintainability.
+A structured collection of development protocols, standards, and assets organized by development domain (frontend, backend, shared) for maximum clarity and team-specific focus.
 
 ## Architecture Overview
 
-The protocol-assets folder uses a layered architecture that separates concerns and creates clear boundaries between different types of development assets:
+The protocol-assets folder uses a domain-based architecture that separates concerns by development area and creates clear boundaries for team-specific assets:
 
 ```
 protocol-assets/
-├── system/          # Core workflow and project management
-├── content/         # Knowledge base and documentation
-├── quality/         # Standards and testing protocols
-└── media/           # Visual assets and screenshots
+├── frontend/        # Frontend-specific assets and workflows
+├── backend/         # Backend-specific assets and workflows  
+└── shared/          # Cross-domain assets and standards
 ```
 
-## Layer Descriptions
+## Domain Descriptions
 
-### 🏗️ System Layer (`system/`)
-Core operational components that drive project execution:
-- **board/** - Project management boards and task organization
-- **workflows/** - Automated processes and development workflows
+### 🎨 Frontend Domain (`frontend/`)
+Frontend-specific development assets and workflows:
+- **design-system/** - UI component specifications and design tokens
+- **docs/** - Frontend architecture and implementation patterns
+- **ui-references/** - Visual design references and screenshots
+- **workflows/** - Frontend development and testing workflows
+- **screenshots/** - UI validation and visual testing assets
 
-### 📚 Content Layer (`content/`)
-Knowledge base and documentation assets:
-- **context/** - Domain knowledge and reference materials
-- **design-system/** - UI/UX guidelines and design patterns
-- **documentation/** - Technical documentation and guides
-- **templates/** - Reusable templates and boilerplates
+### ⚙️ Backend Domain (`backend/`)
+Backend-specific development assets and workflows:
+- **docs/** - Backend architecture and API documentation
+- **testing/** - Backend testing protocols and scenarios
+- **workflows/** - Backend development and deployment workflows
 
-### ⚡ Quality Layer (`quality/`)
-Standards and validation protocols:
-- **standards/** - Code quality and development standards
-- **testing/** - Test scenarios and validation protocols
-- **compatibility/** - Cross-platform and browser compatibility guidelines
-
-### 🎨 Media Layer (`media/`)
-Visual assets and media files:
-- **screenshots/** - Application screenshots and visual documentation
+### 🤝 Shared Domain (`shared/`)
+Cross-domain assets used by all teams:
+- **docs/** - Shared documentation and standards
+- **standards/** - Universal code quality and development standards
+- **templates/** - Common project templates and boilerplates
 
 ## Navigation Guide
 
-### For Project Management
-- Task boards and sprint planning → `system/board/`
-- Workflow automation → `system/workflows/`
+### For Frontend Development  
+- UI components and design system → `frontend/design-system/`
+- Frontend patterns and best practices → `frontend/docs/`
+- Visual references and screenshots → `frontend/ui-references/`
+- Frontend workflows and testing → `frontend/workflows/`
 
-### For Development
-- Code standards and guidelines → `quality/standards/`
-- Design patterns and components → `content/design-system/`
-- Technical documentation → `content/documentation/`
+### For Backend Development
+- Backend architecture and APIs → `backend/docs/`
+- Backend testing protocols → `backend/testing/`
+- Backend workflows and deployment → `backend/workflows/`
 
-### For Testing & QA
-- Test scenarios → `quality/testing/`
-- Validation protocols → `quality/testing/`
-- Browser compatibility → `quality/compatibility/`
-
-### For Design & Documentation
-- Templates and boilerplates → `content/templates/`
-- Screenshots and visuals → `media/screenshots/`
-- Context and reference materials → `content/context/`
+### For Cross-Team Collaboration
+- Shared development standards → `shared/standards/`
+- Common documentation and guides → `shared/docs/`
+- Universal templates and boilerplates → `shared/templates/`
 
 ## Benefits of This Architecture
 
-### ✅ Clear Separation of Concerns
-Each layer has a distinct purpose, eliminating confusion about where to place or find assets.
+### ✅ Domain-Focused Organization
+Each domain contains assets specific to that development area, reducing cognitive load for teams.
 
-### ✅ Scalable Organization
-The layered approach grows naturally as new content is added without creating clutter.
+### ✅ Team Autonomy
+Frontend and backend teams can work independently while sharing common standards.
 
-### ✅ Improved Discoverability
-Logical grouping makes it easier to find relevant assets quickly.
+### ✅ Scalable Collaboration
+The shared domain provides a foundation for cross-team integration and consistency.
 
-### ✅ Reduced Duplication
-Clear boundaries prevent the same type of content from being scattered across multiple locations.
-
-## Migration from Previous Structure
-
-The previous 11-folder structure has been consolidated into this 4-layer architecture:
-
-| Old Location | New Location | Layer |
-|--------------|--------------|-------|
-| `board/` | `system/board/` | System |
-| `workflows/` | `system/workflows/` | System |
-| `context/` | `content/context/` | Content |
-| `documentation/` | `content/documentation/` | Content |
-| `templates/` | `content/templates/` | Content |
-| `design-guides/` | `content/design-system/` | Content |
-| `checklists/` | `quality/standards/` | Quality |
-| `validation-rules/` | `quality/testing/` | Quality |
-| `test-scenarios/` | `quality/testing/` | Quality |
-| `browser-data/` | `quality/compatibility/` | Quality |
-| `screenshots/` | `media/screenshots/` | Media |
+### ✅ Profile-Based Installation
+The Lerian Protocol installer can selectively install assets based on project needs (frontend-only, backend-only, or full).
 
 ## Getting Started
 
-1. **Browse by Purpose**: Use the layer structure to navigate to the type of asset you need
-2. **Check Layer READMEs**: Each layer contains its own README with specific guidance
-3. **Follow Naming Conventions**: Maintain the established patterns when adding new content
-4. **Update References**: When moving or renaming files, update all cross-references
+1. **Choose Your Domain**: Navigate to the domain that matches your development focus
+2. **Check Domain READMEs**: Each domain contains its own README with specific guidance  
+3. **Follow Domain Conventions**: Maintain the established patterns within each domain
+4. **Use Shared Resources**: Leverage shared standards and templates for consistency
 
 ## Contributing
 
 When adding new assets to this structure:
 
-1. **Identify the Layer**: Determine which layer best fits your content's purpose
-2. **Check for Existing Patterns**: Look at existing organization within that layer
+1. **Identify the Domain**: Determine if content is frontend-specific, backend-specific, or shared
+2. **Check Existing Patterns**: Look at existing organization within that domain
 3. **Maintain Consistency**: Follow established naming and organization conventions
 4. **Update Cross-References**: Ensure all links and references remain valid
 
+## Lerian Protocol Integration
+
+This structure is designed to work with the Lerian Protocol installation system:
+
+- **Profile-Based Installation**: Choose frontend, backend, or full installation profiles
+- **Domain Separation**: Assets are organized to support selective installation
+- **Claude Code Integration**: Seamlessly integrates with .claude/ directory structure
+- **MCP Server Support**: Assets support Context7, Playwright, Fetch, and Shadcn integrations
+
 ## Maintenance
 
-This structure is designed for long-term maintainability:
-- Regular cleanup of outdated content
-- Periodic review of cross-references
-- Evolution of standards as the project grows
-- Documentation updates to reflect structural changes
+This structure supports the Lerian Protocol's domain-based approach:
+- Regular updates to domain-specific workflows and standards
+- Cross-domain integration through shared assets
+- Evolution of domain boundaries as the project grows
+- Integration with Claude Code agents and automation
 
 ---
 
-For layer-specific information, see the README files in each layer directory.
+For domain-specific information, see the README files in each domain directory.
 </file>

@@ -1,0 +1,201 @@
+workflow:
+  id: ui-ready
+  name: UI-Only Backlog to Ready (Pure Frontend Workflow)
+  description: >-
+    Specialized workflow for pure UI/frontend tasks that require no business logic changes.
+    Transforms UI-focused backlog items through design-first approach to create implementation-ready
+    UI component tasks with comprehensive visual specifications and frontend-specific implementation guides.
+
+  triggers:
+    - task_type: 'ui'
+    - labels:
+        [
+          'frontend',
+          'ui',
+          'component',
+          'design-system',
+          'styling',
+          'responsive'
+        ]
+    - keywords:
+        ['component', 'styling', 'layout', 'responsive', 'animation', 'theme']
+
+  agents:
+    - user-story-generator
+    - ui-ux-specialist
+    - frontend-developer
+    - task-breakdown-specialist
+    - todo-manager
+
+  steps:
+    - id: frontend-pattern-discovery
+      title: Analyze Frontend Patterns and Design System
+      agent: frontend-developer
+      requires: protocol-assets/shared/board/01.backlog/*/description.md
+      creates: frontend-patterns.md
+      action: Execute /analyze-frontend command to understand component patterns, design system, and UI conventions
+      description: >
+        Analyze the frontend codebase to understand component architecture, design system usage,
+        styling patterns, and UI conventions. Focus on shadcn/ui patterns, component composition,
+        and accessibility standards that will inform UI task creation.
+
+    - id: ui-story-generation
+      title: Generate UI-Focused User Stories
+      agent: user-story-generator
+      requires:
+        - protocol-assets/shared/board/01.backlog/*/description.md
+        - frontend-patterns.md
+      creates: ui-user-stories
+      description: >
+        Generate user stories specifically focused on UI/UX outcomes, visual requirements,
+        and frontend user experience. Stories should emphasize visual acceptance criteria,
+        interaction patterns, and accessibility requirements.
+
+    - id: simple-ui-design
+      title: Create Simple UI Specifications
+      agent: ui-ux-specialist
+      requires:
+        - ui-user-stories
+        - frontend-patterns.md
+      creates: protocol-assets/shared/board/02.ready/[task-number]/ui-spec.md
+      moves: protocol-assets/shared/board/01.backlog/[task-number] → protocol-assets/shared/board/02.ready/[task-number]
+      action: MOVE from protocol-assets/shared/board/01.backlog to protocol-assets/shared/board/02.ready (removes original)
+      description: >-
+        Create simple UI specifications focused on desktop implementation.
+        Include basic component requirements, simple visual layout, essential styling guidance,
+        and basic interactions. Follow project patterns and keep it practical.
+
+    - id: frontend-task-breakdown
+      title: Break Down UI Design into Frontend Implementation Tasks
+      agent: task-breakdown-specialist
+      requires:
+        - ui-user-stories
+        - frontend-patterns.md
+        - protocol-assets/shared/board/02.ready/[task-number]/ui-spec.md
+        - docs/console/component-patterns.md
+        - docs/console/coding-conventions.md
+      creates: protocol-assets/shared/board/02.ready/[task-number] folder with Frontend-specific task folders
+      # Tasks already in 02.ready - no additional move needed
+      structure: |
+        protocol-assets/shared/board/02.ready/task-N/
+        ├── description.md (original)
+        ├── ui-spec.md (comprehensive UI design)
+        ├── frontend-patterns.md (pattern analysis)
+        └── ui-task-1/ (frontend implementation)
+            ├── description.md
+            └── todos.md (organized implementation phases)
+
+    - id: frontend-todo-generation
+      title: Generate Frontend Implementation Todos
+      agent: todo-manager
+      requires:
+        - protocol-assets/shared/board/02.ready/[task-number]/ui-task-*/description.md files
+        - protocol-assets/shared/board/02.ready/[task-number]/ui-spec.md (complete UI design reference)
+        - protocol-assets/shared/board/02.ready/[task-number]/frontend-patterns.md (pattern analysis)
+        - docs/console/component-patterns.md
+      creates: todos.md file in ui-task folder
+
+handoff_prompts:
+  frontend-developer-to-user-story-generator: >-
+    I've completed comprehensive frontend analysis using the analyze-frontend command. The analysis reveals:
+
+    **Frontend Architecture Patterns:**
+    {frontend_architecture_summary}
+
+    **Component System:**
+    {component_system_summary}
+
+    **Styling Patterns:**
+    {styling_patterns_summary}
+
+    **Design System Usage:**
+    {design_system_summary}
+
+    **Accessibility Standards:**
+    {accessibility_standards}
+
+    Generated: `frontend-patterns.md` with complete frontend pattern analysis including:
+    - shadcn/ui component patterns with Radix primitives
+    - Tailwind CSS utility patterns and custom component classes
+    - Responsive design breakpoints and mobile-first approaches
+    - Animation and interaction patterns
+    - Accessibility implementations (ARIA, semantic HTML)
+    - Design token usage and theme system integration
+
+    Please proceed with UI-focused user story generation, ensuring stories emphasize visual outcomes,
+    interaction requirements, and frontend user experience goals.
+
+  user-story-generator-to-ui-ux-specialist: >-
+    I've analyzed the UI-focused backlog tasks and generated frontend-specific user stories:
+    {ui_user_stories_summary}
+
+    **Frontend Pattern Context:**
+    - Component System: shadcn/ui components following project patterns
+    - Styling: Tailwind CSS with existing design tokens
+    - Desktop Focus: 1920×1080 primary target (mobile later)
+    - Basic Interactions: Click, hover, focus states
+
+    Please create simple UI specifications focused on practical desktop implementation:
+    1. Basic component requirements (which shadcn/ui components to use)
+    2. Simple visual layout (ASCII diagram or basic description)
+    3. Desktop styling guidance following project patterns
+    4. Essential interactions (click handlers, basic hover states)
+    5. Functional requirements rather than pixel-perfect specs
+    Keep it simple and implementation-focused. Skip complex responsive and accessibility specs for now.
+
+  ui-ux-specialist-to-task-breakdown-specialist: >-
+    I have completed the simple UI design phase for the user stories.
+    The UI specification file (`ui-spec.md`) contains practical implementation guidance focused on desktop functionality.
+
+    Generated UI Specs:
+    {ui_spec_files_summary}
+
+    **UI Design Highlights:**
+    - Basic component requirements with shadcn/ui integration
+    - Simple visual layout and structure
+    - Desktop styling guidance following project patterns
+    - Essential interaction definitions
+    - Functional requirements focused on implementation
+
+    Your task is to break down these UI specifications into a comprehensive frontend implementation task.
+    Focus on creating a single task that covers all frontend concerns:
+
+    TASK BREAKDOWN REQUIREMENTS:
+    1. Tasks are already in `protocol-assets/shared/board/02.ready`
+    2. Create a single task folder:
+       - `ui-task-N/` for complete frontend implementation (components, styling, interactions, responsive design, and accessibility)
+    3. The task should be implementable by a frontend specialist without backend knowledge
+    4. Follow established component patterns and naming conventions
+    5. Ensure the task covers all frontend concerns in an organized, efficient manner
+    6. Include comprehensive implementation details that address shadcn/ui components, Tailwind styling, JavaScript interactions, responsive behavior, and accessibility compliance
+
+  task-breakdown-specialist-to-todo-manager: >-
+    I've successfully broken down the UI specifications into a frontend implementation task.
+    The task folder has been moved to `protocol-assets/shared/board/02.ready` with streamlined task structure.
+
+    Created task structure in protocol-assets/shared/board/02.ready:
+    {frontend_task_files_list}
+
+    Please analyze the frontend task description file and create a comprehensive `todos.md` file.
+    Generate actionable implementation todos organized by development phases:
+    1. **Component Development**: shadcn/ui implementation, props interface, composition patterns
+    2. **Styling Implementation**: Tailwind CSS, design tokens, responsive utilities, custom styles
+    3. **Interactive Features**: JavaScript interactions, animations, state management, event handling
+    4. **Responsive Design**: Breakpoint implementation, mobile-first approach, layout adaptations
+    5. **Accessibility Compliance**: ARIA implementation, keyboard navigation, screen reader testing
+
+    All todos should be implementable by a frontend developer without requiring backend changes, organized in a comprehensive file for efficient workflow execution.
+
+  workflow-completion: >-
+    UI-Only Backlog processing workflow completed successfully!
+
+    Summary of processed frontend work:
+    - Analyzed frontend patterns and component architecture
+    - Generated UI-focused user stories with visual acceptance criteria
+    - Created comprehensive `ui-spec.md` files with implementation designs
+    - Moved task folders to `protocol-assets/shared/board/02.ready`
+    - Created frontend task folder with comprehensive implementation todos
+    - Generated organized `todos.md` file covering all frontend development phases
+
+    All tasks are now ready for streamlined frontend implementation
+    and can be assigned to frontend developers without backend dependencies.

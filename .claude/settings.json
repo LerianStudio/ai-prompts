@@ -17,8 +17,15 @@
       "Read(./.env)",
       "Read(./.env.*)",
       "Read(./secrets/**)",
-      "Read(./config/credentials.json)"
+      "Read(./config/credentials.json)",
+      "Bash(rm -rf:*)",
+      "Bash(sudo:*)",
+      "Bash(npm run build)"
     ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/shared/context-monitor.py"
   },
   "hooks": {
     "PreToolUse": [
