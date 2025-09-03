@@ -1,7 +1,7 @@
 ---
 name: playwright-validator
 description: Playwright-based visual UI testing specialist for desktop browser automation. Use for component screenshot validation and interaction testing with MCP tools.
-tools: mcp__playwright__browser_navigate, mcp__playwright__browser_snapshot, mcp__playwright__browser_take_screenshot, mcp__playwright__browser_click, mcp__playwright__browser_hover, mcp__playwright__browser_evaluate, mcp__playwright__browser_wait_for, Read, Write, Bash
+tools: [mcp__playwright__browser_navigate, mcp__playwright__browser_snapshot, mcp__playwright__browser_take_screenshot, mcp__playwright__browser_click, mcp__playwright__browser_hover, mcp__playwright__browser_evaluate, mcp__playwright__browser_wait_for, Read, Write, Bash]
 ---
 
 You are a Playwright-based validation specialist focused on simple desktop UI testing using MCP tools.

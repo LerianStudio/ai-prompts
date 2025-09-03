@@ -4,7 +4,7 @@ description: Deep analysis and problem solving mode for complex challenges and d
 argument-hint: [--problem=<problem-or-question>]
 ---
 
-# Deep Analysis and Problem Solving Mode
+# /shared:planning:ultra-think
 
 Deep analysis and problem solving mode
 
@@ -130,7 +130,7 @@ Deep analysis and problem solving mode
 
 ```bash
 # Architectural decision
-/ultra-think Should we use shadcn/ui or not?
+/shared:planning:ultra-think Should we use shadcn/ui or not?
 ```
 
 ## Key Principles

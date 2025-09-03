@@ -1,22 +1,55 @@
 ---
 allowed-tools: Read(*), Glob(*), Grep(*), Bash(*), Write(*), Task(*)
 description: Extract and document domain knowledge, business logic, and architectural patterns from codebases
-argument-hint: [--path=<file-or-directory-path>]
+argument-hint: [--path=<file-or-directory-path>] [--git-scope=<scope>]
 ---
 
-# /knowledger-extract
+# /shared:documentation:knowledger-extract
 
 Extract and document domain knowledge, business logic, and architectural patterns from the specified codebase.
 
 ## Usage
 
 ```bash
-/knowledger-extract --path=<path>
+# Git-focused knowledge extraction (recommended for active development)
+/shared:documentation:knowledger-extract --git-scope=all-changes         # Extract knowledge from changed areas
+/shared:documentation:knowledger-extract --git-scope=branch              # Extract knowledge from feature branch
+/shared:documentation:knowledger-extract --git-scope=staged              # Extract knowledge from staged changes
+/shared:documentation:knowledger-extract --git-scope=last-commit         # Extract knowledge from last commit
+
+# Traditional path-based extraction
+/shared:documentation:knowledger-extract --path=src/                     # Extract from specific directory
+/shared:documentation:knowledger-extract --path=src/models/              # Extract from models directory
+/shared:documentation:knowledger-extract                                 # Extract from current directory
 ```
 
 **Arguments:**
 
-- `path`: File or directory path to analyze (optional, defaults to current directory)
+- `--path`: File or directory path to analyze (optional, defaults to current directory)
+- `--git-scope`: Git scope for focusing knowledge extraction on specific changes - staged|unstaged|all-changes|branch|last-commit|commit-range=<range>
+
+## Initial Setup
+
+### Git Scope Analysis (when --git-scope used)
+
+If `--git-scope` is specified:
+
+```bash
+# Source git utilities
+if ! source .claude/utils/git-utilities.sh; then
+    echo "Error: Could not load git utilities. Please ensure git-utilities.sh exists." >&2
+    exit 1
+fi
+
+# Process git scope (this function handles validation, stats, and file listing)
+target_files=$(process_git_scope "$git_scope")
+```
+
+**Git-Scope Knowledge Extraction Benefits:**
+- **Contextual Knowledge**: Focus on knowledge in areas you're actively developing
+- **Change Documentation**: Extract knowledge from newly implemented features or changes
+- **Incremental Learning**: Build knowledge base alongside code development
+- **Relevant Insights**: Avoid information overload from full-codebase analysis
 
 ## Instructions
 

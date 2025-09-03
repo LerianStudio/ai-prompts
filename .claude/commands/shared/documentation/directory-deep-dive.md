@@ -4,16 +4,16 @@ description: Analyze directory structure and create comprehensive CLAUDE.md docu
 argument-hint: [--directory-path=<path>]
 ---
 
-# Directory Deep Dive
+# /shared:documentation:directory-deep-dive
 
 Analyze directory structure, architecture patterns, and create comprehensive CLAUDE.md documentation
 
 ## Usage
 
 ```bash
-/directory-deep-dive                              # Analyze current directory
-/directory-deep-dive --directory-path=src/       # Analyze src directory
-/directory-deep-dive --directory-path=src/components  # Analyze components directory
+/shared:documentation:directory-deep-dive                              # Analyze current directory
+/shared:documentation:directory-deep-dive --directory-path=src/       # Analyze src directory
+/shared:documentation:directory-deep-dive --directory-path=src/components  # Analyze components directory
 ```
 
 ## Instructions

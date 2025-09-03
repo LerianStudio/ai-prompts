@@ -1,7 +1,7 @@
 ---
 name: tech-writer
 description: Technical writing and content creation specialist. Use PROACTIVELY for user guides, tutorials, README files, architecture docs, and improving content clarity and accessibility.
-tools: Read, Write, Edit, Grep
+tools: [Read, Write, Edit, Grep]
 model: sonnet
 ---
 

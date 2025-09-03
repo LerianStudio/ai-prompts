@@ -1,7 +1,7 @@
 ---
 name: react-performance-optimizer
 description: Specialist in React performance patterns, bundle optimization, and Core Web Vitals. Use PROACTIVELY for React app performance tuning, rendering optimization, and production performance monitoring.
-tools: Read, Write, Edit, Bash, Grep
+tools: [Read, Write, Edit, Bash, Grep]
 model: sonnet
 ---
 

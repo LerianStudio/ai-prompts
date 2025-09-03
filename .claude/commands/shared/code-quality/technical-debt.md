@@ -1,10 +1,10 @@
 ---
 allowed-tools: Bash(*), Read(*), Grep(*), Glob(*), LS(*), Task(*), TodoWrite(*), Write(*), MultiEdit(*), Edit(*)
 description: Assess and prioritize technical debt with actionable remediation strategies
-argument-hint: [--target=<project-path-or-component>]
+argument-hint: [--target=<project-path-or-component>] [--git-scope=<scope>] [--debt-trend]
 ---
 
-# /technical-debt
+# /shared:code-quality:technical-debt
 
 Assess and prioritize technical debt in the specified project or component with actionable remediation strategies.
 
@@ -23,16 +23,82 @@ This command performs comprehensive technical debt analysis across multiple dime
 ## Usage
 
 ```
-/technical-debt --target=<project-path-or-component>
+/shared:code-quality:technical-debt --target=<project-path-or-component>
 ```
 
 **Examples:**
 
-- `/technical-debt --target=.` (analyze entire project)
-- `/technical-debt --target=src/auth` (analyze auth module)
-- `/technical-debt --target=backend/api` (analyze API layer)
+```bash
+# Git-focused debt analysis (recommended for feature development)
+/shared:code-quality:technical-debt --git-scope=all-changes        # Analyze debt in current changes
+/shared:code-quality:technical-debt --git-scope=branch               # Analyze debt introduced in feature branch
+/shared:code-quality:technical-debt --git-scope=staged --debt-trend  # Compare staged changes debt vs existing
+
+# Traditional project-wide analysis
+/shared:code-quality:technical-debt --target=.                       # Analyze entire project
+/shared:code-quality:technical-debt --target=src/auth               # Analyze auth module
+/shared:code-quality:technical-debt --target=backend/api            # Analyze API layer
+
+# Combined approaches
+/shared:code-quality:technical-debt --git-scope=branch --target=src/ # Analyze branch changes in src/ only
+```
 
 ## Analysis Process
+
+### 0. Git Scope Analysis (when git options used)
+
+**Git-Focused Debt Analysis**:
+```bash
+# Validate git repository
+if ! git rev-parse --git-dir >/dev/null 2>&1; then
+    echo "Error: Not a git repository. Git-focused options require a git repository." >&2
+    exit 1
+fi
+
+# Get target files based on git scope
+case "$git_scope" in
+    "staged")
+        target_files=$(git diff --cached --name-only --diff-filter=ACMR)
+        echo "## Technical Debt Analysis: Staged Files"
+        ;;
+    "branch")
+        base_branch=$(git merge-base HEAD main 2>/dev/null || git merge-base HEAD master 2>/dev/null)
+        target_files=$(git diff "$base_branch..HEAD" --name-only --diff-filter=ACMR)
+        echo "## Technical Debt Analysis: Feature Branch Changes"
+        ;;
+    "all-changes")
+        target_files=$(git diff HEAD --name-only --diff-filter=ACMR)
+        echo "## Technical Debt Analysis: All Uncommitted Changes"
+        ;;
+esac
+
+echo "Files in scope: $(echo "$target_files" | grep -c . 2>/dev/null || echo "0")"
+
+# Show debt trend comparison if requested
+if [[ "$debt_trend" == "true" ]]; then
+    echo ""
+    echo "### Debt Trend Analysis"
+    
+    # Compare complexity metrics between base and current
+    case "$git_scope" in
+        "branch")
+            echo "Comparing debt metrics: main branch vs current branch"
+            git diff --stat "$base_branch..HEAD"
+            ;;
+        "staged")
+            echo "Comparing debt metrics: working tree vs staged changes"
+            git diff --stat --cached
+            ;;
+    esac
+    
+    echo ""
+    echo "**New vs Existing Debt:**"
+    echo "- New debt: Issues introduced in changed files"
+    echo "- Modified debt: Existing debt in changed areas"
+    echo "- Inherited debt: Pre-existing issues in unchanged files"
+    echo ""
+fi
+```
 
 ### 1. Code Quality Assessment
 
@@ -361,6 +427,13 @@ echo "📝 TODO/FIXME count: $todo_count"
 - **Overall Health Score**: X/10
 - **Critical Issues**: Y items requiring immediate attention
 - **Estimated Effort**: Z story points to address high-priority items
+
+## Git Context (when using git-scope)
+
+- **Scope**: [git-scope value]
+- **Files Analyzed**: [number] of [total] files in repository
+- **Change Summary**: +[additions] -[deletions] lines
+- **Debt Category**: [New | Modified | Inherited] debt analysis
 
 ## Findings by Category
 

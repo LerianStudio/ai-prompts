@@ -1,16 +1,61 @@
 ---
 allowed-tools: Glob(*), Read(*), Edit(*), MultiEdit(*), Write(*), Grep(*), LS(*), Task(*)
 description: Intelligent documentation management that analyzes changes and updates all relevant docs
-argument-hint: [--mode=update|overview] [--focus=<docs>]
+argument-hint: [--mode=update|overview] [--focus=<docs>] [--git-scope=<scope>]
 ---
 
-# Documentation Manager
+# /shared:documentation:document
 
 I'll intelligently manage your project documentation by analyzing what actually happened and updating ALL relevant docs accordingly.
 
+## Usage Patterns
+
+```bash
+# Git-focused documentation (recommended for active development)
+/shared:documentation:document --git-scope=all-changes --mode=update     # Document recent changes
+/shared:documentation:document --git-scope=branch --mode=update          # Document feature branch changes
+/shared:documentation:document --git-scope=staged --mode=overview        # Overview docs for staged changes
+/shared:documentation:document --git-scope=last-commit                   # Document last commit changes
+
+# Traditional documentation modes
+/shared:documentation:document --mode=update --focus=API                 # Update API documentation
+/shared:documentation:document --mode=overview                           # Full documentation overview
+/shared:documentation:document --mode=update                             # Update all affected documentation
+```
+
+**Arguments:**
+
+- `--mode`: Documentation mode - update|overview (defaults to overview)
+- `--focus`: Specific documentation area to focus on
+- `--git-scope`: Git scope for focusing documentation on specific changes - staged|unstaged|all-changes|branch|last-commit|commit-range=<range>
+
+## Initial Setup
+
+### Git Scope Analysis (when --git-scope used)
+
+If `--git-scope` is specified:
+
+```bash
+# Source git utilities
+if ! source .claude/utils/git-utilities.sh; then
+    echo "Error: Could not load git utilities. Please ensure git-utilities.sh exists." >&2
+    exit 1
+fi
+
+# Process git scope (this function handles validation, stats, and file listing)
+target_files=$(process_git_scope "$git_scope")
+```
+
+**Git-Scope Documentation Benefits:**
+
+- **Targeted Updates**: Document only areas affected by recent changes
+- **Change Attribution**: Connect documentation updates to specific code changes
+- **Incremental Documentation**: Maintain documentation alongside development
+- **Workflow Integration**: Document as part of feature development and code review
+
 **My approach:**
 
-1. **Analyze our entire conversation** - Understand the full scope of changes
+1. **Analyze git changes** - Understand the specific scope of changes (when git-scope used)
 2. **Read ALL documentation files** - README, CHANGELOG, docs/\*, guides, everything
 3. **Identify what changed** - Features, architecture, bugs, performance, security, etc
 4. **Update EVERYTHING affected** - Not just one file, but all relevant documentation
@@ -201,21 +246,21 @@ I can manage:
 **After analyzing code:**
 
 ```bash
-/analyze-codebase && /document
+/shared:documentation:analyze-codebase && /shared:documentation:document
 # Analyzes entire codebase, then updates docs to match reality
 ```
 
 **After major refactoring:**
 
 ```bash
-/fix-imports && /refactor && /document
+/shared:code-quality:fix-imports && /shared:code-quality:refactor && /shared:documentation:document
 # Fixes imports, formats code, updates architecture docs
 ```
 
 **Before creating PR:**
 
 ```bash
-/code-review && /document
+/shared:code-quality:code-review && /shared:documentation:document
 # Reviews code, then ensures docs reflect any issues found
 ```
 

@@ -4,14 +4,14 @@ description: Summarize everything discussed in current chat conversation with st
 argument-hint: []
 ---
 
-# /summary
+# /shared:utils:summary
 
 Summarize everything discussed in the current chat conversation up to this message.
 
 ## Usage
 
 ```bash
-/summary
+/shared:utils:summary
 ```
 
 **Arguments:**
@@ -41,7 +41,7 @@ After generating the summary, save it using memory tools as the primary method:
    ```
 
 2. **Fallback: Save to file system** only if memory tools are unavailable:
-   `@protocol-assets/content/docs/summary/[descriptive-name].md`
+   `@protocol-assets/content/docs/shared:utils:summary/[descriptive-name].md`
 
 Choose a clear, descriptive title based on the main topic discussed.
 

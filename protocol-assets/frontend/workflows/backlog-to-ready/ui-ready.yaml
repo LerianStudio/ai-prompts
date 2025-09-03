@@ -1,17 +1,17 @@
 workflow:
   id: ui-ready
-  name: UI-Only Backlog to Ready (Pure Frontend Workflow)
+  name: UI-Only Backlog to Ready (@task-manager)
   description: >-
-    Specialized workflow for pure UI/frontend tasks that require no business logic changes.
+    Database-backed workflow for pure UI/frontend tasks using @task-manager system.
     Transforms UI-focused backlog items through design-first approach to create implementation-ready
-    UI component tasks with comprehensive visual specifications and frontend-specific implementation guides.
+    tasks with comprehensive visual specifications and structured todos.
 
   triggers:
     - task_type: 'ui'
     - labels:
         [
           'frontend',
-          'ui',
+          'ui', 
           'component',
           'design-system',
           'styling',
@@ -25,13 +25,12 @@ workflow:
     - ui-ux-specialist
     - frontend-developer
     - task-breakdown-specialist
-    - todo-manager
 
   steps:
     - id: frontend-pattern-discovery
       title: Analyze Frontend Patterns and Design System
       agent: frontend-developer
-      requires: protocol-assets/shared/board/01.backlog/*/description.md
+      requires: backlog_description.md (input requirement)
       creates: frontend-patterns.md
       action: Execute /analyze-frontend command to understand component patterns, design system, and UI conventions
       description: >
@@ -43,9 +42,9 @@ workflow:
       title: Generate UI-Focused User Stories
       agent: user-story-generator
       requires:
-        - protocol-assets/shared/board/01.backlog/*/description.md
+        - backlog_description.md
         - frontend-patterns.md
-      creates: ui-user-stories
+      creates: ui-user-stories (structured data)
       description: >
         Generate user stories specifically focused on UI/UX outcomes, visual requirements,
         and frontend user experience. Stories should emphasize visual acceptance criteria,
@@ -57,43 +56,34 @@ workflow:
       requires:
         - ui-user-stories
         - frontend-patterns.md
-      creates: protocol-assets/shared/board/02.ready/[task-number]/ui-spec.md
-      moves: protocol-assets/shared/board/01.backlog/[task-number] → protocol-assets/shared/board/02.ready/[task-number]
-      action: MOVE from protocol-assets/shared/board/01.backlog to protocol-assets/shared/board/02.ready (removes original)
+      creates: ui-spec.md (temporary file for task-breakdown-specialist)
       description: >-
         Create simple UI specifications focused on desktop implementation.
         Include basic component requirements, simple visual layout, essential styling guidance,
         and basic interactions. Follow project patterns and keep it practical.
 
-    - id: frontend-task-breakdown
-      title: Break Down UI Design into Frontend Implementation Tasks
+    - id: database-task-creation
+      title: Create Database-Backed Implementation Task
       agent: task-breakdown-specialist
       requires:
         - ui-user-stories
         - frontend-patterns.md
-        - protocol-assets/shared/board/02.ready/[task-number]/ui-spec.md
+        - ui-spec.md
         - docs/console/component-patterns.md
         - docs/console/coding-conventions.md
-      creates: protocol-assets/shared/board/02.ready/[task-number] folder with Frontend-specific task folders
-      # Tasks already in 02.ready - no additional move needed
-      structure: |
-        protocol-assets/shared/board/02.ready/task-N/
-        ├── description.md (original)
-        ├── ui-spec.md (comprehensive UI design)
-        ├── frontend-patterns.md (pattern analysis)
-        └── ui-task-1/ (frontend implementation)
-            ├── description.md
-            └── todos.md (organized implementation phases)
-
-    - id: frontend-todo-generation
-      title: Generate Frontend Implementation Todos
-      agent: todo-manager
-      requires:
-        - protocol-assets/shared/board/02.ready/[task-number]/ui-task-*/description.md files
-        - protocol-assets/shared/board/02.ready/[task-number]/ui-spec.md (complete UI design reference)
-        - protocol-assets/shared/board/02.ready/[task-number]/frontend-patterns.md (pattern analysis)
-        - docs/console/component-patterns.md
-      creates: todos.md file in ui-task folder
+      creates: task_id (from @task-manager.createTask)
+      action: Use @task-manager.createTask() to create database-backed task
+      description: >-
+        Create a comprehensive frontend implementation task in the database using @task-manager.
+        Include task description with UI specifications and structured todos organized by implementation phases:
+        - Component Development phase
+        - Styling Implementation phase  
+        - Interactive Features phase
+        - Responsive Design phase
+        - Accessibility Compliance phase
+        - Testing & Integration phase
+        
+        Return task_id for downstream workflow coordination.
 
 handoff_prompts:
   frontend-developer-to-user-story-generator: >-
@@ -157,45 +147,49 @@ handoff_prompts:
     - Essential interaction definitions
     - Functional requirements focused on implementation
 
-    Your task is to break down these UI specifications into a comprehensive frontend implementation task.
-    Focus on creating a single task that covers all frontend concerns:
+    **CRITICAL: Use @task-manager.createTask() instead of file operations**
 
-    TASK BREAKDOWN REQUIREMENTS:
-    1. Tasks are already in `protocol-assets/shared/board/02.ready`
-    2. Create a single task folder:
-       - `ui-task-N/` for complete frontend implementation (components, styling, interactions, responsive design, and accessibility)
-    3. The task should be implementable by a frontend specialist without backend knowledge
-    4. Follow established component patterns and naming conventions
-    5. Ensure the task covers all frontend concerns in an organized, efficient manner
-    6. Include comprehensive implementation details that address shadcn/ui components, Tailwind styling, JavaScript interactions, responsive behavior, and accessibility compliance
+    Your task is to create a comprehensive database-backed implementation task:
 
-  task-breakdown-specialist-to-todo-manager: >-
-    I've successfully broken down the UI specifications into a frontend implementation task.
-    The task folder has been moved to `protocol-assets/shared/board/02.ready` with streamlined task structure.
+    1. **Use @task-manager.createTask()** with:
+       - Title: "UI Implementation: {Story Name}"
+       - Description: Complete UI specification and implementation requirements
+       - Todos: Structured by implementation phases (18-24 todos total)
 
-    Created task structure in protocol-assets/shared/board/02.ready:
-    {frontend_task_files_list}
+    2. **Organize todos in logical phases:**
+       - Component Development (3-4 todos)
+       - Styling Implementation (3-4 todos)
+       - Interactive Features (3-4 todos)  
+       - Responsive Design (3-4 todos)
+       - Accessibility Compliance (3-4 todos)
+       - Testing & Integration (3-4 todos)
 
-    Please analyze the frontend task description file and create a comprehensive `todos.md` file.
-    Generate actionable implementation todos organized by development phases:
-    1. **Component Development**: shadcn/ui implementation, props interface, composition patterns
-    2. **Styling Implementation**: Tailwind CSS, design tokens, responsive utilities, custom styles
-    3. **Interactive Features**: JavaScript interactions, animations, state management, event handling
-    4. **Responsive Design**: Breakpoint implementation, mobile-first approach, layout adaptations
-    5. **Accessibility Compliance**: ARIA implementation, keyboard navigation, screen reader testing
+    3. **Return task_id** for downstream agents and workflows
 
-    All todos should be implementable by a frontend developer without requiring backend changes, organized in a comprehensive file for efficient workflow execution.
+    4. **No file system operations** - everything goes in the database
 
   workflow-completion: >-
-    UI-Only Backlog processing workflow completed successfully!
+    UI-Only Backlog processing workflow completed successfully using @task-manager!
 
     Summary of processed frontend work:
     - Analyzed frontend patterns and component architecture
     - Generated UI-focused user stories with visual acceptance criteria
-    - Created comprehensive `ui-spec.md` files with implementation designs
-    - Moved task folders to `protocol-assets/shared/board/02.ready`
-    - Created frontend task folder with comprehensive implementation todos
-    - Generated organized `todos.md` file covering all frontend development phases
+    - Created comprehensive UI specifications for implementation guidance
+    - **Created database-backed task via @task-manager.createTask()**
+    - **Generated structured todos organized by implementation phases**
+    - **Returned task_id: {task_id} for downstream coordination**
 
-    All tasks are now ready for streamlined frontend implementation
-    and can be assigned to frontend developers without backend dependencies.
+    **Key Benefits of New System:**
+    - ✅ Reliable database storage vs fragile file operations
+    - ✅ Atomic task operations with transaction safety
+    - ✅ Centralized progress tracking across all agents
+    - ✅ Auto task completion when all todos finished
+    - ✅ Task_id-based coordination instead of file paths
+
+    **Next Steps:**
+    - Implementation agents receive task_id: {task_id}
+    - Use @task-manager.getTask(task_id) to access todos
+    - Progress tracked via @task-manager.completeTodoItem()
+    - Task status updates via @task-manager.updateTaskStatus()
+
+    The task is now ready for streamlined frontend implementation with full database backing!

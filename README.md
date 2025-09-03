@@ -6,10 +6,10 @@
 ███████╗ ███████╗ ██║  ██║ ██║ ██║  ██║ ██║ ╚████║
 ╚══════╝ ╚══════╝ ╚═╝  ╚═╝ ╚═╝ ╚═╝  ╚═╝ ╚═╝  ╚═══╝
 
-██████╗  ██████╗   ██████╗  ████████╗ ██████╗  ██████╗  ██████╗  ██╗     
-██╔══██╗ ██╔══██╗ ██╔═══██╗ ╚══██╔══╝ ██╔═══██╗██╔════╝ ██╔═══██╗ ██║     
-██████╔╝ ██████╔╝ ██║   ██║    ██║    ██║   ██║██║      ██║   ██║ ██║     
-██╔═══╝  ██╔══██╗ ██║   ██║    ██║    ██║   ██║██║      ██║   ██║ ██║     
+██████╗  ██████╗   ██████╗  ████████╗ ██████╗  ██████╗  ██████╗  ██╗
+██╔══██╗ ██╔══██╗ ██╔═══██╗ ╚══██╔══╝ ██╔═══██╗██╔════╝ ██╔═══██╗ ██║
+██████╔╝ ██████╔╝ ██║   ██║    ██║    ██║   ██║██║      ██║   ██║ ██║
+██╔═══╝  ██╔══██╗ ██║   ██║    ██║    ██║   ██║██║      ██║   ██║ ██║
 ██║      ██║  ██║ ╚██████╔╝    ██║    ╚██████╔╝╚██████╗ ╚██████╔╝ ███████╗
 ╚═╝      ╚═╝  ╚═╝  ╚═════╝     ╚═╝     ╚═════╝  ╚═════╝  ╚═════╝  ╚══════╝
 ```
@@ -43,7 +43,7 @@ The installer creates a complete AI-powered development environment:
 ### Modern Architecture System
 
 - **Domain Separation** - Frontend, backend, and shared component organization
-- **Service Layer** - Error handling, protocol asset management, and utility services  
+- **Service Layer** - Error handling, protocol asset management, and utility services
 - **Documentation System** - UI workflows, diagrams, and architecture documentation
 - **CLI Tooling** - Interactive terminal components with modern styling
 
@@ -51,8 +51,8 @@ The installer creates a complete AI-powered development environment:
 
 - **MCP Server Configurations** - Context7, Playwright, Fetch, Shadcn integrations
 - **Interactive CLI Components** - Modern terminal UI components with advanced styling
-- **Board System** - 3-stage kanban (backlog → ready → done) with workflow automation
-- **Workflow Definitions** - YAML-based process automation with task classification
+- **Database-Backed Task Management** - SQLite-based @task-manager system replacing fragile file operations
+- **Workflow Definitions** - YAML-based process automation with database integration
 - **Quality Validation** - Comprehensive standards and testing protocols
 
 ### 📁 Directory Structure
@@ -105,7 +105,7 @@ bin/                       # CLI Executables
 
 .mcp.json                  # MCP Server Configuration
 ├── context7               # Library documentation and code examples
-├── playwright             # Browser automation with screenshot validation  
+├── playwright             # Browser automation with screenshot validation
 ├── fetch                  # Web content retrieval capabilities
 └── shadcn                 # UI component generation
 ```
@@ -144,6 +144,13 @@ lerian-protocol install ./my-project
 
 ### Key Capabilities
 
+#### Database-Backed Task Management
+
+- **@task-manager MCP Tool** - Revolutionary database-backed task system replacing fragile file operations
+- **SQLite Database** - Reliable task state with atomic operations and transaction safety
+- **Automatic Completion** - Tasks auto-complete when all todos are finished
+- **Agent Coordination** - Task IDs enable seamless handoffs between specialized agents
+
 #### UI-First Development
 
 - **Visual Validation** - Playwright MCP screenshots with pixel-perfect comparison
@@ -151,12 +158,12 @@ lerian-protocol install ./my-project
 - **Quality Gates** - Visual similarity (95%), accessibility (100%), performance (90%)
 - **Multi-Viewport Testing** - Desktop and responsive validation
 
-#### Agent-Based Workflows
+#### Domain-Driven Architecture
 
-- **Multi-Agent Coordination** - Context-preserving handoffs between specialized agents
-- **Board Integration** - Kanban workflow with intelligent todo management
-- **YAML Workflow Definitions** - Declarative process automation
-- **Template System** - Reusable templates for consistent outputs
+- **Profile-Based Installation** - Frontend-only, backend-only, or full installation based on project needs
+- **Agent Specialization** - Domain-specific agents prevent overlap and ensure targeted expertise
+- **Asset Organization** - Protocol assets organized by domain (frontend/, backend/, shared/)
+- **Workflow Automation** - YAML workflows with database integration for complex multi-step processes
 
 #### MCP Server Ecosystem
 
@@ -167,18 +174,22 @@ lerian-protocol install ./my-project
 
 ## 📚 Key Components
 
-| Directory           | Purpose                   | Contents                                                      |
-| ------------------- | ------------------------- | ------------------------------------------------------------- |
-| `.claude/agents/`   | Specialized AI agents     | Frontend (React, UI/UX, Playwright) and Shared (Tech Writer, Todo)          |
-| `.claude/commands/` | 30+ development commands  | Frontend development commands and shared utility commands            |
-| `.claude/hooks/`    | Python automation hooks   | Frontend and shared automation hooks for testing, security, formatting     |
-| `.claude/frontend/` | Frontend configurations   | Frontend-specific settings and configurations                 |
-| `.claude/backend/`  | Backend configurations    | Backend-specific settings and configurations (structure created)                  |  
-| `.claude/shared/`   | Shared configurations     | Cross-domain utilities and shared configurations             |
-| `lib/`              | Core implementation       | Installer, services, components, sync system, utilities      |
-| `docs/`             | Project documentation     | UI workflows, diagrams, architecture documentation           |
-| `bin/`              | CLI executables           | Main CLI entry points and wrapper scripts                    |
-| `.mcp.json`         | MCP server configuration  | Context7, Playwright, Fetch, Shadcn integrations             |
+| Directory                            | Purpose                  | Contents                                                                     |
+| ------------------------------------ | ------------------------ | ---------------------------------------------------------------------------- |
+| `.claude/agents/`                    | Specialized AI agents    | Frontend (React, UI/UX, Playwright) and Shared (Tech Writer, Task Breakdown) |
+| `.claude/commands/`                  | 30+ development commands | Frontend development commands and shared utility commands                    |
+| `.claude/hooks/`                     | Python automation hooks  | Frontend and shared automation hooks for testing, security, formatting       |
+| `.claude/tools/`                     | MCP tool configurations  | @task-manager tool for database-backed task management                       |
+| `.claude/frontend/`                  | Frontend configurations  | Frontend-specific settings and configurations                                |
+| `.claude/backend/`                   | Backend configurations   | Backend-specific settings and configurations (structure created)             |
+| `.claude/shared/`                    | Shared configurations    | Cross-domain utilities and shared configurations                             |
+| `protocol-assets/lib/board-service/` | Task management service  | Node.js REST API with SQLite database for reliable task operations           |
+| `protocol-assets/lib/board-mcp/`     | Task management MCP tool | @task-manager MCP tool for agent integration                                 |
+| `protocol-assets/lib/`               | Core implementation      | Installer, services, components, sync system, utilities                      |
+| `docs/`                              | Project documentation    | Architecture, deployment guides, PRD, and workflow documentation             |
+| `protocol-assets/scripts/`           | Deployment scripts       | Service management, migration, and health monitoring tools                   |
+| `bin/`                               | CLI executables          | Main CLI entry points and wrapper scripts                                    |
+| `.mcp.json`                          | MCP server configuration | Context7, Playwright, Fetch, Shadcn integrations                             |
 
 ## Repository Structure
 
@@ -186,25 +197,28 @@ lerian-protocol install ./my-project
 ├── .claude/                     # Claude Code Native Integration
 │   ├── agents/                  # Domain-organized specialized AI agents
 │   │   ├── frontend/            # Frontend-specific agents (React, UI/UX, Playwright)
-│   │   └── shared/              # Cross-domain agents (Tech Writer, Todo Manager)
+│   │   └── shared/              # Cross-domain agents (Tech Writer, Task Breakdown)
 │   ├── commands/                # 30+ development commands by domain
 │   │   ├── frontend/            # Frontend development commands
 │   │   └── shared/              # Shared utility commands
 │   ├── hooks/                   # Python automation hooks by domain
 │   │   ├── frontend/            # Frontend-specific hooks
 │   │   └── shared/              # Shared automation hooks
+│   ├── tools/                   # MCP tool configurations
+│   │   └── task-manager.md      # @task-manager tool documentation
 │   ├── frontend/                # Frontend-specific configurations
 │   ├── backend/                 # Backend-specific configurations (structure created)
 │   ├── shared/                  # Shared configurations and utilities
 │   ├── CLAUDE.md                # Main configuration with collaboration guidelines
 │   └── settings.json            # Claude Code settings
-├── docs/                        # Project Documentation  
-│   ├── ui-task-flow-example.md  # Complete UI workflow examples
+├── docs/                        # Project Documentation
+│   ├── ARCHITECTURE.md          # Comprehensive architecture documentation
+│   ├── board-deployment.md      # Task management system deployment guide
+│   ├── prd.md                   # Product requirements document
 │   └── diagrams/                # Architecture and workflow diagrams
-├── bin/                         # CLI entry points and executables
-│   ├── lerian-protocol.js       # Main CLI entry point
-│   └── lerian-cli-wrapper.js    # CLI wrapper script
 ├── lib/                         # Core Implementation Library
+│   ├── board-service/           # Task Management Service (Node.js/Express/SQLite)
+│   ├── board-mcp/               # @task-manager MCP Tool
 │   ├── installer/               # Installation system components
 │   ├── services/                # Service layer (error handling, protocol assets)
 │   ├── components/              # Interactive CLI components
@@ -212,6 +226,17 @@ lerian-protocol install ./my-project
 │   ├── utils/                   # Shared utilities and helpers
 │   ├── config.js                # Configuration management
 │   └── installer.js             # Legacy installer (main entry)
+├── scripts/                     # Deployment and Management Scripts
+│   ├── start-task-service.sh    # Start task management service
+│   ├── stop-task-service.sh     # Stop task management service
+│   └── migrate-board-tasks.sh   # Migrate legacy tasks to database
+├── bin/                         # CLI entry points and executables
+│   ├── lerian-protocol.js       # Main CLI entry point
+│   └── lerian-cli-wrapper.js    # CLI wrapper script
+├── protocol-assets/             # Protocol Asset Organization (Domain-Based)
+│   ├── frontend/                # Frontend-specific assets and workflows
+│   ├── backend/                 # Backend-specific assets and workflows
+│   └── shared/                  # Cross-domain assets and standards
 ├── CHANGELOG.md                 # Version history and change tracking
 └── .mcp.json                    # MCP server configuration (Context7, Playwright, Fetch, Shadcn)
 ```

@@ -4,7 +4,7 @@ description: Answer questions about project structure and documentation without 
 argument-hint: [--question=<question>]
 ---
 
-# Question
+# /shared:utils:question
 
 Answer questions about the project structure and documentation by analyzing existing code and files. This command provides information and explanations without making any code changes.
 
@@ -61,16 +61,16 @@ This command is designed for information gathering and project understanding. It
 <examples>
 ```bash
 # Ask about project architecture
-/question --question="How is the authentication system structured?"
+/shared:utils:question --question="How is the authentication system structured?"
 
 # Understand component organization
-/question --question="Where are the React components located and how are they organized?"
+/shared:utils:question --question="Where are the React components located and how are they organized?"
 
 # Learn about configuration
-/question --question="What configuration files are used and what do they control?"
+/shared:utils:question --question="What configuration files are used and what do they control?"
 
 # Explore testing setup
-/question --question="How is testing set up in this project and what frameworks are used?"
+/shared:utils:question --question="How is testing set up in this project and what frameworks are used?"
 ```
 </examples>
 

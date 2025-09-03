@@ -1,38 +1,38 @@
 workflow:
   id: ui-subtask
-  name: UI-Only Implementation with Visual Validation (Frontend Phase 1)
+  name: UI-Only Implementation with Visual Validation (@task-manager)
   description: >-
-    Takes a UI sub-task from 02.ready, implements UI components without business logic using frontend-developer,
-    focuses on pure visual components, styling, and basic interactions, tracks progress with TodoWrite,
-    and moves through board states (ready → in-progress → completed). Phase 1 of two-phase frontend approach.
+    Database-backed workflow for UI implementation using @task-manager system.
+    Takes a task_id, implements UI components without business logic using frontend-developer,
+    focuses on pure visual components, styling, and basic interactions with centralized progress tracking.
 
   agents:
-    - todo-manager
     - frontend-developer
     - playwright-validator
 
   steps:
-    - id: load-and-move-ui-subtask
-      title: Load UI Sub-task Todos and Move to In-Progress
-      agent: todo-manager
-      requires: protocol-assets/shared/board/02.ready/[task]/ui-task-[N]/todos.md
-      creates: protocol-assets/shared/board/03.done/[task]/ui-task-[N]
-      action: MOVE from protocol-assets/shared/board/02.ready to protocol-assets/shared/board/03.done (removes original)
+    - id: load-and-start-ui-task
+      title: Load Task and Set to In-Progress
+      agent: frontend-developer
+      requires: task_id (input parameter)
+      creates: task details loaded from database
+      action: Use @task-manager.getTask() and @task-manager.updateTaskStatus(task_id, "in_progress")
       description: >-
-        Load UI-specific todos from ready phase and move task folder to in-progress board.
-        Initialize TodoWrite with UI implementation tasks focused on visual components,
-        styling, interactions, and user experience.
+        Load the UI implementation task from database and set status to in_progress.
+        Review task description for UI specifications and todo structure.
+        Understand the implementation phases and requirements.
 
     - id: implement-ui-only-todos
       title: Implement UI-Only Todos (Visual Components, Styling, Basic Interactions)
       agent: frontend-developer
       requires:
-        - protocol-assets/shared/board/03.done/[task]/ui-task-[N]/todos.md
-        - protocol-assets/shared/board/03.done/[task]/ui-spec.md (reference design)
+        - task_id with loaded task details
+        - ui specification from task description
       creates:
         - ui-component-implementations
-        - styling-implementations
+        - styling-implementations  
         - basic-interaction-code
+      action: Use @task-manager.completeTodoItem() for each completed todo
       description: >-
         Implement UI todos sequentially focusing ONLY on visual presentation:
         - UI component structure and markup
@@ -41,104 +41,136 @@ workflow:
         - Accessibility implementation (ARIA, semantic HTML)
         - Visual validation against design specifications
         - NO business logic, API integration, or state management
+        
+        Progress tracking via @task-manager.completeTodoItem(task_id, todoContent) for each completed todo.
+        Task will auto-complete when all todos are finished.
 
     - id: playwright-validation
       title: Simple Playwright Screenshot Validation
       agent: playwright-validator
       requires:
         - ui-implementation-code
-        - protocol-assets/shared/board/03.done/[task]/ui-spec.md
+        - task_id for accessing UI specifications
       creates:
         - playwright-screenshots
       description: >-
         Use Playwright MCP to take screenshots of implementation.
+        Get UI specifications from task description via @task-manager.getTask().
         Compare against design specs for basic visual validation.
         Focus on desktop functionality only.
 
-    - id: finalize-and-move-ui-completed
-      title: Update Final UI Progress and Move to Completed
-      agent: todo-manager
+    - id: verify-task-completion
+      title: Verify Task Completion Status
+      agent: frontend-developer
       requires:
         - ui-implementation-code
         - playwright-screenshots
-      creates: protocol-assets/shared/board/03.done/[task]/ui-task-[N]
-      action: MOVE from protocol-assets/shared/board/03.done to protocol-assets/shared/board/03.done (removes original)
+        - task_id
+      creates: final task status verification
+      action: Use @task-manager.getTask() to verify all todos completed
       description: >-
-        Update todos.md with completion status and move to completed board.
+        Verify that all todos have been completed and task status is "completed".
+        If not all todos are done, identify remaining work and complete it.
+        Ensure task automatically transitioned to completed status.
 
 handoff_prompts:
-  todo-manager-to-frontend-developer: >-
-    I've loaded the UI sub-task todos and MOVED (not copied) the folder from 02.ready to 03.done. 
-    The original folder has been removed from 02.ready. The UI-specific todos have been loaded into TodoWrite 
-    for active management during UI implementation.
+  workflow-start-to-frontend-developer: >-
+    **DATABASE-BACKED UI IMPLEMENTATION WORKFLOW**
+    
+    Input: task_id = {task_id}
+    
+    Your task: Implement UI-only components using the @task-manager system:
+    
+    1. **Load Task**: Use @task-manager.getTask(task_id) to get task details, UI specs, and todos
+    2. **Set Status**: Use @task-manager.updateTaskStatus(task_id, "in_progress") to start work
+    3. **Review Structure**: Understand the todo phases:
+       - Component Development phase
+       - Styling Implementation phase
+       - Interactive Features phase
+       - Responsive Design phase  
+       - Accessibility Compliance phase
+       - Testing & Integration phase
+    
+    4. **Implementation Loop**: For each todo:
+       - Implement the specific requirement
+       - Use @task-manager.completeTodoItem(task_id, todoContent) to mark done
+       - Continue to next todo
+    
+    5. **UI-Only Focus**: NO business logic, API calls, or complex state management
+    6. **Progress Tracking**: All progress centralized in database, no file operations needed
+    
+    The task will automatically complete when all todos are finished.
 
-    UI Sub-task details:
-    - Location: protocol-assets/shared/board/03.done/[task]/ui-task-[N]/
-    - Original location REMOVED: protocol-assets/shared/board/02.ready/[task]/ui-task-[N]/ ✅
-    - UI Design Reference: protocol-assets/shared/board/03.done/[task]/ui-spec.md
-    - Total UI todos: {total_ui_todos}
-    - Ready for UI implementation: {pending_ui_todos}
-
-    Your task: Implement all UI todos sequentially with visual validation using TodoWrite to track progress:
-    1. Mark each UI todo as "in_progress" when you start working on it
-    2. Implement UI components, styling, interactions, and visual elements
-    3. For complex visual components, integrate ui-first-development workflow for pixel-perfect validation
-    4. Use reference designs from ui-spec.md to ensure visual fidelity
-    5. Mark todo as "completed" when UI implementation is finished and visually validated
-    6. Continue to next UI todo until all are implemented
-
-    Focus on creating pixel-perfect, accessible, responsive UI implementations that match the design specifications.
-
-    CRITICAL: Ensure all steps use MOVE operations (mv command), not COPY operations (cp command).
-
-  frontend-developer-to-playwright-validator: >
-    I've completed implementing all UI-only todos focusing purely on visual presentation.
+  frontend-developer-to-playwright-validator: >-
+    I've completed implementing all UI-only todos using the @task-manager system.
     No business logic, API integration, or state management has been implemented - only pure UI.
+
+    **Task Details:**
+    - Task ID: {task_id}
+    - Implementation Status: All todos completed via @task-manager.completeTodoItem()
+    - Task Status: {current_task_status}
 
     **UI-Only Implementation Summary:**
     - UI Components: {ui_component_implementations_summary}
-    - Styling: {styling_implementations_summary}
+    - Styling: {styling_implementations_summary}  
     - Basic Interactions: {basic_interactions_summary}
     - Accessibility: {accessibility_implementations_summary}
 
     Please use Playwright MCP to validate the UI-only implementation:
-    1. Take screenshots of implemented UI components
-    2. Compare visual presentation against ui-spec.md
-    3. Verify basic interactions work (hover, focus, click - no business logic)
-    4. Focus on desktop functionality and visual correctness
-    5. Confirm NO business logic is present - pure UI only
+    1. Use @task-manager.getTask({task_id}) to access UI specifications
+    2. Take screenshots of implemented UI components
+    3. Compare visual presentation against UI specs in task description
+    4. Verify basic interactions work (hover, focus, click - no business logic)
+    5. Focus on desktop functionality and visual correctness
+    6. Confirm NO business logic is present - pure UI only
 
     Keep validation simple - verify UI looks correct and basic interactions respond.
 
-  playwright-validator-to-todo-manager: >
+  playwright-validator-to-workflow-completion: >-
     Simple Playwright validation completed using MCP tools.
 
+    **Task ID: {task_id}**
+    - Accessed task specifications via @task-manager.getTask()
     - Took desktop screenshots of implemented components
-    - Verified basic visual correctness against design specs
+    - Verified basic visual correctness against design specs from task description
     - Confirmed functional interactions work properly
+    - Verified NO business logic present - pure UI implementation only
 
-    Please finalize the task and move to completed board.
+    Task validation complete. All UI components implemented according to specifications.
 
   workflow-completion: >-
-    UI-Only Sub-task implementation workflow completed successfully! (Phase 1 of 2)
+    UI-Only Implementation workflow completed successfully using @task-manager!
 
-    Summary of Phase 1 UI-only implementation:
-    - Loaded UI sub-task todos directly from files using Read tool
-    - MOVED (not copied) UI sub-task through board states: protocol-assets/shared/board/02.ready → protocol-assets/shared/board/03.done → protocol-assets/shared/board/03.done
-    - Verified original folders are REMOVED from previous locations after each move
-    - Implemented all UI-only todos with TodoWrite progress tracking
+    **Task Summary:**
+    - Task ID: {task_id}
+    - Final Status: {final_task_status}
+    - Total Todos: {total_todos}
+    - Completed Todos: {completed_todos}
+
+    **Database-Backed Benefits Achieved:**
+    - ✅ Reliable progress tracking vs fragile file operations
+    - ✅ Atomic todo completion with transaction safety
+    - ✅ Centralized task state visible to all agents
+    - ✅ Auto task completion when all todos finished
+    - ✅ No file system dependencies or mv operations
+    - ✅ Task_id-based coordination across workflow steps
+
+    **Implementation Results:**
     - Created pixel-perfect, accessible, responsive UI components (NO business logic)
     - Focused purely on visual presentation, styling, and basic interactions
     - Performed visual validation using Playwright MCP tools
-    - Updated todos.md files with UI-only completion status
+    - All progress tracked in centralized database
 
-    **Phase 1 Completion Verification:**
-    - UI sub-task exists ONLY in protocol-assets/shared/board/03.done/
+    **Phase 1 Complete:**
     - UI components implemented with NO business logic ✅
-    - Visual presentation matches design specifications ✅
+    - Visual presentation matches design specifications ✅  
     - Basic interactions functional (no business logic) ✅
     - Ready for Phase 2 logic integration ✅
 
-    **Next Phase:** The completed UI-only implementation is ready for Phase 2 logic integration
-    through ui-logic-subtask workflow, which will connect business logic to these pure UI components
-    while maintaining the established visual presentation and component structure.
+    **Next Steps:**
+    The task is ready for Phase 2 logic integration. Implementation agents can:
+    - Access task via @task-manager.getTask({task_id})
+    - Add business logic to existing pure UI components
+    - Continue progress tracking with additional todos if needed
+    
+    The robust database backing ensures reliable coordination for complex multi-phase workflows!

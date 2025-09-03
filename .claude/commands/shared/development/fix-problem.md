@@ -1,10 +1,10 @@
 ---
 allowed-tools: Bash(*), Read(*), Edit(*), Grep(*), Task(*), TodoWrite(*)
 description: Unified problem resolution with multiple sources for error messages, issue files, or descriptions
-argument-hint: --source=error|issue|description --input=<error-message-file-path-or-description>
+argument-hint: --source=error|issue|description --input=<error-message-file-path-or-description> [--git-scope=<scope>]
 ---
 
-# /fix-problem
+# /shared:development:fix-problem
 
 Unified problem resolution command supporting multiple input sources for comprehensive debugging and issue resolution.
 
@@ -16,20 +16,49 @@ Problem resolution involves systematic investigation across different input type
 ## Usage Patterns
 
 ```bash
-/fix-problem --source=error --input="TypeError: Cannot read property 'id' of undefined"
-/fix-problem --source=issue --input=issues/bug-report.md
-/fix-problem --source=description --input="API returns 500 on user login"
-/fix-problem --source=error --input="Memory leak in production after 24 hours"
-/fix-problem --source=issue --input=/path/to/issue.md
+# Git-focused problem resolution (recommended for active development)
+/shared:development:fix-problem --source=error --input="TypeError: Cannot read property 'id' of undefined" --git-scope=all-changes
+/shared:development:fix-problem --source=description --input="API returns 500 on user login" --git-scope=branch
+/shared:development:fix-problem --source=issue --input=issues/bug-report.md --git-scope=staged
+
+# Traditional problem resolution
+/shared:development:fix-problem --source=error --input="TypeError: Cannot read property 'id' of undefined"
+/shared:development:fix-problem --source=issue --input=issues/bug-report.md
+/shared:development:fix-problem --source=description --input="API returns 500 on user login"
+/shared:development:fix-problem --source=error --input="Memory leak in production after 24 hours"
 ```
 
 **Arguments:**
 
 - `--source`: Problem source type - error|issue|description (required)
 - `--input`: Error message, issue file path, or problem description (required)
+- `--git-scope`: Git scope for focusing problem analysis on specific changes - staged|unstaged|all-changes|branch|last-commit|commit-range=<range> (optional)
   </context>
 
 <instructions>
+## Initial Setup
+
+### Git Scope Analysis (when --git-scope used)
+
+If `--git-scope` is specified:
+
+```bash
+# Source git utilities
+if ! source .claude/utils/git-utilities.sh; then
+    echo "Error: Could not load git utilities. Please ensure git-utilities.sh exists." >&2
+    exit 1
+fi
+
+# Process git scope (this function handles validation, stats, and file listing)
+target_files=$(process_git_scope "$git_scope")
+```
+
+**Git-Scope Problem Resolution Benefits:**
+- **Contextual Investigation**: Focus problem analysis on recently changed code where issues are likely introduced
+- **Efficient Debugging**: Narrow investigation scope to relevant files and areas
+- **Change Attribution**: Connect problems to specific changes, commits, or features
+- **Root Cause Analysis**: Analyze how recent changes might have introduced or exposed the problem
+
 ## Source-Based Processing
 
 ### Error Source Mode
@@ -85,7 +114,7 @@ Problem resolution involves systematic investigation across different input type
 ### Error Source Example
 
 ```bash
-/fix-problem --source=error --input="TypeError: Cannot read property 'id' of undefined"
+/shared:development:fix-problem --source=error --input="TypeError: Cannot read property 'id' of undefined"
 ```
 
 **Process Flow**:
@@ -107,7 +136,7 @@ Problem resolution involves systematic investigation across different input type
 ### Issue Source Example
 
 ```bash
-/fix-problem --source=issue --input=issues/login-bug-report.md
+/shared:development:fix-problem --source=issue --input=issues/login-bug-report.md
 ```
 
 **Expected Issue File Format**:
@@ -163,7 +192,7 @@ Button click has no effect, user remains on login page
 ### Description Source Example
 
 ```bash
-/fix-problem --source=description --input="Users report slow page loading after recent deployment"
+/shared:development:fix-problem --source=description --input="Users report slow page loading after recent deployment"
 ```
 
 **Process Flow**:

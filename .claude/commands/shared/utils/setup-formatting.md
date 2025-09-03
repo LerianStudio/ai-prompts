@@ -4,7 +4,7 @@ description: Setup code formatting tools and configuration for consistent code s
 argument-hint: [--project-type=<type>]
 ---
 
-# Setup Formatting Command
+# /shared:utils:setup-formatting
 
 Setup code formatting tools and configuration
 

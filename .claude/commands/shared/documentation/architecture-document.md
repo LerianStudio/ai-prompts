@@ -5,7 +5,7 @@ description: Generate comprehensive architecture documentation with diagrams, AD
 model: sonnet
 ---
 
-# Architecture Documentation Generator
+# /shared:documentation:architecture-document
 
 Generate comprehensive architecture documentation: $ARGUMENTS
 

@@ -4,7 +4,7 @@ description: Create a new custom command file with proper Anthropic slash comman
 argument-hint: --name=<command-name> --description=<brief-description>
 ---
 
-# Create Custom Command
+# /shared:utils:create-command
 
 Create a new custom command file following official Anthropic slash command standards.
 
@@ -57,7 +57,7 @@ Explain how to use the command and what it accomplishes.
 ## Examples
 
 ```bash
-/command-name --param=example-argument
+/shared:utils:command-name --param=example-argument
 ```
 ````
 
@@ -66,7 +66,7 @@ Expected output or behavior description.
 ```
 
 ### 4. Save and Validate
-- Save to `.claude/commands/[command-name].md`
+- Save to `.claude/commands/[subdirectory]/[command-name].md`
 - Validate frontmatter syntax
 - Test argument hint formatting
 - Confirm tool permissions align with functionality

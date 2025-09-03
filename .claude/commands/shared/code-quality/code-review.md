@@ -1,27 +1,75 @@
 ---
 allowed-tools: Read(*), Grep(*), LS(*), Bash(*), Task(*)
 description: Comprehensive code quality review with actionable recommendations and git diff analysis
-argument-hint: [--target=<directory-or-file>]
+argument-hint: [--target=<directory-or-file>] [--git-scope=<scope>] [--diff-context]
 ---
 
-# Comprehensive Code Quality Review
+# /shared:code-quality:code-review
 
 Perform comprehensive code quality review with security, performance, and maintainability analysis.
 
 ## Usage
 
 ```bash
-/code-review                                    # Review entire repository using git diff
-/code-review --target=src/                     # Focus on specific directory
-/code-review --target=src/api/users.ts         # Review specific file
-/code-review --target=src/components/          # Review component directory
+# Git-focused review (recommended for active development)
+/shared:code-quality:code-review --git-scope=all-changes          # Review all git changes
+/shared:code-quality:code-review --git-scope=staged                 # Review staged files only
+/shared:code-quality:code-review --git-scope=branch                 # Review feature branch changes
+/shared:code-quality:code-review --git-scope=all-changes --diff-context # Review changes with git diff context
+
+# Traditional scope-based review
+/shared:code-quality:code-review                                    # Review entire repository
+/shared:code-quality:code-review --target=src/                     # Focus on specific directory
+/shared:code-quality:code-review --target=src/api/users.ts         # Review specific file
+/shared:code-quality:code-review --target=src/components/          # Review component directory
+
+# Combined approaches
+/shared:code-quality:code-review --git-scope=branch --target=src/  # Review branch changes in src/ only
 ```
 
 ## Review Process
 
 ### 1. Initial Analysis
 
-- Run `git diff` to identify recent changes for focused review
+**Git-Focused Analysis** (when `--git-scope` used):
+```bash
+# Validate git repository and get target files
+if ! git rev-parse --git-dir >/dev/null 2>&1; then
+    echo "Error: Not a git repository. Git-focused options require a git repository." >&2
+    exit 1
+fi
+
+# Show git scope statistics
+echo "## Git Changes Analysis"
+case "$git_scope" in
+    "staged")
+        echo "Reviewing staged files only"
+        git diff --cached --stat
+        ;;
+    "branch")
+        echo "Reviewing feature branch changes vs main/master"
+        base_branch=$(git merge-base HEAD main 2>/dev/null || git merge-base HEAD master 2>/dev/null)
+        git diff --stat "$base_branch..HEAD"
+        ;;
+    "all-changes")
+        echo "Reviewing all uncommitted changes"
+        git diff --stat HEAD
+        ;;
+esac
+
+# Show diff context if requested
+if [[ "$diff_context" == "true" ]]; then
+    echo ""
+    echo "### Code Changes Context:"
+    git diff --unified=3 ${git_range} | head -50
+    if [[ $(git diff --unified=3 ${git_range} | wc -l) -gt 50 ]]; then
+        echo "... (truncated, use git diff for full context)"
+    fi
+    echo ""
+fi
+```
+
+**Traditional Analysis**:
 - Examine repository structure and identify framework/language
 - Check for configuration files (package.json, tsconfig.json, .eslintrc, etc.)
 - Review README and documentation for context
@@ -64,74 +112,151 @@ Perform comprehensive code quality review with security, performance, and mainta
 
 ## Output Format
 
+**IMPORTANT: All findings must be presented in structured tables for better visual clarity and organization.**
+
 ````markdown
 # Code Review Report
 
-## Summary
+## Executive Summary
 
-✅ **[X] files reviewed**  
-⚠️ **[Y] critical issues found**  
-💡 **[Z] suggestions for improvement**
+| Metric | Value | Status |
+|--------|-------|--------|
+| Files Reviewed | [X] files | ℹ️ |
+| Critical Issues | [Y] issues | 🔴 |
+| Warnings | [Z] issues | 🟡 |
+| Suggestions | [A] items | 🟢 |
+| Overall Score | [B]/10 | ✅/⚠️/❌ |
 
-## 🔴 Critical Issues (Must Fix)
+## Git Analysis (when using git-scope)
 
-### 1. [Issue Title]
+| Property | Value |
+|----------|-------|
+| **Scope** | [git-scope value] |
+| **Files in Scope** | [number of files] |
+| **Lines Changed** | +[additions] -[deletions] |
+| **Commits Reviewed** | [commit range] |
+| **Branch** | [current branch] |
 
-**File**: `path/to/file.js:line`  
-**Severity**: 🔴 Critical  
-**Issue**: [Description]
+## 🔴 Critical Issues (Must Fix Immediately)
 
-```javascript
-// Current (vulnerable):
-[problematic code]
+| # | File | Line | Issue | Severity | Impact |
+|---|------|------|-------|----------|--------|
+| 1 | `path/to/file.js` | 45 | [Brief description] | 🔴 Critical | [Impact summary] |
+| 2 | `path/to/other.ts` | 128 | [Brief description] | 🔴 Critical | [Impact summary] |
 
-// Fixed:
-[corrected code]
-```
+### Detailed Critical Issues
 
-**Impact**: [What happens if not fixed]
+**For each critical issue, provide:**
 
-## 🟡 Warnings (Should Fix)
+| Issue | Details |
+|-------|---------|
+| **File** | `path/to/file.js:45` |
+| **Category** | Security/Performance/Logic |
+| **Description** | [Detailed explanation] |
+| **Current Code** | ```javascript<br/>[problematic code]<br/>``` |
+| **Recommended Fix** | ```javascript<br/>[corrected code]<br/>``` |
+| **Risk Level** | High/Medium/Low |
+| **Effort Required** | 1-5 story points |
 
-### 1. [Warning Title]
+## 🟡 Warnings (Should Address Soon)
 
-**File**: `path/to/file.js:line`  
-**Severity**: 🟡 Medium  
-**Issue**: [Description]
+| # | File | Line | Issue | Category | Priority |
+|---|------|------|-------|----------|----------|
+| 1 | `src/utils.js` | 23 | [Description] | Code Quality | High |
+| 2 | `src/api.ts` | 67 | [Description] | Performance | Medium |
+| 3 | `src/helpers.js` | 145 | [Description] | Maintainability | Medium |
 
-```javascript
-[suggested improvement]
-```
+## 🟢 Suggestions (Nice to Have)
 
-## 🟢 Suggestions (Consider Improving)
-
-### 1. [Suggestion Title]
-
-**File**: `path/to/file.js`  
-**Severity**: 🟢 Low
-
-[Improvement description and example]
+| # | File | Area | Suggestion | Benefit | Effort |
+|---|------|------|------------|---------|--------|
+| 1 | `src/components/` | React | Implement useCallback | Performance | Low |
+| 2 | `src/types/` | TypeScript | Add stricter types | Type Safety | Medium |
+| 3 | `src/utils/` | Architecture | Extract common utilities | Maintainability | Low |
 
 ## Code Quality Metrics
 
-| Metric        | Score | Target | Status   |
-| ------------- | ----- | ------ | -------- |
-| Complexity    | X.X   | <10    | ✅/⚠️/❌ |
-| Duplication   | X.X%  | <5%    | ✅/⚠️/❌ |
-| Test Coverage | XX%   | >80%   | ✅/⚠️/❌ |
-| Type Coverage | XX%   | >95%   | ✅/⚠️/❌ |
+| Metric | Current | Target | Status | Trend |
+|--------|---------|--------|--------|-------|
+| **Cyclomatic Complexity** | X.X | <10 | ✅/⚠️/❌ | ↗️/→/↘️ |
+| **Code Duplication** | X.X% | <5% | ✅/⚠️/❌ | ↗️/→/↘️ |
+| **Test Coverage** | XX% | >80% | ✅/⚠️/❌ | ↗️/→/↘️ |
+| **Type Coverage** | XX% | >95% | ✅/⚠️/❌ | ↗️/→/↘️ |
+| **Bundle Size** | XXkB | <500kB | ✅/⚠️/❌ | ↗️/→/↘️ |
+| **Performance Score** | XX/100 | >90 | ✅/⚠️/❌ | ↗️/→/↘️ |
+
+## Security Analysis
+
+| Check | Result | Details |
+|-------|--------|---------|
+| **Input Validation** | ✅/⚠️/❌ | [Summary of findings] |
+| **Authentication** | ✅/⚠️/❌ | [Summary of findings] |
+| **Authorization** | ✅/⚠️/❌ | [Summary of findings] |
+| **Data Sanitization** | ✅/⚠️/❌ | [Summary of findings] |
+| **Dependency Vulnerabilities** | ✅/⚠️/❌ | [Summary of findings] |
+| **Secrets Exposure** | ✅/⚠️/❌ | [Summary of findings] |
+| **OWASP Compliance** | ✅/⚠️/❌ | [Summary of findings] |
+
+## Performance Analysis
+
+| Area | Score | Issues Found | Recommendations |
+|------|-------|--------------|-----------------|
+| **Algorithm Efficiency** | X/10 | [count] issues | [Key recommendations] |
+| **Memory Usage** | X/10 | [count] issues | [Key recommendations] |
+| **Database Queries** | X/10 | [count] issues | [Key recommendations] |
+| **Bundle Optimization** | X/10 | [count] issues | [Key recommendations] |
+| **Async Operations** | X/10 | [count] issues | [Key recommendations] |
+
+## File-by-File Analysis
+
+| File | Issues | Warnings | Suggestions | Score | Priority |
+|------|--------|----------|-------------|-------|----------|
+| `src/app.js` | 0 | 2 | 1 | 8.5/10 | Medium |
+| `src/api/users.js` | 1 | 1 | 3 | 6.2/10 | High |
+| `src/components/Header.tsx` | 0 | 0 | 2 | 9.1/10 | Low |
+
+## Testing Analysis
+
+| Test Category | Coverage | Quality | Missing Areas |
+|---------------|----------|---------|---------------|
+| **Unit Tests** | XX% | Good/Fair/Poor | [List of uncovered areas] |
+| **Integration Tests** | XX% | Good/Fair/Poor | [List of uncovered areas] |
+| **E2E Tests** | XX% | Good/Fair/Poor | [List of uncovered areas] |
+| **Security Tests** | XX% | Good/Fair/Poor | [List of uncovered areas] |
 
 ## ✨ Positive Findings
 
-- [Strong points observed]
-- [Good patterns identified]
-- [Commendable practices]
+| Category | Finding | Impact |
+|----------|---------|---------|
+| **Architecture** | [Strong point observed] | [Benefit description] |
+| **Code Quality** | [Good pattern identified] | [Benefit description] |
+| **Security** | [Commendable practice] | [Benefit description] |
+| **Performance** | [Optimization found] | [Benefit description] |
 
-## Action Items
+## Action Plan
 
-1. **Immediate**: [Critical security/bug fixes]
-2. **This Sprint**: [Important improvements]
-3. **Technical Debt**: [Long-term refactoring]
+| Priority | Task | Files Affected | Estimated Effort | Owner |
+|----------|------|----------------|------------------|--------|
+| **🔴 Immediate** | Fix SQL injection in users API | `src/api/users.js` | 2 hours | Backend Dev |
+| **🔴 Immediate** | Add authentication middleware | `src/routes/admin.js` | 1 hour | Backend Dev |
+| **🟡 This Sprint** | Improve test coverage | `src/utils/`, `src/api/` | 1 day | QA Team |
+| **🟡 This Sprint** | Refactor duplicate code | `src/components/` | 4 hours | Frontend Dev |
+| **🟢 Next Sprint** | Add TypeScript strict mode | All `.js` files | 2 days | Full Team |
+
+## Recommended Next Steps
+
+1. **Immediate Actions** (< 1 day)
+   - Address all critical security issues
+   - Fix blocking bugs
+
+2. **Short Term** (This Sprint)
+   - Resolve high-priority warnings
+   - Improve test coverage to >80%
+
+3. **Long Term** (Next Sprint+)
+   - Technical debt reduction
+   - Performance optimizations
+   - Documentation improvements
 ````
 
 ## Review Categories
@@ -199,54 +324,87 @@ Perform comprehensive code quality review with security, performance, and mainta
 ## Example Output
 
 ````markdown
-# Code Review Report: src/api/
+# Code Review Report: Git Changes (branch scope)
 
-## Summary
+## Executive Summary
 
-✅ **12 files reviewed**  
-⚠️ **2 critical issues found**  
-💡 **8 suggestions for improvement**
+| Metric | Value | Status |
+|--------|-------|--------|
+| Files Reviewed | 12 files (from 47 total in branch) | ℹ️ |
+| Critical Issues | 2 issues | 🔴 |
+| Warnings | 5 issues | 🟡 |
+| Suggestions | 8 items | 🟢 |
+| Overall Score | 7.4/10 | ⚠️ |
 
-## 🔴 Critical Issues (Must Fix)
+## Git Analysis
 
-### 1. SQL Injection Vulnerability
+| Property | Value |
+|----------|-------|
+| **Scope** | branch (feature/user-auth vs main) |
+| **Files in Scope** | 12 files |
+| **Lines Changed** | +247 -89 |
+| **Commits Reviewed** | 3 commits (a1b2c3d..f4e5d6c) |
+| **Branch** | feature/user-auth |
 
-**File**: `src/api/users.js:45`  
-**Severity**: 🔴 Critical  
-**Issue**: Direct string concatenation in SQL query
+## 🔴 Critical Issues (Must Fix Immediately)
 
-```javascript
-// Current (vulnerable):
-const query = `SELECT * FROM users WHERE id = ${userId}`
+| # | File | Line | Issue | Severity | Impact |
+|---|------|------|-------|----------|--------|
+| 1 | `src/api/users.js` | 45 | SQL Injection vulnerability | 🔴 Critical | Arbitrary code execution |
+| 2 | `src/routes/admin.js` | 23 | Missing authentication check | 🔴 Critical | Unauthorized access |
 
-// Fixed:
-const query = 'SELECT * FROM users WHERE id = ?'
-db.query(query, [userId])
-```
+### Detailed Critical Issues
 
-**Impact**: Allows attackers to execute arbitrary SQL commands
+| Issue | Details |
+|-------|---------|
+| **File** | `src/api/users.js:45` |
+| **Category** | Security |
+| **Description** | Direct string concatenation in SQL query allows injection attacks |
+| **Current Code** | ```javascript<br/>const query = `SELECT * FROM users WHERE id = ${userId}`<br/>``` |
+| **Recommended Fix** | ```javascript<br/>const query = 'SELECT * FROM users WHERE id = ?'<br/>db.query(query, [userId])<br/>``` |
+| **Risk Level** | High |
+| **Effort Required** | 1 story point |
 
-### 2. Missing Authentication Check
+| Issue | Details |
+|-------|---------|
+| **File** | `src/routes/admin.js:23` |
+| **Category** | Security |
+| **Description** | Admin endpoint lacks authentication middleware |
+| **Current Code** | ```javascript<br/>router.post('/admin/users', createUser)<br/>``` |
+| **Recommended Fix** | ```javascript<br/>router.post('/admin/users', authenticate, authorize('admin'), createUser)<br/>``` |
+| **Risk Level** | High |
+| **Effort Required** | 1 story point |
 
-**File**: `src/routes/admin.js:23`  
-**Severity**: 🔴 Critical  
-**Issue**: Admin endpoint lacks authentication middleware
+## 🟡 Warnings (Should Address Soon)
 
-```javascript
-// Add authentication middleware:
-router.post('/admin/users', authenticate, authorize('admin'), createUser)
-```
-
-**Impact**: Unauthorized access to admin functionality
+| # | File | Line | Issue | Category | Priority |
+|---|------|------|-------|----------|----------|
+| 1 | `src/utils/helpers.js` | 23 | Unused import statement | Code Quality | High |
+| 2 | `src/components/UserCard.tsx` | 67 | Missing error handling | Reliability | Medium |
+| 3 | `src/api/auth.js` | 145 | Hardcoded timeout values | Maintainability | Medium |
+| 4 | `src/types/user.ts` | 12 | Loose type definition | Type Safety | Medium |
+| 5 | `src/hooks/useAuth.ts` | 89 | Memory leak potential | Performance | Low |
 
 ## Code Quality Metrics
 
-| Metric        | Score | Target | Status |
-| ------------- | ----- | ------ | ------ |
-| Complexity    | 7.2   | <10    | ✅     |
-| Duplication   | 2.1%  | <5%    | ✅     |
-| Test Coverage | 76%   | >80%   | ⚠️     |
-| Type Coverage | 92%   | >95%   | ⚠️     |
+| Metric | Current | Target | Status | Trend |
+|--------|---------|--------|--------|-------|
+| **Cyclomatic Complexity** | 7.2 | <10 | ✅ | → |
+| **Code Duplication** | 2.1% | <5% | ✅ | ↘️ |
+| **Test Coverage** | 76% | >80% | ⚠️ | ↗️ |
+| **Type Coverage** | 92% | >95% | ⚠️ | → |
+| **Bundle Size** | 485kB | <500kB | ✅ | ↗️ |
+| **Performance Score** | 87/100 | >90 | ⚠️ | → |
+
+## Action Plan
+
+| Priority | Task | Files Affected | Estimated Effort | Owner |
+|----------|------|----------------|------------------|--------|
+| **🔴 Immediate** | Fix SQL injection vulnerability | `src/api/users.js` | 1 hour | Backend Dev |
+| **🔴 Immediate** | Add authentication middleware | `src/routes/admin.js` | 30 min | Backend Dev |
+| **🟡 This Sprint** | Remove unused imports | `src/utils/helpers.js` | 15 min | Any Dev |
+| **🟡 This Sprint** | Add error boundaries | `src/components/UserCard.tsx` | 2 hours | Frontend Dev |
+| **🟢 Next Sprint** | Improve test coverage to 80%+ | Multiple files | 1 day | QA Team |
 ````
 
 Remember to be constructive and provide specific examples with file paths and line numbers where applicable.

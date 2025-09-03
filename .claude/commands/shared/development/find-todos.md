@@ -1,17 +1,60 @@
 ---
 allowed-tools: Grep(*), TodoWrite(*), Bash(*)
 description: Find and organize TODO comments and unfinished work markers in the codebase
-argument-hint: [--pattern=<pattern>]
+argument-hint: [--pattern=<pattern>] [--git-scope=<scope>]
 ---
 
-# Find Development Tasks
+# /shared:development:find-todos
 
 I'll locate all TODO comments and unfinished work markers in your codebase.
 
+## Usage Patterns
+
+```bash
+# Git-focused TODO discovery (recommended for active development)
+/shared:development:find-todos --git-scope=all-changes               # Find TODOs in changed files
+/shared:development:find-todos --git-scope=staged                   # Find TODOs in staged files
+/shared:development:find-todos --git-scope=branch                   # Find TODOs in branch changes
+/shared:development:find-todos --git-scope=last-commit              # Find TODOs in last commit
+
+# Traditional pattern-based search
+/shared:development:find-todos --pattern="TODO|FIXME"               # Find specific patterns
+/shared:development:find-todos                                      # Find all TODO markers
+```
+
+**Arguments:**
+- `--pattern`: Custom search pattern for TODO markers (default: "TODO|FIXME|HACK|XXX|NOTE")
+- `--git-scope`: Git scope for focusing on specific changes - staged|unstaged|all-changes|branch|last-commit|commit-range=<range>
+
+## Initial Setup
+
+### Git Scope Analysis (when --git-scope used)
+
+If `--git-scope` is specified:
+
+```bash
+# Source git utilities
+if ! source .claude/utils/git-utilities.sh; then
+    echo "Error: Could not load git utilities. Please ensure git-utilities.sh exists." >&2
+    exit 1
+fi
+
+# Process git scope (this function handles validation, stats, and file listing)
+target_files=$(process_git_scope "$git_scope")
+```
+
+**Git-Scope TODO Benefits:**
+- **Contextual Discovery**: Find TODOs in areas you're actively working on
+- **Task Management**: Focus on TODOs related to current development work
+- **Workflow Integration**: Discover TODOs as part of feature development or code review
+- **Productivity**: Avoid information overload from project-wide TODO searches
+
+## TODO Analysis Process
+
 I'll use the Grep tool to efficiently search for task markers with context:
 
-- Pattern: "TODO|FIXME|HACK|XXX|NOTE"
-- Case insensitive search across all source files
+- Pattern: "TODO|FIXME|HACK|XXX|NOTE" (or custom pattern via --pattern)
+- Case insensitive search across target files (scoped or full codebase)
 - Show surrounding lines for better understanding
 
 For each marker found, I'll show:

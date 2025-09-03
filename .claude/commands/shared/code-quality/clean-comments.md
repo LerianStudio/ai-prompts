@@ -1,16 +1,16 @@
 ---
 allowed-tools: Read(*), Write(*), Edit(*), Glob(*), Grep(*), Task(*)
 description: Clean comments following clean code principles - remove redundant, obvious, and bad comments while preserving meaningful ones
-argument-hint: [--file-pattern=<pattern>] [--dry-run]
+argument-hint: [--file-pattern=<pattern>] [--git-scope=<scope>] [--dry-run]
 ---
 
-# Clean Comments
+# /shared:code-quality:clean-comments
 
 Clean comments in code following clean code principles. Removes redundant, obvious noise, and bad comments while preserving meaningful documentation, warnings, and legal comments.
 
 ## Usage
 
-This command analyzes comments in your codebase and removes those that violate clean code principles while preserving valuable ones. If no file pattern is specified, it will analyze the entire codebase automatically.
+This command analyzes comments in your codebase and removes those that violate clean code principles while preserving valuable ones. You can focus on git changes for faster, more relevant cleaning, or analyze the entire codebase.
 
 **Recommended workflow:**
 
@@ -47,6 +47,60 @@ When used with `/documentation:analyze-codebase`, this command:
 8. **Keep legal and informative comments** - Preserve copyright, licenses, TODOs
 
 ## Process
+
+### Phase 0: Git Scope Filtering (when git options used)
+
+If `--git-scope` is specified:
+
+```bash
+# Validate git repository
+if ! git rev-parse --git-dir >/dev/null 2>&1; then
+    echo "Error: Not a git repository. Git-focused options require a git repository." >&2
+    exit 1
+fi
+
+# Get files in git scope
+case "$git_scope" in
+    "staged")
+        target_files=$(git diff --cached --name-only --diff-filter=ACMR 2>/dev/null)
+        ;;
+    "unstaged") 
+        target_files=$(git diff --name-only --diff-filter=ACMR 2>/dev/null)
+        ;;
+    "all-changes"|"")
+        target_files=$(git diff HEAD --name-only --diff-filter=ACMR 2>/dev/null)
+        ;;
+    "last-commit")
+        target_files=$(git diff HEAD~1..HEAD --name-only --diff-filter=ACMR 2>/dev/null)
+        ;;
+    "branch")
+        base_branch=$(git merge-base HEAD main 2>/dev/null || git merge-base HEAD master 2>/dev/null)
+        target_files=$(git diff "$base_branch..HEAD" --name-only --diff-filter=ACMR 2>/dev/null)
+        ;;
+    commit-range=*)
+        range="${git_scope#commit-range=}"
+        target_files=$(git diff "$range" --name-only --diff-filter=ACMR 2>/dev/null)
+        ;;
+esac
+
+# Filter by file pattern if specified
+if [[ -n "$file_pattern" ]]; then
+    target_files=$(echo "$target_files" | grep -E "$file_pattern" 2>/dev/null)
+fi
+
+# Show git statistics
+echo "## Git Scope: $git_scope"
+echo "Files in scope: $(echo "$target_files" | grep -c . 2>/dev/null || echo "0")"
+if [[ -n "$target_files" ]]; then
+    echo ""
+    echo "### Files to process:"
+    echo "$target_files" | head -10
+    if [[ $(echo "$target_files" | wc -l) -gt 10 ]]; then
+        echo "... and $(($(echo "$target_files" | wc -l) - 10)) more files"
+    fi
+    echo ""
+fi
+```
 
 ### Phase 1: Architecture-Aware Analysis (when integrated with analyze-codebase)
 
@@ -91,20 +145,26 @@ When used with `/documentation:analyze-codebase`, this command:
 ### Standalone Usage
 
 ```bash
-# Clean comments in entire codebase
+# Clean comments in git changes only (recommended for active development)
+/code-quality:clean-comments --git-scope=all-changes
+
+# Clean comments in staged files only
+/code-quality:clean-comments --git-scope=staged
+
+# Clean comments in files changed from main branch
+/code-quality:clean-comments --git-scope=branch
+
+# Clean comments in entire codebase (traditional approach)
 /code-quality:clean-comments
 
-# Clean comments in all JavaScript files
-/code-quality:clean-comments --file-pattern="**/*.js"
+# Clean git changes in JavaScript files only
+/code-quality:clean-comments --git-scope=all-changes --file-pattern="**/*.js"
 
-# Dry run to see what would be cleaned in entire codebase
-/code-quality:clean-comments --dry-run
+# Dry run to see what would be cleaned in git changes
+/code-quality:clean-comments --git-scope=all-changes --dry-run
 
-# Dry run for specific files
-/code-quality:clean-comments --file-pattern="src/**/*.ts" --dry-run
-
-# Clean specific file
-/code-quality:clean-comments --file-pattern="app.js"
+# Clean specific commit range
+/code-quality:clean-comments --git-scope=commit-range=HEAD~3..HEAD
 ```
 
 ### Integrated Usage (Recommended)
@@ -118,6 +178,23 @@ When used with `/documentation:analyze-codebase`, this command:
 
 # Focus on specific component with full context
 /documentation:analyze-codebase lib/components && /code-quality:clean-comments --file-pattern="lib/components/**/*"
+```
+
+### Git-Focused Workflow (Fastest)
+
+```bash
+# Clean comments in current changes before commit
+/code-quality:clean-comments --git-scope=all-changes
+
+# Clean comments in staged files only
+/code-quality:clean-comments --git-scope=staged --dry-run
+/code-quality:clean-comments --git-scope=staged
+
+# Review and clean feature branch changes
+/code-quality:clean-comments --git-scope=branch
+
+# Clean comments in last commit (useful for interactive rebase)
+/code-quality:clean-comments --git-scope=last-commit
 ```
 
 **Before:**

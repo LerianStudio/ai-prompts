@@ -14,12 +14,19 @@
         "@playwright/mcp@latest",
         "--headless",
         "--viewport-size=1920,1080",
-        "--output-dir=./protocol-assets/quality/validation-outputs"
+        "--output-dir=./protocol-assets/frontend/screenshots"
       ]
     },
     "shadcn": {
       "command": "npx",
       "args": ["shadcn@latest", "mcp"]
+    },
+    "lerian-board": {
+      "command": "node",
+      "args": ["protocol-assets/lib/board-mcp/src/server.js"],
+      "env": {
+        "TASK_SERVICE_URL": "http://localhost:3020"
+      }
     }
   }
 }

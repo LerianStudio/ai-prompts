@@ -4,15 +4,19 @@ const { program } = require('commander')
 const chalk = require('chalk')
 const path = require('path')
 const { version } = require('../package.json')
+const SyncCommand = require('./commands/sync')
+const PushCommand = require('./commands/push')
 
 const isNpxExecution = __dirname.includes('_npx') || __dirname.includes('.npm')
 
 let installer
 try {
   if (isNpxExecution) {
-    installer = require(path.join(__dirname, '..', 'lib', 'installer'))
+    installer = require(
+      path.join(__dirname, '..', 'protocol-assets', 'lib', 'installer')
+    )
   } else {
-    installer = require('../lib/installer')
+    installer = require('../protocol-assets/lib/installer')
   }
 } catch (error) {
   console.error(chalk.red('Error loading installer:'), error.message)
@@ -33,9 +37,15 @@ program
 
 program
   .command('install')
-  .description('Install Lerian Protocol workflow with profile-based agents and templates')
+  .description(
+    'Install Lerian Protocol workflow with profile-based agents and templates'
+  )
   .argument('[directory]', 'project directory to install in', '.')
-  .option('--profile <profile>', 'installation profile: frontend, backend, or full', null)
+  .option(
+    '--profile <profile>',
+    'installation profile: frontend, backend, or full',
+    null
+  )
   .option('--dry-run', 'show what would be installed without making changes')
   .option('--force', 'force installation without prompts')
   .action(async (directory, options) => {
@@ -80,6 +90,10 @@ program
       process.exit(1)
     }
   })
+
+// Register sync and push commands
+SyncCommand.register(program)
+PushCommand.register(program)
 
 program.parse(process.argv)
 

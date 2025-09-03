@@ -4,14 +4,14 @@ description: Generate architecture, flow, and relationship diagrams using ASCII 
 argument-hint: [--type=architecture|flow|sequence|class|entity] [--scope=<path>]
 ---
 
-# /diagram
+# /shared:documentation:diagram
 
 Generate architecture, flow, and relationship diagrams from code structure and documentation using ASCII art and mermaid syntax.
 
 ## Usage
 
 ```bash
-/diagram [--type=architecture|flow|sequence|class|entity] [--scope=<path>]
+/shared:documentation:diagram [--type=architecture|flow|sequence|class|entity] [--scope=<path>]
 ```
 
 **Arguments:**
@@ -318,15 +318,15 @@ async function generateArchitectureDiagram(rootPath: string) {
 
 ## Output Format
 
-**Save all diagrams to:** `docs/diagrams/[type]/[diagram-name].md`
+**Save all diagrams to:** `docs/shared:documentation:diagrams/[type]/[diagram-name].md`
 
 Examples:
 
-- Architecture diagram → `docs/diagrams/architecture/system-overview.md`
-- Flow diagram → `docs/diagrams/flow/user-authentication.md`
-- Sequence diagram → `docs/diagrams/sequence/order-processing.md`
-- Class diagram → `docs/diagrams/class/user-management.md`
-- Entity diagram → `docs/diagrams/entity/database-schema.md`
+- Architecture diagram → `docs/shared:documentation:diagrams/architecture/system-overview.md`
+- Flow diagram → `docs/shared:documentation:diagrams/flow/user-authentication.md`
+- Sequence diagram → `docs/shared:documentation:diagrams/sequence/order-processing.md`
+- Class diagram → `docs/shared:documentation:diagrams/class/user-management.md`
+- Entity diagram → `docs/shared:documentation:diagrams/entity/database-schema.md`
 
 ```markdown
 # ${DiagramType} Diagram: ${DiagramName}

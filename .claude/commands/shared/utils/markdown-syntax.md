@@ -4,7 +4,7 @@ description: Format text in markdown syntax or fix existing markdown files with 
 argument-hint: [--input=<file-path-or-text>]
 ---
 
-# Markdown Syntax Formatter
+# /shared:utils:markdown-syntax
 
 ## Instructions
 
@@ -12,9 +12,9 @@ Format text in markdown syntax or identify and fix issues in existing markdown f
 
 This command can be used in several ways:
 
-1. **Fix existing markdown file**: `/markdown-syntax --input=path/to/file.md`
-2. **Format text as markdown**: `/markdown-syntax --input="Your text content here"`
-3. **Preview changes without saving (recommended)**: `/markdown-syntax --input=path/to/file.md --dry-run`
+1. **Fix existing markdown file**: `/shared:utils:markdown-syntax --input=path/to/file.md`
+2. **Format text as markdown**: `/shared:utils:markdown-syntax --input="Your text content here"`
+3. **Preview changes without saving (recommended)**: `/shared:utils:markdown-syntax --input=path/to/file.md --dry-run`
 
 ## Process
 
@@ -84,17 +84,17 @@ This command can be used in several ways:
 
 ```bash
 # Analyze and fix all markdown issues in README.md
-/markdown-syntax --input=README.md
+/shared:utils:markdown-syntax --input=README.md
 ```
 
 ```bash
 # Preview the changes for README.md without saving them
-/markdown-syntax --input=README.md --dry-run
+/shared:utils:markdown-syntax --input=README.md --dry-run
 ```
 
 ```bash
 # Format a string of text with proper markdown syntax
-/markdown-syntax --input="This is a header\n\nSome text with **bold** and *italic* formatting."
+/shared:utils:markdown-syntax --input="This is a header\n\nSome text with **bold** and *italic* formatting."
 ```
 
 ## Requirements

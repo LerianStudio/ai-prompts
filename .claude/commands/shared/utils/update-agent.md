@@ -4,7 +4,7 @@ description: Update existing subagent files to follow official Anthropic standar
 argument-hint: [--agent-name=<agent-name>] [--generate]
 ---
 
-# /update-agent
+# /shared:utils:update-agent
 
 Update existing Claude Code subagent files to follow official Anthropic subagent standards with proper YAML frontmatter, enhanced system prompts, and optimal tool configuration.
 
@@ -35,13 +35,13 @@ Uses `/protocol-assets/context/anthropic/sub-agents.md` as the authoritative sou
 
 ```bash
 # Update specific agent
-/update-agent --agent-name=code-reviewer
+/shared:utils:update-agent --agent-name=code-reviewer
 
 # Update all agents
-/update-agent
+/shared:utils:update-agent
 
 # Regenerate agent with Claude enhancement
-/update-agent --agent-name=test-runner --generate
+/shared:utils:update-agent --agent-name=test-runner --generate
 ```
 
 **Expected Output:**

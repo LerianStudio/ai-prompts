@@ -1,12 +1,34 @@
 ---
 allowed-tools: Read(*), Glob(*), Grep(*), Edit(*), MultiEdit(*), Write(*), Bash(*), WebSearch(*), WebFetch(*)
 description: Comprehensive security analysis and remediation with vulnerability detection and automated fixing
-argument-hint: [--focus-area=<area>] | [--paths=<paths>] | [--full]
+argument-hint: [--focus-area=<area>] | [--paths=<paths>] | [--git-scope=<scope>] | [--full]
 ---
 
-# Security Analysis & Remediation
+# /shared:code-quality:security-scan
 
 Perform comprehensive security assessment and automated remediation: $ARGUMENTS
+
+## Usage Patterns
+
+```bash
+# Git-focused security analysis (recommended for active development)
+/shared:code-quality:security-scan --git-scope=all-changes           # Scan all changed files
+/shared:code-quality:security-scan --git-scope=staged               # Scan staged files before commit
+/shared:code-quality:security-scan --git-scope=branch               # Scan feature branch changes
+/shared:code-quality:security-scan --git-scope=last-commit          # Scan last commit changes
+
+# Traditional scope-based scanning
+/shared:code-quality:security-scan --focus-area=api                 # Focus on API security
+/shared:code-quality:security-scan --paths=src/auth/                # Scan specific paths
+/shared:code-quality:security-scan --full                           # Full project security scan
+```
+
+**Arguments:**
+
+- `--focus-area`: Specific area to focus security analysis (api, auth, data, etc.)
+- `--paths`: Specific file or directory paths to scan
+- `--git-scope`: Git scope for focusing on specific changes - staged|unstaged|all-changes|branch|last-commit|commit-range=<range>
+- `--full`: Comprehensive full-project security analysis
 
 ## Current Environment
 
@@ -14,6 +36,30 @@ Perform comprehensive security assessment and automated remediation: $ARGUMENTS
 - Environment files: @.env\* (if exists)
 - Security config: @.github/workflows/security.yml or @security/ (if exists)
 - Recent commits: !`git log --oneline --grep="security\|fix" -10`
+
+## Initial Setup
+
+### Git Scope Analysis (when --git-scope used)
+
+If `--git-scope` is specified:
+
+```bash
+# Source git utilities
+if ! source .claude/utils/git-utilities.sh; then
+    echo "Error: Could not load git utilities. Please ensure git-utilities.sh exists." >&2
+    exit 1
+fi
+
+# Process git scope (this function handles validation, stats, and file listing)
+target_files=$(process_git_scope "$git_scope")
+```
+
+**Git-Scope Security Benefits:**
+
+- **Focused Analysis**: Target security review on recently changed code where vulnerabilities are most likely introduced
+- **Performance**: Faster scans on large codebases by focusing on changed files
+- **Workflow Integration**: Scan staged files before commits, branch changes before merges
+- **Risk Mitigation**: Catch security issues early in development workflow
 
 ## Security Analysis Process
 
@@ -128,15 +174,15 @@ I'll perform comprehensive security analysis using a structured 10-step approach
 
 ```bash
 # Full project security scan
-/security-scan --full
+/shared:code-quality:security-scan --full
 
 # Focus on specific paths
-/security-scan --paths=src/api/
+/shared:code-quality:security-scan --paths=src/api/
 
 # Target specific security areas
-/security-scan --focus-area=auth
-/security-scan --focus-area=secrets-management
-/security-scan --focus-area=dependencies
+/shared:code-quality:security-scan --focus-area=auth
+/shared:code-quality:security-scan --focus-area=secrets-management
+/shared:code-quality:security-scan --focus-area=dependencies
 ```
 
 ## Safety Guarantees

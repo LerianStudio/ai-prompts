@@ -4,7 +4,7 @@ description: Comprehensive codebase analysis to understand architecture, pattern
 argument-hint: [--target=<directory-or-component>]
 ---
 
-# Understand Project
+# /shared:documentation:analyze-codebase
 
 I'll analyze your entire application to understand its architecture, patterns, and how everything works together.
 

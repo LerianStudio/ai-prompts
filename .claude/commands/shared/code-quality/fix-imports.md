@@ -1,14 +1,56 @@
 ---
 allowed-tools: Grep(*), Glob(*), Read(*), Edit(*), MultiEdit(*), Write(*), Bash(*), LS(*), TodoWrite(*)
 description: Systematically fix import statements broken by file moves or renames
-argument-hint: [--paths=<paths-or-patterns>]
+argument-hint: [--paths=<paths-or-patterns>] [--git-scope=<scope>]
 ---
 
-# Fix Broken Imports
+# /shared:code-quality:fix-imports
 
 I'll systematically fix import statements broken by file moves or renames.
 
-Arguments: `$ARGUMENTS` - specific paths or import patterns to fix
+## Usage Patterns
+
+```bash
+# Git-focused import fixing (recommended for active development)
+/shared:code-quality:fix-imports --git-scope=all-changes             # Fix imports in changed files
+/shared:code-quality:fix-imports --git-scope=staged                 # Fix imports in staged files
+/shared:code-quality:fix-imports --git-scope=branch                 # Fix imports in branch changes
+/shared:code-quality:fix-imports --git-scope=last-commit            # Fix imports in last commit
+
+# Traditional path-based fixing
+/shared:code-quality:fix-imports --paths=src/                       # Fix imports in specific directory
+/shared:code-quality:fix-imports --paths="**/*.ts,**/*.js"           # Fix imports in specific file patterns
+/shared:code-quality:fix-imports                                    # Fix imports across entire codebase
+```
+
+**Arguments:**
+
+- `--paths`: Specific file paths or patterns to analyze for import issues
+- `--git-scope`: Git scope for focusing on specific changes - staged|unstaged|all-changes|branch|last-commit|commit-range=<range>
+
+## Initial Setup
+
+### Git Scope Analysis (when --git-scope used)
+
+If `--git-scope` is specified:
+
+```bash
+# Source git utilities
+if ! source .claude/utils/git-utilities.sh; then
+    echo "Error: Could not load git utilities. Please ensure git-utilities.sh exists." >&2
+    exit 1
+fi
+
+# Process git scope (this function handles validation, stats, and file listing)
+target_files=$(process_git_scope "$git_scope")
+```
+
+**Git-Scope Import Benefits:**
+
+- **Targeted Fixing**: Focus on import issues in files you're actively modifying
+- **Performance**: Faster analysis on large codebases by focusing on changed files
+- **Workflow Integration**: Fix imports as part of feature development or refactoring
+- **Risk Reduction**: Lower chance of introducing unrelated import changes
 
 ## Import Analysis
 
@@ -112,7 +154,7 @@ After fixing imports:
 ## Context Continuity
 
 **Session Resume:**
-When you return and run `/fix-imports` or `/fix-imports resume`:
+When you return and run `/shared:code-quality:fix-imports` or `/shared:code-quality:fix-imports resume`:
 
 - Load broken imports list
 - Show fixing statistics
@@ -136,17 +178,17 @@ Continuing fixes...
 **Start Fixing:**
 
 ```
-/fix-imports                  # Fix all broken imports
-/fix-imports src/            # Focus on directory
-/fix-imports "components"    # Fix component imports
+/shared:code-quality:fix-imports                  # Fix all broken imports
+/shared:code-quality:fix-imports src/            # Focus on directory
+/shared:code-quality:fix-imports "components"    # Fix component imports
 ```
 
 **Analysis Options:**
 
 ```
-/fix-imports status    # Check current state
-/fix-imports scan      # Full analysis
-/fix-imports verify    # Check fixes
+/shared:code-quality:fix-imports status    # Check current state
+/shared:code-quality:fix-imports scan      # Full analysis
+/shared:code-quality:fix-imports verify    # Check fixes
 ```
 
 ## Safety Guarantees

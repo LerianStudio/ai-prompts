@@ -1,10 +1,10 @@
 ---
 allowed-tools: Read(*), Glob(*), Grep(*), Bash(*), Edit(*), MultiEdit(*), Task(*), TodoWrite(*)
 description: Unified code improvement with multiple modes for refactor, standardize, simplify, and beautify
-argument-hint: --mode=refactor|standardize|simplify|beautify [--target-path=<path>] [--dry-run]
+argument-hint: --mode=refactor|standardize|simplify|beautify [--target-path=<path>] [--git-scope=<scope>] [--dry-run]
 ---
 
-# /code-improve
+# /shared:code-quality:code-improve
 
 Unified code improvement command supporting multiple enhancement modes for comprehensive code quality improvements.
 
@@ -16,21 +16,51 @@ Code improvement encompasses multiple aspects: refactoring for better architectu
 ## Usage Patterns
 
 ```bash
-/code-improve --mode=refactor --target-path=src/                    # Refactor code patterns and architecture
-/code-improve --mode=standardize --dry-run                         # Preview standardization changes
-/code-improve --mode=simplify --target-path=src/components/        # Reduce complexity
-/code-improve --mode=beautify --target-path="*.ts"                 # Improve visual structure
-/code-improve --mode=refactor --target-path=src/api/users.ts       # Refactor specific file
+# Git-focused improvement (recommended for active development)
+/shared:code-quality:code-improve --mode=refactor --git-scope=all-changes             # Refactor changed code
+/shared:code-quality:code-improve --mode=standardize --git-scope=staged               # Standardize staged files
+/shared:code-quality:code-improve --mode=simplify --git-scope=branch                  # Simplify branch changes
+/shared:code-quality:code-improve --mode=beautify --git-scope=last-commit             # Beautify last commit
+
+# Traditional path-based improvement
+/shared:code-quality:code-improve --mode=refactor --target-path=src/                  # Refactor specific directory
+/shared:code-quality:code-improve --mode=standardize --dry-run                        # Preview standardization changes
+/shared:code-quality:code-improve --mode=simplify --target-path=src/components/       # Reduce complexity in components
+/shared:code-quality:code-improve --mode=beautify --target-path="*.ts"                # Improve visual structure
 ```
 
 **Arguments:**
 
 - `--mode`: Enhancement mode - refactor|standardize|simplify|beautify (required)
 - `--target-path`: File or directory path to improve (optional, defaults to context-based analysis)
+- `--git-scope`: Git scope for focusing on specific changes - staged|unstaged|all-changes|branch|last-commit|commit-range=<range> (optional)
 - `--dry-run`: Preview changes without applying them (optional)
   </context>
 
 <instructions>
+## Initial Setup
+
+### Git Scope Analysis (when --git-scope used)
+
+If `--git-scope` is specified:
+
+```bash
+# Source git utilities
+if ! source .claude/utils/git-utilities.sh; then
+    echo "Error: Could not load git utilities. Please ensure git-utilities.sh exists." >&2
+    exit 1
+fi
+
+# Process git scope (this function handles validation, stats, and file listing)
+target_files=$(process_git_scope "$git_scope")
+```
+
+When git-scope is used, the command will:
+1. Focus improvement efforts on changed files only
+2. Provide context about the scope of changes
+3. Show performance benefits for large codebases
+4. Align with active development workflows
+
 ## Mode-Based Processing
 
 ### Refactor Mode
@@ -120,7 +150,7 @@ Code improvement encompasses multiple aspects: refactoring for better architectu
 ### Refactor Mode Example
 
 ```bash
-/code-improve --mode=refactor --target-path=src/components/UserProfile.tsx
+/shared:code-quality:code-improve --mode=refactor --target-path=src/components/UserProfile.tsx
 ```
 
 **Before (Code Smells)**:
@@ -153,7 +183,7 @@ const UserProfile = ({ userId }) => {
 ### Standardize Mode Example
 
 ```bash
-/code-improve --mode=standardize --target-path=src/ --dry-run
+/shared:code-quality:code-improve --mode=standardize --target-path=src/ --dry-run
 ```
 
 **Before (Inconsistent)**:
@@ -177,7 +207,7 @@ const getUserDetails = (userId: string): Promise<UserDetails> => { ... }
 ### Simplify Mode Example
 
 ```bash
-/code-improve --mode=simplify --target-path=src/utils/validation.ts
+/shared:code-quality:code-improve --mode=simplify --target-path=src/utils/validation.ts
 ```
 
 **Before (Complex)**:
@@ -216,7 +246,7 @@ const validateUser = (user: User): boolean => {
 ### Beautify Mode Example
 
 ```bash
-/code-improve --mode=beautify --target-path=src/hooks/
+/shared:code-quality:code-improve --mode=beautify --target-path=src/hooks/
 ```
 
 **Before (Hard to read)**:

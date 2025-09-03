@@ -1,2 +1,10 @@
 node_modules/
 package-lock.json
+
+# Database files (new organized structure)
+protocol-assets/data/databases/*.db
+protocol-assets/data/databases/*.db-wal
+protocol-assets/data/databases/*.db-shm
+protocol-assets/data/backups/*.db
+protocol-assets/data/logs/*.log
+protocol-assets/data/pids/*.pid

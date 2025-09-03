@@ -4,7 +4,7 @@ description: Execute workflow YAML files using specialized agents from protocol-
 argument-hint: [--workflow-name=<name>]
 ---
 
-# /run-workflow
+# /shared:utils:run-workflow
 
 ## Instructions
 
@@ -33,10 +33,10 @@ Workflows provide structured automation for complex development tasks that requi
 
 ```bash
 # Execute description-to-task workflow
-/run-workflow --workflow-name=description-to-task
+/shared:utils:run-workflow --workflow-name=description-to-task
 
 # Execute any workflow by name (without .yaml extension)
-/run-workflow --workflow-name=<workflow-name>
+/shared:utils:run-workflow --workflow-name=<workflow-name>
 ```
 
 The description-to-task workflow example:

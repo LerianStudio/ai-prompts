@@ -4,14 +4,14 @@ description: Analyze different approaches for tasks or problems with comprehensi
 argument-hint: [--task=<task-or-problem-description>]
 ---
 
-# /options
+# /shared:planning:options
 
 Analyze different approaches for the given task or problem, providing a comprehensive comparison of options with benefits, trade-offs, and effort estimates.
 
 ## Usage
 
 ```bash
-/options --task="<task-or-problem-description>"
+/shared:planning:options --task="<task-or-problem-description>"
 ```
 
 **Arguments:**
@@ -94,5 +94,5 @@ Create a comparison table:
 ## Example
 
 ```
-/options --task="Implement user authentication for our web application"
+/shared:planning:options --task="Implement user authentication for our web application"
 ```

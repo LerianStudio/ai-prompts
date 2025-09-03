@@ -4,7 +4,7 @@ description: Analyze codebase to predict potential problems before they impact t
 argument-hint: [--scope=<scope>]
 ---
 
-# Predictive Code Analysis
+# /shared:planning:predict-issue
 
 I'll analyze your codebase to predict potential problems before they impact your project.
 

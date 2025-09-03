@@ -4,7 +4,7 @@ description: Create complete feature structures based on project patterns
 argument-hint: [--feature=<feature-name-or-component-name>]
 ---
 
-# Intelligent Scaffolding
+# /shared:development:scaffold
 
 I'll create complete feature structures based on your project patterns.
 
@@ -112,7 +112,7 @@ After scaffolding:
 ## Context Continuity
 
 **Session Resume:**
-When you return and run `/scaffold` or `/scaffold resume`:
+When you return and run `/shared:development:scaffold` or `/shared:development:scaffold resume`:
 
 - Load existing plan and progress
 - Show what was already created
@@ -136,17 +136,17 @@ Continuing scaffolding...
 **Start Scaffolding:**
 
 ```
-/scaffold UserProfile          # Create user profile feature
-/scaffold "auth module"        # Create authentication module
-/scaffold PaymentService       # Create payment service
+/shared:development:scaffold UserProfile          # Create user profile feature
+/shared:development:scaffold "auth module"        # Create authentication module
+/shared:development:scaffold PaymentService       # Create payment service
 ```
 
 **Scaffolding Options:**
 
 ```
-/scaffold status    # Check progress
-/scaffold preview   # Show planned structure
-/scaffold verify    # Validate patterns
+/shared:development:scaffold status    # Check progress
+/shared:development:scaffold preview   # Show planned structure
+/shared:development:scaffold verify    # Validate patterns
 ```
 
 ## Safety Guarantees

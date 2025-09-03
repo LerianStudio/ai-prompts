@@ -1,10 +1,10 @@
 ---
 allowed-tools: Bash(*), Read(*), Grep(*), Write(*)
 description: Generate conventional commit messages based on git changes and save as commit-message.txt
-argument-hint: [--scope=<scope>] (optional scope for the commit, e.g., api, ui, docs)
+argument-hint: [--scope=<scope>] [--git-scope=<scope>] (optional scope for the commit and git changes to analyze)
 ---
 
-# Commit Generator
+# /shared:development:commit-generator
 
 Analyzes current git changes and generates conventional commit messages following the Conventional Commits 1.0.0 specification, then saves them to `commit-message.txt` in the project root.
 
@@ -13,17 +13,56 @@ Analyzes current git changes and generates conventional commit messages followin
 This command examines your git staging area and working directory to suggest properly formatted conventional commit messages based on the changes detected.
 
 ```bash
-/commit-generator
-/commit-generator --scope=api
-/commit-generator --scope=ui
+# Git-focused commit message generation (recommended)
+/shared:development:commit-generator --git-scope=staged              # Generate message for staged changes only
+/shared:development:commit-generator --git-scope=all-changes         # Generate message for all changes (staged + unstaged)
+/shared:development:commit-generator --git-scope=unstaged            # Generate message for unstaged changes only
+
+# With custom commit scope
+/shared:development:commit-generator --scope=api --git-scope=staged  # API scoped message for staged changes
+/shared:development:commit-generator --scope=ui --git-scope=branch   # UI scoped message for branch changes
+
+# Traditional usage (defaults to staged changes)
+/shared:development:commit-generator
+/shared:development:commit-generator --scope=api
 ```
+
+**Arguments:**
+
+- `--scope`: Optional commit scope (api, ui, docs, etc.) for the generated conventional commit message
+- `--git-scope`: Git scope to analyze - staged|unstaged|all-changes|branch|last-commit|commit-range=<range> (defaults to 'staged')
+
+## Initial Setup
+
+### Git Scope Configuration
+
+```bash
+# Source git utilities
+if ! source .claude/utils/git-utilities.sh; then
+    echo "Error: Could not load git utilities. Please ensure git-utilities.sh exists." >&2
+    exit 1
+fi
+
+# Set default git scope if not provided
+git_scope="${git_scope:-staged}"
+
+# Process git scope (this function handles validation, stats, and file listing)
+target_files=$(process_git_scope "$git_scope")
+```
+
+**Git-Scope Commit Benefits:**
+
+- **Precise Control**: Generate messages for specific change sets (staged, branch, etc.)
+- **Flexible Workflow**: Support different commit strategies and workflows
+- **Better Messages**: More accurate commit messages based on targeted change analysis
+- **Staging Integration**: Generate messages for exactly what will be committed
 
 ## Process
 
-1. **Git Status Analysis**
-   - Runs `git status --porcelain` to identify changed files
-   - Runs `git diff --cached` to analyze staged changes
-   - Runs `git diff` to analyze unstaged changes
+1. **Git Scope Analysis** (Enhanced)
+   - Uses `get_git_files()` to analyze files in specified scope
+   - Analyzes targeted changes based on git-scope parameter
+   - Provides context about the scope of changes being committed
 
 2. **Change Classification**
    - Analyzes file patterns and change types
@@ -66,7 +105,7 @@ Based on the Conventional Commits specification and Angular convention:
 ### Basic Feature Addition
 
 ```bash
-/commit-generator
+/shared:development:commit-generator
 ```
 
 **Output:**
@@ -82,7 +121,7 @@ feat: add user authentication system
 ### With Scope
 
 ```bash
-/commit-generator api
+/shared:development:commit-generator api
 ```
 
 **Output:**

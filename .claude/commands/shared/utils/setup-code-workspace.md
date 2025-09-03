@@ -4,7 +4,7 @@ description: Create VSCode workspace configuration with recommended settings for
 argument-hint: []
 ---
 
-# Setup Code Workspace
+# /shared:utils:setup-code-workspace
 
 Create a `.code-workspace` file with optimal VSCode settings for JavaScript/TypeScript development including Prettier, ESLint, and Git configuration.
 
@@ -19,7 +19,7 @@ Create a `.code-workspace` file with optimal VSCode settings for JavaScript/Type
 ## Usage
 
 ```bash
-/setup-code-workspace
+/shared:utils:setup-code-workspace
 ```
 
 Creates a standardized `.code-workspace` file in the current directory with optimal development settings.

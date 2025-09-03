@@ -4,7 +4,7 @@ description: Generate accurate project time estimates using historical data and 
 argument-hint: [--task=<task-description>]
 ---
 
-# Estimate
+# /shared:planning:estimate
 
 Generate data-driven project estimates using historical analysis and team metrics
 

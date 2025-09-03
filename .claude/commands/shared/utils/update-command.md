@@ -4,7 +4,7 @@ description: Update existing commands to follow official Anthropic standards wit
 argument-hint: [--command-name=<name>] [--reorganize]
 ---
 
-# Update Command
+# /shared:utils:update-command
 
 Updates existing custom command files to follow official Anthropic slash command standards with proper frontmatter, structure, and formatting. **Automatically organizes commands into appropriate subdirectories** - commands should never remain at the root level of `.claude/commands/`. **Can also detect and merge redundant commands** with similar functionality to reduce duplication.
 
@@ -63,13 +63,13 @@ Updates a specified command file or all command files in the `.claude/commands/`
 
 ```bash
 # Update specific command (automatically moves to correct folder)
-/update-command --command-name=fix-issue
+/shared:utils:update-command --command-name=fix-issue
 
 # Update all commands (automatically organizes any root-level commands)
-/update-command
+/shared:utils:update-command
 
 # Explicitly reorganize and update all commands (includes merging duplicates)
-/update-command --reorganize
+/shared:utils:update-command --reorganize
 ```
 
 ## Directory Structure

@@ -4,7 +4,7 @@ description: Create working proof-of-concept implementations to validate ideas a
 argument-hint: [--concept=<feature-or-concept-to-prototype>]
 ---
 
-# /prototype
+# /shared:development:prototype
 
 Create a working proof-of-concept implementation to validate ideas, test hypotheses, or demonstrate functionality quickly.
 
@@ -21,14 +21,14 @@ This command helps you build minimal, functional prototypes in 2-4 hours to:
 ## Usage
 
 ```
-/prototype <feature or concept description>
+/shared:development:prototype <feature or concept description>
 ```
 
 **Examples:**
 
-- `/prototype React component library with Storybook`
-- `/prototype real-time chat with WebSocket client`
-- `/prototype drag-and-drop file upload component`
+- `/shared:development:prototype React component library with Storybook`
+- `/shared:development:prototype real-time chat with WebSocket client`
+- `/shared:development:prototype drag-and-drop file upload component`
 
 ## Approach
 
