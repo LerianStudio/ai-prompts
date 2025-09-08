@@ -6,9 +6,15 @@ argument-hint: [--project-type=<type>] [--git-scope=<scope>]
 
 # /shared:utils:setup-linting
 
-Setup code linting and quality tools
+<instructions>
+Setup code linting and quality tools for consistent code standards.
+</instructions>
 
-## Usage Patterns
+<context>
+This command establishes code linting and quality tools to maintain consistent code standards across projects, with optional git-scoped validation for targeted configuration testing.
+</context>
+
+<usage_patterns>
 
 ```bash
 # Git-focused linting setup (recommended for validating configuration)
@@ -24,11 +30,12 @@ Setup code linting and quality tools
 ```
 
 **Arguments:**
+
 - `--project-type`: Specific project type for linting setup (javascript, typescript, react, python, etc.)
 - `--git-scope`: Git scope for validating linting configuration - staged|unstaged|all-changes|branch|last-commit|commit-range=<range>
+  </usage_patterns>
 
-## Initial Setup
-
+<setup>
 ### Git Scope Analysis (when --git-scope used)
 
 If `--git-scope` is specified:
@@ -48,7 +55,7 @@ if [[ -z "$target_files" ]]; then
 else
     # Show git statistics if files exist
     get_git_stats "$git_scope"
-    
+
     echo "Will validate linting configuration on files: $(echo "$target_files" | wc -l)"
     echo "$target_files" | head -10
     if [[ $(echo "$target_files" | wc -l) -gt 10 ]]; then
@@ -59,13 +66,14 @@ fi
 ```
 
 **Git-Scope Linting Setup Benefits:**
+
 - **Configuration Validation**: Test linting rules on actual changed code
 - **Targeted Setup**: Configure linting based on files you're actively working with
 - **Immediate Feedback**: Validate linting configuration against current changes
 - **Workflow Integration**: Ensure linting works with your current development workflow
+  </setup>
 
-## Instructions
-
+<process>
 Follow this systematic approach to setup linting: **$ARGUMENTS**
 
 1. **Project Analysis**
@@ -128,3 +136,4 @@ Follow this systematic approach to setup linting: **$ARGUMENTS**
    ```
 
 Remember to customize rules based on team preferences and gradually enforce stricter standards.
+</process>

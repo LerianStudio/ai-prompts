@@ -6,13 +6,10 @@ argument-hint: [--file-pattern=<pattern>] [--git-scope=<scope>] [--dry-run]
 
 # /shared:code-quality:clean-comments
 
-Clean comments in code following clean code principles. Removes redundant, obvious noise, and bad comments while preserving meaningful documentation, warnings, and legal comments.
-
-## Usage
-
+<context>
 This command analyzes comments in your codebase and removes those that violate clean code principles while preserving valuable ones. You can focus on git changes for faster, more relevant cleaning, or analyze the entire codebase.
 
-**Recommended workflow:**
+**Recommended workflow integration with analyze-codebase:**
 
 ```bash
 # First understand the codebase architecture and patterns
@@ -34,6 +31,10 @@ When used with `/documentation:analyze-codebase`, this command:
 - **Pattern-aware decisions** - Maintains comments that explain established coding patterns
 - **Smart prioritization** - Focuses cleanup efforts on files with the most comment issues
 - **Respects conventions** - Preserves project-specific documentation standards
+  </context>
+
+<instructions>
+Clean comments in code following clean code principles. Remove redundant, obvious noise, and bad comments while preserving meaningful documentation, warnings, and legal comments.
 
 ## Clean Code Comment Rules
 
@@ -46,6 +47,85 @@ When used with `/documentation:analyze-codebase`, this command:
 7. **Keep warnings of consequences** - Preserve comments about important side effects
 8. **Keep legal and informative comments** - Preserve copyright, licenses, TODOs
 
+</instructions>
+
+<examples>
+### Standalone Usage
+
+```bash
+# Clean comments in git changes only (recommended for active development)
+/code-quality:clean-comments --git-scope=all-changes
+
+# Clean comments in staged files only
+/code-quality:clean-comments --git-scope=staged
+
+# Clean comments in files changed from main branch
+/code-quality:clean-comments --git-scope=branch
+
+# Clean comments in entire codebase (traditional approach)
+/code-quality:clean-comments
+
+# Clean git changes in JavaScript files only
+/code-quality:clean-comments --git-scope=all-changes --file-pattern="**/*.js"
+
+# Dry run to see what would be cleaned in git changes
+/code-quality:clean-comments --git-scope=all-changes --dry-run
+
+# Clean specific commit range
+/code-quality:clean-comments --git-scope=commit-range=HEAD~3..HEAD
+```
+
+### Integrated Usage (Recommended)
+
+```bash
+# Comprehensive analysis followed by precision cleanup
+/documentation:analyze-codebase && /code-quality:clean-comments
+
+# Architecture-aware cleanup with dry run
+/documentation:analyze-codebase && /code-quality:clean-comments --dry-run
+
+# Focus on specific component with full context
+/documentation:analyze-codebase lib/components && /code-quality:clean-comments --file-pattern="lib/components/**/*"
+```
+
+### Git-Focused Workflow (Fastest)
+
+```bash
+# Clean comments in current changes before commit
+/code-quality:clean-comments --git-scope=all-changes
+
+# Clean comments in staged files only
+/code-quality:clean-comments --git-scope=staged --dry-run
+/code-quality:clean-comments --git-scope=staged
+
+# Review and clean feature branch changes
+/code-quality:clean-comments --git-scope=branch
+
+# Clean comments in last commit (useful for interactive rebase)
+/code-quality:clean-comments --git-scope=last-commit
+```
+
+**Before:**
+
+```javascript
+// Check if user is eligible for discount
+if (user.age >= 65 && user.membershipYears >= 5) {
+  // Apply senior discount
+  total = total * 0.9 // multiply by 0.9 to get 10% discount
+} // end if block
+```
+
+**After:**
+
+```javascript
+if (user.isEligibleForSeniorDiscount()) {
+  total = total * SENIOR_DISCOUNT_RATE
+}
+```
+
+</examples>
+
+<process>
 ## Process
 
 ### Phase 0: Git Scope Filtering (when git options used)
@@ -64,7 +144,7 @@ case "$git_scope" in
     "staged")
         target_files=$(git diff --cached --name-only --diff-filter=ACMR 2>/dev/null)
         ;;
-    "unstaged") 
+    "unstaged")
         target_files=$(git diff --name-only --diff-filter=ACMR 2>/dev/null)
         ;;
     "all-changes"|"")
@@ -139,78 +219,4 @@ fi
    - Identify where comments can be replaced with better naming
    - Suggest function extractions for complex logic
    - **Recommend architectural improvements** based on codebase analysis
-
-## Examples
-
-### Standalone Usage
-
-```bash
-# Clean comments in git changes only (recommended for active development)
-/code-quality:clean-comments --git-scope=all-changes
-
-# Clean comments in staged files only
-/code-quality:clean-comments --git-scope=staged
-
-# Clean comments in files changed from main branch
-/code-quality:clean-comments --git-scope=branch
-
-# Clean comments in entire codebase (traditional approach)
-/code-quality:clean-comments
-
-# Clean git changes in JavaScript files only
-/code-quality:clean-comments --git-scope=all-changes --file-pattern="**/*.js"
-
-# Dry run to see what would be cleaned in git changes
-/code-quality:clean-comments --git-scope=all-changes --dry-run
-
-# Clean specific commit range
-/code-quality:clean-comments --git-scope=commit-range=HEAD~3..HEAD
-```
-
-### Integrated Usage (Recommended)
-
-```bash
-# Comprehensive analysis followed by precision cleanup
-/documentation:analyze-codebase && /code-quality:clean-comments
-
-# Architecture-aware cleanup with dry run
-/documentation:analyze-codebase && /code-quality:clean-comments --dry-run
-
-# Focus on specific component with full context
-/documentation:analyze-codebase lib/components && /code-quality:clean-comments --file-pattern="lib/components/**/*"
-```
-
-### Git-Focused Workflow (Fastest)
-
-```bash
-# Clean comments in current changes before commit
-/code-quality:clean-comments --git-scope=all-changes
-
-# Clean comments in staged files only
-/code-quality:clean-comments --git-scope=staged --dry-run
-/code-quality:clean-comments --git-scope=staged
-
-# Review and clean feature branch changes
-/code-quality:clean-comments --git-scope=branch
-
-# Clean comments in last commit (useful for interactive rebase)
-/code-quality:clean-comments --git-scope=last-commit
-```
-
-**Before:**
-
-```javascript
-// Check if user is eligible for discount
-if (user.age >= 65 && user.membershipYears >= 5) {
-  // Apply senior discount
-  total = total * 0.9 // multiply by 0.9 to get 10% discount
-} // end if block
-```
-
-**After:**
-
-```javascript
-if (user.isEligibleForSeniorDiscount()) {
-  total = total * SENIOR_DISCOUNT_RATE
-}
-```
+     </process>

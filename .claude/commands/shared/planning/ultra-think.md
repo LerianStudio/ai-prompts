@@ -6,9 +6,11 @@ argument-hint: [--problem=<problem-or-question>]
 
 # /shared:planning:ultra-think
 
-Deep analysis and problem solving mode
+<context>
+Deep analysis and problem solving mode for complex challenges and decisions.
+</context>
 
-## Instructions
+<instructions>
 
 1. **Initialize Ultra Think Mode**
    - Acknowledge the request for enhanced analytical thinking
@@ -119,33 +121,31 @@ Deep analysis and problem solving mode
    - Areas for further research
    ```
 
-10. **Meta-Analysis**
-    - Reflect on the thinking process itself
-    - Identify areas of uncertainty
-    - Acknowledge biases or limitations
-    - Suggest additional expertise needed
-    - Provide confidence levels for recommendations
+10. **Meta-Analysis** - Reflect on the thinking process itself - Identify areas of uncertainty - Acknowledge biases or limitations - Suggest additional expertise needed - Provide confidence levels for recommendations
+    </instructions>
 
-## Usage Examples
+</instructions>
 
+<usage>
 ```bash
 # Architectural decision
 /shared:planning:ultra-think Should we use shadcn/ui or not?
 ```
+</usage>
 
-## Key Principles
-
+<principles>
 - **First Principles Thinking**: Break down to fundamental truths
 - **Systems Thinking**: Consider interconnections and feedback loops
 - **Probabilistic Thinking**: Work with uncertainties and ranges
 - **Inversion**: Consider what to avoid, not just what to do
 - **Second-Order Thinking**: Consider consequences of consequences
+</principles>
 
-## Output Expectations
-
+<deliverables>
 - Comprehensive analysis (typically 2-4 pages of insights)
 - Multiple viable solutions with trade-offs
 - Clear reasoning chains
 - Acknowledgment of uncertainties
 - Actionable recommendations
 - Novel insights or perspectives
+</deliverables>

@@ -6,29 +6,17 @@ argument-hint: []
 
 # /shared:utils:summary
 
-Summarize everything discussed in the current chat conversation up to this message.
+<instructions>
+You are summarizing everything we have discussed in this chat conversation up to this message.
 
-## Usage
-
-```bash
-/shared:utils:summary
-```
-
-**Arguments:**
-
-- None required - analyzes the entire current conversation
-
-## Instructions
-
-You are summarizing everything we have discussed in this chat up to this message.
-
-**Deliverable – exact structure**
+Use only information present in the conversation context; do not invent content. Preserve original terminology, variable names, and paths. Write in crisp business English; avoid filler. Entire summary (excluding code blocks) ≤300 words.
 
 After generating the summary, save it using memory tools as the primary method:
 
 1. **Primary: Use memory_create tool** to store the summary with these parameters:
    - First, determine the repository name from the current working directory
    - Use that directory path as the repository identifier
+
    ```json
    {
      "operation": "store_chunk",
@@ -44,7 +32,13 @@ After generating the summary, save it using memory tools as the primary method:
    `@protocol-assets/content/docs/shared:utils:summary/[descriptive-name].md`
 
 Choose a clear, descriptive title based on the main topic discussed.
+</instructions>
 
+<context>
+Analyzes the entire current conversation to create a structured summary with TLDR, bullet points, and essential code snippets.
+</context>
+
+<deliverables>
 ## TLDR
 
 • 2-3 sentence high-level recap (≤50 words).
@@ -60,10 +54,14 @@ Choose a clear, descriptive title based on the main topic discussed.
 ## Code Snippets
 
 If the conversation included code, config, or CLI commands essential for reproducing a solution, include them here in fenced blocks. Omit boilerplate.
+</deliverables>
 
-**Rules**
+<example>
+```bash
+/shared:utils:summary
+```
 
-- Use only information present in the conversation context; do not invent content.
-- Preserve original terminology, variable names, and paths.
-- Write in crisp business English; avoid filler.
-- Entire summary (excluding code blocks) ≤300 words.
+**Arguments:**
+
+- None required - analyzes the entire current conversation
+  </example>

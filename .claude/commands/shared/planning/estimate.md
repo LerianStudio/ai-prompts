@@ -6,32 +6,34 @@ argument-hint: [--task=<task-description>]
 
 # /shared:planning:estimate
 
-Generate data-driven project estimates using historical analysis and team metrics
+<context>
+Generate data-driven project estimates using historical analysis and team metrics. Transform gut-feel estimates into data-backed predictions by analyzing git history, commit patterns, and team velocity.
+</context>
 
-## Purpose
-
-Transform gut-feel estimates into data-backed predictions by analyzing git history, commit patterns, and team velocity.
-
-## Features
-
+<features>
 - 📊 Historical data analysis from git and project tools
 - 👥 Team and individual velocity tracking
 - 📈 Complexity-based adjustments
 - 🎯 Confidence intervals and risk assessment
+</features>
 
-## Usage
-
+<usage>
 ```bash
 # Estimate a specific task
 claude "Estimate task: Implement OAuth2 login flow with Google in React"
 
 # Check estimation accuracy
+
 claude "Show estimation accuracy for the last 10 sprints"
 
 # Get assignee-specific estimates
-claude "How long would Alice take to implement the payment webhook in Node.js?"
-```
 
+claude "How long would Alice take to implement the payment webhook in Node.js?"
+
+````
+</usage>
+
+<process>
 ## Estimation Methodology
 
 ### 1. Gather Historical Data
@@ -45,7 +47,7 @@ git log --pretty=format: --name-only --since="6 months ago" | sort | uniq -c | s
 
 # Track file change patterns
 git shortlog -sn --since="6 months ago"
-```
+````
 
 ### 2. Calculate Complexity Metrics
 
@@ -102,19 +104,19 @@ Confidence: 78% | Range: 3-8 points | Time: 15-25 hours
 5. Tests and docs (1 pt)
 ```
 
-## Confidence Levels
+</process>
 
+<confidence-levels>
 | Level     | Criteria           | Variance |
 | --------- | ------------------ | -------- |
 | High      | 20+ similar tasks  | ±15%     |
 | Medium    | 5-20 similar tasks | ±30%     |
 | Low       | <5 similar tasks   | ±50%     |
 | Uncertain | No historical data | ±100%    |
+</confidence-levels>
 
-## Key Patterns
-
+<patterns>
 **JavaScript/TypeScript Indicators:**
-
 - React components: Count hooks and component definitions
 - API work: REST/GraphQL endpoint complexity
 - State management: Redux/Context API integration
@@ -126,21 +128,22 @@ Confidence: 78% | Range: 3-8 points | Time: 15-25 hours
 - Specialization areas (UI, backend, testing)
 - Recent performance trends
 - Current sprint capacity
+  </patterns>
 
-## Implementation Steps
-
+<implementation>
 1. **Data Collection**: Run git analysis commands
 2. **Feature Extraction**: Parse task description for complexity indicators
 3. **Similarity Matching**: Find comparable completed tasks
 4. **Adjustment Calculation**: Apply complexity and velocity factors
 5. **Confidence Assessment**: Evaluate estimate reliability
 6. **Report Generation**: Provide breakdown and recommendations
+</implementation>
 
-## Tips
-
+<best-practices>
 - Maintain 6+ months of historical data
 - Re-calibrate after each sprint
 - Account for meetings/context switching (60-70% coding time)
 - Include code review and testing buffers
 - Document estimation assumptions
 - Track actual vs estimated for continuous improvement
+</best-practices>

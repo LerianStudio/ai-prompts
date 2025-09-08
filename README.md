@@ -1,33 +1,29 @@
-```
-██╗      ███████╗ ██████╗  ██╗  █████╗  ███╗   ██╗
-██║      ██╔════╝ ██╔══██╗ ██║ ██╔══██╗ ████╗  ██║
-██║      █████╗   ██████╔╝ ██║ ███████║ ██╔██╗ ██║
-██║      ██╔══╝   ██╔══██╗ ██║ ██╔══██║ ██║╚██╗██║
-███████╗ ███████╗ ██║  ██║ ██║ ██║  ██║ ██║ ╚████║
-╚══════╝ ╚══════╝ ╚═╝  ╚═╝ ╚═╝ ╚═╝  ╚═╝ ╚═╝  ╚═══╝
+# Lerian Protocol
 
-██████╗  ██████╗   ██████╗  ████████╗ ██████╗  ██████╗  ██████╗  ██╗
-██╔══██╗ ██╔══██╗ ██╔═══██╗ ╚══██╔══╝ ██╔═══██╗██╔════╝ ██╔═══██╗ ██║
-██████╔╝ ██████╔╝ ██║   ██║    ██║    ██║   ██║██║      ██║   ██║ ██║
-██╔═══╝  ██╔══██╗ ██║   ██║    ██║    ██║   ██║██║      ██║   ██║ ██║
-██║      ██║  ██║ ╚██████╔╝    ██║    ╚██████╔╝╚██████╗ ╚██████╔╝ ███████╗
-╚═╝      ╚═╝  ╚═╝  ╚═════╝     ╚═╝     ╚═════╝  ╚═════╝  ╚═════╝  ╚══════╝
-```
+![Lerian Protocol Banner](lerian_protocol_banner.png)
 
-## 🎯 Overview
+> **Lerian Protocol** is an advanced CLI tool that creates a comprehensive **AI-powered development environment** for **Claude Code**. It implements a sophisticated agent-based workflow system with visual validation, board management, and protocol asset organization.
 
-**Lerian Protocol** is an advanced CLI tool that creates a comprehensive **AI-powered development environment** for **Claude Code**. It implements a sophisticated agent-based workflow system with visual validation, board management, and protocol asset organization.
+### Adjustments and improvements
 
-### Core Features
+The project is still under development and future updates will be aimed at the following tasks:
 
-- 🤖 **Agent-Based Workflows** - 9 specialized agents with domain expertise
-- 🎨 **UI-First Development** - Visual validation with Playwright MCP screenshots
-- 📋 **Board System** - 3-stage simplified kanban (backlog → ready → done)
-- 🏗️ **4-Layer Asset Architecture** - Organized system/content/quality/media structure
-- ⚡ **MCP Server Integration** - Context7, Playwright, Fetch, Shadcn integrations
-- 🔧 **Enhanced Components** - Interactive CLI components with modern styling
-- 📊 **Quality Gates** - Comprehensive validation workflows
-- 🛠️ **30+ Slash Commands** - Organized development commands by function
+- [x] **Agent-Based Workflows** - 9 specialized agents with domain expertise
+- [x] **UI-First Development** - Visual validation with Playwright MCP screenshots
+- [x] **Database-Backed Task Management** - SQLite-based @task-manager system
+- [x] **Real-time Collaboration** - WebSocket-powered kanban board
+- [x] **MCP Server Integration** - Context7, Playwright, Fetch, Shadcn integrations
+- [x] **Domain-Driven Architecture** - Profile-based installation (frontend/backend/full)
+- [ ] **Enhanced Filtering** - Advanced search and project organization
+- [ ] **Team Collaboration** - User authentication and task assignment
+
+## 💻 Prerequisites
+
+Before you begin, make sure you have met the following requirements:
+
+- You have installed the latest version of **Node.js >= 16.0.0**
+- You have a **Linux / macOS / Windows (WSL)** machine. Compatible with all major operating systems.
+- You have read the **Claude Code documentation** and have Claude Code installed.
 
 ## ✨ What Gets Installed
 
@@ -61,43 +57,53 @@ The installer creates a complete AI-powered development environment:
 .claude/                    # Claude Code Native Integration
 ├── agents/                # Specialized AI Agents (organized by domain)
 │   ├── frontend/          # Frontend-specific agents (React, UI/UX, Playwright)
-│   └── shared/            # Cross-domain agents (Tech Writer, Todo Manager, User Stories)
+│   ├── backend/           # Backend-specific agents (empty - structure only)
+│   └── shared/            # Cross-domain agents (Tech Writer, Task Manager, User Stories)
 ├── commands/              # 30+ Development Commands
 │   ├── frontend/          # Frontend development commands
+│   ├── backend/           # Backend development commands (empty - structure only)
 │   └── shared/            # Shared utility commands
 ├── hooks/                 # Python Automation Hooks
 │   ├── frontend/          # Frontend-specific hooks
 │   └── shared/            # Shared automation hooks
+├── tools/                 # MCP Tool Configurations
+│   └── task-manager.md    # @task-manager tool documentation
 ├── frontend/              # Frontend-specific configurations
-├── backend/               # Backend-specific configurations (structure created)
+├── backend/               # Backend-specific configurations
 ├── shared/                # Shared configurations and utilities
 ├── CLAUDE.md              # Main configuration with collaboration guidelines
 └── settings.json          # Claude Code settings
 
-docs/                      # Project Documentation
-├── ui-task-flow-example.md # Complete UI workflow examples
-└── diagrams/              # Architecture and workflow diagrams
-    └── flow/              # Workflow visualization diagrams
+protocol-assets/           # Protocol Asset Organization (MAIN IMPLEMENTATION)
+├── lib/                   # Core Implementation Library
+│   ├── board-service/     # 🔥 Full-Stack Task Management Service
+│   │   ├── src/client/    # React TypeScript frontend (Vite + TailwindCSS)
+│   │   ├── src/server.js  # Express.js REST API + WebSocket server
+│   │   ├── migrations/    # SQLite database schema migrations
+│   │   └── public/        # Static assets and production build
+│   ├── board-mcp/         # 🔥 MCP Server Implementation (@task-manager tool)
+│   │   ├── src/           # TypeScript MCP server with full API
+│   │   └── tests/         # Jest integration tests
+│   ├── installer/         # Installation system components
+│   ├── services/          # Service layer (error handling, protocol assets)
+│   ├── components/        # Interactive CLI components
+│   ├── sync/              # File synchronization system
+│   └── utils/             # Shared utilities and helpers
+├── data/                  # 🔥 Runtime Data (CRITICAL - UNDOCUMENTED)
+│   ├── databases/         # SQLite task management database
+│   ├── logs/              # Service and MCP server logs
+│   ├── pids/              # Process ID files
+│   └── backups/           # Database backups
+├── scripts/               # 🔥 Service Orchestration (CRITICAL)
+│   ├── start-mcp-stack.sh # Comprehensive service orchestrator
+│   ├── stop-mcp-stack.sh  # Service shutdown management
+│   └── mcp-stack-status.sh # Health monitoring and status
+├── frontend/              # Frontend-specific assets and workflows
+├── backend/               # Backend-specific assets and workflows
+└── shared/                # Cross-domain assets and standards
 
-lib/                       # Core Implementation Library
-├── installer/             # Installation system components
-│   ├── installer.js       # Main installer orchestrator
-│   ├── constants.js       # Installation constants
-│   ├── index.js           # Installer entry point
-│   ├── ui-theme.js        # CLI theming and styling
-│   └── debug.js           # Debug utilities
-├── services/              # Service layer (NEW)
-│   ├── error-handler-service.js    # Error handling service
-│   └── protocol-asset-service.js   # Protocol asset management
-├── components/            # Interactive CLI Components
-│   └── CommandHeader.js   # Command header component
-├── sync/                  # File Synchronization System
-│   └── metadata-manager.js # File tracking and synchronization
-├── utils/                 # Shared utilities
-│   ├── logger.js          # Logging utilities
-│   └── terminal.js        # Terminal utilities
-├── config.js              # Configuration management
-└── installer.js           # Legacy installer (main entry)
+docs/                      # Project Documentation (SPARSE)
+└── next-steps-roadmap.md  # Development roadmap
 
 bin/                       # CLI Executables
 ├── lerian-protocol.js     # Main CLI entry point
@@ -107,49 +113,65 @@ bin/                       # CLI Executables
 ├── context7               # Library documentation and code examples
 ├── playwright             # Browser automation with screenshot validation
 ├── fetch                  # Web content retrieval capabilities
-└── shadcn                 # UI component generation
+├── shadcn                 # UI component generation
+└── lerian-board          # 🔥 Custom task management MCP server
 ```
 
-## 🚀 Quick Start
+## 🚀 Installing Lerian Protocol
 
-### Prerequisites
+To install Lerian Protocol, follow these steps:
 
-- **Node.js** >= 16.0.0
-- **Git** - For cloning the repository
-- **Claude Code** - This protocol is specifically designed for Claude Code
-- **Python** (optional) - For advanced hook automation
-- **Browser** - For Playwright visual validation (installed automatically)
-
-### Installation
-
-#### Development Installation
+Linux and macOS:
 
 ```bash
+# -
 git clone https://github.com/LerianStudio/ai-prompts.git -b lerian-protocol
+
+# -
 cd ai-prompts
+
+# -
 npm install
+
+# -
 npm link
 
+# - 
 lerian-protocol install ./my-project
 ```
 
-## 📖 Usage
+## ☕ Using Lerian Protocol
 
-| Command                          | Description                   | Example                                |
-| -------------------------------- | ----------------------------- | -------------------------------------- |
-| `lerian-protocol install`        | Install in current directory  | `lerian-protocol install`              |
-| `lerian-protocol install <path>` | Install in specific directory | `lerian-protocol install ./my-project` |
-| `lerian-protocol status`         | Show installation status      | `lerian-protocol status`               |
-| `lerian-protocol uninstall`      | Remove installation           | `lerian-protocol uninstall`            |
+To use Lerian Protocol, follow these steps:
+
+```bash
+# Install in current directory
+lerian-protocol install
+
+# Install in specific directory
+lerian-protocol install ./my-project
+
+# Check installation status
+lerian-protocol status
+
+# Start MCP stack for development
+npm run mcp:start
+
+# Start task management service
+npm run mcp:start:dev
+```
+
+Add execution commands and examples that you think users will find useful. Provide an options reference for bonus points!
 
 ### Key Capabilities
 
-#### Database-Backed Task Management
+#### Full-Stack Task Management System
 
-- **@task-manager MCP Tool** - Revolutionary database-backed task system replacing fragile file operations
-- **SQLite Database** - Reliable task state with atomic operations and transaction safety
-- **Automatic Completion** - Tasks auto-complete when all todos are finished
-- **Agent Coordination** - Task IDs enable seamless handoffs between specialized agents
+- **React Frontend Application** - Complete kanban board with drag-and-drop, built with TypeScript + Vite
+- **Express.js REST API** - Full CRUD operations with WebSocket real-time synchronization
+- **SQLite Database** - Reliable task state with migrations, foreign keys, and transaction safety
+- **@task-manager MCP Tool** - Revolutionary MCP server implementation for agent integration
+- **Service Orchestration** - Shell script-based service management and health monitoring
 
 #### UI-First Development
 
@@ -174,22 +196,27 @@ lerian-protocol install ./my-project
 
 ## 📚 Key Components
 
-| Directory                            | Purpose                  | Contents                                                                     |
-| ------------------------------------ | ------------------------ | ---------------------------------------------------------------------------- |
-| `.claude/agents/`                    | Specialized AI agents    | Frontend (React, UI/UX, Playwright) and Shared (Tech Writer, Task Breakdown) |
-| `.claude/commands/`                  | 30+ development commands | Frontend development commands and shared utility commands                    |
-| `.claude/hooks/`                     | Python automation hooks  | Frontend and shared automation hooks for testing, security, formatting       |
-| `.claude/tools/`                     | MCP tool configurations  | @task-manager tool for database-backed task management                       |
-| `.claude/frontend/`                  | Frontend configurations  | Frontend-specific settings and configurations                                |
-| `.claude/backend/`                   | Backend configurations   | Backend-specific settings and configurations (structure created)             |
-| `.claude/shared/`                    | Shared configurations    | Cross-domain utilities and shared configurations                             |
-| `protocol-assets/lib/board-service/` | Task management service  | Node.js REST API with SQLite database for reliable task operations           |
-| `protocol-assets/lib/board-mcp/`     | Task management MCP tool | @task-manager MCP tool for agent integration                                 |
-| `protocol-assets/lib/`               | Core implementation      | Installer, services, components, sync system, utilities                      |
-| `docs/`                              | Project documentation    | Architecture, deployment guides, PRD, and workflow documentation             |
-| `protocol-assets/scripts/`           | Deployment scripts       | Service management, migration, and health monitoring tools                   |
-| `bin/`                               | CLI executables          | Main CLI entry points and wrapper scripts                                    |
-| `.mcp.json`                          | MCP server configuration | Context7, Playwright, Fetch, Shadcn integrations                             |
+| Directory                                | Purpose                     | Contents                                                                   |
+| ---------------------------------------- | --------------------------- | -------------------------------------------------------------------------- |
+| **`.claude/`**                           | **Claude Code Integration** | Complete agent ecosystem with 30+ commands and hooks                       |
+| `.claude/agents/`                        | Specialized AI agents       | Frontend (React, UI/UX, Playwright) + Shared (Tech Writer, Task Breakdown) |
+| `.claude/commands/`                      | Development commands        | 30+ commands organized by domain (frontend/shared/backend)                 |
+| `.claude/hooks/`                         | Automation hooks            | Python hooks for testing, security, formatting                             |
+| **`protocol-assets/lib/board-service/`** | **🔥 Full-Stack App**       | **Complete React+Express task management system**                          |
+| `└─ src/client/`                         | React frontend              | TypeScript + Vite + TailwindCSS + Drag-and-Drop Kanban                     |
+| `└─ src/server.js`                       | Express.js API              | REST endpoints + WebSocket + SQLite integration                            |
+| `└─ migrations/`                         | Database schema             | SQLite migrations with foreign keys and constraints                        |
+| **`protocol-assets/lib/board-mcp/`**     | **🔥 MCP Server**           | **@task-manager MCP tool implementation**                                  |
+| `└─ src/`                                | TypeScript MCP server       | Full MCP protocol implementation with schemas                              |
+| `└─ tests/`                              | Integration tests           | Jest test suite with end-to-end workflows                                  |
+| **`protocol-assets/data/`**              | **🔥 Runtime Data**         | **Production database, logs, process management**                          |
+| `└─ databases/`                          | SQLite database             | Task management database with backups                                      |
+| `└─ logs/`                               | Service logs                | Real-time logs from all services                                           |
+| `└─ pids/`                               | Process tracking            | Process ID files for service management                                    |
+| **`protocol-assets/scripts/`**           | **🔥 Orchestration**        | **Service management and monitoring**                                      |
+| `└─ start-mcp-stack.sh`                  | Service starter             | Comprehensive service orchestration                                        |
+| `└─ mcp-stack-status.sh`                 | Health monitoring           | Real-time status and health checks                                         |
+| `.mcp.json`                              | MCP configuration           | 5 integrated servers (Context7, Playwright, etc.)                          |
 
 ## Repository Structure
 
@@ -211,35 +238,138 @@ lerian-protocol install ./my-project
 │   ├── shared/                  # Shared configurations and utilities
 │   ├── CLAUDE.md                # Main configuration with collaboration guidelines
 │   └── settings.json            # Claude Code settings
-├── docs/                        # Project Documentation
-│   ├── ARCHITECTURE.md          # Comprehensive architecture documentation
-│   ├── board-deployment.md      # Task management system deployment guide
-│   ├── prd.md                   # Product requirements document
-│   └── diagrams/                # Architecture and workflow diagrams
-├── lib/                         # Core Implementation Library
-│   ├── board-service/           # Task Management Service (Node.js/Express/SQLite)
-│   ├── board-mcp/               # @task-manager MCP Tool
-│   ├── installer/               # Installation system components
-│   ├── services/                # Service layer (error handling, protocol assets)
-│   ├── components/              # Interactive CLI components
-│   ├── sync/                    # File synchronization system
-│   ├── utils/                   # Shared utilities and helpers
-│   ├── config.js                # Configuration management
-│   └── installer.js             # Legacy installer (main entry)
-├── scripts/                     # Deployment and Management Scripts
-│   ├── start-task-service.sh    # Start task management service
-│   ├── stop-task-service.sh     # Stop task management service
-│   └── migrate-board-tasks.sh   # Migrate legacy tasks to database
-├── bin/                         # CLI entry points and executables
-│   ├── lerian-protocol.js       # Main CLI entry point
-│   └── lerian-cli-wrapper.js    # CLI wrapper script
-├── protocol-assets/             # Protocol Asset Organization (Domain-Based)
+├── docs/                        # Project Documentation (SPARSE)
+│   └── next-steps-roadmap.md    # Development roadmap
+├── protocol-assets/             # 🔥 MAIN IMPLEMENTATION DIRECTORY
+│   ├── lib/                     # Core Implementation Library
+│   │   ├── board-service/       # 🔥 Full-Stack Task Management Service
+│   │   │   ├── src/client/      # React TypeScript frontend (Vite + TailwindCSS)
+│   │   │   ├── src/server.js    # Express.js REST API + WebSocket server
+│   │   │   ├── migrations/      # SQLite database schema migrations
+│   │   │   └── public/          # Static assets and production build
+│   │   ├── board-mcp/           # 🔥 MCP Server Implementation
+│   │   │   ├── src/             # TypeScript MCP server with full API
+│   │   │   └── tests/           # Jest integration tests
+│   │   ├── installer/           # Installation system components
+│   │   ├── services/            # Service layer (error handling, protocol assets)
+│   │   ├── components/          # Interactive CLI components
+│   │   ├── sync/                # File synchronization system
+│   │   └── utils/               # Shared utilities and helpers
+│   ├── data/                    # 🔥 Runtime Data (CRITICAL)
+│   │   ├── databases/           # SQLite task management database
+│   │   ├── logs/                # Service and MCP server logs
+│   │   ├── pids/                # Process ID files
+│   │   └── backups/             # Database backups
+│   ├── scripts/                 # 🔥 Service Orchestration
+│   │   ├── start-mcp-stack.sh   # Comprehensive service orchestrator
+│   │   ├── stop-mcp-stack.sh    # Service shutdown management
+│   │   └── mcp-stack-status.sh  # Health monitoring and status
 │   ├── frontend/                # Frontend-specific assets and workflows
 │   ├── backend/                 # Backend-specific assets and workflows
 │   └── shared/                  # Cross-domain assets and standards
-├── CHANGELOG.md                 # Version history and change tracking
-└── .mcp.json                    # MCP server configuration (Context7, Playwright, Fetch, Shadcn)
+├── bin/                         # CLI entry points and executables
+│   ├── lerian-protocol.js       # Main CLI entry point
+│   └── lerian-cli-wrapper.js    # CLI wrapper script
+├── .backups/                    # System backups (UNDOCUMENTED)
+├── boards/                      # Development workspace (UNDOCUMENTED)
+└── .mcp.json                    # MCP server configuration (5 integrated servers)
 ```
+
+## 🏗️ Architecture Overview
+
+Lerian Protocol implements a **sophisticated dual-service architecture** with real-time collaboration:
+
+```mermaid
+graph TD;
+    A[Claude Code] --> B[MCP Servers];
+    B --> C[Context7];
+    B --> D[Playwright];
+    B --> E[Shadcn];
+    B --> F[Lerian Board MCP];
+    F --> G[Task Service API];
+    G --> H[SQLite Database];
+    G --> I[WebSocket Server];
+    I --> J[React Frontend];
+    A --> K[Specialized Agents];
+    K --> L[Frontend Agents];
+    K --> M[Backend Agents];
+    K --> N[Shared Agents];
+```
+
+### Real System Architecture
+
+```
+Claude Code ←→ MCP Server (board-mcp) ←→ REST API (board-service) ←→ SQLite Database
+                     ↓                              ↓
+                MCP Protocol                   React Frontend
+                                                    ↓
+                                            WebSocket Real-time Updates
+```
+
+This creates a complete task management ecosystem with:
+
+- **Database persistence** for reliable task state
+- **Real-time collaboration** via WebSocket broadcasting
+- **Agent integration** through MCP protocol
+- **Modern UI** with drag-and-drop kanban board
+- **Service orchestration** with health monitoring
+
+## 📫 Contributing to Lerian Protocol
+
+To contribute to Lerian Protocol, follow these steps:
+
+1. Fork this repository.
+2. Create a branch: `git checkout -b lerian-protocol/<feature_name>`.
+3. Make your changes and commit them: `git commit -m 'feat: add amazing feature'`
+4. Push to the original branch: `git push origin lerian-protocol/<feature_name>`
+5. Create the pull request.
+
+Alternatively, see the GitHub documentation on [how to create a pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).
+
+## 🐙 Advanced Formatting
+
+### Alerts
+
+Use alerts to emphasize critical information with colors and distinct icons:
+
+> [!NOTE]
+> Useful information that users should know, even when skimming content.
+
+> [!TIP]
+> Helpful advice for doing things better or more easily.
+
+> [!IMPORTANT]
+> Key information users need to know to achieve their goal.
+
+> [!WARNING]
+> Urgent info that needs immediate user attention to avoid problems.
+
+> [!CAUTION]
+> Advises about risks or negative outcomes of certain actions.
+
+### Collapsed Sections
+
+Create expandable sections to organize detailed information:
+
+<details>
+
+<summary>Advanced Configuration</summary>
+
+### Additional Settings
+
+You can include detailed configuration options here.
+
+```bash
+npm run configure --advanced
+```
+
+Add any technical details that might not be relevant for all readers.
+
+</details>
+
+## 📝 License
+
+This project is under license. See the [LICENSE](LICENSE.md) file for more details.
 
 <div align="center">
    <p>Made with ❤️ by <a href="https://github.com/LerianStudio">Lerian Studio</a></p>

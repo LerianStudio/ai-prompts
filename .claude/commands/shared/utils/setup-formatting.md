@@ -6,12 +6,17 @@ argument-hint: [--project-type=<type>]
 
 # /shared:utils:setup-formatting
 
-Setup code formatting tools and configuration
-
-## Instructions
+<instructions>
+Setup code formatting tools and configuration for consistent code style.
 
 Follow this systematic approach to setup code formatting: **$ARGUMENTS**
+</instructions>
 
+<context>
+This command helps establish consistent code formatting across projects by installing and configuring appropriate formatting tools based on the project's programming languages and frameworks.
+</context>
+
+<process>
 1. **Project Analysis**
    - Identify programming languages and frameworks
    - Check existing formatting configuration
@@ -65,3 +70,4 @@ Follow this systematic approach to setup code formatting: **$ARGUMENTS**
    ```
 
 Remember to establish team formatting standards before enforcement.
+</process>

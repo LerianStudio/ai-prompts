@@ -8,3 +8,20 @@ protocol-assets/data/databases/*.db-shm
 protocol-assets/data/backups/*.db
 protocol-assets/data/logs/*.log
 protocol-assets/data/pids/*.pid
+
+# Environment files - should never be committed
+.env
+**/.env
+protocol-assets/**/.env
+!**/.env.example
+
+# Build artifacts - should never be committed
+dist/
+build/
+**/dist/
+**/build/
+protocol-assets/**/dist/
+protocol-assets/**/build/
+
+# Backup directories
+.backups/

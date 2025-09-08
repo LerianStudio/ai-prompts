@@ -6,9 +6,9 @@ argument-hint: [--question=<question>]
 
 # /shared:utils:question
 
+<context>
 Answer questions about the project structure and documentation by analyzing existing code and files. This command provides information and explanations without making any code changes.
-
-## Instructions
+</context>
 
 <instructions>
 - **CRITICAL**: This is a question-answering task only - DO NOT write, edit, or create any files
@@ -17,13 +17,9 @@ Answer questions about the project structure and documentation by analyzing exis
 - **CRITICAL**: If the question requires code changes, explain what would need to be done conceptually without implementing
 </instructions>
 
-## Context
-
 <context>
 This command is designed for information gathering and project understanding. It helps users learn about their codebase by analyzing existing files, structure, and documentation without making modifications.
 </context>
-
-## Process
 
 <process>
 ### Phase 1: Project Structure Discovery
@@ -45,8 +41,6 @@ This command is designed for information gathering and project understanding. It
 4. **Concepts**: Explain conceptual approaches where applicable
    </process>
 
-## Requirements
-
 <requirements>
 - Must analyze project structure using git ls-files
 - Must read and understand project documentation
@@ -56,25 +50,25 @@ This command is designed for information gathering and project understanding. It
 - Must maintain read-only approach - no file modifications allowed
 </requirements>
 
-## Examples
-
 <examples>
 ```bash
 # Ask about project architecture
 /shared:utils:question --question="How is the authentication system structured?"
 
 # Understand component organization
+
 /shared:utils:question --question="Where are the React components located and how are they organized?"
 
 # Learn about configuration
+
 /shared:utils:question --question="What configuration files are used and what do they control?"
 
 # Explore testing setup
+
 /shared:utils:question --question="How is testing set up in this project and what frameworks are used?"
+
 ```
 </examples>
-
-## Response Format
 
 <formatting>
 - **Direct Answer**: Clear response to the specific question asked
@@ -84,7 +78,7 @@ This command is designed for information gathering and project understanding. It
 - **Conceptual Explanations**: High-level understanding where helpful
 </formatting>
 
-## Question
-
+<question>
 $ARGUMENTS
+</question>
 ```

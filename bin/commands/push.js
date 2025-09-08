@@ -4,17 +4,13 @@ const { Command } = require('commander')
 const chalk = require('chalk')
 const path = require('path')
 const inquirer = require('inquirer')
-const ConfigManager = require('../../protocol-assets/lib/config')
-const MetadataManager = require('../../protocol-assets/lib/sync/metadata-manager')
-const PushPlanner = require('../../protocol-assets/lib/sync/push-planner')
-const PushExecutor = require('../../protocol-assets/lib/sync/push-executor')
-const FileSelector = require('../../protocol-assets/lib/sync/file-selector')
+const ConfigManager = require('../../protocol-assets/tools/installer')
+const MetadataManager = require('../../protocol-assets/tools/sync/metadata-manager')
+const PushPlanner = require('../../protocol-assets/tools/sync/push-planner')
+const PushExecutor = require('../../protocol-assets/tools/sync/push-executor')
+const FileSelector = require('../../protocol-assets/tools/sync/file-selector')
 
 class PushCommand {
-  /**
-   * Register the push command with the main CLI program
-   * @param {Command} program - Commander.js program instance
-   */
   static register(program) {
     const pushCmd = new Command('push')
       .description(
@@ -73,10 +69,6 @@ the source package location.`
     program.addCommand(pushCmd)
   }
 
-  /**
-   * Execute the push command with the provided options
-   * @param {Object} options - Command options from commander.js
-   */
   static async execute(options) {
     const startTime = Date.now()
 
@@ -96,7 +88,6 @@ the source package location.`
         console.log('')
       }
 
-      // Validate environment and get paths
       const validation = await this.validateEnvironment()
       const targetPath = validation.cwd
 
@@ -117,7 +108,6 @@ the source package location.`
         console.log(header.render())
       }
 
-      // Get source path from installation metadata
       const installMeta = await metadataManager.readMetadata(targetPath)
       if (!installMeta) {
         throw new Error(
@@ -125,7 +115,6 @@ the source package location.`
         )
       }
 
-      // Validate source path exists and is writable
       await metadataManager.validateSourcePath(installMeta)
       const sourcePath = installMeta.sourcePath
       const profile = installMeta.profile || 'full'
@@ -139,12 +128,10 @@ the source package location.`
         console.log('')
       }
 
-      // Initialize push components
       const pushPlanner = new PushPlanner()
       const pushExecutor = new PushExecutor()
       const fileSelector = new FileSelector()
 
-      // Get last push hashes (different from sync hashes)
       const lastPushHashes = await this.getLastPushHashes(
         metadataManager,
         targetPath
@@ -152,7 +139,6 @@ the source package location.`
 
       console.log(chalk.blue('🔍 Analyzing files eligible for push...'))
 
-      // Initial file discovery - find all pushable files
       const hasExistingMetadata = Object.keys(lastPushHashes).length > 0
       const allPushableFiles = await this.discoverPushableFiles(
         targetPath,
@@ -176,16 +162,13 @@ the source package location.`
         return
       }
 
-      // File selection - either interactive or from command line args
       let fileSelection
       if (options.interactive || (!options.files && !options.include)) {
-        // Interactive mode
         fileSelection = await fileSelector.selectFilesForPush(
           allPushableFiles,
           options
         )
       } else {
-        // Command line selection
         fileSelection = fileSelector.createSelectionFromArgs(
           allPushableFiles,
           options
@@ -199,7 +182,6 @@ the source package location.`
 
       console.log(chalk.blue('📊 Creating push plan...'))
 
-      // Create push plan with selected files
       const pushPlan = await pushPlanner.createPushPlan(
         targetPath,
         sourcePath,
@@ -217,10 +199,8 @@ the source package location.`
         }
       )
 
-      // Display push plan summary
       this.displayPushPlan(pushPlan, options)
 
-      // Handle dry-run mode
       if (options.dryRun) {
         console.log(
           chalk.yellow('\n📋 Dry-run complete. No changes were made.')
@@ -229,13 +209,11 @@ the source package location.`
         return
       }
 
-      // Check if push plan is empty
       if (pushPlan.operations.length === 0) {
         console.log(chalk.green('✨ No changes to push!'))
         return
       }
 
-      // Safety confirmation for risky operations
       if (pushPlan.requiresConfirmation && !options.force) {
         const proceed = await this.confirmPushExecution(pushPlan, options)
         if (!proceed) {
@@ -246,7 +224,6 @@ the source package location.`
 
       console.log(chalk.blue('\n🚀 Executing push operations...'))
 
-      // Execute push with enhanced safety options
       let pushResult
       try {
         pushResult = await pushExecutor.executePushPlan(pushPlan, {
@@ -267,7 +244,6 @@ the source package location.`
         throw error
       }
 
-      // Update push metadata with new hashes
       if (pushResult.success) {
         await this.savePushMetadata(
           metadataManager,
@@ -276,7 +252,6 @@ the source package location.`
           pushResult.operations
         )
 
-        // Update baseline with current state after successful push
         try {
           const PushBaselineManager = require('../../lib/sync/push-baseline-manager')
           const baselineManager = new PushBaselineManager()
@@ -321,7 +296,6 @@ the source package location.`
         }
       }
 
-      // Display final results
       this.displayPushResults(pushResult)
       this.displayExecutionStats(pushPlan, Date.now() - startTime)
     } catch (error) {
@@ -333,9 +307,6 @@ the source package location.`
     }
   }
 
-  /**
-   * Validate that the command is being run in a valid environment
-   */
   static async validateEnvironment() {
     const fs = require('fs-extra')
     const cwd = process.cwd()
@@ -356,14 +327,6 @@ the source package location.`
     }
   }
 
-  /**
-   * Discover files eligible for pushing
-   * @param {string} targetPath - Target project path
-   * @param {string} profile - Installation profile
-   * @param {boolean} hasExistingMetadata - Whether push metadata exists
-   * @param {Object} options - Command options
-   * @returns {Promise<Object>} Pushable files with metadata
-   */
   static async discoverPushableFiles(
     targetPath,
     profile,
@@ -372,7 +335,6 @@ the source package location.`
   ) {
     const FileHasher = require('../../lib/sync/file-hasher')
     const fileHasher = new FileHasher({
-      // Include additional patterns for push-specific files
       ignorePatterns: [
         '.git',
         'node_modules',
@@ -388,13 +350,10 @@ the source package location.`
       ]
     })
 
-    // Get all files in target project
     const allFiles = await fileHasher.hashDirectory(targetPath)
 
-    // Filter to only pushable files with git detection if requested
     const pushPlanner = new PushPlanner()
 
-    // Use baseline-based filtering (handled in filterPushableFiles)
     return await pushPlanner.filterPushableFiles(
       allFiles,
       { profile },
@@ -403,12 +362,6 @@ the source package location.`
     )
   }
 
-  /**
-   * Get last push hashes from metadata
-   * @param {MetadataManager} metadataManager - Metadata manager instance
-   * @param {string} targetPath - Target path
-   * @returns {Promise<Object>} Last push hashes
-   */
   static async getLastPushHashes(metadataManager, targetPath) {
     try {
       const pushMeta = await metadataManager.readSyncMetadata(
@@ -421,13 +374,6 @@ the source package location.`
     }
   }
 
-  /**
-   * Save push metadata after successful push
-   * @param {MetadataManager} metadataManager - Metadata manager
-   * @param {string} targetPath - Target path
-   * @param {Object} targetSnapshot - Target snapshot
-   * @param {Array} operations - Completed operations
-   */
   static async savePushMetadata(
     metadataManager,
     targetPath,
@@ -458,11 +404,6 @@ the source package location.`
     await fs.writeJSON(pushMetaPath, metadata, { spaces: 2 })
   }
 
-  /**
-   * Display push plan summary to user
-   * @param {Object} pushPlan - Push plan object
-   * @param {Object} options - Command options
-   */
   static displayPushPlan(pushPlan, options) {
     console.log(chalk.blue('\n📤 Push Plan Summary:'))
     console.log(`  Target: ${pushPlan.targetPath}`)
@@ -529,12 +470,6 @@ the source package location.`
     }
   }
 
-  /**
-   * Confirm push execution with user
-   * @param {Object} pushPlan - Push plan
-   * @param {Object} options - Command options
-   * @returns {Promise<boolean>} True if user confirms
-   */
   static async confirmPushExecution(pushPlan, options) {
     console.log(
       chalk.yellow('\n⚠️  This push operation requires confirmation:')
@@ -566,10 +501,6 @@ the source package location.`
     return confirmed
   }
 
-  /**
-   * Display push execution results
-   * @param {Object} pushResult - Result from PushExecutor
-   */
   static displayPushResults(pushResult) {
     if (!pushResult.operations || pushResult.operations.length === 0) {
       return
@@ -621,11 +552,6 @@ the source package location.`
     }
   }
 
-  /**
-   * Display execution statistics
-   * @param {Object} pushPlan - Push plan object
-   * @param {number} totalTime - Total execution time in ms
-   */
   static displayExecutionStats(pushPlan, totalTime) {
     console.log(chalk.gray('\n⏱️  Statistics:'))
     console.log(chalk.gray(`  Total time: ${Math.round(totalTime)}ms`))
@@ -644,11 +570,6 @@ the source package location.`
     }
   }
 
-  /**
-   * Format risk level with appropriate styling
-   * @param {string} riskLevel - Risk level
-   * @returns {string} Formatted risk level
-   */
   static formatRiskLevel(riskLevel) {
     switch (riskLevel) {
       case 'low':
@@ -664,11 +585,6 @@ the source package location.`
     }
   }
 
-  /**
-   * Format bytes into human readable string
-   * @param {number} bytes - Number of bytes
-   * @returns {string} Formatted string
-   */
   static formatBytes(bytes) {
     const sizes = ['B', 'KB', 'MB', 'GB']
     if (bytes === 0) return '0 B'
@@ -676,11 +592,6 @@ the source package location.`
     return Math.round((bytes / Math.pow(1024, i)) * 100) / 100 + ' ' + sizes[i]
   }
 
-  /**
-   * Summarize push operations
-   * @param {Array} operations - Push operations
-   * @returns {Object} Summary
-   */
   static summarizePushOperations(operations) {
     const summary = {
       total: operations.length,

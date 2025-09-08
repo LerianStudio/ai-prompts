@@ -7,13 +7,13 @@ workflow:
     focuses on pure visual components, styling, and basic interactions with centralized progress tracking.
 
   agents:
-    - frontend-developer
-    - playwright-validator
+    - .claude/agents/frontend/frontend-developer.md
+    - .claude/agents/frontend/playwright-validator.md
 
   steps:
     - id: load-and-start-ui-task
       title: Load Task and Set to In-Progress
-      agent: frontend-developer
+      agent: .claude/agents/frontend/frontend-developer.md
       requires: task_id (input parameter)
       creates: task details loaded from database
       action: Use @task-manager.getTask() and @task-manager.updateTaskStatus(task_id, "in_progress")
@@ -24,13 +24,13 @@ workflow:
 
     - id: implement-ui-only-todos
       title: Implement UI-Only Todos (Visual Components, Styling, Basic Interactions)
-      agent: frontend-developer
+      agent: .claude/agents/frontend/frontend-developer.md
       requires:
         - task_id with loaded task details
         - ui specification from task description
       creates:
         - ui-component-implementations
-        - styling-implementations  
+        - styling-implementations
         - basic-interaction-code
       action: Use @task-manager.completeTodoItem() for each completed todo
       description: >-
@@ -41,13 +41,13 @@ workflow:
         - Accessibility implementation (ARIA, semantic HTML)
         - Visual validation against design specifications
         - NO business logic, API integration, or state management
-        
+
         Progress tracking via @task-manager.completeTodoItem(task_id, todoContent) for each completed todo.
         Task will auto-complete when all todos are finished.
 
     - id: playwright-validation
       title: Simple Playwright Screenshot Validation
-      agent: playwright-validator
+      agent: .claude/agents/frontend/playwright-validator.md
       requires:
         - ui-implementation-code
         - task_id for accessing UI specifications
@@ -61,7 +61,7 @@ workflow:
 
     - id: verify-task-completion
       title: Verify Task Completion Status
-      agent: frontend-developer
+      agent: .claude/agents/frontend/frontend-developer.md
       requires:
         - ui-implementation-code
         - playwright-screenshots
@@ -76,11 +76,11 @@ workflow:
 handoff_prompts:
   workflow-start-to-frontend-developer: >-
     **DATABASE-BACKED UI IMPLEMENTATION WORKFLOW**
-    
+
     Input: task_id = {task_id}
-    
+
     Your task: Implement UI-only components using the @task-manager system:
-    
+
     1. **Load Task**: Use @task-manager.getTask(task_id) to get task details, UI specs, and todos
     2. **Set Status**: Use @task-manager.updateTaskStatus(task_id, "in_progress") to start work
     3. **Review Structure**: Understand the todo phases:
@@ -90,15 +90,15 @@ handoff_prompts:
        - Responsive Design phase  
        - Accessibility Compliance phase
        - Testing & Integration phase
-    
+
     4. **Implementation Loop**: For each todo:
        - Implement the specific requirement
        - Use @task-manager.completeTodoItem(task_id, todoContent) to mark done
        - Continue to next todo
-    
+
     5. **UI-Only Focus**: NO business logic, API calls, or complex state management
     6. **Progress Tracking**: All progress centralized in database, no file operations needed
-    
+
     The task will automatically complete when all todos are finished.
 
   frontend-developer-to-playwright-validator: >-
@@ -172,5 +172,5 @@ handoff_prompts:
     - Access task via @task-manager.getTask({task_id})
     - Add business logic to existing pure UI components
     - Continue progress tracking with additional todos if needed
-    
+
     The robust database backing ensures reliable coordination for complex multi-phase workflows!

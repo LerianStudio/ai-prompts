@@ -6,7 +6,8 @@ argument-hint: [--directory-path=<path>]
 
 # /shared:documentation:directory-deep-dive
 
-Analyze directory structure, architecture patterns, and create comprehensive CLAUDE.md documentation
+<instructions>
+Analyze directory structure, architecture patterns, and create comprehensive CLAUDE.md documentation.
 
 ## Usage
 
@@ -16,33 +17,57 @@ Analyze directory structure, architecture patterns, and create comprehensive CLA
 /shared:documentation:directory-deep-dive --directory-path=src/components  # Analyze components directory
 ```
 
-## Instructions
+## Target Directory
 
-1. **Target Directory**
-   - Focus on the specified directory `$ARGUMENTS` or the current working directory
+- Focus on the specified directory `$ARGUMENTS` or the current working directory
 
-2. **Investigate Architecture**
-   - Analyze the implementation principles and architecture of the code in this directory and its subdirectories
-   - Look for:
-     - Design patterns being used
-     - Dependencies and their purposes
-     - Key abstractions and interfaces
-     - Naming conventions and code organization
+## Task Objectives
 
-3. **Create or Update Documentation**
-   - Create a CLAUDE.md file capturing this knowledge
-   - If one already exists, update it with newly discovered information
-   - Include:
-     - Purpose and responsibility of this module
-     - Key architectural decisions
-     - Important implementation details
-     - Common patterns used throughout the code
-     - Any gotchas or non-obvious behaviors
+1. Investigate the implementation principles and architecture of the code in the target directory and subdirectories
+2. Analyze design patterns, dependencies, abstractions, and code organization
+3. Create or update CLAUDE.md documentation capturing discovered knowledge
+4. Ensure proper placement of documentation in the analyzed directory
+   </instructions>
 
-4. **Ensure Proper Placement**
-   - Place the CLAUDE.md file in the directory being analyzed
-   - This ensures the context is loaded when working in that specific area
+<process>
+## Investigation Process
 
+### 1. Architecture Analysis
+
+Look for and document:
+
+- **Design patterns** being used throughout the codebase
+- **Dependencies** and their purposes in the system
+- **Key abstractions** and interfaces that define the architecture
+- **Naming conventions** and code organization principles
+- **Common implementation patterns** and architectural decisions
+
+### 2. Code Structure Assessment
+
+- Scan project structure to understand organization
+- Identify main modules, packages, and entry points
+- Map data flow and component relationships
+- Locate configuration and environment files
+- Analyze testing strategies and coverage
+
+### 3. Documentation Generation
+
+Create or update CLAUDE.md file including:
+
+- **Purpose and responsibility** of the analyzed module
+- **Key architectural decisions** and their rationale
+- **Important implementation details** and patterns
+- **Common patterns** used throughout the code
+- **Gotchas** or non-obvious behaviors developers should know
+
+### 4. Knowledge Capture
+
+- Place the CLAUDE.md file in the directory being analyzed
+- Ensure context is loaded when working in that specific area
+- Include practical guidance for future development work
+  </process>
+
+<formatting>
 ## CLAUDE.md Template
 
 ```markdown
@@ -140,6 +165,9 @@ Analyze directory structure, architecture patterns, and create comprehensive CLA
 - [Link to ADRs]
 ```
 
+</formatting>
+
+<example>
 ## Example Output
 
 ```markdown
@@ -195,6 +223,16 @@ Components follow a hierarchical structure:
 - 💡 Check Storybook for usage examples
 ```
 
+</example>
+
+<context>
+## Implementation Notes
+- This command helps create contextual documentation that gets loaded automatically when working in specific directories
+- Focus on practical, actionable information that helps developers understand and work with the code
+- Include both high-level architectural concepts and specific implementation details
+- Document not just what the code does, but why it's structured the way it is
+
 ## Credit
 
 This command is based on the work of Thomas Landgraf: https://thomaslandgraf.substack.com/p/claude-codes-memory-working-with
+</context>

@@ -6,7 +6,12 @@ argument-hint: [--paths=<paths-or-patterns>] [--git-scope=<scope>]
 
 # /shared:code-quality:fix-imports
 
-I'll systematically fix import statements broken by file moves or renames.
+<context>
+This command systematically fixes import statements broken by file moves or renames. It can focus on git changes for faster, more relevant fixing, or analyze the entire codebase using traditional path-based approaches.
+</context>
+
+<instructions>
+Systematically fix import statements broken by file moves or renames.
 
 ## Usage Patterns
 
@@ -52,9 +57,29 @@ target_files=$(process_git_scope "$git_scope")
 - **Workflow Integration**: Fix imports as part of feature development or refactoring
 - **Risk Reduction**: Lower chance of introducing unrelated import changes
 
+</instructions>
+
+<examples>
+```bash
+# Git-focused import fixing (recommended for active development)
+/shared:code-quality:fix-imports --git-scope=all-changes             # Fix imports in changed files
+/shared:code-quality:fix-imports --git-scope=staged                 # Fix imports in staged files
+/shared:code-quality:fix-imports --git-scope=branch                 # Fix imports in branch changes
+/shared:code-quality:fix-imports --git-scope=last-commit            # Fix imports in last commit
+
+# Traditional path-based fixing
+
+/shared:code-quality:fix-imports --paths=src/ # Fix imports in specific directory
+/shared:code-quality:fix-imports --paths="**/\*.ts,**/\*.js" # Fix imports in specific file patterns
+/shared:code-quality:fix-imports # Fix imports across entire codebase
+
+```
+</examples>
+
+<process>
 ## Import Analysis
 
-I'll systematically analyze and fix import issues in your codebase by:
+Systematically analyze and fix import issues in your codebase by:
 
 - Detecting broken import statements
 - Resolving moved or renamed files
@@ -164,6 +189,7 @@ When you return and run `/shared:code-quality:fix-imports` or `/shared:code-qual
 **Progress Example:**
 
 ```
+
 RESUMING IMPORT FIXES
 ├── Total Broken: 34
 ├── Fixed: 21 (62%)
@@ -171,6 +197,7 @@ RESUMING IMPORT FIXES
 └── Next: src/components/Header.tsx
 
 Continuing fixes...
+
 ```
 
 ## Practical Examples
@@ -178,17 +205,21 @@ Continuing fixes...
 **Start Fixing:**
 
 ```
-/shared:code-quality:fix-imports                  # Fix all broken imports
-/shared:code-quality:fix-imports src/            # Focus on directory
-/shared:code-quality:fix-imports "components"    # Fix component imports
+
+/shared:code-quality:fix-imports # Fix all broken imports
+/shared:code-quality:fix-imports src/ # Focus on directory
+/shared:code-quality:fix-imports "components" # Fix component imports
+
 ```
 
 **Analysis Options:**
 
 ```
-/shared:code-quality:fix-imports status    # Check current state
-/shared:code-quality:fix-imports scan      # Full analysis
-/shared:code-quality:fix-imports verify    # Check fixes
+
+/shared:code-quality:fix-imports status # Check current state
+/shared:code-quality:fix-imports scan # Full analysis
+/shared:code-quality:fix-imports verify # Check fixes
+
 ```
 
 ## Safety Guarantees
@@ -215,4 +246,6 @@ Continuing fixes...
 4. **Verify completely** - Ensure all imports work
 5. **Document changes** - Track all modifications
 
-I'll apply consistent patterns and thorough verification throughout the import fixing process.
+Apply consistent patterns and thorough verification throughout the import fixing process.
+</process>
+```

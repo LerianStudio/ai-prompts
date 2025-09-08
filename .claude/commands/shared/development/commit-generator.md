@@ -149,3 +149,4 @@ BREAKING CHANGE: user endpoint now returns user object instead of user array
 - Breaking changes are detected and flagged
 - The command respects conventional commit standards for consistent git history
 - Generated commit messages are saved to `commit-message.txt` for easy copying or use with `git commit -F commit-message.txt`
+  </requirements>

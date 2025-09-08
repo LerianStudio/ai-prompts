@@ -6,8 +6,7 @@ argument-hint: [--input=<file-path-or-text>]
 
 # /shared:utils:markdown-syntax
 
-## Instructions
-
+<instructions>
 Format text in markdown syntax or identify and fix issues in existing markdown files. Enforces standard markdown conventions and ensures all content is properly structured.
 
 This command can be used in several ways:
@@ -15,8 +14,13 @@ This command can be used in several ways:
 1. **Fix existing markdown file**: `/shared:utils:markdown-syntax --input=path/to/file.md`
 2. **Format text as markdown**: `/shared:utils:markdown-syntax --input="Your text content here"`
 3. **Preview changes without saving (recommended)**: `/shared:utils:markdown-syntax --input=path/to/file.md --dry-run`
+   </instructions>
 
-## Process
+<context>
+This command ensures all markdown files and text content follow standard markdown conventions, improving readability and consistency across documentation and content files.
+</context>
+
+<process>
 
 1.  **Analyze Input**
     - If input is a file path, read the file and analyze its markdown syntax.
@@ -48,9 +52,9 @@ This command can be used in several ways:
     - If `--dry-run` is used, display the proposed changes without modifying the file.
     - Verify all markdown syntax is valid and follows standard conventions.
 
-## Comprehensive Fixes Applied
+</process>
 
-## Context
+<fixes_applied>
 
 ### Structure & Hierarchy
 
@@ -79,8 +83,9 @@ This command can be used in several ways:
 - **Blockquotes**: Use `>` for quotes, callouts, and citations
 - **Images**: Proper `![alt](src)` syntax with descriptive alt text
 - **Horizontal rules**: Use `---` for section breaks
+  </fixes_applied>
 
-## Examples
+<example>
 
 ```bash
 # Analyze and fix all markdown issues in README.md
@@ -97,8 +102,9 @@ This command can be used in several ways:
 /shared:utils:markdown-syntax --input="This is a header\n\nSome text with **bold** and *italic* formatting."
 ```
 
-## Requirements
+</example>
 
+<requirements>
 ## Validation Rules
 
 The command enforces these standard rules:
@@ -128,3 +134,4 @@ After processing, the command performs a final validation to ensure:
 4. Code blocks have proper syntax highlighting
 5. Links and images use correct markdown syntax
 6. Document structure is logical and well-organized
+   </requirements>

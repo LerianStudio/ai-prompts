@@ -6,10 +6,11 @@ argument-hint: [--scope=<scope>]
 
 # /shared:planning:predict-issue
 
+<context>
 I'll analyze your codebase to predict potential problems before they impact your project.
+</context>
 
-## Strategic Thinking Process
-
+<analysis-framework>
 <think>
 To make accurate predictions, I need to consider:
 
@@ -37,48 +38,57 @@ To make accurate predictions, I need to consider:
    - Check for technical debt accumulation
    - Identify brittleness in integration points
      </think>
+     </analysis-framework>
 
+<tools-strategy>
 Based on this analysis framework, I'll use native tools for comprehensive analysis:
 
 - **Grep tool** to search for problematic patterns
 - **Glob tool** to analyze file structures and growth
 - **Read tool** to examine complex functions and hotspots
+  </tools-strategy>
 
+<examination-areas>
 I'll examine:
-
 - Code complexity trends and potential hotspots
 - Performance bottleneck patterns forming
 - Maintenance difficulty indicators
 - Architecture stress points and scaling issues
 - Error handling gaps
+</examination-areas>
 
+<deliverables>
 For each prediction, I'll:
-
 - Show specific code locations with file references
 - Explain why it's likely to cause future issues
 - Estimate potential timeline and impact
 - Suggest preventive measures with priority levels
 
 When I find multiple issues, I'll create a todo list for systematic review and prioritization.
+</deliverables>
 
+<focus-areas>
 Analysis areas:
-
 - Functions approaching complexity thresholds
 - Files with high change frequency (potential hotspots)
 - Dependencies with known issues or update requirements
 - Performance patterns that don't scale
 - Code duplication leading to maintenance issues
+</focus-areas>
 
+<tracking-options>
 After analysis, I'll ask: "How would you like to track these predictions?"
 
 - Create todos: I'll add items to track resolution progress
 - Summary only: I'll provide actionable report without task creation
+  </tracking-options>
 
+<output-format>
 Predictions will include:
-
 - Risk level assessment (Critical/High/Medium/Low)
 - Estimated timeline for potential issues
 - Specific remediation recommendations
 - Impact assessment on project goals
 
 This helps prevent problems before they impact your project, saving time and maintaining code quality proactively.
+</output-format>

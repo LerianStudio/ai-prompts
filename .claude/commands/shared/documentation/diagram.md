@@ -6,6 +6,7 @@ argument-hint: [--type=architecture|flow|sequence|class|entity] [--scope=<path>]
 
 # /shared:documentation:diagram
 
+<instructions>
 Generate architecture, flow, and relationship diagrams from code structure and documentation using ASCII art and mermaid syntax.
 
 ## Usage
@@ -19,8 +20,29 @@ Generate architecture, flow, and relationship diagrams from code structure and d
 - `--type`: Type of diagram to generate (optional, defaults to architecture)
 - `--scope`: File path or directory to analyze (optional, defaults to current directory)
 
-## Instructions
+## Process
 
+Follow this systematic approach to diagram generation:
+
+1. **Code Analysis Phase**
+   - Analyze project structure using file discovery
+   - Identify main modules, packages, and entry points
+   - Map relationships between components
+   - Locate APIs and endpoints
+
+2. **Diagram Generation Phase**
+   - Choose appropriate diagram type based on analysis
+   - Generate ASCII or Mermaid syntax diagrams
+   - Include interactive elements where applicable
+   - Create comprehensive documentation
+
+3. **Output Organization Phase**
+   - Save diagrams to structured directory paths
+   - Include supporting documentation
+   - Provide usage examples and explanations
+     </instructions>
+
+<process>
 ## Diagram Generation Process
 
 ### 1. Code Analysis
@@ -316,6 +338,9 @@ async function generateArchitectureDiagram(rootPath: string) {
 <div class="mermaid">${generatedDiagram}</div>
 ```
 
+</process>
+
+<formatting>
 ## Output Format
 
 **Save all diagrams to:** `docs/shared:documentation:diagrams/[type]/[diagram-name].md`
@@ -358,6 +383,9 @@ Examples:
 - [Security boundaries]
 ```
 
+</formatting>
+
+<context>
 ## Diagram Best Practices
 
 1. **Keep it simple** - Focus on key components
@@ -375,3 +403,4 @@ Examples:
 - Maintain aspect ratio for readability
 - Export in multiple formats if needed
 - Keep source files for updates
+  </context>

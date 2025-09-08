@@ -2,9 +2,10 @@
   "name": "lerian-protocol",
   "version": "0.1.0",
   "description": "Lerian Protocol - Intelligent agent-based development workflow templates",
-  "main": "lib/installer.js",
+  "main": "protocol-assets/tools/installer/index.js",
+  "type": "commonjs",
   "bin": {
-    "lerian-protocol": "bin/lerian-cli-wrapper.js"
+    "lerian-protocol": "bin/lerian-cli-wrapper.cjs"
   },
   "repository": {
     "type": "git",
@@ -29,7 +30,11 @@
     "glob": "^10.3.10",
     "inquirer": "^8.2.6",
     "js-yaml": "^4.1.0",
-    "ora": "^5.4.1"
+    "ora": "^5.4.1",
+    "pino": "^9.9.4",
+    "pino-pretty": "^13.1.1",
+    "sqlite3": "^5.1.7",
+    "winston": "^3.17.0"
   },
   "engines": {
     "node": ">=16.0.0"
@@ -41,12 +46,23 @@
     "start": "node bin/lerian-protocol.js",
     "install:local": "npm pack && echo 'Use: npm install /path/to/lerian-protocol-1.0.0.tgz in your project'",
     "link:global": "npm link",
-    "lint": "eslint lib bin --ext .js",
-    "lint:fix": "eslint lib bin --ext .js --fix",
-    "lint:check": "eslint lib bin --ext .js",
+    "lint": "eslint protocol-assets bin --ext .js",
+    "lint:fix": "eslint protocol-assets bin --ext .js --fix",
+    "lint:check": "eslint protocol-assets bin --ext .js",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "mcp:start": "./protocol-assets/infrastructure/scripts/start-services.sh",
+    "mcp:start:dev": "./protocol-assets/infrastructure/scripts/start-services.sh --dev",
+    "mcp:stop": "./protocol-assets/infrastructure/scripts/stop-services.sh",
+    "mcp:status": "./protocol-assets/infrastructure/scripts/services-status.sh",
+    "services:api": "cd protocol-assets/services/board-api && npm run dev",
+    "services:ui": "cd protocol-assets/services/board-ui && npm run dev",
+    "services:mcp": "cd protocol-assets/services/board-mcp && npm start",
+    "services:test": "protocol-assets/tools/migration/test-services.sh",
+    "validate": "protocol-assets/tools/migration/validate-structure.sh",
+    "mcp:logs:service": "tail -f ./protocol-assets/infrastructure/data/logs/task-service.log",
+    "mcp:logs:mcp": "tail -f ./protocol-assets/infrastructure/data/logs/board-mcp.log"
   },
   "devDependencies": {
     "eslint": "^9.33.0",

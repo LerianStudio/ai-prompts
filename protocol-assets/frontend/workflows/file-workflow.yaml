@@ -1,0 +1,146 @@
+workflow:
+  id: file-processing
+  name: Demo File Processing Workflow
+  description: >-
+    Simple workflow demonstrating Claude agents working with files through the kanban board.
+    This workflow showcases task creation, file operations, validation, and cleanup using MCP board tools.
+
+  agents:
+    - .claude/agents/file-creator.md
+    - .claude/agents/file-reader.md
+    - .claude/agents/shared/task-breakdown-specialist.md # Using existing agent as task-manager
+
+  steps:
+    - id: health-check
+      title: Check MCP board service health
+      description: Verify the board MCP service is available before starting workflow
+      agent: .claude/agents/shared/task-breakdown-specialist.md
+      priority: 0
+      todos:
+        - Check board service health using healthCheck tool
+        - Verify service is ready to receive requests
+      tools:
+        - mcp__lerian-board__healthCheck: {}
+
+    - id: create-board-task
+      title: Create initial task on board
+      description: Create the main file processing task on the kanban board
+      agent: .claude/agents/shared/task-breakdown-specialist.md
+      uses: mcp-board-tools
+      creates: board-task-id
+      todos:
+        - Create task using mcp__lerian-board__createTask
+        - Set task title as "File Processing Workflow"
+        - Add todos for file creation and validation steps
+        - Store returned task ID for later reference
+      tools:
+        - mcp__lerian-board__createTask:
+            title: 'File Processing Workflow'
+            description: 'Create and validate test file'
+            todos:
+              - 'Create test file'
+              - 'Validate file content'
+              - 'Generate report'
+
+    - id: start-workflow
+      title: Move task to in progress
+      description: Update the board task status to begin workflow execution
+      agent: .claude/agents/shared/task-breakdown-specialist.md
+      priority: 1
+      requires:
+        - board-task-id
+        - health-check
+      todos:
+        - Update task status to in_progress to begin workflow
+      tools:
+        - mcp__lerian-board__updateTaskStatus:
+            taskId: board-task-id
+            status: 'in_progress'
+
+    - id: create-test-file
+      title: Create test file
+      description: Create a simple test file for validation
+      agent: .claude/agents/file-creator.md
+      priority: 2
+      requires:
+        - board-task-id
+        - start-workflow
+      creates: test-file.txt
+      todos:
+        - Check the test-output directory exists
+        - Create test-file.txt with sample content
+        - Include timestamp and agent info in file
+        - Verify file was created successfully
+        - Update board task progress using mcp__lerian-board__completeTodoItem
+      tools:
+        - mcp__lerian-board__completeTodoItem:
+            taskId: board-task-id
+            todoContent: 'Create test file'
+
+    - id: validate-test-file
+      title: Validate test file
+      description: Read and validate the created test file
+      agent: .claude/agents/file-reader.md
+      priority: 3
+      requires:
+        - test-file.txt
+        - board-task-id
+        - create-test-file
+      creates: validation-report.txt
+      todos:
+        - Check that test-file.txt exists
+        - Read file content and verify format
+        - Run validation checks on content
+        - Create validation report
+        - Update board task progress
+        - Mark validation as complete
+      tools:
+        - mcp__lerian-board__completeTodoItem:
+            taskId: board-task-id
+            todoContent: 'Validate file content'
+
+    - id: generate-final-report
+      title: Generate workflow completion report
+      description: Create final report and update task status
+      agent: .claude/agents/shared/task-breakdown-specialist.md
+      priority: 4
+      requires:
+        - validation-report.txt
+        - board-task-id
+        - validate-test-file
+      creates: workflow-report.txt
+      todos:
+        - Compile results from validation report
+        - Generate comprehensive workflow report
+        - Complete final todo item on board
+        - Update task status to completed
+      tools:
+        - mcp__lerian-board__completeTodoItem:
+            taskId: board-task-id
+            todoContent: 'Generate report'
+        - mcp__lerian-board__updateTaskStatus:
+            taskId: board-task-id
+            status: 'completed'
+
+    - id: cleanup-workflow
+      title: Clean up workflow artifacts
+      description: Optional cleanup step to remove temporary files and tasks
+      agent: .claude/agents/shared/task-breakdown-specialist.md
+      priority: 5
+      requires:
+        - workflow-report.txt
+        - generate-final-report
+      todos:
+        - Review generated files
+        - Optionally clean up temporary files
+        - Optionally delete completed task from board
+        - Log workflow completion
+      tools:
+        - mcp__lerian-board__deleteTask:
+            taskId: board-task-id
+
+handoff_prompts:
+  task-manager_to_file-creator: 'Task created on board. Please proceed with creating the test file and update progress using the board tools.'
+  file-creator_to_file-reader: 'Test file has been created successfully. Please validate the file content and update the board task progress.'
+  file-reader_to_task-manager: 'File validation completed. Please generate the final report and mark the workflow as complete.'
+  workflow_completion: 'Demo file processing workflow completed successfully. All files processed and board updated.'

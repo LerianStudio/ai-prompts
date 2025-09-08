@@ -6,14 +6,17 @@ argument-hint: [--command-name=<name>] [--reorganize]
 
 # /shared:utils:update-command
 
+<instructions>
 Updates existing custom command files to follow official Anthropic slash command standards with proper frontmatter, structure, and formatting. **Automatically organizes commands into appropriate subdirectories** - commands should never remain at the root level of `.claude/commands/`. **Can also detect and merge redundant commands** with similar functionality to reduce duplication.
 
-## Usage
-
 Updates a specified command file or all command files in the `.claude/commands/` directory and its subdirectories to conform to the latest slash command standards. **All commands are automatically organized into functional subdirectories** - no commands should remain at the root level.
+</instructions>
 
-## Process
+<context>
+This command ensures all custom command files follow official Anthropic standards while organizing them into proper subdirectories for better discoverability and maintenance.
+</context>
 
+<process>
 1. **Locate Target Command(s)**
    - Find specified command file or scan all commands in `.claude/commands/` and subdirectories:
      - `code-quality/` - Code improvement and standardization tools
@@ -45,9 +48,9 @@ Updates a specified command file or all command files in the `.claude/commands/`
    - Confirm tool permissions align with functionality
    - Test argument hint formatting
    - Save updated command file in proper location
+     </process>
 
-## Features
-
+<features>
 - **Automatic Detection**: Identifies non-compliant command structures
 - **Batch Processing**: Can update all commands at once if no specific command specified
 - **Standards Alignment**: Ensures compatibility with latest Claude Code requirements
@@ -58,22 +61,25 @@ Updates a specified command file or all command files in the `.claude/commands/`
 - **Consistent Formatting**: Enforces uniform frontmatter formatting across all commands
 - **Command Deduplication**: **Detects and merges redundant commands with similar functionality**
 - **Smart Merging**: Combines best features from duplicate commands into single optimized version
+</features>
 
-## Examples
-
+<example>
 ```bash
 # Update specific command (automatically moves to correct folder)
 /shared:utils:update-command --command-name=fix-issue
 
 # Update all commands (automatically organizes any root-level commands)
+
 /shared:utils:update-command
 
 # Explicitly reorganize and update all commands (includes merging duplicates)
+
 /shared:utils:update-command --reorganize
-```
 
-## Directory Structure
+````
+</example>
 
+<directory_structure>
 **REQUIRED**: All commands MUST be organized into these functional groups (never at root):
 
 - **code-quality/** - Review, refactor, simplify, standardize, technical debt analysis
@@ -83,9 +89,9 @@ Updates a specified command file or all command files in the `.claude/commands/`
 - **utils/** - Create, update, and manage the command system itself
 
 **⚠️ NO COMMANDS should remain at `.claude/commands/` root level - they must be categorized!**
+</directory_structure>
 
-## Implementation Details
-
+<implementation>
 When updating commands:
 
 1. **Search Strategy**
@@ -110,9 +116,9 @@ When updating commands:
    - Preserve command intent and functionality
 
 The command will analyze the current structure and apply the official Anthropic standards while preserving the original functionality. **CRITICAL**: All commands found at the root level of `.claude/commands/` will be automatically moved to appropriate subdirectories - no commands should ever remain at the root level for better organization and discoverability.
+</implementation>
 
-## Command Deduplication Process
-
+<deduplication>
 When using the `--reorganize` flag, the tool performs intelligent duplicate detection and merging:
 
 ### Detection Criteria
@@ -145,9 +151,9 @@ Commands are considered similar/redundant when they have:
 # Before: fix-issue.md + debug-error.md (similar problem-solving)
 # After: Unified fix-problem.md covering all debugging scenarios
 ```
+</deduplication>`
 
-## Formatting Standards
-
+<formatting>
 **Required Frontmatter Format:**
 
 ```yaml
@@ -164,3 +170,5 @@ argument-hint: [parameter-format] without quotes
 - **description**: No quotes around the description text
 - **argument-hint**: Square brackets for parameters, no quotes around the value
 - **Consistency**: All commands must follow the exact same formatting pattern
+</formatting>
+````

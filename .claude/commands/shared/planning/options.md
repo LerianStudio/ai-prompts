@@ -6,10 +6,11 @@ argument-hint: [--task=<task-or-problem-description>]
 
 # /shared:planning:options
 
+<context>
 Analyze different approaches for the given task or problem, providing a comprehensive comparison of options with benefits, trade-offs, and effort estimates.
+</context>
 
-## Usage
-
+<usage>
 ```bash
 /shared:planning:options --task="<task-or-problem-description>"
 ```
@@ -17,9 +18,9 @@ Analyze different approaches for the given task or problem, providing a comprehe
 **Arguments:**
 
 - `task or problem description`: Description of the task, problem, or decision to analyze (required)
+  </usage>
 
-## Instructions
-
+<instructions>
 For the given task or problem, provide a structured analysis following this format:
 
 ### 1. Problem Understanding
@@ -82,17 +83,18 @@ Create a comparison table:
 - List immediate actions for the chosen approach
 - Identify what additional information might be needed
 - Suggest proof-of-concept or validation steps
+  </instructions>
 
-## Guidelines
-
+<guidelines>
 - Be objective and data-driven in analysis
 - Consider both short-term and long-term implications
 - Include non-technical factors (team skills, deadlines, budget)
 - Provide actionable insights, not just theoretical comparisons
 - When possible, reference similar successful implementations
+</guidelines>
 
-## Example
-
+<example>
 ```
 /shared:planning:options --task="Implement user authentication for our web application"
 ```
+</example>

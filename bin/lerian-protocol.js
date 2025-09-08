@@ -13,10 +13,10 @@ let installer
 try {
   if (isNpxExecution) {
     installer = require(
-      path.join(__dirname, '..', 'protocol-assets', 'lib', 'installer')
+      path.join(__dirname, '..', 'protocol-assets', 'tools', 'installer')
     )
   } else {
-    installer = require('../protocol-assets/lib/installer')
+    installer = require('../protocol-assets/tools/installer')
   }
 } catch (error) {
   console.error(chalk.red('Error loading installer:'), error.message)

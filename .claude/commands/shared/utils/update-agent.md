@@ -6,9 +6,8 @@ argument-hint: [--agent-name=<agent-name>] [--generate]
 
 # /shared:utils:update-agent
 
+<instructions>
 Update existing Claude Code subagent files to follow official Anthropic subagent standards with proper YAML frontmatter, enhanced system prompts, and optimal tool configuration.
-
-## Instructions
 
 1. **Locate Target Subagent(s)** - Find specified agent file or scan all agents in `.claude/agents/`
 2. **Structure Analysis** - Check existing frontmatter configuration and identify missing metadata
@@ -16,9 +15,9 @@ Update existing Claude Code subagent files to follow official Anthropic subagent
 4. **Tool Permission Optimization** - Review and optimize tool access based on agent purpose
 5. **Standards Compliance** - Apply official Anthropic frontmatter standards and validate syntax
 6. **Generate Option** - Use Claude to regenerate agent with improved prompts when `--generate` flag is used
+   </instructions>
 
-## Context
-
+<context>
 **Subagent Requirements:**
 
 - YAML frontmatter with `name`, `description`, and optional `tools` fields
@@ -28,20 +27,31 @@ Update existing Claude Code subagent files to follow official Anthropic subagent
 
 **Reference Documentation:**
 Uses `/protocol-assets/context/anthropic/sub-agents.md` as the authoritative source for subagent standards and best practices.
+</context>
 
-## Examples
+<requirements>
+- Must locate agent files in `.claude/agents/` directory
+- Must preserve agent functionality while improving structure and prompt quality
+- Must validate YAML frontmatter syntax and required fields
+- Must optimize tool permissions based on agent purpose
+- Must follow official Anthropic subagent documentation standards
+- Must handle both individual agent updates and batch processing
+- When using `--generate`, must leverage Claude to create enhanced system prompts
+</requirements>
 
-**Usage Examples:**
-
+<example>
 ```bash
 # Update specific agent
 /shared:utils:update-agent --agent-name=code-reviewer
 
 # Update all agents
+
 /shared:utils:update-agent
 
 # Regenerate agent with Claude enhancement
+
 /shared:utils:update-agent --agent-name=test-runner --generate
+
 ```
 
 **Expected Output:**
@@ -50,19 +60,9 @@ Uses `/protocol-assets/context/anthropic/sub-agents.md` as the authoritative sou
 - Improved system prompt with specific instructions and constraints
 - Optimized tool permissions list
 - Validation report of changes made
+</example>
 
-## Requirements
-
-- Must locate agent files in `.claude/agents/` directory
-- Must preserve agent functionality while improving structure and prompt quality
-- Must validate YAML frontmatter syntax and required fields
-- Must optimize tool permissions based on agent purpose
-- Must follow official Anthropic subagent documentation standards
-- Must handle both individual agent updates and batch processing
-- When using `--generate`, must leverage Claude to create enhanced system prompts
-
-## Process
-
+<process>
 **Phase 1: Agent Discovery & Analysis**
 
 1. **Locate Target Agent(s)**
@@ -75,12 +75,13 @@ Uses `/protocol-assets/context/anthropic/sub-agents.md` as the authoritative sou
    - Review optional `tools` field and current tool permissions
    - Analyze system prompt quality and effectiveness
 
-**Phase 2: Enhancement & Optimization** 3. **System Prompt Enhancement**
+**Phase 2: Enhancement & Optimization**
 
-- Improve prompt clarity and specificity
-- Add structured approach and best practices
-- Include specific constraints and guidelines
-- Follow patterns from official documentation examples
+3. **System Prompt Enhancement**
+   - Improve prompt clarity and specificity
+   - Add structured approach and best practices
+   - Include specific constraints and guidelines
+   - Follow patterns from official documentation examples
 
 4. **Tool Permission Optimization**
    - Review current tool access against agent purpose
@@ -88,12 +89,13 @@ Uses `/protocol-assets/context/anthropic/sub-agents.md` as the authoritative sou
    - Remove unnecessary tools, add missing essential tools
    - Validate tool names against available Claude Code tools
 
-**Phase 3: Standards Compliance & Validation** 5. **Frontmatter Standardization**
+**Phase 3: Standards Compliance & Validation**
 
-- Ensure proper YAML syntax and formatting
-- Validate required fields are present and correctly formatted
-- Optimize description field for automatic delegation
-- Add proactive usage hints when appropriate
+5. **Frontmatter Standardization**
+   - Ensure proper YAML syntax and formatting
+   - Validate required fields are present and correctly formatted
+   - Optimize description field for automatic delegation
+   - Add proactive usage hints when appropriate
 
 6. **Final Validation & Save**
    - Validate YAML syntax and field completeness
@@ -107,3 +109,5 @@ Uses `/protocol-assets/context/anthropic/sub-agents.md` as the authoritative sou
 - When `--generate` flag is used, leverage Claude to regenerate system prompt with enhanced quality
 - Preserve agent identity and purpose while improving instruction clarity
 - Apply advanced prompt engineering techniques for better performance
+</process>
+```

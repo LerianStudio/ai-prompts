@@ -11,7 +11,7 @@ workflow:
     - labels:
         [
           'frontend',
-          'ui', 
+          'ui',
           'component',
           'design-system',
           'styling',
@@ -21,15 +21,15 @@ workflow:
         ['component', 'styling', 'layout', 'responsive', 'animation', 'theme']
 
   agents:
-    - user-story-generator
-    - ui-ux-specialist
-    - frontend-developer
-    - task-breakdown-specialist
+    - .claude/agents/shared/user-story-generator.md
+    - .claude/agents/frontend/ui-ux-specialist.md
+    - .claude/agents/frontend/frontend-developer.md
+    - .claude/agents/shared/task-breakdown-specialist.md
 
   steps:
     - id: frontend-pattern-discovery
       title: Analyze Frontend Patterns and Design System
-      agent: frontend-developer
+      agent: .claude/agents/frontend/frontend-developer.md
       requires: backlog_description.md (input requirement)
       creates: frontend-patterns.md
       action: Execute /analyze-frontend command to understand component patterns, design system, and UI conventions
@@ -40,7 +40,7 @@ workflow:
 
     - id: ui-story-generation
       title: Generate UI-Focused User Stories
-      agent: user-story-generator
+      agent: .claude/agents/shared/user-story-generator.md
       requires:
         - backlog_description.md
         - frontend-patterns.md
@@ -52,7 +52,7 @@ workflow:
 
     - id: simple-ui-design
       title: Create Simple UI Specifications
-      agent: ui-ux-specialist
+      agent: .claude/agents/frontend/ui-ux-specialist.md
       requires:
         - ui-user-stories
         - frontend-patterns.md
@@ -64,7 +64,7 @@ workflow:
 
     - id: database-task-creation
       title: Create Database-Backed Implementation Task
-      agent: task-breakdown-specialist
+      agent: .claude/agents/shared/task-breakdown-specialist.md
       requires:
         - ui-user-stories
         - frontend-patterns.md
@@ -82,7 +82,7 @@ workflow:
         - Responsive Design phase
         - Accessibility Compliance phase
         - Testing & Integration phase
-        
+
         Return task_id for downstream workflow coordination.
 
 handoff_prompts:

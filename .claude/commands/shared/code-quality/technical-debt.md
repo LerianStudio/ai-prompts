@@ -6,10 +6,7 @@ argument-hint: [--target=<project-path-or-component>] [--git-scope=<scope>] [--d
 
 # /shared:code-quality:technical-debt
 
-Assess and prioritize technical debt in the specified project or component with actionable remediation strategies.
-
-## Overview
-
+<context>
 This command performs comprehensive technical debt analysis across multiple dimensions:
 
 - **Code Quality**: Complexity, duplication, anti-patterns
@@ -19,6 +16,12 @@ This command performs comprehensive technical debt analysis across multiple dime
 - **Documentation**: Missing or outdated documentation
 - **Architecture**: Design violations, coupling issues
 - **Security**: Vulnerabilities and unsafe patterns
+
+The analysis provides actionable remediation strategies and can focus on git changes for faster, more relevant analysis.
+</context>
+
+<instructions>
+Assess and prioritize technical debt in the specified project or component with actionable remediation strategies.
 
 ## Usage
 
@@ -43,11 +46,39 @@ This command performs comprehensive technical debt analysis across multiple dime
 /shared:code-quality:technical-debt --git-scope=branch --target=src/ # Analyze branch changes in src/ only
 ```
 
+</instructions>
+
+<examples>
+```
+/shared:code-quality:technical-debt --target=<project-path-or-component>
+```
+
+**Examples:**
+
+```bash
+# Git-focused debt analysis (recommended for feature development)
+/shared:code-quality:technical-debt --git-scope=all-changes        # Analyze debt in current changes
+/shared:code-quality:technical-debt --git-scope=branch               # Analyze debt introduced in feature branch
+/shared:code-quality:technical-debt --git-scope=staged --debt-trend  # Compare staged changes debt vs existing
+
+# Traditional project-wide analysis
+/shared:code-quality:technical-debt --target=.                       # Analyze entire project
+/shared:code-quality:technical-debt --target=src/auth               # Analyze auth module
+/shared:code-quality:technical-debt --target=backend/api            # Analyze API layer
+
+# Combined approaches
+/shared:code-quality:technical-debt --git-scope=branch --target=src/ # Analyze branch changes in src/ only
+```
+
+</examples>
+
+<process>
 ## Analysis Process
 
 ### 0. Git Scope Analysis (when git options used)
 
 **Git-Focused Debt Analysis**:
+
 ```bash
 # Validate git repository
 if ! git rev-parse --git-dir >/dev/null 2>&1; then
@@ -78,7 +109,7 @@ echo "Files in scope: $(echo "$target_files" | grep -c . 2>/dev/null || echo "0"
 if [[ "$debt_trend" == "true" ]]; then
     echo ""
     echo "### Debt Trend Analysis"
-    
+
     # Compare complexity metrics between base and current
     case "$git_scope" in
         "branch")
@@ -90,7 +121,7 @@ if [[ "$debt_trend" == "true" ]]; then
             git diff --stat --cached
             ;;
     esac
-    
+
     echo ""
     echo "**New vs Existing Debt:**"
     echo "- New debt: Issues introduced in changed files"
@@ -331,6 +362,9 @@ rg "eval\(|exec\(|system\(" -n | head -5
 rg "query.*\+|SELECT.*\+|INSERT.*\+" -n | head -5
 ```
 
+</process>
+
+<deliverables>
 ## Debt Scoring & Prioritization
 
 ### Priority Matrix
@@ -492,3 +526,4 @@ echo "📝 TODO/FIXME count: $todo_count"
 - Faster development velocity
 - Reduced production incidents
 - Improved team satisfaction with codebase
+  </deliverables>

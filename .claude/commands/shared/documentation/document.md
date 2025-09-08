@@ -6,30 +6,54 @@ argument-hint: [--mode=update|overview] [--focus=<docs>] [--git-scope=<scope>]
 
 # /shared:documentation:document
 
+<instructions>
 I'll intelligently manage your project documentation by analyzing what actually happened and updating ALL relevant docs accordingly.
 
 ## Usage Patterns
 
+### Git-focused documentation (recommended for active development)
+
 ```bash
-# Git-focused documentation (recommended for active development)
 /shared:documentation:document --git-scope=all-changes --mode=update     # Document recent changes
 /shared:documentation:document --git-scope=branch --mode=update          # Document feature branch changes
 /shared:documentation:document --git-scope=staged --mode=overview        # Overview docs for staged changes
 /shared:documentation:document --git-scope=last-commit                   # Document last commit changes
+```
 
-# Traditional documentation modes
+### Traditional documentation modes
+
+```bash
 /shared:documentation:document --mode=update --focus=API                 # Update API documentation
 /shared:documentation:document --mode=overview                           # Full documentation overview
 /shared:documentation:document --mode=update                             # Update all affected documentation
 ```
 
-**Arguments:**
+## Arguments
 
 - `--mode`: Documentation mode - update|overview (defaults to overview)
 - `--focus`: Specific documentation area to focus on
 - `--git-scope`: Git scope for focusing documentation on specific changes - staged|unstaged|all-changes|branch|last-commit|commit-range=<range>
 
-## Initial Setup
+## Git-Scope Benefits
+
+- **Targeted Updates**: Document only areas affected by recent changes
+- **Change Attribution**: Connect documentation updates to specific code changes
+- **Incremental Documentation**: Maintain documentation alongside development
+- **Workflow Integration**: Document as part of feature development and code review
+
+## Core Approach
+
+1. **Analyze git changes** - Understand the specific scope of changes (when git-scope used)
+2. **Read ALL documentation files** - README, CHANGELOG, docs/\*, guides, everything
+3. **Identify what changed** - Features, architecture, bugs, performance, security, etc
+4. **Update EVERYTHING affected** - Not just one file, but all relevant documentation
+5. **Maintain consistency** - Ensure all docs tell the same story
+
+I won't make assumptions - I'll look at what ACTUALLY changed and update accordingly.
+</instructions>
+
+<process>
+## Initial Setup (Git-Scope Processing)
 
 ### Git Scope Analysis (when --git-scope used)
 
@@ -46,34 +70,60 @@ fi
 target_files=$(process_git_scope "$git_scope")
 ```
 
-**Git-Scope Documentation Benefits:**
+## Documentation Modes
 
-- **Targeted Updates**: Document only areas affected by recent changes
-- **Change Attribution**: Connect documentation updates to specific code changes
-- **Incremental Documentation**: Maintain documentation alongside development
-- **Workflow Integration**: Document as part of feature development and code review
+### Mode 1: Documentation Overview (Default)
 
-**My approach:**
-
-1. **Analyze git changes** - Understand the specific scope of changes (when git-scope used)
-2. **Read ALL documentation files** - README, CHANGELOG, docs/\*, guides, everything
-3. **Identify what changed** - Features, architecture, bugs, performance, security, etc
-4. **Update EVERYTHING affected** - Not just one file, but all relevant documentation
-5. **Maintain consistency** - Ensure all docs tell the same story
-
-**I won't make assumptions** - I'll look at what ACTUALLY changed and update accordingly.
-If you refactored the entire architecture, I'll update architecture docs, README, migration guides, API docs, and anything else affected.
-
-## Mode 1: Documentation Overview (Default)
-
-When you run `/document` without context, I'll:
+When you run `/document` without context:
 
 - **Glob** all markdown files (README, CHANGELOG, docs/\*)
 - **Read** each documentation file
 - **Analyze** documentation coverage
 - **Present** organized summary
 
-Output format:
+### Mode 2: Smart Update
+
+When you run `/document update` or after implementations:
+
+1. **Run `/analyze-codebase`** to analyze current codebase
+2. **Compare** code reality vs documentation
+3. **Identify** what needs updating:
+   - New features not documented
+   - Changed APIs or interfaces
+   - Removed features still in docs
+   - New configuration options
+   - Updated dependencies
+4. **Update systematically:**
+   - README.md with new features/changes
+   - CHANGELOG.md with version entries
+   - API docs with new endpoints
+   - Configuration docs with new options
+   - Migration guides if breaking changes
+
+### Mode 3: Session Documentation
+
+When run after a long coding session:
+
+- **Analyze conversation history**
+- **List all changes made**
+- **Group by feature/fix/enhancement**
+- **Update appropriate docs**
+
+### Mode 4: Context-Aware Updates
+
+Based on what happened in session:
+
+- **After new feature**: Update README features, add to CHANGELOG
+- **After bug fixes**: Document in CHANGELOG, update troubleshooting
+- **After refactoring**: Update architecture docs, migration guide
+- **After security fixes**: Update security policy, CHANGELOG
+- **After performance improvements**: Update benchmarks, CHANGELOG
+  </process>
+
+<formatting>
+## Output Format
+
+### Documentation Overview Format
 
 ```
 DOCUMENTATION OVERVIEW
@@ -91,48 +141,7 @@ KEY FINDINGS
 - Incomplete: Testing guide
 ```
 
-## Mode 2: Smart Update
-
-When you run `/document update` or after implementations, I'll:
-
-1. **Run `/analyze-codebase`** to analyze current codebase
-2. **Compare** code reality vs documentation
-3. **Identify** what needs updating:
-   - New features not documented
-   - Changed APIs or interfaces
-   - Removed features still in docs
-   - New configuration options
-   - Updated dependencies
-
-4. **Update systematically:**
-   - README.md with new features/changes
-   - CHANGELOG.md with version entries
-   - API docs with new endpoints
-   - Configuration docs with new options
-   - Migration guides if breaking changes
-
-## Mode 3: Session Documentation
-
-When run after a long coding session, I'll:
-
-- **Analyze conversation history**
-- **List all changes made**
-- **Group by feature/fix/enhancement**
-- **Update appropriate docs**
-
-Updates will follow your project's documentation style and conventions, organizing changes by type (Added, Fixed, Changed, etc.) in the appropriate sections.
-
-## Mode 4: Context-Aware Updates
-
-Based on what happened in session:
-
-- **After new feature**: Update README features, add to CHANGELOG
-- **After bug fixes**: Document in CHANGELOG, update troubleshooting
-- **After refactoring**: Update architecture docs, migration guide
-- **After security fixes**: Update security policy, CHANGELOG
-- **After performance improvements**: Update benchmarks, CHANGELOG
-
-## Smart Documentation Rules
+### Smart Documentation Rules
 
 1. **Preserve custom content** - Never overwrite manual additions
 2. **Match existing style** - Follow current doc formatting
@@ -140,15 +149,7 @@ Based on what happened in session:
 4. **Version awareness** - Respect semver in CHANGELOG
 5. **Link updates** - Fix broken internal links
 
-## Integration with Commands
-
-Works seamlessly with:
-
-- `/analyze-codebase` - Get current architecture first
-- `/scaffold` - Add new component docs
-- `/security-scan` - Update security documentation
-
-## Documentation Rules
+### Documentation Preservation
 
 **ALWAYS:**
 
@@ -174,8 +175,55 @@ User's manual content preserved
 - Suggests version bump (major/minor/patch)
 - Links to relevant PRs/issues
 - Maintains chronological order
+  </formatting>
 
-**Important**: I will NEVER:
+<context>
+## Integration with Commands
+
+Works seamlessly with:
+
+- `/analyze-codebase` - Get current architecture first
+- `/scaffold` - Add new component docs
+- `/security-scan` - Update security documentation
+
+## Documentation Types I Can Manage
+
+- **API Documentation** - Endpoints, parameters, responses
+- **Database Schema** - Tables, relationships, migrations
+- **Configuration** - Environment variables, settings
+- **Deployment** - Setup, requirements, procedures
+- **Troubleshooting** - Common issues and solutions
+- **Performance** - Benchmarks, optimization guides
+- **Security** - Policies, best practices, incident response
+
+## Smart Features
+
+- **Version Detection** - Auto-increment version numbers
+- **Breaking Change Alert** - Warn when docs need migration guide
+- **Cross-Reference** - Update links between docs
+- **Example Generation** - Create usage examples from tests
+- **Diagram Updates** - Update architecture diagrams (text-based)
+- **Dependency Tracking** - Document external service requirements
+
+## Team Collaboration Support
+
+- **PR Documentation** - Generate docs for pull requests
+- **Release Notes** - Create from CHANGELOG for releases
+- **Onboarding Docs** - Generate from project analysis
+- **Handoff Documentation** - Create when changing teams
+- **Knowledge Transfer** - Document before leaving project
+
+## Quality Assurance
+
+- **Doc Coverage** - Report undocumented features
+- **Freshness Check** - Flag stale documentation
+- **Consistency** - Ensure uniform style across docs
+- **Completeness** - Verify all sections present
+- **Accuracy** - Compare docs vs actual implementation
+
+## Important Constraints
+
+I will NEVER:
 
 - Delete existing documentation
 - Overwrite custom sections
@@ -190,7 +238,9 @@ After analysis, I'll ask: "How should I proceed?"
 - Create missing documentation
 - Generate migration guide
 - Skip certain sections
+  </context>
 
+<deliverables>
 ## Additional Scenarios & Integrations
 
 ### When to Use /document
@@ -203,43 +253,6 @@ Simply run `/document` after any significant work:
 - After major refactoring - Update architecture, migration guides, everything
 
 **I'll figure out what needs updating based on what actually happened, not rigid rules.**
-
-### Documentation Types
-
-I can manage:
-
-- **API Documentation** - Endpoints, parameters, responses
-- **Database Schema** - Tables, relationships, migrations
-- **Configuration** - Environment variables, settings
-- **Deployment** - Setup, requirements, procedures
-- **Troubleshooting** - Common issues and solutions
-- **Performance** - Benchmarks, optimization guides
-- **Security** - Policies, best practices, incident response
-
-### Smart Features
-
-- **Version Detection** - Auto-increment version numbers
-- **Breaking Change Alert** - Warn when docs need migration guide
-- **Cross-Reference** - Update links between docs
-- **Example Generation** - Create usage examples from tests
-- **Diagram Updates** - Update architecture diagrams (text-based)
-- **Dependency Tracking** - Document external service requirements
-
-### Team Collaboration
-
-- **PR Documentation** - Generate docs for pull requests
-- **Release Notes** - Create from CHANGELOG for releases
-- **Onboarding Docs** - Generate from project analysis
-- **Handoff Documentation** - Create when changing teams
-- **Knowledge Transfer** - Document before leaving project
-
-### Quality Checks
-
-- **Doc Coverage** - Report undocumented features
-- **Freshness Check** - Flag stale documentation
-- **Consistency** - Ensure uniform style across docs
-- **Completeness** - Verify all sections present
-- **Accuracy** - Compare docs vs actual implementation
 
 ### Smart Command Combinations
 
@@ -276,3 +289,4 @@ Just run `/document` and I'll figure out what you need:
 No need to remember arguments - I understand context!
 
 This keeps your documentation as current as your code while supporting your entire development lifecycle.
+</deliverables>

@@ -6,9 +6,15 @@ argument-hint: --name=<command-name> --description=<brief-description>
 
 # /shared:utils:create-command
 
+<instructions>
 Create a new custom command file following official Anthropic slash command standards.
+</instructions>
 
-## Process
+<context>
+This command helps create properly structured slash commands with correct frontmatter, tool permissions, and documentation following official standards.
+</context>
+
+<process>
 
 ### 1. Gather Command Information
 
@@ -70,4 +76,5 @@ Expected output or behavior description.
 - Validate frontmatter syntax
 - Test argument hint formatting
 - Confirm tool permissions align with functionality
+</process>
 ```

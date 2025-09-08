@@ -56,6 +56,7 @@ target_files=$(process_git_scope "$git_scope")
 ```
 
 When git-scope is used, the command will:
+
 1. Focus improvement efforts on changed files only
 2. Provide context about the scope of changes
 3. Show performance benefits for large codebases
@@ -366,5 +367,7 @@ const useUserData = (
 - [ ] Configuration updates suggested
 ```
 
+</deliverables>
+
 **Migration Note**: This command consolidates functionality from the former `/refactor`, `/standardize`, `/simplify`, and `/make-it-pretty` commands into a unified mode-based interface.
-</file>
+</process>

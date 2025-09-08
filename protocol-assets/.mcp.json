@@ -1,0 +1,32 @@
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"]
+    },
+    "fetch": {
+      "command": "uvx",
+      "args": ["mcp-server-fetch"]
+    },
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest",
+        "--headless",
+        "--viewport-size=1920,1080",
+        "--output-dir=./protocol-assets/frontend/screenshots"
+      ]
+    },
+    "shadcn": {
+      "command": "npx",
+      "args": ["shadcn@latest", "mcp"]
+    },
+    "lerian-board": {
+      "command": "node",
+      "args": ["protocol-assets/services/board-mcp/src/server.js"],
+      "env": {
+        "TASK_SERVICE_URL": "http://localhost:3020"
+      }
+    }
+  }
+}

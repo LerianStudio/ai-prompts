@@ -1,0 +1,22 @@
+{
+  "name": "@lerian-protocol/board",
+  "version": "1.0.0",
+  "description": "MCP tool interface for Lerian Protocol board management",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "cli": "node src/index.js",
+    "test": "node --test tests/*.test.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.10.0",
+    "node-fetch": "^3.3.2",
+    "pino": "^9.9.4",
+    "pino-pretty": "^13.1.1",
+    "winston": "^3.17.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

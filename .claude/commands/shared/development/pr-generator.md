@@ -6,8 +6,11 @@ argument-hint: [--title=<title>] [--issue=<issue-number>] (optional PR title and
 
 # PR Generator
 
+<context>
 Analyzes current git branch changes and generates comprehensive pull request descriptions following the standard template structure, then saves them to `pull-request.md` in the project root.
+</context>
 
+<instructions>
 ## Usage
 
 This command examines only the commits made on your current feature branch (compared to its base branch like develop/main) to generate a detailed pull request description that follows the standard template structure.
@@ -19,6 +22,9 @@ This command examines only the commits made on your current feature branch (comp
 /shared:development:pr-generator --title="Fix login bug" --issue=456
 ```
 
+</instructions>
+
+<process>
 ## Process
 
 1. **Git Branch Analysis - CRITICAL: Branch-Only Scope**
@@ -44,7 +50,9 @@ This command examines only the commits made on your current feature branch (comp
    - Pre-fills appropriate checkboxes based on change analysis
    - Suggests testing strategies
    - Saves the generated description to `pull-request.md` in the project root
+     </process>
 
+<requirements>
 ## CRITICAL Implementation Steps
 
 **Step 1: Branch Analysis (MANDATORY)**
@@ -83,6 +91,9 @@ git log main..HEAD      # ❌ Includes entire development history
 git diff main...HEAD    # ❌ Includes all changes since branch creation
 ```
 
+</requirements>
+
+<formatting>
 ## Generated Template Structure
 
 The command generates pull requests following this exact structure:
@@ -126,7 +137,9 @@ Fixes # (issue)
 - **New feature**: Identifies new functionality, components, or capabilities
 - **Breaking change**: Flags API changes, removed functionality, or incompatible changes
 - **Documentation update**: Detects changes to .md files, comments, or docs folders
+  </formatting>
 
+<examples>
 ## Examples
 
 ### Basic Feature Addition
@@ -217,7 +230,9 @@ Manual testing with extended session scenarios, unit tests for timeout logic.
 - **Commit Message Analysis**: Uses conventional commits to determine change types
 - **Dependency Detection**: Identifies if package.json or similar files changed
 - **Test Coverage**: Suggests appropriate testing based on changed components
+  </examples>
 
+<deliverables>
 ## Implementation Requirements - CRITICAL
 
 **MANDATORY Git Command Usage:**
@@ -247,7 +262,9 @@ Manual testing with extended session scenarios, unit tests for timeout logic.
    - If branch has 3 commits: use `HEAD~3..HEAD`
    - If branch has 5 commits: use `HEAD~5..HEAD`
    - **Always verify** commit count matches actual branch commits
+     </deliverables>
 
+<formatting>
 ## Notes
 
 - **Critical**: Uses `HEAD~n..HEAD` approach to analyze ONLY current branch commits
@@ -258,3 +275,4 @@ Manual testing with extended session scenarios, unit tests for timeout logic.
 - Generated PRs reflect actual feature branch changes, not cumulative project history
 - Breaking changes are flagged based on actual branch commits only
 - Generated PR descriptions are saved to `pull-request.md` for easy copying to GitHub/GitLab
+  </formatting>

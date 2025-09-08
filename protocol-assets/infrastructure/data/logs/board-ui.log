@@ -1,0 +1,12 @@
+
+> @lerian-protocol/board-ui@1.0.0 dev
+> vite
+
+
+  VITE v7.1.4  ready in 125 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+4:38:15 PM [vite] (client) hmr update /components/kanban/task-detail-dialog.tsx, /index.css
+4:38:24 PM [vite] (client) hmr update /components/kanban/task-detail-dialog.tsx, /index.css
+4:38:34 PM [vite] (client) hmr update /index.css, /components/ui/status-badge.tsx

@@ -3,16 +3,12 @@
 const { Command } = require('commander')
 const chalk = require('chalk')
 const path = require('path')
-const ConfigManager = require('../../protocol-assets/lib/config')
-const MetadataManager = require('../../protocol-assets/lib/sync/metadata-manager')
-const SyncPlanner = require('../../protocol-assets/lib/sync/sync-planner')
-const SyncExecutor = require('../../protocol-assets/lib/sync/sync-executor')
+const ConfigManager = require('../../protocol-assets/tools/installer')
+const MetadataManager = require('../../protocol-assets/tools/sync/metadata-manager')
+const SyncPlanner = require('../../protocol-assets/tools/sync/sync-planner')
+const SyncExecutor = require('../../protocol-assets/tools/sync/sync-executor')
 
 class SyncCommand {
-  /**
-   * Register the sync command with the main CLI program
-   * @param {Command} program - Commander.js program instance
-   */
   static register(program) {
     const syncCmd = new Command('sync')
       .description(
@@ -39,10 +35,6 @@ and destination paths based on the installation metadata.`
     program.addCommand(syncCmd)
   }
 
-  /**
-   * Execute the sync command with the provided options
-   * @param {Object} options - Command options from commander.js
-   */
   static async execute(options) {
     const startTime = Date.now()
 
@@ -62,7 +54,6 @@ and destination paths based on the installation metadata.`
         console.log('')
       }
 
-      // Validate environment and get paths
       const validation = await this.validateEnvironment()
       const projectPath = validation.cwd
 

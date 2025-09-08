@@ -160,16 +160,6 @@ I'll perform comprehensive security analysis using a structured 10-step approach
 - Check for new issues introduced
 - Update security documentation
 
-## Security Report
-
-**Final Deliverables:**
-
-- **Vulnerability Summary**: Issues found by severity level (Critical, High, Medium, Low)
-- **Risk Assessment**: Overall security posture evaluation
-- **Remediation Results**: Fixes implemented and verified
-- **Recommendations**: Future security improvements with specific remediation steps
-- **Code References**: Include file references and line numbers for all findings
-
 ## Usage Examples
 
 ```bash
@@ -210,3 +200,16 @@ I'll perform comprehensive security analysis using a structured 10-step approach
 6. **Reporting** - Document all findings and improvements made
 
 Use automated security scanning tools when available and provide manual review for complex security patterns.
+</process>
+
+<deliverables>
+## Security Report
+
+**Final Deliverables:**
+
+- **Vulnerability Summary**: Issues found by severity level (Critical, High, Medium, Low)
+- **Risk Assessment**: Overall security posture evaluation
+- **Remediation Results**: Fixes implemented and verified
+- **Recommendations**: Future security improvements with specific remediation steps
+- **Code References**: Include file references and line numbers for all findings
+  </deliverables>

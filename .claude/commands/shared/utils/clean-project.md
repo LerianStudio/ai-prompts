@@ -6,9 +6,15 @@ argument-hint: [--dry-run] [--verbose] [--git-artifacts] [--git-scope=<scope>]
 
 # /shared:utils:clean-project
 
-I'll help clean up development artifacts while preserving your working code. You can focus cleanup on git-changed directories only for faster, targeted cleaning.
+<instructions>
+Clean up development artifacts while preserving working code with safety checkpoints. Focus cleanup on git-changed directories only for faster, targeted cleaning.
+</instructions>
 
-## Strategic Thinking Process
+<context>
+This command helps maintain clean project directories by removing development artifacts, temporary files, and debug content while preserving essential working code and configurations.
+</context>
+
+<strategic_thinking>
 
 <think>
 Before cleaning, I need to carefully consider:
@@ -38,8 +44,9 @@ Before cleaning, I need to carefully consider:
    - Verify with git status what's tracked vs untracked
    - Group similar files for batch decision making
    - **Git-aware**: Focus on artifact cleanup in directories with active development
-     </think>
+     </strategic_thinking>
 
+<safety_guidelines>
 **Important**: I will NEVER:
 
 - Add "Co-authored-by" or any Claude signatures
@@ -75,8 +82,9 @@ After cleanup, I'll verify project integrity and report what was cleaned.
 If any issues occur, I can restore from the git checkpoint created at the start.
 
 This keeps only clean, working code while maintaining complete safety.
+</safety_guidelines>
 
-## Git-Focused Cleanup Options
+<git_options>
 
 ### --git-artifacts
 
@@ -115,7 +123,9 @@ Combines with git scopes to clean artifacts in specific change sets:
 /shared:utils:clean-project --git-scope=last-commit
 ```
 
-## Git-Aware Cleanup Process
+</git_options>
+
+<process>
 
 When `--git-artifacts` or `--git-scope` is used:
 
@@ -162,3 +172,4 @@ This approach is especially valuable for:
 - **Incremental build systems** (Bazel, Nx, Turborepo)
 - **CI/CD optimization** where build cache matters
 - **Active feature development** with focused changes
+  </process>

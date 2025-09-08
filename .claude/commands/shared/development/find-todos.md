@@ -6,8 +6,11 @@ argument-hint: [--pattern=<pattern>] [--git-scope=<scope>]
 
 # /shared:development:find-todos
 
+<context>
 I'll locate all TODO comments and unfinished work markers in your codebase.
+</context>
 
+<instructions>
 ## Usage Patterns
 
 ```bash
@@ -23,9 +26,12 @@ I'll locate all TODO comments and unfinished work markers in your codebase.
 ```
 
 **Arguments:**
+
 - `--pattern`: Custom search pattern for TODO markers (default: "TODO|FIXME|HACK|XXX|NOTE")
 - `--git-scope`: Git scope for focusing on specific changes - staged|unstaged|all-changes|branch|last-commit|commit-range=<range>
+  </instructions>
 
+<process>
 ## Initial Setup
 
 ### Git Scope Analysis (when --git-scope used)
@@ -44,11 +50,14 @@ target_files=$(process_git_scope "$git_scope")
 ```
 
 **Git-Scope TODO Benefits:**
+
 - **Contextual Discovery**: Find TODOs in areas you're actively working on
 - **Task Management**: Focus on TODOs related to current development work
 - **Workflow Integration**: Discover TODOs as part of feature development or code review
 - **Productivity**: Avoid information overload from project-wide TODO searches
+  </process>
 
+<formatting>
 ## TODO Analysis Process
 
 I'll use the Grep tool to efficiently search for task markers with context:
@@ -81,7 +90,9 @@ After scanning, I'll ask: "How would you like to track these?"
 
 - Todos only: I'll maintain the local todo list
 - Summary: I'll provide organized report
+  </formatting>
 
+<requirements>
 **Important**: I will NEVER:
 
 - Modify existing working code without permission
@@ -89,3 +100,4 @@ After scanning, I'll ask: "How would you like to track these?"
 - Change the meaning or context of existing TODOs
 
 This helps track and prioritize unfinished work systematically.
+</requirements>

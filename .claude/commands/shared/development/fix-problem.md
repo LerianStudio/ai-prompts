@@ -54,6 +54,7 @@ target_files=$(process_git_scope "$git_scope")
 ```
 
 **Git-Scope Problem Resolution Benefits:**
+
 - **Contextual Investigation**: Focus problem analysis on recently changed code where issues are likely introduced
 - **Efficient Debugging**: Narrow investigation scope to relevant files and areas
 - **Change Attribution**: Connect problems to specific changes, commits, or features
@@ -337,8 +338,9 @@ Button click has no effect, user remains on login page
 - [ ] [Process improvements to implement]
 
 ```
+</deliverables>
 
+<formatting>
 **Migration Note**: This command consolidates functionality from the former `/debug-error` and `/fix-issue` commands into a unified interface with source-based routing.
+</formatting>
 ```
-
-</file>
