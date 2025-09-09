@@ -2,7 +2,7 @@
   "name": "lerian-protocol",
   "version": "0.1.0",
   "description": "Lerian Protocol - Intelligent agent-based development workflow templates",
-  "main": "protocol-assets/tools/installer/index.js",
+  "main": "tools/installer/index.js",
   "type": "commonjs",
   "bin": {
     "lerian-protocol": "bin/lerian-cli-wrapper.cjs"
@@ -52,17 +52,17 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky",
-    "mcp:start": "./protocol-assets/infrastructure/scripts/start-services.sh",
-    "mcp:start:dev": "./protocol-assets/infrastructure/scripts/start-services.sh --dev",
-    "mcp:stop": "./protocol-assets/infrastructure/scripts/stop-services.sh",
-    "mcp:status": "./protocol-assets/infrastructure/scripts/services-status.sh",
-    "services:api": "cd protocol-assets/services/board-api && npm run dev",
-    "services:ui": "cd protocol-assets/services/board-ui && npm run dev",
-    "services:mcp": "cd protocol-assets/services/board-mcp && npm start",
-    "services:test": "protocol-assets/tools/migration/test-services.sh",
-    "validate": "protocol-assets/tools/migration/validate-structure.sh",
-    "mcp:logs:service": "tail -f ./protocol-assets/infrastructure/data/logs/task-service.log",
-    "mcp:logs:mcp": "tail -f ./protocol-assets/infrastructure/data/logs/board-mcp.log"
+    "mcp:start": "./infrastructure/scripts/start-services.sh",
+    "mcp:start:dev": "./infrastructure/scripts/start-services.sh --dev",
+    "mcp:stop": "./infrastructure/scripts/stop-services.sh",
+    "mcp:status": "./infrastructure/scripts/services-status.sh",
+    "services:api": "cd services/board-api && npm run dev",
+    "services:ui": "cd services/board-ui && npm run dev",
+    "services:mcp": "cd services/board-mcp && npm start",
+    "services:test": "tools/migration/test-services.sh",
+    "validate": "tools/migration/validate-structure.sh",
+    "mcp:logs:service": "tail -f ./infrastructure/data/logs/task-service.log",
+    "mcp:logs:mcp": "tail -f ./infrastructure/data/logs/board-mcp.log"
   },
   "devDependencies": {
     "eslint": "^9.33.0",

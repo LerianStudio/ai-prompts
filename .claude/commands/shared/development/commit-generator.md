@@ -1,7 +1,7 @@
 ---
 allowed-tools: Bash(*), Read(*), Grep(*), Write(*)
 description: Generate conventional commit messages based on git changes and save as commit-message.txt
-argument-hint: [--scope=<scope>] [--git-scope=<scope>] (optional scope for the commit and git changes to analyze)
+argument-hint: [--git-scope=<scope>] (which git changes to analyze)
 ---
 
 # /shared:development:commit-generator
@@ -13,24 +13,20 @@ Analyzes current git changes and generates conventional commit messages followin
 This command examines your git staging area and working directory to suggest properly formatted conventional commit messages based on the changes detected.
 
 ```bash
-# Git-focused commit message generation (recommended)
-/shared:development:commit-generator --git-scope=staged              # Generate message for staged changes only
+# Analyze different sets of changes
+/shared:development:commit-generator --git-scope=staged              # Generate message for staged changes only (default)
 /shared:development:commit-generator --git-scope=all-changes         # Generate message for all changes (staged + unstaged)
 /shared:development:commit-generator --git-scope=unstaged            # Generate message for unstaged changes only
+/shared:development:commit-generator --git-scope=branch              # Generate message for branch changes
+/shared:development:commit-generator --git-scope=last-commit         # Generate message based on last commit
 
-# With custom commit scope
-/shared:development:commit-generator --scope=api --git-scope=staged  # API scoped message for staged changes
-/shared:development:commit-generator --scope=ui --git-scope=branch   # UI scoped message for branch changes
-
-# Traditional usage (defaults to staged changes)
+# Basic usage (defaults to staged changes)
 /shared:development:commit-generator
-/shared:development:commit-generator --scope=api
 ```
 
 **Arguments:**
 
-- `--scope`: Optional commit scope (api, ui, docs, etc.) for the generated conventional commit message
-- `--git-scope`: Git scope to analyze - staged|unstaged|all-changes|branch|last-commit|commit-range=<range> (defaults to 'staged')
+- `--git-scope`: Which git changes to analyze - staged|unstaged|all-changes|branch|last-commit|commit-range=<range> (defaults to 'staged')
 
 ## Initial Setup
 
@@ -67,6 +63,7 @@ target_files=$(process_git_scope "$git_scope")
 2. **Change Classification**
    - Analyzes file patterns and change types
    - Determines appropriate commit type (feat, fix, docs, style, etc.)
+   - Automatically detects scope from file paths (api, ui, docs, etc.)
    - Identifies potential breaking changes
 
 3. **Message Generation**
@@ -118,10 +115,10 @@ feat: add user authentication system
 - Create user authentication system
 ```
 
-### With Scope
+### Analyzing Branch Changes
 
 ```bash
-/shared:development:commit-generator api
+/shared:development:commit-generator --git-scope=branch
 ```
 
 **Output:**

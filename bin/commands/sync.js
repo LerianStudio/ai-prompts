@@ -3,10 +3,10 @@
 const { Command } = require('commander')
 const chalk = require('chalk')
 const path = require('path')
-const ConfigManager = require('../../protocol-assets/tools/installer')
-const MetadataManager = require('../../protocol-assets/tools/sync/metadata-manager')
-const SyncPlanner = require('../../protocol-assets/tools/sync/sync-planner')
-const SyncExecutor = require('../../protocol-assets/tools/sync/sync-executor')
+const ConfigManager = require('../../tools/installer')
+const MetadataManager = require('../../tools/sync/metadata-manager')
+const SyncPlanner = require('../../tools/sync/sync-planner')
+const SyncExecutor = require('../../tools/sync/sync-executor')
 
 class SyncCommand {
   static register(program) {

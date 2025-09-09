@@ -1,0 +1,105 @@
+
+> @lerian-protocol/board-api@1.0.0 dev
+> node --watch src/server.js
+
+All migrations applied successfully
+[32mINFO[39m [2025-09-09 20:25:39] (board-api-server): [36m[board-api] Configuration loaded successfully[39m
+    [35mservice[39m: "board-api"
+    [35menvironment[39m: "development"
+    [35mlogLevel[39m: "info"
+    [35mconfigKeys[39m: [
+      "NODE_ENV",
+      "LOG_LEVEL",
+      "LOG_DIR",
+      "TASK_SERVICE_URL",
+      "TASK_SERVICE_HOST",
+      "TASK_SERVICE_PORT",
+      "DB_PATH",
+      "ALLOWED_ORIGINS",
+      "DB_CONNECTION_POOL_SIZE",
+      "REQUEST_TIMEOUT",
+      "serviceName",
+      "host",
+      "port",
+      "dbPath"
+    ]
+[34mDEBUG[39m [2025-09-09 20:25:39] (board-api-server): [36m[board-api-server] CORS configuration[39m
+    [35mservice[39m: "board-api-server"
+    [35mallowedOrigins[39m: [
+      "http://localhost:5173",
+      "http://localhost:3020",
+      "http://127.0.0.1:5173",
+      "http://127.0.0.1:3020"
+    ]
+[32mINFO[39m [2025-09-09 20:25:39] (board-api-server): [36m[board-api-server] Task Management Service started[39m
+    [35mservice[39m: "board-api-server"
+    [35mhttpUrl[39m: "http://localhost:3020"
+    [35mwsUrl[39m: "ws://localhost:3020"
+    [35mdatabase[39m: "/home/gc4str0/Documents/Lerian/ai-prompts/infrastructure/data/databases/task-management.db"
+    [35menvironment[39m: "development"
+[32mINFO[39m [2025-09-09 20:25:39] (database-manager): [36m[database-manager] Initializing database[39m
+    [35mservice[39m: "database-manager"
+    [35mpath[39m: "/home/gc4str0/Documents/Lerian/ai-prompts/infrastructure/data/databases/task-management.db"
+[32mINFO[39m [2025-09-09 20:25:39] (database-manager): [36m[database-manager] Database operation: run[39m
+    [35mservice[39m: "database-manager"
+    [35moperation[39m: "run"
+    [35mduration_ms[39m: 0
+    [35msuccess[39m: true
+[32mINFO[39m [2025-09-09 20:25:39] (database-manager): [36m[database-manager] Database operation: run[39m
+    [35mservice[39m: "database-manager"
+    [35moperation[39m: "run"
+    [35mduration_ms[39m: 1
+    [35msuccess[39m: true
+[32mINFO[39m [2025-09-09 20:25:39] (database-manager): [36m[database-manager] Database operation: run[39m
+    [35mservice[39m: "database-manager"
+    [35moperation[39m: "run"
+    [35mduration_ms[39m: 0
+    [35msuccess[39m: true
+[32mINFO[39m [2025-09-09 20:25:39] (database-manager): [36m[database-manager] Database operation: all[39m
+    [35mservice[39m: "database-manager"
+    [35moperation[39m: "all"
+    [35mduration_ms[39m: 0
+    [35msuccess[39m: true
+[32mINFO[39m [2025-09-09 20:25:39] (database-manager): [36m[database-manager] Database initialized successfully[39m
+    [35mservice[39m: "database-manager"
+    [35mpath[39m: "/home/gc4str0/Documents/Lerian/ai-prompts/infrastructure/data/databases/task-management.db"
+    [35mfeatures[39m: [
+      "foreign_keys",
+      "wal_mode",
+      "migrations"
+    ]
+[32mINFO[39m [2025-09-09 20:25:41] (board-api-server): [36m[board-api-server] WebSocket client connected[39m
+    [35mservice[39m: "board-api-server"
+    [35mremoteAddress[39m: "::1"
+[32mINFO[39m [2025-09-09 20:25:46] (board-api-server): [36m[board-api-server] WebSocket client disconnected[39m
+    [35mservice[39m: "board-api-server"
+[32mINFO[39m [2025-09-09 20:25:47] (database-manager): [36m[database-manager] Database operation: all[39m
+    [35mservice[39m: "database-manager"
+    [35moperation[39m: "all"
+    [35mduration_ms[39m: 0
+    [35msuccess[39m: true
+[32mINFO[39m [2025-09-09 20:25:47] (database-manager): [36m[database-manager] Database operation: all[39m
+    [35mservice[39m: "database-manager"
+    [35moperation[39m: "all"
+    [35mduration_ms[39m: 0
+    [35msuccess[39m: true
+[32mINFO[39m [2025-09-09 20:25:47] (board-api-server): [36m[board-api-server] WebSocket client connected[39m
+    [35mservice[39m: "board-api-server"
+    [35mremoteAddress[39m: "::1"
+[32mINFO[39m [2025-09-09 20:25:47] (board-api-server): [36m[board-api-server] WebSocket client disconnected[39m
+    [35mservice[39m: "board-api-server"
+[34mDEBUG[39m [2025-09-09 20:25:47] (board-api-server): [36m[board-api-server] HTTP Request[39m
+    [35mservice[39m: "board-api-server"
+    [35mmethod[39m: "GET"
+    [35mpath[39m: "/api/tasks"
+    [35mip[39m: "::1"
+    [35muserAgent[39m: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+[32mINFO[39m [2025-09-09 20:25:47] (board-api-server): [36m[board-api-server] WebSocket client connected[39m
+    [35mservice[39m: "board-api-server"
+    [35mremoteAddress[39m: "::1"
+[34mDEBUG[39m [2025-09-09 20:25:47] (board-api-server): [36m[board-api-server] HTTP Request[39m
+    [35mservice[39m: "board-api-server"
+    [35mmethod[39m: "GET"
+    [35mpath[39m: "/api/tasks"
+    [35mip[39m: "::1"
+    [35muserAgent[39m: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"

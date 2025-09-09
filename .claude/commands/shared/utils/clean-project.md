@@ -1,7 +1,7 @@
 ---
 allowed-tools: Bash(*), Read(*), Edit(*), Glob(*), Grep(*), LS(*), TodoWrite(*)
 description: Clean up development artifacts while preserving working code with safety checkpoints
-argument-hint: [--dry-run] [--verbose] [--git-artifacts] [--git-scope=<scope>]
+argument-hint: [--dry-run] [--verbose] [--git-scope=<scope>]
 ---
 
 # /shared:utils:clean-project
@@ -44,6 +44,7 @@ Before cleaning, I need to carefully consider:
    - Verify with git status what's tracked vs untracked
    - Group similar files for batch decision making
    - **Git-aware**: Focus on artifact cleanup in directories with active development
+     </think>
      </strategic_thinking>
 
 <safety_guidelines>
@@ -86,33 +87,14 @@ This keeps only clean, working code while maintaining complete safety.
 
 <git_options>
 
-### --git-artifacts
+### --git-scope
 
-Focuses cleanup on directories with recent git activity, preserving build artifacts in unchanged areas:
-
-```bash
-# Clean artifacts only in directories with git changes
-/shared:utils:clean-project --git-artifacts
-
-# Show what would be cleaned in git-active directories
-/shared:utils:clean-project --git-artifacts --dry-run
-
-# Verbose output showing git context
-/shared:utils:clean-project --git-artifacts --verbose
-```
-
-**Benefits:**
-
-- **Faster execution** - Only scans directories with git changes
-- **Incremental builds preserved** - Keeps artifacts in unchanged areas
-- **Targeted cleaning** - Focuses on active development directories
-- **Build performance** - Maintains cache for unchanged components
-
-### --git-scope Integration
-
-Combines with git scopes to clean artifacts in specific change sets:
+Focuses cleanup on directories with git changes, preserving build artifacts in unchanged areas:
 
 ```bash
+# Clean artifacts in directories with any git changes
+/shared:utils:clean-project --git-scope=all
+
 # Clean artifacts in staged file directories
 /shared:utils:clean-project --git-scope=staged
 
@@ -121,13 +103,27 @@ Combines with git scopes to clean artifacts in specific change sets:
 
 # Clean artifacts in directories touched by last commit
 /shared:utils:clean-project --git-scope=last-commit
+
+# Show what would be cleaned with dry-run
+/shared:utils:clean-project --git-scope=staged --dry-run
+
+# Verbose output showing git context
+/shared:utils:clean-project --git-scope=all --verbose
 ```
+
+**Benefits:**
+
+- **Faster execution** - Only scans directories with git changes
+- **Incremental builds preserved** - Keeps artifacts in unchanged areas
+- **Targeted cleaning** - Focuses on active development directories
+- **Build performance** - Maintains cache for unchanged components
+- **Flexible scope** - Choose the appropriate git change set to target
 
 </git_options>
 
 <process>
 
-When `--git-artifacts` or `--git-scope` is used:
+When `--git-scope` is used:
 
 ```bash
 # 1. Validate git repository

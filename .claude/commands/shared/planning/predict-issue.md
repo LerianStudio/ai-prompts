@@ -1,7 +1,6 @@
 ---
 allowed-tools: Grep(*), Glob(*), Read(*), TodoWrite(*), Bash(*)
 description: Analyze codebase to predict potential problems before they impact the project
-argument-hint: [--scope=<scope>]
 ---
 
 # /shared:planning:predict-issue

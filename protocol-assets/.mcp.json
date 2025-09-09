@@ -23,7 +23,7 @@
     },
     "lerian-board": {
       "command": "node",
-      "args": ["protocol-assets/services/board-mcp/src/server.js"],
+      "args": ["../services/board-mcp/src/server.js"],
       "env": {
         "TASK_SERVICE_URL": "http://localhost:3020"
       }

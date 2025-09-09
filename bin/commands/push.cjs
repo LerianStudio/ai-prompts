@@ -4,11 +4,11 @@ const { Command } = require('commander')
 const chalk = require('chalk')
 const path = require('path')
 const inquirer = require('inquirer')
-const ConfigManager = require('../../protocol-assets/tools/installer')
-const MetadataManager = require('../../protocol-assets/tools/sync/metadata-manager')
-const PushPlanner = require('../../protocol-assets/tools/sync/push-planner')
-const PushExecutor = require('../../protocol-assets/tools/sync/push-executor')
-const FileSelector = require('../../protocol-assets/tools/sync/file-selector')
+const ConfigManager = require('../../tools/installer')
+const MetadataManager = require('../../tools/sync/metadata-manager')
+const PushPlanner = require('../../tools/sync/push-planner')
+const PushExecutor = require('../../tools/sync/push-executor')
+const FileSelector = require('../../tools/sync/file-selector')
 
 class PushCommand {
   /**

@@ -1,7 +1,7 @@
 ---
 allowed-tools: Bash(*), Read(*), Grep(*), Glob(*), LS(*), Task(*), TodoWrite(*), Write(*), MultiEdit(*), Edit(*)
 description: Assess and prioritize technical debt with actionable remediation strategies
-argument-hint: [--target=<project-path-or-component>] [--git-scope=<scope>] [--debt-trend]
+argument-hint: [--target=<project-path-or-component>] [--git-scope=<scope>]
 ---
 
 # /shared:code-quality:technical-debt
@@ -35,7 +35,7 @@ Assess and prioritize technical debt in the specified project or component with 
 # Git-focused debt analysis (recommended for feature development)
 /shared:code-quality:technical-debt --git-scope=all-changes        # Analyze debt in current changes
 /shared:code-quality:technical-debt --git-scope=branch               # Analyze debt introduced in feature branch
-/shared:code-quality:technical-debt --git-scope=staged --debt-trend  # Compare staged changes debt vs existing
+/shared:code-quality:technical-debt --git-scope=staged              # Analyze debt in staged changes
 
 # Traditional project-wide analysis
 /shared:code-quality:technical-debt --target=.                       # Analyze entire project
@@ -59,7 +59,7 @@ Assess and prioritize technical debt in the specified project or component with 
 # Git-focused debt analysis (recommended for feature development)
 /shared:code-quality:technical-debt --git-scope=all-changes        # Analyze debt in current changes
 /shared:code-quality:technical-debt --git-scope=branch               # Analyze debt introduced in feature branch
-/shared:code-quality:technical-debt --git-scope=staged --debt-trend  # Compare staged changes debt vs existing
+/shared:code-quality:technical-debt --git-scope=staged              # Analyze debt in staged changes
 
 # Traditional project-wide analysis
 /shared:code-quality:technical-debt --target=.                       # Analyze entire project
@@ -104,31 +104,6 @@ case "$git_scope" in
 esac
 
 echo "Files in scope: $(echo "$target_files" | grep -c . 2>/dev/null || echo "0")"
-
-# Show debt trend comparison if requested
-if [[ "$debt_trend" == "true" ]]; then
-    echo ""
-    echo "### Debt Trend Analysis"
-
-    # Compare complexity metrics between base and current
-    case "$git_scope" in
-        "branch")
-            echo "Comparing debt metrics: main branch vs current branch"
-            git diff --stat "$base_branch..HEAD"
-            ;;
-        "staged")
-            echo "Comparing debt metrics: working tree vs staged changes"
-            git diff --stat --cached
-            ;;
-    esac
-
-    echo ""
-    echo "**New vs Existing Debt:**"
-    echo "- New debt: Issues introduced in changed files"
-    echo "- Modified debt: Existing debt in changed areas"
-    echo "- Inherited debt: Pre-existing issues in unchanged files"
-    echo ""
-fi
 ```
 
 ### 1. Code Quality Assessment

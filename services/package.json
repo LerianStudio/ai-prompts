@@ -1,0 +1,14 @@
+{
+  "name": "@lerian-protocol/shared",
+  "version": "1.0.0",
+  "description": "Shared utilities and libraries for Lerian Protocol services",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    "./lib/*": "./lib/*",
+    "./types/*": "./types/*"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

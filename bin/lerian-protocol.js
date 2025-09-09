@@ -12,11 +12,9 @@ const isNpxExecution = __dirname.includes('_npx') || __dirname.includes('.npm')
 let installer
 try {
   if (isNpxExecution) {
-    installer = require(
-      path.join(__dirname, '..', 'protocol-assets', 'tools', 'installer')
-    )
+    installer = require(path.join(__dirname, '..', 'tools', 'installer'))
   } else {
-    installer = require('../protocol-assets/tools/installer')
+    installer = require('../tools/installer')
   }
 } catch (error) {
   console.error(chalk.red('Error loading installer:'), error.message)
