@@ -103,3 +103,35 @@ All migrations applied successfully
     [35mpath[39m: "/api/tasks"
     [35mip[39m: "::1"
     [35muserAgent[39m: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+[32mINFO[39m [2025-09-09 21:36:06] (database-manager): [36m[database-manager] Database operation: all[39m
+    [35mservice[39m: "database-manager"
+    [35moperation[39m: "all"
+    [35mduration_ms[39m: 0
+    [35msuccess[39m: true
+[32mINFO[39m [2025-09-09 21:36:06] (database-manager): [36m[database-manager] Database operation: all[39m
+    [35mservice[39m: "database-manager"
+    [35moperation[39m: "all"
+    [35mduration_ms[39m: 0
+    [35msuccess[39m: true
+[32mINFO[39m [2025-09-09 21:36:05] (board-api-server): [36m[board-api-server] WebSocket client disconnected[39m
+    [35mservice[39m: "board-api-server"
+[32mINFO[39m [2025-09-09 21:36:06] (board-api-server): [36m[board-api-server] WebSocket client connected[39m
+    [35mservice[39m: "board-api-server"
+    [35mremoteAddress[39m: "::1"
+[34mDEBUG[39m [2025-09-09 21:36:06] (board-api-server): [36m[board-api-server] HTTP Request[39m
+    [35mservice[39m: "board-api-server"
+    [35mmethod[39m: "GET"
+    [35mpath[39m: "/api/tasks"
+    [35mip[39m: "::1"
+    [35muserAgent[39m: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+[34mDEBUG[39m [2025-09-09 21:36:06] (board-api-server): [36m[board-api-server] HTTP Request[39m
+    [35mservice[39m: "board-api-server"
+    [35mmethod[39m: "GET"
+    [35mpath[39m: "/api/tasks"
+    [35mip[39m: "::1"
+    [35muserAgent[39m: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+[32mINFO[39m [2025-09-09 21:36:06] (board-api-server): [36m[board-api-server] WebSocket client disconnected[39m
+    [35mservice[39m: "board-api-server"
+[32mINFO[39m [2025-09-09 21:36:06] (board-api-server): [36m[board-api-server] WebSocket client connected[39m
+    [35mservice[39m: "board-api-server"
+    [35mremoteAddress[39m: "::1"
