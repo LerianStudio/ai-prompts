@@ -1,8 +1,16 @@
-const chalk = require('chalk')
+import chalk from 'chalk'
 
-const debug = {
-  log: (message, ...args) => {
-    if (process.env.DEBUG_INSTALLER || process.env.NODE_ENV === 'development') {
+interface DebugInterface {
+  log: (message: string, ...args: any[]) => void
+  error: (message: string, error?: Error | any) => void
+}
+
+export const debug: DebugInterface = {
+  log: (message: string, ...args: any[]): void => {
+    if (
+      process.env['DEBUG_INSTALLER'] ||
+      process.env['NODE_ENV'] === 'development'
+    ) {
       const timestamp = new Date().toISOString().replace('T', ' ').slice(0, 19)
       console.log(
         chalk.gray(timestamp),
@@ -12,7 +20,8 @@ const debug = {
       )
     }
   },
-  error: (message, error) => {
+
+  error: (message: string, error?: Error | any): void => {
     const timestamp = new Date().toISOString().replace('T', ' ').slice(0, 19)
     console.error(
       chalk.gray(timestamp),
@@ -20,10 +29,8 @@ const debug = {
       message,
       error?.message || error
     )
-    if (error?.stack && process.env.DEBUG_INSTALLER) {
+    if (error?.stack && process.env['DEBUG_INSTALLER']) {
       console.log(chalk.gray(error.stack))
     }
   }
 }
-
-module.exports = { debug }

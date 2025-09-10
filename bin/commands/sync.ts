@@ -1,15 +1,145 @@
 #!/usr/bin/env node
 
-const { Command } = require('commander')
-const chalk = require('chalk')
-const path = require('path')
-const ConfigManager = require('../../tools/installer')
-const MetadataManager = require('../../tools/sync/metadata-manager')
-const SyncPlanner = require('../../tools/sync/sync-planner')
-const SyncExecutor = require('../../tools/sync/sync-executor')
+import { Command } from 'commander'
+import chalk from 'chalk'
+import path from 'path'
+import * as fs from 'fs-extra'
 
-class SyncCommand {
-  static register(program) {
+// interface Config {
+//   cli: {
+//     debugMode: boolean
+//   }
+// }
+
+// interface ConfigManager {
+//   getEnvironmentConfig(): Promise<Config>
+// }
+
+interface InstallMeta {
+  sourcePath: string
+  profile?: string
+}
+
+interface MetadataManager {
+  readMetadata(projectPath: string): Promise<InstallMeta | null>
+  validateSourcePath(installMeta: InstallMeta): Promise<void>
+  getLastSyncHashes(projectPath: string): Promise<Record<string, string>>
+  updateSyncHashes(
+    projectPath: string,
+    sourceSnapshot: any,
+    operations: any[]
+  ): Promise<void>
+}
+
+interface SyncPlanOptions {
+  profile: string
+  onProgress?: (message: string) => void
+}
+
+interface SyncOperation {
+  type: string
+  path: string
+  status: string
+  error?: string
+}
+
+interface SyncPlan {
+  sourcePath: string
+  destPath: string
+  profile: string
+  operations: SyncOperation[]
+  summary: {
+    total: number
+    copy: number
+    update: number
+    delete: number
+    conflict: number
+  }
+  conflicts: Array<{
+    path: string
+    conflictType: string
+  }>
+  estimatedSize?: {
+    files: number
+    humanReadable: string
+  }
+  duration: number
+  snapshots: {
+    source: {
+      fileCount: number
+    }
+    destination: {
+      fileCount: number
+    }
+  }
+}
+
+interface SyncResult {
+  success: boolean
+  operations: SyncOperation[]
+  backupPath?: string
+  rollbackAvailable?: boolean
+}
+
+interface SyncExecutorOptions {
+  dryRun: boolean
+  includeConflicts: boolean
+  conflictStrategy: string
+  onProgress?: (message: string) => void
+}
+
+interface SyncPlanner {
+  createSyncPlan(
+    sourcePath: string,
+    destPath: string,
+    lastSyncHashes: Record<string, string>,
+    options: SyncPlanOptions
+  ): Promise<SyncPlan>
+}
+
+interface SyncExecutor {
+  executeSyncPlan(
+    plan: SyncPlan,
+    options: SyncExecutorOptions
+  ): Promise<SyncResult>
+}
+
+interface CommandHeader {
+  render(): string
+}
+
+interface CommandHeaderOptions {
+  title: string
+  subtitle: string
+  variant: string
+  width: number
+}
+
+interface TerminalCapabilities {
+  width: number
+  supportsColor: boolean
+}
+
+interface TerminalDetector {
+  getCapabilities(): TerminalCapabilities
+}
+
+interface EnvironmentValidation {
+  cwd: string
+  hasPackageJson: boolean
+  hasClaudeDir: boolean
+  hasProtocolAssets: boolean
+  paths: Record<string, string>
+}
+
+interface SyncCommandOptions {
+  dryRun?: boolean
+  interactive?: boolean
+  debug?: boolean
+}
+
+export class SyncCommand {
+  static register(program: Command): void {
     const syncCmd = new Command('sync')
       .description(
         'Synchronize .claude and protocol-assets directories between source and destination'
@@ -35,29 +165,68 @@ and destination paths based on the installation metadata.`
     program.addCommand(syncCmd)
   }
 
-  static async execute(options) {
+  static async execute(options: SyncCommandOptions): Promise<void> {
     const startTime = Date.now()
 
     try {
-      const configManager = new ConfigManager()
-      const config = await configManager.getEnvironmentConfig()
+      const MetadataManager = require(
+        path.join(
+          __dirname,
+          '..',
+          '..',
+          '..',
+          'tools',
+          'sync',
+          'metadata-manager'
+        )
+      ) as new () => MetadataManager
       const metadataManager = new MetadataManager()
 
-      let CommandHeader, TerminalDetector
+      let CommandHeader:
+        | (new (options: CommandHeaderOptions) => CommandHeader)
+        | undefined
+      let TerminalDetector: TerminalDetector | undefined
 
       try {
-        CommandHeader = require('../../lib/components/CommandHeader')
-        TerminalDetector = require('../../lib/utils/terminal')
+        CommandHeader = require(
+          path.join(
+            __dirname,
+            '..',
+            '..',
+            '..',
+            'services',
+            'lib',
+            'components',
+            'CommandHeader'
+          )
+        )
+        TerminalDetector = require(
+          path.join(
+            __dirname,
+            '..',
+            '..',
+            '..',
+            'services',
+            'lib',
+            'utils',
+            'terminal'
+          )
+        )
       } catch {
         console.log(chalk.blue('🔄 Lerian Protocol Sync'))
         console.log(chalk.gray('Synchronizing .claude and protocol-assets'))
         console.log('')
+        CommandHeader = undefined
+        TerminalDetector = undefined
       }
 
       const validation = await this.validateEnvironment()
       const projectPath = validation.cwd
 
-      let terminalCaps = { width: 80, supportsColor: true }
+      let terminalCaps: TerminalCapabilities = {
+        width: 80,
+        supportsColor: true
+      }
       if (TerminalDetector) {
         terminalCaps = TerminalDetector.getCapabilities()
       }
@@ -85,9 +254,9 @@ and destination paths based on the installation metadata.`
       // Validate source path
       await metadataManager.validateSourcePath(installMeta)
       const sourcePath = installMeta.sourcePath
-      const profile = installMeta.profile || 'full'
+      const profile = installMeta.profile ?? 'full'
 
-      if (options.debug || config.cli.debugMode) {
+      if (options.debug) {
         console.log(chalk.yellow('🐛 Debug mode enabled'))
         console.log('Command options:', JSON.stringify(options, null, 2))
         console.log('Source path:', sourcePath)
@@ -97,6 +266,13 @@ and destination paths based on the installation metadata.`
       }
 
       // Initialize sync components
+      const SyncPlanner = require(
+        path.join(__dirname, '..', '..', '..', 'tools', 'sync', 'sync-planner')
+      ) as new () => SyncPlanner
+      const SyncExecutor = require(
+        path.join(__dirname, '..', '..', '..', 'tools', 'sync', 'sync-executor')
+      ) as new () => SyncExecutor
+
       const syncPlanner = new SyncPlanner()
       const syncExecutor = new SyncExecutor()
 
@@ -113,7 +289,7 @@ and destination paths based on the installation metadata.`
         lastSyncHashes,
         {
           profile,
-          onProgress: (message) => {
+          onProgress: (message: string) => {
             if (options.debug) {
               console.log(chalk.gray(`  ${message}`))
             }
@@ -144,7 +320,7 @@ and destination paths based on the installation metadata.`
         dryRun: false,
         includeConflicts: false, // Skip conflicts by default
         conflictStrategy: 'skip',
-        onProgress: (message) => {
+        onProgress: (message: string) => {
           console.log(chalk.gray(`  ${message}`))
         }
       })
@@ -182,19 +358,18 @@ and destination paths based on the installation metadata.`
       this.displaySyncResults(syncResult)
       this.displayExecutionStats(syncPlan, Date.now() - startTime)
     } catch (error) {
-      console.error(chalk.red('❌ Sync command failed:'), error.message)
+      console.error(
+        chalk.red('❌ Sync command failed:'),
+        (error as Error).message
+      )
       if (options.debug) {
-        console.error(chalk.red('Stack trace:'), error.stack)
+        console.error(chalk.red('Stack trace:'), (error as Error).stack)
       }
       process.exit(1)
     }
   }
 
-  /**
-   * Validate that the command is being run in a valid environment
-   */
-  static async validateEnvironment() {
-    const fs = require('fs-extra')
+  static async validateEnvironment(): Promise<EnvironmentValidation> {
     const cwd = process.cwd()
 
     const hasPackageJson = await fs.pathExists(path.join(cwd, 'package.json'))
@@ -214,10 +389,8 @@ and destination paths based on the installation metadata.`
         const packageJson = await fs.readJson(path.join(cwd, 'package.json'))
 
         const hasLerianProtocol =
-          (packageJson.dependencies &&
-            packageJson.dependencies['lerian-protocol']) ||
-          (packageJson.devDependencies &&
-            packageJson.devDependencies['lerian-protocol'])
+          packageJson.dependencies?.['lerian-protocol'] ??
+          packageJson.devDependencies?.['lerian-protocol']
 
         if (!hasLerianProtocol && !hasClaudeDir) {
           console.warn(
@@ -241,7 +414,7 @@ and destination paths based on the installation metadata.`
         await fs.ensureDir(dirPath)
       } catch (error) {
         throw new Error(
-          `Cannot access or create ${name} directory: ${error.message}`
+          `Cannot access or create ${name} directory: ${(error as Error).message}`
         )
       }
     }
@@ -255,9 +428,6 @@ and destination paths based on the installation metadata.`
     }
   }
 
-  /**
-   * Get command exit codes for different scenarios
-   */
   static getExitCodes() {
     return {
       SUCCESS: 0,
@@ -266,15 +436,13 @@ and destination paths based on the installation metadata.`
       USER_CANCELLATION: 3,
       VALIDATION_ERROR: 4,
       DEPENDENCY_ERROR: 5
-    }
+    } as const
   }
 
-  /**
-   * Display sync plan summary to user
-   * @param {Object} syncPlan - Sync plan object
-   * @param {Object} options - Command options
-   */
-  static displaySyncPlan(syncPlan, options) {
+  static displaySyncPlan(
+    syncPlan: SyncPlan,
+    _options: SyncCommandOptions
+  ): void {
     console.log(chalk.blue('\n📋 Sync Plan Summary:'))
     console.log(`  Source: ${syncPlan.sourcePath}`)
     console.log(`  Destination: ${syncPlan.destPath}`)
@@ -304,7 +472,7 @@ and destination paths based on the installation metadata.`
       )
     }
 
-    if (syncPlan.estimatedSize && syncPlan.estimatedSize.files > 0) {
+    if (syncPlan.estimatedSize?.files && syncPlan.estimatedSize.files > 0) {
       console.log(
         `  Estimated transfer: ${syncPlan.estimatedSize.humanReadable}`
       )
@@ -327,11 +495,7 @@ and destination paths based on the installation metadata.`
     }
   }
 
-  /**
-   * Display sync execution results
-   * @param {Object} syncResult - Result from SyncExecutor
-   */
-  static displaySyncResults(syncResult) {
+  static displaySyncResults(syncResult: SyncResult): void {
     if (!syncResult.operations || syncResult.operations.length === 0) {
       return
     }
@@ -343,7 +507,8 @@ and destination paths based on the installation metadata.`
     }
 
     for (const op of syncResult.operations) {
-      stats[op.status] = (stats[op.status] || 0) + 1
+      stats[op.status as keyof typeof stats] =
+        (stats[op.status as keyof typeof stats] || 0) + 1
     }
 
     console.log(chalk.white('\n📊 Operation Results:'))
@@ -374,12 +539,7 @@ and destination paths based on the installation metadata.`
     }
   }
 
-  /**
-   * Display execution statistics
-   * @param {Object} syncPlan - Sync plan object
-   * @param {number} totalTime - Total execution time in ms
-   */
-  static displayExecutionStats(syncPlan, totalTime) {
+  static displayExecutionStats(syncPlan: SyncPlan, totalTime: number): void {
     console.log(chalk.gray('\n⏱️ Statistics:'))
     console.log(chalk.gray(`  Total time: ${Math.round(totalTime)}ms`))
     console.log(
@@ -389,7 +549,7 @@ and destination paths based on the installation metadata.`
     )
     console.log(chalk.gray(`  Plan generation: ${syncPlan.duration}ms`))
 
-    if (syncPlan.estimatedSize) {
+    if (syncPlan.estimatedSize?.humanReadable) {
       console.log(
         chalk.gray(`  Data size: ${syncPlan.estimatedSize.humanReadable}`)
       )
@@ -397,4 +557,4 @@ and destination paths based on the installation metadata.`
   }
 }
 
-module.exports = SyncCommand
+export const register = SyncCommand.register.bind(SyncCommand)

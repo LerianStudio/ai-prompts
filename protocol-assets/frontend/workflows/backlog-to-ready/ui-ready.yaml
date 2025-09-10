@@ -1,12 +1,13 @@
 workflow:
   id: ui-ready
-  name: UI-Only Backlog to Ready (@task-manager)
+  name: UI-Only Backlog to Ready (Board MCP)
   description: >-
-    Database-backed workflow for pure UI/frontend tasks using @task-manager system.
+    Database-backed workflow for pure UI/frontend tasks using Board MCP server.
     Transforms UI-focused backlog items through design-first approach to create implementation-ready
     tasks with comprehensive visual specifications and structured todos.
 
   triggers:
+    - task_status: 'pending' (Board MCP backlog state)
     - task_type: 'ui'
     - labels:
         [
@@ -19,6 +20,7 @@ workflow:
         ]
     - keywords:
         ['component', 'styling', 'layout', 'responsive', 'animation', 'theme']
+    - input_format: 'task_id' (from Board MCP database)
 
   agents:
     - .claude/agents/shared/user-story-generator.md
@@ -30,7 +32,7 @@ workflow:
     - id: frontend-pattern-discovery
       title: Analyze Frontend Patterns and Design System
       agent: .claude/agents/frontend/frontend-developer.md
-      requires: backlog_description.md (input requirement)
+      requires: task_id (Board MCP task input)
       creates: frontend-patterns.md
       action: Execute /analyze-frontend command to understand component patterns, design system, and UI conventions
       description: >
@@ -42,7 +44,7 @@ workflow:
       title: Generate UI-Focused User Stories
       agent: .claude/agents/shared/user-story-generator.md
       requires:
-        - backlog_description.md
+        - task_id (Board MCP task with original description)
         - frontend-patterns.md
       creates: ui-user-stories (structured data)
       description: >
@@ -62,8 +64,8 @@ workflow:
         Include basic component requirements, simple visual layout, essential styling guidance,
         and basic interactions. Follow project patterns and keep it practical.
 
-    - id: database-task-creation
-      title: Create Database-Backed Implementation Task
+    - id: database-task-update
+      title: Update Task with Implementation Structure
       agent: .claude/agents/shared/task-breakdown-specialist.md
       requires:
         - ui-user-stories
@@ -71,10 +73,11 @@ workflow:
         - ui-spec.md
         - docs/console/component-patterns.md
         - docs/console/coding-conventions.md
-      creates: task_id (from @task-manager.createTask)
-      action: Use @task-manager.createTask() to create database-backed task
+        - task_id (original backlog task)
+      creates: updated_task_id (from mcp__lerian-board__updateTaskStatus)
+      action: Use mcp__lerian-board__updateTaskStatus to move from 'pending' to 'in_progress'
       description: >-
-        Create a comprehensive frontend implementation task in the database using @task-manager.
+        Create a comprehensive frontend implementation task in the database using Board MCP server.
         Include task description with UI specifications and structured todos organized by implementation phases:
         - Component Development phase
         - Styling Implementation phase  
@@ -147,11 +150,11 @@ handoff_prompts:
     - Essential interaction definitions
     - Functional requirements focused on implementation
 
-    **CRITICAL: Use @task-manager.createTask() instead of file operations**
+    **CRITICAL: Use mcp__lerian-board__createTask instead of file operations**
 
     Your task is to create a comprehensive database-backed implementation task:
 
-    1. **Use @task-manager.createTask()** with:
+    1. **Use mcp__lerian-board__createTask** with:
        - Title: "UI Implementation: {Story Name}"
        - Description: Complete UI specification and implementation requirements
        - Todos: Structured by implementation phases (18-24 todos total)
@@ -169,13 +172,13 @@ handoff_prompts:
     4. **No file system operations** - everything goes in the database
 
   workflow-completion: >-
-    UI-Only Backlog processing workflow completed successfully using @task-manager!
+    UI-Only Backlog processing workflow completed successfully using Board MCP server!
 
     Summary of processed frontend work:
     - Analyzed frontend patterns and component architecture
     - Generated UI-focused user stories with visual acceptance criteria
     - Created comprehensive UI specifications for implementation guidance
-    - **Created database-backed task via @task-manager.createTask()**
+    - **Created database-backed task via mcp__lerian-board__createTask**
     - **Generated structured todos organized by implementation phases**
     - **Returned task_id: {task_id} for downstream coordination**
 
@@ -188,8 +191,8 @@ handoff_prompts:
 
     **Next Steps:**
     - Implementation agents receive task_id: {task_id}
-    - Use @task-manager.getTask(task_id) to access todos
-    - Progress tracked via @task-manager.completeTodoItem()
-    - Task status updates via @task-manager.updateTaskStatus()
+    - Use mcp__lerian-board__getTask(task_id) to access todos
+    - Progress tracked via mcp__lerian-board__completeTodoItem()
+    - Task status updates via mcp__lerian-board__updateTaskStatus()
 
     The task is now ready for streamlined frontend implementation with full database backing!

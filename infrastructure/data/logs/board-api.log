@@ -135,3 +135,4 @@ All migrations applied successfully
 [32mINFO[39m [2025-09-09 21:36:06] (board-api-server): [36m[board-api-server] WebSocket client connected[39m
     [35mservice[39m: "board-api-server"
     [35mremoteAddress[39m: "::1"
+Failed running 'src/server.js'. Waiting for file changes before restarting...

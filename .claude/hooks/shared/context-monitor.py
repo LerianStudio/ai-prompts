@@ -197,15 +197,7 @@ def get_git_branch_display():
         branch = result.stdout.strip()
         
         if branch:
-            # Get count of uncommitted changes
-            result = subprocess.run(['git', 'status', '--porcelain'], 
-                                  capture_output=True, text=True, check=True)
-            changes = len([line for line in result.stdout.strip().split('\n') if line])
-            
-            if changes > 0:
-                return f"{branch} ({changes})"
-            else:
-                return f"{branch}"
+            return f"{branch}"
         
         return ""
         
@@ -235,7 +227,6 @@ def main():
         context_display = get_context_display(context_info)
         directory = get_directory_display(workspace)
         session_metrics = get_session_metrics(cost_data)
-        rpg_stats = get_rpg_stats(session_id, workspace)
         git_branch = get_git_branch_display()
         
         # Model display with context-aware coloring and background
@@ -262,7 +253,7 @@ def main():
         # Format git display with background if present
         git_formatted = f" | {git_bg} {git_branch} {reset}" if git_branch else ""
         
-        status_line = f"{model_display} {rpg_stats} | {dir_bg} {directory} {reset}{git_formatted} | {context_display}{session_metrics}"
+        status_line = f"{model_display} | {dir_bg} {directory} {reset}{git_formatted} | {context_display}{session_metrics}"
         
         print(status_line)
         
@@ -273,7 +264,7 @@ def main():
         dir_bg = "\033[103;30m"  # Light yellow background, black text
         error_bg = "\033[101;37m"  # Light red background, white text
         reset = "\033[0m"
-        print(f"\033[104;30m Claude \033[0m | {bg_color}  Novice Lv.1 {reset} | {xp_bg} XP:0/100 {reset} | {dir_bg} {os.path.basename(os.getcwd())} {reset} | {error_bg} Error: {str(e)[:20]} {reset}")
+        print(f"\033[104;30m Claude \033[0m | {dir_bg} {os.path.basename(os.getcwd())} {reset} | {error_bg} Error: {str(e)[:20]} {reset}")
 
 if __name__ == "__main__":
     main()

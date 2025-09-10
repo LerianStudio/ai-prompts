@@ -7,3 +7,11 @@
 
   ➜  Local:   http://localhost:5173/
   ➜  Network: use --host to expose
+7:26:54 PM [vite] http proxy error: /api/tasks
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+7:26:54 PM [vite] http proxy error: /api/tasks
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)

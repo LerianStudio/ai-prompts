@@ -9,7 +9,7 @@ const isPackageRunnerExecution =
 if (isPackageRunnerExecution) {
   const args = process.argv.slice(2)
 
-  const cliScriptPath = path.join(__dirname, 'lerian-protocol.cjs')
+  const cliScriptPath = path.join(__dirname, '..', 'dist', 'bin', 'lerian-protocol.js')
 
   if (!fs.existsSync(cliScriptPath)) {
     console.error('Error: Could not find lerian-protocol.js at', cliScriptPath)
@@ -30,5 +30,5 @@ if (isPackageRunnerExecution) {
     process.exit(error.status || 1)
   }
 } else {
-  require('./lerian-protocol.cjs')
+  require('../dist/bin/lerian-protocol.js')
 }

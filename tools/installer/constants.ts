@@ -1,11 +1,21 @@
-const fs = require('fs-extra')
-const path = require('path')
+import fs from 'fs-extra'
+import path from 'path'
+import * as packageJson from '../../package.json'
 
-const DEFAULTS = {
-  version: require('../../package.json').version,
+interface DefaultsType {
+  version: string
+  timeout: number
+  retries: number
+  getDirectories: (sourceRoot: string) => Promise<string[]>
+  discoverProtocolAssets: (sourceRoot: string) => Promise<string[]>
+}
+
+export const DEFAULTS: DefaultsType = {
+  version: packageJson.version,
   timeout: 30000,
   retries: 3,
-  getDirectories: async function (sourceRoot) {
+
+  async getDirectories(sourceRoot: string): Promise<string[]> {
     const baseDirectories = [
       '.claude',
       '.claude/agents',
@@ -16,8 +26,8 @@ const DEFAULTS = {
     return [...baseDirectories, ...protocolDirs]
   },
 
-  discoverProtocolAssets: async function (sourceRoot) {
-    const directories = []
+  async discoverProtocolAssets(sourceRoot: string): Promise<string[]> {
+    const directories: string[] = []
 
     // Check for legacy protocol-assets directory structure
     const protocolAssetsPath = path.join(sourceRoot, 'protocol-assets')
@@ -50,5 +60,3 @@ const DEFAULTS = {
     return directories
   }
 }
-
-module.exports = { DEFAULTS }

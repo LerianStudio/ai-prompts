@@ -1,58 +1,52 @@
 ---
-allowed-tools: Read(*), Grep(*), LS(*), Bash(*), Task(*)
+allowed-tools: Read(*), Glob(*), Grep(*), Bash(*), Task(*)
 description: Comprehensive code quality review with actionable recommendations and git diff analysis
-argument-hint: [--target=<directory-or-file>] [--git-scope=<scope>] [--diff-context]
+argument-hint: [--target=<path>] [--git-scope=<scope>] [--diff-context]
 ---
 
-# /shared:code-quality:code-review
-
-<context>
-Perform comprehensive code quality review with security, performance, and maintainability analysis. The review can focus on git changes for faster, more relevant analysis, or analyze the entire codebase using traditional scope-based approaches.
-</context>
+# /code-quality:code-review
 
 <instructions>
-## Usage
+Performs comprehensive code quality review with security, performance, and maintainability analysis. Supports focused git-scope analysis for active development workflows and traditional path-based analysis.
 
-```bash
-# Git-focused review (recommended for active development)
-/shared:code-quality:code-review --git-scope=all-changes          # Review all git changes
-/shared:code-quality:code-review --git-scope=staged                 # Review staged files only
-/shared:code-quality:code-review --git-scope=branch                 # Review feature branch changes
-/shared:code-quality:code-review --git-scope=all-changes --diff-context # Review changes with git diff context
+<purpose>
+- Comprehensive code quality review with security, performance, and maintainability analysis
+- Git-focused analysis for faster, more relevant results during development
+- Structured reporting with actionable recommendations
+- Integration with development workflows through git scope targeting
+</purpose>
 
-# Traditional scope-based review
-/shared:code-quality:code-review                                    # Review entire repository
-/shared:code-quality:code-review --target=src/                     # Focus on specific directory
-/shared:code-quality:code-review --target=src/api/users.ts         # Review specific file
-/shared:code-quality:code-review --target=src/components/          # Review component directory
-
-# Combined approaches
-/shared:code-quality:code-review --git-scope=branch --target=src/  # Review branch changes in src/ only
-```
-
+<scope>
+Covers complete code quality assessment including security vulnerabilities, performance bottlenecks, maintainability issues, and technical debt analysis with detailed reporting.
+</scope>
 </instructions>
 
-<examples>
+<context>
+This command provides systematic code quality assessment focused on identifying issues, vulnerabilities, and improvement opportunities without making changes to the codebase.
+</context>
+
+<usage_examples>
+
+## Usage Examples
+
 ```bash
 # Git-focused review (recommended for active development)
-/shared:code-quality:code-review --git-scope=all-changes          # Review all git changes
-/shared:code-quality:code-review --git-scope=staged                 # Review staged files only
-/shared:code-quality:code-review --git-scope=branch                 # Review feature branch changes
-/shared:code-quality:code-review --git-scope=all-changes --diff-context # Review changes with git diff context
+/code-quality:code-review --git-scope=all-changes                   # Review all git changes
+/code-quality:code-review --git-scope=staged                        # Review staged files only
+/code-quality:code-review --git-scope=branch                        # Review feature branch changes
+/code-quality:code-review --git-scope=all-changes --diff-context    # Review with git diff context
 
 # Traditional scope-based review
-
-/shared:code-quality:code-review # Review entire repository
-/shared:code-quality:code-review --target=src/ # Focus on specific directory
-/shared:code-quality:code-review --target=src/api/users.ts # Review specific file
-/shared:code-quality:code-review --target=src/components/ # Review component directory
+/code-quality:code-review                                            # Review entire repository
+/code-quality:code-review --target=src/                             # Focus on specific directory
+/code-quality:code-review --target=src/api/users.ts                 # Review specific file
+/code-quality:code-review --target=src/components/                  # Review component directory
 
 # Combined approaches
+/code-quality:code-review --git-scope=branch --target=src/          # Review branch changes in src/ only
+```
 
-/shared:code-quality:code-review --git-scope=branch --target=src/ # Review branch changes in src/ only
-
-````
-</examples>
+</usage_examples>
 
 <process>
 ## Review Process
@@ -60,6 +54,7 @@ Perform comprehensive code quality review with security, performance, and mainta
 ### 1. Initial Analysis
 
 **Git-Focused Analysis** (when `--git-scope` used):
+
 ```bash
 # Validate git repository and get target files
 if ! git rev-parse --git-dir >/dev/null 2>&1; then
@@ -95,7 +90,7 @@ if [[ "$diff_context" == "true" ]]; then
     fi
     echo ""
 fi
-````
+```
 
 **Traditional Analysis**:
 
@@ -139,6 +134,23 @@ fi
 - Review API documentation completeness
 - Assess README and setup instructions
 
+### 6. Recommendation Generation
+
+**Analysis Output**:
+
+- Prioritized list of issues found
+- Specific file and line number references
+- Detailed explanations of problems
+- Suggested solutions with code examples
+
+**Report Categories**:
+
+- Critical security vulnerabilities
+- Performance optimization opportunities
+- Maintainability improvements needed
+- Technical debt assessment
+- Testing gap analysis
+
 </process>
 
 <formatting>
@@ -146,7 +158,7 @@ fi
 
 **IMPORTANT: All findings must be presented in structured tables for better visual clarity and organization.**
 
-````markdown
+```markdown
 # Code Review Report
 
 ## Executive Summary
@@ -289,7 +301,7 @@ fi
    - Technical debt reduction
    - Performance optimizations
    - Documentation improvements
-````
+```
 
 ## Review Categories
 
@@ -355,7 +367,7 @@ fi
 
 ## Example Output
 
-````markdown
+```markdown
 # Code Review Report: Git Changes (branch scope)
 
 ## Executive Summary
@@ -437,7 +449,7 @@ fi
 | **🟡 This Sprint** | Remove unused imports           | `src/utils/helpers.js`        | 15 min           | Any Dev      |
 | **🟡 This Sprint** | Add error boundaries            | `src/components/UserCard.tsx` | 2 hours          | Frontend Dev |
 | **🟢 Next Sprint** | Improve test coverage to 80%+   | Multiple files                | 1 day            | QA Team      |
-````
+```
 
 Remember to be constructive and provide specific examples with file paths and line numbers where applicable.
 </formatting>

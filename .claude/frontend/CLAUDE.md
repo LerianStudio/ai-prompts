@@ -1,6 +1,6 @@
 # CLAUDE.md - Frontend Configuration
 
-This file provides frontend-specific guidance for React applications and UI development.
+ This file provides frontend-specific guidance for React applications and UI development.
 
 ## Frontend Development Guidelines
 
