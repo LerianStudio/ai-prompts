@@ -471,16 +471,96 @@ class Installer {
   }
 
   private async performInstall(
-    _config: InstallConfig,
+    config: InstallConfig,
     _options: InstallOptions
   ): Promise<void> {
-    throw new Error('Method not implemented')
+    try {
+      output.log('\n' + theme.info('🚀 Starting installation...\n'))
+
+      const operations = await this.planInstallation(config)
+
+      if (operations.length === 0) {
+        output.warning('No installation operations needed')
+        return
+      }
+
+      for (const operation of operations) {
+        const symbol =
+          operation.type === 'create'
+            ? '📁'
+            : operation.type === 'update'
+              ? '🔄'
+              : '🗑️'
+        output.log(`${symbol} ${operation.description}`)
+
+        await this.executeOperation(operation, config)
+      }
+
+      output.log(
+        '\n' + theme.success('✅ Installation completed successfully!') + '\n'
+      )
+      output.log(theme.muted('Run: lerian-protocol status'))
+    } catch (error) {
+      output.error('Installation failed: ' + (error as Error).message)
+      throw error
+    } finally {
+      this.isProcessing = false
+    }
   }
 
   private async planInstallation(
-    _config: InstallConfig
+    config: InstallConfig
   ): Promise<InstallOperation[]> {
-    throw new Error('Method not implemented')
+    const operations: InstallOperation[] = []
+    // When running from dist/, we need to go back to the actual project root
+    const sourceRoot = __dirname.includes('dist')
+      ? path.resolve(__dirname, '../../..')
+      : path.dirname(path.dirname(__dirname))
+
+    try {
+      // Get source directories that need to be copied
+      const directories = await DEFAULTS.getDirectories(sourceRoot)
+
+      for (const dir of directories) {
+        const sourcePath = path.join(sourceRoot, dir)
+        const targetPath = path.join(config.directory, dir)
+
+        if (!(await fs.pathExists(sourcePath))) {
+          continue
+        }
+
+        // Filter based on profile
+        if (this.shouldIncludeForProfile(dir, config.profile)) {
+          operations.push({
+            type: 'create',
+            path: targetPath,
+            description: `Copy ${dir}`,
+            operation: `copy:${sourcePath}:${targetPath}`,
+            retryable: true
+          })
+        }
+      }
+
+      // Create CLAUDE.md files for different profiles
+      const claudeFiles = this.getClaudeMdFiles(config.profile, sourceRoot)
+
+      for (const claudeFile of claudeFiles) {
+        operations.push({
+          type: 'create',
+          path: claudeFile.target,
+          description: `Create ${path.basename(claudeFile.target)}`,
+          operation: `copy:${claudeFile.source}:${claudeFile.target}`,
+          retryable: true
+        })
+      }
+
+      return operations
+    } catch (error) {
+      debug.error('Error planning installation', error)
+      throw new Error(
+        `Failed to plan installation: ${(error as Error).message}`
+      )
+    }
   }
 
   async uninstall(_options: InstallOptions): Promise<void> {
@@ -489,6 +569,138 @@ class Installer {
 
   async update(_options: InstallOptions): Promise<void> {
     throw new Error('Method not implemented')
+  }
+
+  private shouldIncludeForProfile(dir: string, profile: string): boolean {
+    // Always include core .claude directories
+    if (dir.startsWith('.claude') && !dir.includes('protocol-assets')) {
+      return true
+    }
+
+    // Handle protocol-assets filtering by profile
+    if (dir.includes('protocol-assets')) {
+      if (profile === 'full') return true
+      if (profile === 'frontend' && dir.includes('/frontend')) return true
+      if (profile === 'backend' && dir.includes('/backend')) return true
+      if (dir.includes('/shared')) return true
+      return false
+    }
+
+    return true
+  }
+
+  private getClaudeMdFiles(
+    profile: string,
+    sourceRoot: string
+  ): Array<{ source: string; target: string }> {
+    const files: Array<{ source: string; target: string }> = []
+
+    // Ensure we're using the correct source root
+    const actualSourceRoot = sourceRoot
+
+    // Main CLAUDE.md
+    const mainClaudeMd = path.join(actualSourceRoot, '.claude', 'CLAUDE.md')
+    files.push({
+      source: mainClaudeMd,
+      target: path.join(process.cwd(), '.claude', 'CLAUDE.md')
+    })
+
+    // Profile-specific CLAUDE.md files
+    if (profile === 'frontend' || profile === 'full') {
+      const frontendClaudeMd = path.join(
+        sourceRoot,
+        '.claude',
+        'frontend',
+        'CLAUDE.md'
+      )
+      files.push({
+        source: frontendClaudeMd,
+        target: path.join(process.cwd(), '.claude', 'frontend', 'CLAUDE.md')
+      })
+    }
+
+    if (profile === 'backend' || profile === 'full') {
+      const backendClaudeMd = path.join(
+        sourceRoot,
+        '.claude',
+        'backend',
+        'CLAUDE.md'
+      )
+      files.push({
+        source: backendClaudeMd,
+        target: path.join(process.cwd(), '.claude', 'backend', 'CLAUDE.md')
+      })
+    }
+
+    // Shared CLAUDE.md
+    const sharedClaudeMd = path.join(
+      sourceRoot,
+      '.claude',
+      'shared',
+      'CLAUDE.md'
+    )
+    files.push({
+      source: sharedClaudeMd,
+      target: path.join(process.cwd(), '.claude', 'shared', 'CLAUDE.md')
+    })
+
+    return files.filter((f) => fs.existsSync(f.source))
+  }
+
+  private async executeOperation(
+    operation: InstallOperation,
+    _config: InstallConfig
+  ): Promise<void> {
+    const parts = operation.operation.split(':')
+    if (parts.length < 3) {
+      throw new Error(`Invalid operation format: ${operation.operation}`)
+    }
+
+    const action = parts[0]
+    const sourcePath = parts[1]
+    const targetPath = parts[2]
+
+    if (!action || !sourcePath || !targetPath) {
+      throw new Error(`Invalid operation format: ${operation.operation}`)
+    }
+
+    switch (action) {
+      case 'copy':
+        await this.copyPath(sourcePath, targetPath)
+        break
+      default:
+        throw new Error(`Unknown operation: ${action}`)
+    }
+  }
+
+  private async copyPath(
+    sourcePath: string,
+    targetPath: string
+  ): Promise<void> {
+    try {
+      // Ensure target directory exists
+      await fs.ensureDir(path.dirname(targetPath))
+
+      // Copy file or directory
+      const sourceStats = await fs.stat(sourcePath)
+
+      if (sourceStats.isDirectory()) {
+        await fs.copy(sourcePath, targetPath, {
+          overwrite: false,
+          errorOnExist: false
+        })
+      } else {
+        await fs.copy(sourcePath, targetPath, {
+          overwrite: false,
+          errorOnExist: false
+        })
+      }
+    } catch (error) {
+      debug.error(`Error copying ${sourcePath} to ${targetPath}`, error)
+      throw new Error(
+        `Failed to copy ${sourcePath} to ${targetPath}: ${(error as Error).message}`
+      )
+    }
   }
 }
 
