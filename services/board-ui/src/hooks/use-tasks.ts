@@ -19,12 +19,10 @@ export function useTasks(): UseTasksReturn {
   const errorTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
   const setErrorWithDelay = useCallback((errorMessage: string, delay: number = 1000) => {
-    // Clear any existing timeout
     if (errorTimeoutRef.current) {
       clearTimeout(errorTimeoutRef.current)
     }
-    
-    // Set error after delay to allow WebSocket updates to complete
+
     errorTimeoutRef.current = setTimeout(() => {
       setError(errorMessage)
     }, delay)
@@ -89,14 +87,12 @@ export function useTasks(): UseTasksReturn {
 
   const deleteTask = async (id: string) => {
     try {
-      clearError() // Clear any existing errors before deletion
+      clearError()
       await api.deleteTask(id)
-      // Don't update local state immediately - let WebSocket handle the update
-      // This prevents race conditions with the WebSocket refetch
       console.log('✅ Delete API call completed, WebSocket will update UI state')
     } catch (err) {
       const errorMessage = err instanceof ApiError ? err.message : 'Failed to delete task'
-      setErrorWithDelay(errorMessage, 0) // Show deletion errors immediately
+      setErrorWithDelay(errorMessage, 0)
       console.error('Error deleting task:', err)
       throw err
     }
@@ -104,8 +100,7 @@ export function useTasks(): UseTasksReturn {
 
   useEffect(() => {
     fetchTasks()
-    
-    // Cleanup timeout on unmount
+
     return () => {
       if (errorTimeoutRef.current) {
         clearTimeout(errorTimeoutRef.current)

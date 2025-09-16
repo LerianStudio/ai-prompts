@@ -48,7 +48,6 @@ export class TaskService {
   }
 
   async listTasks(filters = {}) {
-    // Optimized: Single JOIN query to get tasks and todos together (fixes N+1 pattern)
     let query = `
       SELECT 
         t.id,
@@ -193,7 +192,6 @@ export class TaskService {
       return this.getTask(taskId);
     }
 
-    // Add updated_at timestamp
     updateFields.push('updated_at = ?');
     params.push(now);
     params.push(taskId);
@@ -233,7 +231,6 @@ export class TaskService {
       return null;
     }
 
-    // Check if all todos are completed and update task status
     if (completed) {
       const pendingTodos = await this.dbManager.get(`
         SELECT COUNT(*) as count FROM todos 
@@ -244,7 +241,6 @@ export class TaskService {
         await this.updateTask(taskId, { status: 'completed' });
       }
     } else {
-      // If todo is marked as not completed, ensure task isn't marked as completed
       const task = await this.dbManager.get(`
         SELECT status FROM tasks WHERE id = ?
       `, [taskId]);
@@ -270,7 +266,6 @@ export class TaskService {
       return null;
     }
 
-    // Check if all todos are completed and update task status
     const pendingTodos = await this.dbManager.get(`
       SELECT COUNT(*) as count FROM todos 
       WHERE task_id = ? AND status = 'pending'
@@ -300,12 +295,10 @@ export class TaskService {
 
   async deleteTask(taskId) {
     return this.dbManager.transaction(async () => {
-      // First, delete all todos associated with the task
       await this.dbManager.run(`
         DELETE FROM todos WHERE task_id = ?
       `, [taskId]);
 
-      // Then delete the task itself
       const result = await this.dbManager.run(`
         DELETE FROM tasks WHERE id = ?
       `, [taskId]);

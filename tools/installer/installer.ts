@@ -3,7 +3,6 @@ import fs from 'fs-extra'
 import inquirer from 'inquirer'
 import cfonts from 'cfonts'
 import Table from 'cli-table3'
-// import chalk from 'chalk'
 
 import { theme, output } from './ui-theme'
 import { debug } from './debug'
@@ -62,16 +61,6 @@ class Installer {
       process.exit(1)
     })
   }
-
-  // private getProfilePatterns(profile: string): string[] {
-  //   const patterns: Record<string, string[]> = {
-  //     frontend: ['frontend/**', 'shared/**'],
-  //     backend: ['backend/**', 'shared/**'],
-  //     full: ['frontend/**', 'backend/**', 'shared/**']
-  //   }
-
-  //   return patterns[profile] || patterns['full'] || []
-  // }
 
   private showBanner(): void {
     try {

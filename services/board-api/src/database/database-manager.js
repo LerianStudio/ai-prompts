@@ -176,7 +176,6 @@ export class DatabaseManager {
     });
   }
 
-  // Transaction helper - simplified for sqlite3
   async transaction(fn) {
     await this.run('BEGIN TRANSACTION');
     try {
@@ -189,58 +188,33 @@ export class DatabaseManager {
     }
   }
 
-  /**
-   * Security: Check for dangerous SQL patterns in migration files
-   * @param {string} sql - SQL content to validate
-   * @returns {boolean} - True if dangerous patterns found
-   */
   containsDangerousSQLPatterns(sql) {
     const dangerousPatterns = [
-      // Database attachment/detachment
       /ATTACH\s+DATABASE/i,
       /DETACH\s+DATABASE/i,
-      
-      // Dangerous pragmas (only allow safe ones)
       /PRAGMA\s+(?!foreign_keys|journal_mode|table_info|database_list|compile_options)/i,
-      
-      // File system operations
       /\.import/i,
       /\.output/i,
       /\.shell/i,
       /\.system/i,
       /\.backup/i,
       /\.restore/i,
-      
-      // Extension loading
       /LOAD_EXTENSION/i,
-      
-      // System table access
       /sqlite_master/i,
       /sqlite_sequence/i,
       /sqlite_temp_master/i,
-      
-      // Potentially dangerous functions
       /load_extension\s*\(/i,
-      /char\s*\(/i, // Can be used for injection
-      /hex\s*\(/i,  // Can be used for obfuscation
-      
-      // File operations that could be dangerous
+      /char\s*\(/i,
+      /hex\s*\(/i,
       /readfile\s*\(/i,
       /writefile\s*\(/i,
-      
-      // Multiple statement separators (should be handled by parser)
-      /;\s*--/,  // Comment after statement
-      /;\s*\/\*/  // Block comment after statement
+      /;\s*--/,
+      /;\s*\/\*/
     ];
 
     return dangerousPatterns.some(pattern => pattern.test(sql));
   }
 
-  /**
-   * Security: Parse SQL more safely by handling comments and string literals
-   * @param {string} sql - SQL content to parse
-   * @returns {Array} - Array of SQL statements
-   */
   parseSQL(sql) {
     const statements = [];
     let current = '';
@@ -251,11 +225,10 @@ export class DatabaseManager {
     for (let i = 0; i < sql.length; i++) {
       const char = sql[i];
       const nextChar = sql[i + 1];
-      
-      // Handle comments
+
       if (!inString && char === '-' && nextChar === '-') {
         inComment = true;
-        i++; // Skip next char
+        i++;
         continue;
       }
       
@@ -266,10 +239,8 @@ export class DatabaseManager {
       }
       
       if (inComment) {
-        continue; // Skip comment content
+        continue;
       }
-      
-      // Handle string literals
       if (!inString && (char === '"' || char === "'")) {
         inString = true;
         stringChar = char;
@@ -278,18 +249,15 @@ export class DatabaseManager {
       }
       
       if (inString && char === stringChar) {
-        // Check for escaped quotes
         if (sql[i + 1] === stringChar) {
           current += char + char;
-          i++; // Skip next char
+          i++;
           continue;
         }
         inString = false;
         current += char;
         continue;
       }
-      
-      // Handle statement separators
       if (!inString && char === ';') {
         const statement = current.trim();
         if (statement) {
@@ -301,8 +269,6 @@ export class DatabaseManager {
       
       current += char;
     }
-    
-    // Add final statement if exists
     const finalStatement = current.trim();
     if (finalStatement) {
       statements.push(finalStatement);

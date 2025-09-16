@@ -43,27 +43,15 @@ export class TaskManagerTool {
     this.lastRequestTime = now;
   }
 
-  /**
-   * Validate and clean input strings with minimal sanitization
-   * Only removes actual security threats while preserving legitimate content
-   */
   validateAndCleanString(input, maxLength = 1000, fieldName = 'input') {
     if (typeof input !== 'string') {
       throw new ValidationError(fieldName, 'Input must be a string', typeof input);
     }
-    
-    // Only remove control characters that pose security risks
-    // Preserve legitimate punctuation, quotes, and special characters
     let cleaned = input
-      // Remove only dangerous control characters (keep newlines and tabs for formatting)
       .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
-      // Normalize Unicode to prevent bypass attempts
       .normalize('NFC')
-      // Clean up excessive whitespace but preserve intentional formatting
-      .replace(/\s{3,}/g, '  ') // Reduce 3+ spaces to 2
+      .replace(/\s{3,}/g, '  ')
       .trim();
-
-    // Check for dangerous script injection patterns (more targeted)
     if (this.containsScriptInjection(cleaned)) {
       throw new ValidationError(fieldName, 'Input contains potentially dangerous script patterns', cleaned.substring(0, 50));
     }
@@ -79,10 +67,6 @@ export class TaskManagerTool {
     return cleaned;
   }
 
-  /**
-   * Check for script injection patterns that could be dangerous in web contexts
-   * More targeted than previous implementation to avoid false positives
-   */
   containsScriptInjection(input) {
     const dangerousPatterns = [
       // Script protocols

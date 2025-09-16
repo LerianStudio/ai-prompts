@@ -8,7 +8,6 @@ import { createErrorResponse } from './utils/jsonrpc-errors.js';
 import { createLogger } from '../../lib/logger.js';
 import { validateConfig } from '../../lib/config.js';
 
-// Initialize logger and configuration
 const logger = createLogger('board-mcp-server');
 const config = validateConfig('board-mcp', logger);
 const taskManager = new TaskManagerTool(config.serviceUrl);
@@ -20,7 +19,6 @@ logger.info('MCP server initializing', {
   platform: process.platform
 });
 
-// Create MCP server
 const server = new Server({
   name: 'lerian-board',
   version: '1.0.0',
@@ -32,7 +30,6 @@ const server = new Server({
   }
 });
 
-// Define available tools
 const tools = [
   {
     name: 'createTask',
@@ -209,21 +206,16 @@ const tools = [
   }
 ];
 
-// Handle list tools request
 server.setRequestHandler(ListToolsRequestSchema, async () => {
   return { tools };
 });
 
-/**
- * Validate tool arguments against schema
- */
 function validateToolArguments(toolName, args) {
   const tool = tools.find(t => t.name === toolName);
   if (!tool) {
     throw new Error(`Tool ${toolName} not found`);
   }
 
-  // Basic validation - additional JSON Schema validation could be added here
   const schema = tool.inputSchema;
   const required = schema.required || [];
   
@@ -236,12 +228,10 @@ function validateToolArguments(toolName, args) {
   return true;
 }
 
-// Handle tool calls
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name, arguments: args } = request.params;
 
   try {
-    // Validate arguments against schema
     validateToolArguments(name, args);
     
     let result;
@@ -279,7 +269,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         throw new Error(`Unknown tool: ${name}`);
     }
 
-    // Check if the operation was successful
     if (result.success === false) {
       throw new Error(result.message || result.error || 'Operation failed');
     }
@@ -293,9 +282,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       ],
       data: result
     };
-    
+
   } catch (error) {
-    // Log errors with proper context
     logger.error(`MCP tool execution failed: ${name}`, {
       tool: name,
       error: error.message,
@@ -307,7 +295,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   }
 });
 
-// Graceful shutdown handler
 async function shutdown(signal) {
   logger.info(`Received ${signal}, shutting down gracefully...`);
   try {
@@ -320,7 +307,6 @@ async function shutdown(signal) {
   }
 }
 
-// Start the server
 async function main() {
   try {
     const transport = new StdioServerTransport();
@@ -330,14 +316,10 @@ async function main() {
       capabilities: Object.keys(server.capabilities || {}),
       toolCount: tools.length
     });
-    
-    // Comprehensive signal handlers
     const signals = ['SIGINT', 'SIGTERM', 'SIGHUP', 'SIGQUIT'];
     signals.forEach(signal => {
       process.on(signal, () => shutdown(signal));
     });
-    
-    // Handle uncaught exceptions
     process.on('uncaughtException', (error) => {
       logger.fatal('Uncaught exception', error);
       shutdown('UNCAUGHT_EXCEPTION');

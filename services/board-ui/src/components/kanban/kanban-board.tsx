@@ -34,7 +34,6 @@ export function KanbanBoard({
   const inProgressTasks = tasks.filter(task => task.status === 'in_progress')
   const codeReviewTasks = tasks.filter(task => task.status === 'code_review')
   const completedTasks = tasks.filter(task => task.status === 'completed')
-  // Note: Failed tasks are filtered out from UI display but backend support remains intact
 
   const handleTaskClick = (task: Task) => {
     setSelectedTask(task)
@@ -68,7 +67,6 @@ export function KanbanBoard({
       setTaskToDelete(null)
     } catch (error) {
       console.error('Failed to delete task:', error)
-      // Error is already handled in the hook
     } finally {
       setDeleteLoading(false)
     }
@@ -76,7 +74,6 @@ export function KanbanBoard({
 
   return (
     <div className="min-h-screen" style={{backgroundColor: '#f4f4f5'}}>
-      {/* Header */}
       <header className="sticky top-0 z-50 w-full border-b border-zinc-800/20 shadow-sm" style={{backgroundColor: '#feed02'}}>
         <div className="container mx-auto max-w-7xl flex h-32 items-center justify-between px-6">
           <div>
@@ -104,7 +101,6 @@ export function KanbanBoard({
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="flex-1 px-6 pt-12 pb-6">
         <div className="container mx-auto max-w-7xl">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 h-full">
@@ -144,7 +140,6 @@ export function KanbanBoard({
         </div>
       </main>
 
-      {/* Dialogs */}
       <CreateTaskDialog
         open={createDialogOpen}
         onOpenChange={setCreateDialogOpen}

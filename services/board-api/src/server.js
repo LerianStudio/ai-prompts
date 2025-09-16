@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { TaskService } from './services/task-service.js';
 import { DatabaseManager } from './database/database-manager.js';
-import { createLogger, requestLogger } from '../../lib/logger.js';
+import { createLogger } from '../../lib/logger.js';
 import { validateConfig } from '../../lib/config.js';
 import { 
   createErrorHandler, 
@@ -275,7 +275,6 @@ class TaskManagementServer {
         return res.status(404).json({ error: 'Task not found' });
       }
 
-      // Broadcast task update event
       this.broadcast({
         type: 'task_updated',
         task: task,
@@ -294,7 +293,6 @@ class TaskManagementServer {
     try {
       const { id } = req.params;
       
-      // Get task before deletion for broadcast
       const taskToDelete = await this.taskService.getTask(id);
       
       const deleted = await this.taskService.deleteTask(id);
@@ -303,7 +301,6 @@ class TaskManagementServer {
         return res.status(404).json({ error: 'Task not found' });
       }
 
-      // Broadcast task deletion event
       this.broadcast({
         type: 'task_deleted',
         taskId: id,
@@ -353,7 +350,6 @@ class TaskManagementServer {
   }
 
   async start() {
-    // Initialize database (run migrations)
     await this.db.initialize();
     
     this.server.listen(this.port, this.host, () => {
@@ -376,7 +372,6 @@ class TaskManagementServer {
   }
 }
 
-// Start server if run directly
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const server = new TaskManagementServer();
   
