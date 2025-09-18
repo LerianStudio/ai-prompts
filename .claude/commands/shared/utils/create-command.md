@@ -1,80 +1,104 @@
 ---
-allowed-tools: Write(*), Read(*), LS(*)
+allowed-tools: Write(*), Read(*), Glob(*)
 description: Create a new custom command file with proper Anthropic slash command structure
-argument-hint: --name=<command-name> --description=<brief-description>
+argument-hint: <command-name> [description]
 ---
 
-# /shared:utils:create-command
+# Create Custom Slash Command
 
-<instructions>
 Create a new custom command file following official Anthropic slash command standards.
-</instructions>
 
-<context>
-This command helps create properly structured slash commands with correct frontmatter, tool permissions, and documentation following official standards.
-</context>
+## Command Location
 
-<process>
+**Project commands**: `.claude/commands/shared/` (shared with team, shows "(project:shared)" in help)
 
-### 1. Gather Command Information
+## Command Structure
 
-- Command name (kebab-case format) via --name flag
-- Brief description for frontmatter via --description flag
-- Required tools the command will use
-- Expected arguments and hints
-- Target scope (project vs personal)
+Commands are named after their filename (without `.md` extension). Subdirectories are for organization only and appear in the description as "(project:subdirectory)" but don't affect the command name.
 
-### 2. Choose Command Features
+### Frontmatter Options
 
-**Arguments**: Use `$ARGUMENTS` placeholder for dynamic values
-**Bash Execution**: Use ! prefix for bash commands (requires Bash tool permission)
-**File References**: Use @ prefix to include file contents
+| Field           | Purpose                     | Example                                         |
+| --------------- | --------------------------- | ----------------------------------------------- |
+| `allowed-tools` | Tools the command can use   | `Bash(git add:*), Write(*), Read(*)`            |
+| `argument-hint` | User guidance for arguments | `[issue-number]` or `add [tag] \| remove [tag]` |
+| `description`   | Brief command description   | `Create a git commit`                           |
+
+### Command Features
+
+**Arguments**: Use `$ARGUMENTS` placeholder for user input
+**Bash execution**: Use exclamation prefix (requires Bash tool permission)
+**File references**: Use `@` prefix to include file contents
 **Namespacing**: Organize in subdirectories for better organization
 
-### 3. Create Command File
+## Template Examples
 
-Standard template with official frontmatter options:
+### Basic Command
 
-````markdown
+```markdown
 ---
-allowed-tools: Tool1(*), Tool2(*), Tool3(*)
-description: Brief description of what this command does
-argument-hint: --param=<required-param> [--optional=<optional-param>]
+description: Analyze code for performance issues
+argument-hint: [file-path]
 ---
 
-# Command Name
+Analyze the code at $ARGUMENTS for performance issues and suggest optimizations.
+```
 
-Brief description of what this command does.
+### Command with Bash Execution
 
-## Usage
+```markdown
+---
+allowed-tools: Bash(git status:*), Bash(git diff:*)
+description: Create a git commit
+argument-hint: [commit-message]
+---
 
-Explain how to use the command and what it accomplishes.
+## Context
 
-## Process
+- Current git status: !`git status`
+- Current changes: !`git diff HEAD`
 
-1. **Step One**
-   - Description of what happens
-   - Tools used and why
+## Task
 
-2. **Step Two**
-   - Description of next action
-   - Expected outputs
+Create a commit with message: $ARGUMENTS
+```
 
-## Examples
+### Command with File References
+
+```markdown
+---
+allowed-tools: Read(*), Write(*)
+description: Compare two files
+argument-hint: <file1> <file2>
+---
+
+Compare these files and highlight differences:
+
+File 1: @$ARGUMENTS[0]
+File 2: @$ARGUMENTS[1]
+```
+
+## Usage Examples
 
 ```bash
-/shared:utils:command-name --param=example-argument
+# Create basic optimization command
+echo "Analyze this code for performance issues: @$ARGUMENTS" > .claude/commands/shared/optimize.md
+
+# Create organized command in subdirectory
+mkdir -p .claude/commands/shared/frontend
+echo "Review React component: @$ARGUMENTS" > .claude/commands/shared/frontend/review-component.md
+
+# Command becomes /review-component with description "(project:shared:frontend)"
 ```
-````
 
-Expected output or behavior description.
+## Validation Checklist
+
+- [ ] Frontmatter syntax is valid YAML
+- [ ] Tool permissions match command functionality
+- [ ] Argument hint is clear and helpful
+- [ ] File saved to `.claude/commands/shared/` directory
+- [ ] Command name follows kebab-case convention
 
 ```
 
-### 4. Save and Validate
-- Save to `.claude/commands/[subdirectory]/[command-name].md`
-- Validate frontmatter syntax
-- Test argument hint formatting
-- Confirm tool permissions align with functionality
-</process>
 ```
