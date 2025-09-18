@@ -30,6 +30,7 @@ export function CreateTaskForm({
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [subtasks, setSubtasks] = useState<SubtaskItem[]>([])
+  const [agentPrompt, setAgentPrompt] = useState('')
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -41,19 +42,22 @@ export function CreateTaskForm({
     onCreateTask({
       title: title.trim(),
       description: description.trim(),
-      todos
+      todos,
+      agent_prompt: agentPrompt.trim() || undefined
     })
 
     // Reset form
     setTitle('')
     setDescription('')
     setSubtasks([])
+    setAgentPrompt('')
   }
 
   const handleCancel = () => {
     setTitle('')
     setDescription('')
     setSubtasks([])
+    setAgentPrompt('')
     onCancel?.()
   }
 
@@ -102,10 +106,27 @@ export function CreateTaskForm({
             <Label className="text-sm font-semibold text-zinc-700">
               Subtasks
             </Label>
-            <SubtaskChecklist 
+            <SubtaskChecklist
               subtasks={subtasks}
               onSubtasksChange={setSubtasks}
             />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="agent_prompt" className="text-sm font-semibold text-zinc-700">
+              Agent Prompt (Optional)
+            </Label>
+            <Textarea
+              id="agent_prompt"
+              value={agentPrompt}
+              onChange={(e) => setAgentPrompt(e.target.value)}
+              placeholder="Enter Claude Code prompt to execute for this task..."
+              rows={3}
+              className="border-zinc-200 focus:bg-white focus:border-accent focus-visible:ring-0 focus-visible:ring-offset-0 transition-colors resize-y min-h-[80px]"
+            />
+            <p className="text-xs text-zinc-500">
+              If provided, this task can be executed automatically using Claude Code
+            </p>
           </div>
         </CardContent>
         

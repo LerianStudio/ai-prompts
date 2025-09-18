@@ -10,28 +10,28 @@ interface StatusBadgeProps {
 export function StatusBadge({ status, className }: StatusBadgeProps) {
   const variants = {
     pending: {
-      className: "!bg-orange-500/10 dark:!bg-orange-500/20 !text-orange-500 !border-orange-500 shadow-none rounded-full",
-      dotColor: "bg-orange-500",
+      className: "!bg-amber-100 !text-amber-800 !border-amber-300 shadow-none rounded-full",
+      dotColor: "bg-amber-600",
       label: "Pending"
     },
     in_progress: {
-      className: "!bg-blue-500/10 dark:!bg-blue-500/20 !text-blue-500 !border-blue-500 shadow-none rounded-full",
-      dotColor: "bg-blue-500",
+      className: "!bg-blue-100 !text-blue-800 !border-blue-300 shadow-none rounded-full",
+      dotColor: "bg-blue-600",
       label: "In Progress"
     },
     code_review: {
-      className: "!bg-purple-500/10 dark:!bg-purple-500/20 !text-purple-500 !border-purple-500 shadow-none rounded-full",
-      dotColor: "bg-purple-500",
+      className: "!bg-purple-100 !text-purple-800 !border-purple-300 shadow-none rounded-full",
+      dotColor: "bg-purple-600",
       label: "Code Review"
     },
     completed: {
-      className: "!bg-green-500/10 dark:!bg-green-500/20 !text-green-500 !border-green-500 shadow-none rounded-full",
-      dotColor: "bg-green-500",
+      className: "!bg-emerald-100 !text-emerald-800 !border-emerald-300 shadow-none rounded-full",
+      dotColor: "bg-emerald-600",
       label: "Completed"
     },
     failed: {
-      className: "!bg-red-500/10 dark:!bg-red-500/20 !text-red-500 !border-red-500 shadow-none rounded-full",
-      dotColor: "bg-red-500",
+      className: "!bg-red-100 !text-red-800 !border-red-300 shadow-none rounded-full",
+      dotColor: "bg-red-600",
       label: "Failed"
     }
   };

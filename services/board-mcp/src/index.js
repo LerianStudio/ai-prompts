@@ -1,179 +1,151 @@
 #!/usr/bin/env node
 
-import { TaskManagerTool } from './board-tool.js';
-
-// Initialize the tool with configurable base URL
-const SERVICE_URL = process.env.TASK_SERVICE_URL || 'http://localhost:3020';
-const taskManager = new TaskManagerTool(SERVICE_URL);
+import { MCPServer } from './mcpServer.js';
+import { TaskTools } from './tools/taskTools.js';
 
 /**
- * MCP Tool Functions for Task Management
- * These functions will be called by AI agents through the MCP protocol
+ * Board MCP Server - Entry point
+ * Provides Model Context Protocol interface for Claude Code task management
  */
+
+// Configuration from environment variables
+const CONFIG = {
+  boardApiUrl: process.env.BOARD_API_URL || 'http://localhost:3001',
+  mcpPort: parseInt(process.env.MCP_SERVER_PORT) || 3002,
+  mcpHost: process.env.MCP_HOST || 'localhost'
+};
 
 /**
- * Creates a new task with todos
- * @param {string} title - Task title
- * @param {string} description - Task description
- * @param {string[]} todos - Array of todo items
- * @returns {Promise<object>} Task creation result
+ * Create and configure the MCP server
  */
-export async function createTask(title, description, todos = []) {
-  if (!title) {
-    return {
-      success: false,
-      error: 'Title is required',
-      message: 'Task title cannot be empty'
-    };
-  }
+async function createServer() {
+  const server = new MCPServer({
+    port: CONFIG.mcpPort,
+    host: CONFIG.mcpHost
+  });
 
-  return await taskManager.createTask(title, description, todos);
+  // Create context for tools
+  const context = {
+    boardApiUrl: CONFIG.boardApiUrl,
+    broadcast: (event, data) => server.broadcast(event, data),
+    config: CONFIG
+  };
+
+  // Register task management tools
+  server.registerTools(TaskTools);
+
+  // Handle server events
+  server.on('ready', () => {
+    console.log('✅ Board MCP Server ready');
+    console.log(`🔗 Board API: ${CONFIG.boardApiUrl}`);
+    console.log(`📡 MCP Server: ${CONFIG.mcpHost}:${CONFIG.mcpPort}`);
+    console.log('🛠️  Registered tools:', Object.keys(TaskTools.getTools()).join(', '));
+  });
+
+  server.on('error', (error) => {
+    console.error('❌ MCP Server error:', error);
+  });
+
+  // Initialize server
+  await server.initialize(context);
+
+  return server;
 }
 
 /**
- * Gets a task by ID
- * @param {string} taskId - Task ID
- * @returns {Promise<object>} Task data
+ * Graceful shutdown handler
  */
-export async function getTask(taskId) {
-  if (!taskId) {
-    return {
-      success: false,
-      error: 'Task ID is required',
-      message: 'Task ID cannot be empty'
-    };
-  }
+function setupGracefulShutdown(server) {
+  const shutdown = async (signal) => {
+    console.log(`\n🛑 Received ${signal}, shutting down gracefully...`);
 
-  return await taskManager.getTask(taskId);
+    try {
+      await server.close();
+      console.log('✅ Server closed successfully');
+      process.exit(0);
+    } catch (error) {
+      console.error('❌ Error during shutdown:', error);
+      process.exit(1);
+    }
+  };
+
+  process.on('SIGTERM', () => shutdown('SIGTERM'));
+  process.on('SIGINT', () => shutdown('SIGINT'));
+
+  // Handle uncaught exceptions
+  process.on('uncaughtException', (error) => {
+    console.error('❌ Uncaught exception:', error);
+    process.exit(1);
+  });
+
+  process.on('unhandledRejection', (reason, promise) => {
+    console.error('❌ Unhandled rejection at:', promise, 'reason:', reason);
+    process.exit(1);
+  });
 }
 
 /**
- * Updates task status
- * @param {string} taskId - Task ID
- * @param {string} status - New status (pending, in_progress, completed, failed)
- * @returns {Promise<object>} Update result
+ * Health check endpoint for monitoring
  */
-export async function updateTaskStatus(taskId, status) {
-  if (!taskId) {
-    return {
-      success: false,
-      error: 'Task ID is required',
-      message: 'Task ID cannot be empty'
-    };
-  }
+function setupHealthCheck(server) {
+  // Simple HTTP server for health checks
+  import('http').then(http => {
+    const healthServer = http.createServer((req, res) => {
+      if (req.url === '/health') {
+        const status = server.getStatus();
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+          status: 'healthy',
+          timestamp: new Date().toISOString(),
+          server: status
+        }));
+      } else {
+        res.writeHead(404);
+        res.end('Not Found');
+      }
+    });
 
-  if (!status) {
-    return {
-      success: false,
-      error: 'Status is required',
-      message: 'Status cannot be empty'
-    };
-  }
-
-  return await taskManager.updateTaskStatus(taskId, status);
+    const healthPort = CONFIG.mcpPort + 1;
+    healthServer.listen(healthPort, CONFIG.mcpHost, () => {
+      console.log(`💊 Health check available at http://${CONFIG.mcpHost}:${healthPort}/health`);
+    });
+  });
 }
 
 /**
- * Completes a todo item by content
- * @param {string} taskId - Task ID
- * @param {string} todoContent - Todo item content to complete
- * @returns {Promise<object>} Completion result
+ * Main entry point
  */
-export async function completeTodoItem(taskId, todoContent) {
-  if (!taskId) {
-    return {
-      success: false,
-      error: 'Task ID is required',
-      message: 'Task ID cannot be empty'
-    };
-  }
+async function main() {
+  try {
+    console.log('🚀 Starting Board MCP Server...');
 
-  if (!todoContent) {
-    return {
-      success: false,
-      error: 'Todo content is required',
-      message: 'Todo content cannot be empty'
-    };
-  }
+    // Validate configuration
+    if (!CONFIG.boardApiUrl) {
+      throw new Error('BOARD_API_URL environment variable is required');
+    }
 
-  return await taskManager.completeTodoItem(taskId, todoContent);
+    // Create and start server
+    const server = await createServer();
+
+    // Setup health monitoring
+    setupHealthCheck(server);
+
+    // Setup graceful shutdown
+    setupGracefulShutdown(server);
+
+    console.log('🎉 Board MCP Server is running successfully!');
+    console.log('💡 To use with Claude Code:');
+    console.log('   1. Ensure .mcp.json contains this server configuration');
+    console.log('   2. Run: claude "List my tasks"');
+    console.log('   3. Claude Code will automatically discover and use the task management tools');
+
+  } catch (error) {
+    console.error('❌ Failed to start Board MCP Server:', error);
+    process.exit(1);
+  }
 }
 
-/**
- * Lists tasks with optional filters
- * @param {object} filters - Filter options (status, project_id)
- * @returns {Promise<object>} List of tasks
- */
-export async function listTasks(filters = {}) {
-  return await taskManager.listTasks(filters);
-}
-
-/**
- * Deletes a task by ID
- * @param {string} taskId - Task ID
- * @returns {Promise<object>} Deletion result
- */
-export async function deleteTask(taskId) {
-  if (!taskId) {
-    return {
-      success: false,
-      error: 'Task ID is required',
-      message: 'Task ID cannot be empty'
-    };
-  }
-
-  return await taskManager.deleteTask(taskId);
-}
-
-/**
- * Health check for the task management service
- * @returns {Promise<object>} Service health status
- */
-export async function healthCheck() {
-  return await taskManager.healthCheck();
-}
-
-// CLI interface for testing
-if (process.argv[1] === new URL(import.meta.url).pathname) {
-  const command = process.argv[2];
-  const args = process.argv.slice(3);
-
-  switch (command) {
-    case 'create':
-      const [title, description, ...todos] = args;
-      const result = await createTask(title, description, todos);
-      console.log(JSON.stringify(result, null, 2));
-      break;
-
-    case 'get':
-      const [taskId] = args;
-      const task = await getTask(taskId);
-      console.log(JSON.stringify(task, null, 2));
-      break;
-
-    case 'delete':
-      const [deleteTaskId] = args;
-      const deleteResult = await deleteTask(deleteTaskId);
-      console.log(JSON.stringify(deleteResult, null, 2));
-      break;
-
-    case 'list':
-      const tasks = await listTasks();
-      console.log(JSON.stringify(tasks, null, 2));
-      break;
-
-    case 'health':
-      const health = await healthCheck();
-      console.log(JSON.stringify(health, null, 2));
-      break;
-
-    default:
-      console.log('Usage:');
-      console.log('  node src/index.js create "Task Title" "Description" "Todo 1" "Todo 2"');
-      console.log('  node src/index.js get <task-id>');
-      console.log('  node src/index.js delete <task-id>');
-      console.log('  node src/index.js list');
-      console.log('  node src/index.js health');
-      break;
-  }
+// Start the server if this file is run directly
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main();
 }

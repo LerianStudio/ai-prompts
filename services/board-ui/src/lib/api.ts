@@ -1,6 +1,7 @@
 import { Task, CreateTaskInput } from '@/types'
+import { environment } from '@/config/environment'
 
-const API_BASE = '/api'
+const API_BASE = `${environment.apiBaseUrl}/api`
 
 export class ApiError extends Error {
   constructor(message: string, public status: number) {
@@ -69,4 +70,20 @@ export const api = {
       method: 'PUT',
       body: JSON.stringify({ completed }),
     }),
+
+  // Execute agent for a task
+  executeAgent: (taskId: string, agentPrompt?: string): Promise<{ success: boolean; message: string; execution_status: string }> =>
+    fetchApi<{ success: boolean; message: string; execution_status: string }>(`/tasks/${taskId}/execute-agent`, {
+      method: 'POST',
+      body: JSON.stringify({ agent_prompt: agentPrompt }),
+    }),
+
+  // Get execution status for a task
+  getExecutionStatus: (taskId: string): Promise<{
+    execution_status: string;
+    execution_log?: string;
+    execution_started_at?: string;
+    execution_completed_at?: string;
+  }> =>
+    fetchApi(`/tasks/${taskId}/execution-status`),
 }

@@ -9,7 +9,7 @@ import { AlertCircle, Loader2, RefreshCw } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 
 function App() {
-  const { tasks, loading, error, createTask, updateTask, deleteTask, refetch } = useTasks()
+  const { tasks, loading, error, createTask, updateTask, deleteTask, refetch, executeAgent } = useTasks()
   
   // Add WebSocket connection inline
   const wsRef = useRef<WebSocket | null>(null)
@@ -37,7 +37,13 @@ function App() {
           console.log('📨 WebSocket message:', message)
           
           // Refresh tasks when we get real-time updates
-          if (message.type === 'task_created' || message.type === 'task_updated' || message.type === 'task_deleted') {
+          if (message.type === 'task_created' ||
+              message.type === 'task_updated' ||
+              message.type === 'task_deleted' ||
+              message.type === 'agent_execution_started' ||
+              message.type === 'agent_execution_running' ||
+              message.type === 'agent_execution_completed' ||
+              message.type === 'agent_execution_failed') {
             console.log('🔄 Refreshing tasks due to WebSocket update:', message.type)
             void refetch()
           }
@@ -114,11 +120,12 @@ function App() {
       <TooltipProvider>
         <div className="min-h-screen bg-zinc-50">
           <TaskErrorBoundary>
-            <KanbanBoard 
+            <KanbanBoard
               tasks={tasks}
               onTaskCreate={createTask}
               onTaskUpdate={updateTask}
               onTaskDelete={deleteTask}
+              onExecuteAgent={executeAgent}
             />
           </TaskErrorBoundary>
         </div>

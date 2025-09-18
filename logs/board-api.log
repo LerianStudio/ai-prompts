@@ -1,0 +1,87 @@
+
+> @lerian-protocol/board-api@1.0.0 dev
+> node -r dotenv/config src/server.js dotenv_config_path=../../.env.dev
+
+All migrations applied successfully
+[32mINFO[39m [2025-09-18 16:34:04] (board-executor): [36m[board-executor] Board Executor Service initialized[39m
+    [35mservice[39m: "board-executor"
+    [35mhasWSManager[39m: true
+[32mINFO[39m [2025-09-18 16:34:04] (board-api-server): [36m[board-api] Configuration loaded successfully[39m
+    [35mservice[39m: "board-api"
+    [35menvironment[39m: "development"
+    [35mlogLevel[39m: "info"
+    [35mconfigKeys[39m: [
+      "NODE_ENV",
+      "LOG_LEVEL",
+      "LOG_DIR",
+      "TASK_SERVICE_URL",
+      "TASK_SERVICE_HOST",
+      "BOARD_EXECUTOR_HOST",
+      "TASK_SERVICE_PORT",
+      "BOARD_EXECUTOR_PORT",
+      "DB_HOST",
+      "DB_PORT",
+      "DB_NAME",
+      "DB_USER",
+      "ALLOWED_ORIGINS",
+      "DB_CONNECTION_POOL_SIZE",
+      "REQUEST_TIMEOUT",
+      "serviceName",
+      "host",
+      "port",
+      "database"
+    ]
+[32mINFO[39m [2025-09-18 16:34:04] (board-api-server): [36m[board-api-server] Task Management Service started[39m
+    [35mservice[39m: "board-api-server"
+    [35mhttpUrl[39m: "http://localhost:3021"
+    [35mwsUrl[39m: "ws://localhost:3021"
+    [35menvironment[39m: "development"
+[32mINFO[39m [2025-09-18 16:34:04] (database-manager): [36m[database-manager] Initializing PostgreSQL database[39m
+    [35mservice[39m: "database-manager"
+    [35mhost[39m: "localhost"
+    [35mport[39m: 5432
+    [35mdatabase[39m: "lerian_protocol"
+    [35muser[39m: "board_user"
+[32mINFO[39m [2025-09-18 16:34:04] (database-manager): [36m[database-manager] Database connection established[39m
+    [35mservice[39m: "database-manager"
+[32mINFO[39m [2025-09-18 16:34:04] (database-manager): [36m[database-manager] Database operation: run[39m
+    [35mservice[39m: "database-manager"
+    [35moperation[39m: "run"
+    [35mduration_ms[39m: 1
+    [35msuccess[39m: true
+[32mINFO[39m [2025-09-18 16:34:04] (database-manager): [36m[database-manager] Database operation: all[39m
+    [35mservice[39m: "database-manager"
+    [35moperation[39m: "all"
+    [35mduration_ms[39m: 6
+    [35msuccess[39m: true
+[32mINFO[39m [2025-09-18 16:34:04] (database-manager): [36m[database-manager] Database initialized successfully[39m
+    [35mservice[39m: "database-manager"
+    [35mhost[39m: "localhost"
+    [35mdatabase[39m: "lerian_protocol"
+    [35mfeatures[39m: [
+      "connection_pool",
+      "migrations"
+    ]
+[32mINFO[39m [2025-09-18 16:34:04] (session-bridge): [36m[session-bridge] Session Bridge initialized[39m
+    [35mservice[39m: "session-bridge"
+    [35msessionDirectory[39m: "/home/gc4str0/Documents/Lerian/ai-prompts/services/board-api/.claude-sessions"
+    [35mpollingInterval[39m: 1000
+[32mINFO[39m [2025-09-18 16:34:04] (claude-executor): [36m[claude-executor] Claude Code Executor initialized[39m
+    [35mservice[39m: "claude-executor"
+    [35mworkingDirectory[39m: "/home/gc4str0/Documents/Lerian/ai-prompts/services/board-api"
+    [35msessionId[39m: "main"
+    [35museCli[39m: true
+[32mINFO[39m [2025-09-18 16:34:04] (claude-cli-manager): [36m[claude-cli-manager] Claude CLI Manager initialized[39m
+    [35mservice[39m: "claude-cli-manager"
+    [35mworkingDirectory[39m: "/home/gc4str0/Documents/Lerian/ai-prompts/services/board-api"
+    [35mmaxConcurrentSessions[39m: 5
+[32mINFO[39m [2025-09-18 16:34:07] (database-manager): [36m[database-manager] Database operation: all[39m
+    [35mservice[39m: "database-manager"
+    [35moperation[39m: "all"
+    [35mduration_ms[39m: 7
+    [35msuccess[39m: true
+[32mINFO[39m [2025-09-18 16:34:13] (database-manager): [36m[database-manager] Database operation: all[39m
+    [35mservice[39m: "database-manager"
+    [35moperation[39m: "all"
+    [35mduration_ms[39m: 1
+    [35msuccess[39m: true

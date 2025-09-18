@@ -8,6 +8,7 @@ interface DefaultsType {
   retries: number
   getDirectories: (sourceRoot: string) => Promise<string[]>
   discoverProtocolAssets: (sourceRoot: string) => Promise<string[]>
+  getRootFiles: (sourceRoot: string) => Promise<string[]>
 }
 
 export const DEFAULTS: DefaultsType = {
@@ -58,5 +59,17 @@ export const DEFAULTS: DefaultsType = {
     }
 
     return directories
+  },
+
+  async getRootFiles(sourceRoot: string): Promise<string[]> {
+    const files: string[] = []
+
+    // Check for .mcp.json file
+    const mcpJsonPath = path.join(sourceRoot, '.mcp.json')
+    if (await fs.pathExists(mcpJsonPath)) {
+      files.push('.mcp.json')
+    }
+
+    return files
   }
 }

@@ -5,6 +5,7 @@ import { KanbanColumn } from './kanban-column'
 import { CreateTaskDialog } from './create-task-dialog'
 import { TaskDetailDialog } from './task-detail-dialog'
 import { DeleteConfirmationDialog } from './delete-confirmation-dialog'
+import { ExecutionResultsModal } from '../modals/execution-results-modal'
 import { Task, CreateTaskInput } from '@/types'
 import { Plus } from 'lucide-react'
 
@@ -13,21 +14,25 @@ interface KanbanBoardProps {
   onTaskCreate: (task: CreateTaskInput) => void
   onTaskUpdate: (id: string, updates: Partial<Task>) => void
   onTaskDelete: (id: string) => void
+  onExecuteAgent?: (taskId: string) => void
   loading?: boolean
 }
 
-export function KanbanBoard({ 
-  tasks, 
-  onTaskCreate, 
-  onTaskUpdate, 
+export function KanbanBoard({
+  tasks,
+  onTaskCreate,
+  onTaskUpdate,
   onTaskDelete,
+  onExecuteAgent,
   loading = false
 }: KanbanBoardProps) {
   const [createDialogOpen, setCreateDialogOpen] = useState(false)
   const [detailDialogOpen, setDetailDialogOpen] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [resultsModalOpen, setResultsModalOpen] = useState(false)
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [taskToDelete, setTaskToDelete] = useState<Task | null>(null)
+  const [taskForResults, setTaskForResults] = useState<Task | null>(null)
   const [deleteLoading, setDeleteLoading] = useState(false)
 
   const pendingTasks = tasks.filter(task => task.status === 'pending')
@@ -59,7 +64,7 @@ export function KanbanBoard({
 
   const handleDeleteConfirm = async () => {
     if (!taskToDelete) return
-    
+
     try {
       setDeleteLoading(true)
       await onTaskDelete(taskToDelete.id)
@@ -70,6 +75,11 @@ export function KanbanBoard({
     } finally {
       setDeleteLoading(false)
     }
+  }
+
+  const handleViewResults = (task: Task) => {
+    setTaskForResults(task)
+    setResultsModalOpen(true)
   }
 
   return (
@@ -111,6 +121,8 @@ export function KanbanBoard({
               color="pending"
               onTaskClick={handleTaskClick}
               onTaskDelete={handleDeleteClick}
+              onExecuteAgent={onExecuteAgent}
+              onViewResults={handleViewResults}
             />
             <KanbanColumn
               id="in_progress"
@@ -119,6 +131,8 @@ export function KanbanBoard({
               color="progress"
               onTaskClick={handleTaskClick}
               onTaskDelete={handleDeleteClick}
+              onExecuteAgent={onExecuteAgent}
+              onViewResults={handleViewResults}
             />
             <KanbanColumn
               id="code_review"
@@ -127,6 +141,8 @@ export function KanbanBoard({
               color="review"
               onTaskClick={handleTaskClick}
               onTaskDelete={handleDeleteClick}
+              onExecuteAgent={onExecuteAgent}
+              onViewResults={handleViewResults}
             />
             <KanbanColumn
               id="completed"
@@ -135,6 +151,8 @@ export function KanbanBoard({
               color="completed"
               onTaskClick={handleTaskClick}
               onTaskDelete={handleDeleteClick}
+              onExecuteAgent={onExecuteAgent}
+              onViewResults={handleViewResults}
             />
           </div>
         </div>
@@ -162,6 +180,17 @@ export function KanbanBoard({
         onConfirm={handleDeleteConfirm}
         loading={deleteLoading}
       />
+
+      {taskForResults && (
+        <ExecutionResultsModal
+          task={taskForResults}
+          isOpen={resultsModalOpen}
+          onClose={() => {
+            setResultsModalOpen(false)
+            setTaskForResults(null)
+          }}
+        />
+      )}
     </div>
   )
 }

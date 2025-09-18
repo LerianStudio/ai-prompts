@@ -5,15 +5,19 @@
   "main": "src/server.js",
   "type": "module",
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "node --watch src/server.js",
+    "start": "node -r dotenv/config src/server.js dotenv_config_path=../../.env.dev",
+    "dev": "node -r dotenv/config src/server.js dotenv_config_path=../../.env.dev",
+    "dev-with-db": "node -r dotenv/config src/server.js dotenv_config_path=../../.env.dev",
     "test": "node --test tests/*.test.js",
     "migrate": "node src/migrate.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
     "express": "^4.18.0",
-    "sqlite3": "^5.1.0",
+    "pg": "^8.11.3",
+    "pino": "^8.16.0",
+    "pino-pretty": "^10.2.0",
     "uuid": "^9.0.0",
     "ws": "^8.18.3"
   },

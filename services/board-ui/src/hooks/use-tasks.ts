@@ -9,6 +9,7 @@ interface UseTasksReturn {
   createTask: (task: CreateTaskInput) => Promise<void>
   updateTask: (id: string, updates: Partial<Task>) => Promise<void>
   deleteTask: (id: string) => Promise<void>
+  executeAgent: (taskId: string) => Promise<void>
   refetch: () => Promise<void>
 }
 
@@ -98,6 +99,20 @@ export function useTasks(): UseTasksReturn {
     }
   }
 
+  const executeAgent = async (taskId: string) => {
+    try {
+      setError(null)
+      const result = await api.executeAgent(taskId)
+      console.log('✅ Agent execution started:', result)
+      // WebSocket will handle real-time updates of execution status
+    } catch (err) {
+      const errorMessage = err instanceof ApiError ? err.message : 'Failed to execute agent'
+      setError(errorMessage)
+      console.error('Error executing agent:', err)
+      throw err
+    }
+  }
+
   useEffect(() => {
     fetchTasks()
 
@@ -115,6 +130,7 @@ export function useTasks(): UseTasksReturn {
     createTask,
     updateTask,
     deleteTask,
+    executeAgent,
     refetch: fetchTasks,
   }
 }

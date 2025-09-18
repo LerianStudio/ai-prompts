@@ -9,14 +9,16 @@ import { TaskService } from './services/task-service.js';
 import { DatabaseManager } from './database/database-manager.js';
 import { createLogger } from '../../lib/logger.js';
 import { validateConfig } from '../../lib/config.js';
-import { 
-  createErrorHandler, 
-  asyncHandler, 
-  ValidationError, 
+import { createExecutionRoutes } from './routes/execution.js';
+// Claude executor functionality is now integrated directly
+import {
+  createErrorHandler,
+  asyncHandler,
+  ValidationError,
   NotFoundError,
   validateRequired,
   validateLength,
-  validateType 
+  validateType
 } from '../../lib/utils/error-handler.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -32,7 +34,7 @@ class TaskManagementServer {
     this.port = this.config.port;
     this.host = this.config.host;
     
-    this.db = new DatabaseManager(this.config.dbPath);
+    this.db = new DatabaseManager(this.config.database);
     this.taskService = new TaskService(this.db);
     
     this.wss = new ws.WebSocketServer({ server: this.server });
@@ -169,6 +171,8 @@ class TaskManagementServer {
     this.app.get('/health', (req, res) => {
       res.json({ status: 'healthy', timestamp: new Date().toISOString() });
     });
+
+    // Task CRUD routes
     this.app.post('/api/tasks', asyncHandler(this.createTask.bind(this)));
     this.app.get('/api/tasks/:id', asyncHandler(this.getTask.bind(this)));
     this.app.get('/api/tasks', asyncHandler(this.listTasks.bind(this)));
@@ -176,6 +180,29 @@ class TaskManagementServer {
     this.app.delete('/api/tasks/:id', asyncHandler(this.deleteTask.bind(this)));
     this.app.put('/api/tasks/:id/todos/:todoId', asyncHandler(this.updateTodo.bind(this)));
     this.app.post('/api/tasks/:id/todos/:todoId/complete', asyncHandler(this.completeTodo.bind(this)));
+
+    // Legacy execution routes (deprecated - use /api/execution instead)
+    this.app.post('/api/tasks/:id/execute-agent', asyncHandler(this.executeAgent.bind(this)));
+    this.app.get('/api/tasks/:id/execution-status', asyncHandler(this.getExecutionStatus.bind(this)));
+
+    // New Claude Code execution routes
+    const wsManager = {
+      broadcast: (event, data) => {
+        // Force the type to be the event name, not data.type
+        const eventData = { ...data };
+        delete eventData.type; // Remove any existing type field
+        eventData.type = event; // Set the correct type
+
+        this.logger.debug('wsManager.broadcast', {
+          originalEvent: event,
+          originalDataType: data?.type,
+          finalType: eventData.type
+        });
+
+        this.broadcast(eventData);
+      }
+    };
+    this.app.use('/api/execution', createExecutionRoutes(this.taskService, this.logger, wsManager));
 
     if (process.env.NODE_ENV === 'production') {
       const distPath = join(__dirname, '../dist');
@@ -204,8 +231,18 @@ class TaskManagementServer {
   }
 
   async createTask(req, res) {
-    const { title, description, todos = [] } = req.body;
-    
+    const { title, description, todos = [], agent_prompt, agent_type = 'claude-code' } = req.body;
+
+    // Debug logging
+    this.logger.info('Creating task with data:', {
+      title,
+      hasDescription: !!description,
+      todosCount: todos.length,
+      hasAgentPrompt: !!agent_prompt,
+      agentPromptLength: agent_prompt?.length || 0,
+      agent_type
+    });
+
     validateRequired({ title }, ['title']);
     
     validateLength(title, 'title', 1, 200);
@@ -226,7 +263,9 @@ class TaskManagementServer {
     const task = await this.taskService.createTask({
       title,
       description,
-      todos
+      todos,
+      agent_prompt,
+      agent_type
     });
 
     this.broadcast({
@@ -337,7 +376,7 @@ class TaskManagementServer {
     try {
       const { id, todoId } = req.params;
       const result = await this.taskService.completeTodo(id, todoId);
-      
+
       if (!result) {
         return res.status(404).json({ error: 'Task or todo not found' });
       }
@@ -346,6 +385,153 @@ class TaskManagementServer {
     } catch (error) {
       console.error('Error completing todo:', error);
       res.status(500).json({ error: 'Failed to complete todo', message: error.message });
+    }
+  }
+
+  async executeAgent(req, res) {
+    const { id } = req.params;
+    const { agent_prompt } = req.body;
+
+    validateRequired({ id }, ['id']);
+    validateLength(id, 'id', 1, 50);
+
+    const task = await this.taskService.getTask(id);
+    if (!task) {
+      throw new NotFoundError('Task', id);
+    }
+
+    const promptToUse = agent_prompt || task.agent_prompt;
+    if (!promptToUse) {
+      throw new ValidationError('agent_prompt', 'Agent prompt is required for execution', promptToUse);
+    }
+
+    // Update task to queued status
+    await this.taskService.updateTask(id, {
+      execution_status: 'queued',
+      execution_started_at: new Date().toISOString()
+    });
+
+    // Broadcast execution started
+    this.broadcast({
+      type: 'agent_execution_started',
+      taskId: id,
+      timestamp: new Date().toISOString()
+    });
+
+    // Call board-executor service (async)
+    this.callExecutorService(id, promptToUse).catch(error => {
+      this.logger.error('Agent execution failed', { taskId: id, error: error.message });
+    });
+
+    res.json({
+      success: true,
+      message: 'Agent execution queued',
+      execution_status: 'queued'
+    });
+  }
+
+  async getExecutionStatus(req, res) {
+    const { id } = req.params;
+
+    validateRequired({ id }, ['id']);
+    validateLength(id, 'id', 1, 50);
+
+    const task = await this.taskService.getTask(id);
+    if (!task) {
+      throw new NotFoundError('Task', id);
+    }
+
+    res.json({
+      execution_status: task.execution_status || 'none',
+      execution_log: task.execution_log,
+      execution_started_at: task.execution_started_at,
+      execution_completed_at: task.execution_completed_at
+    });
+  }
+
+  async callExecutorService(taskId, agentPrompt) {
+    try {
+      // Update status to running
+      await this.taskService.updateTask(taskId, {
+        execution_status: 'running'
+      });
+
+      this.broadcast({
+        type: 'agent_execution_running',
+        taskId: taskId,
+        timestamp: new Date().toISOString()
+      });
+
+      // Call board-executor service
+      const executorUrl = process.env.BOARD_EXECUTOR_URL || 'http://localhost:3025';
+
+      this.logger.info('Calling board-executor service', {
+        taskId,
+        executorUrl,
+        promptLength: agentPrompt.length
+      });
+
+      const response = await fetch(`${executorUrl}/execute`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          taskId,
+          agentPrompt
+        })
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Board-executor service error (${response.status}): ${errorText}`);
+      }
+
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error(result.error || 'Board-executor service returned failure');
+      }
+
+      // Update task with successful execution and move to in_progress status
+      await this.taskService.updateTask(taskId, {
+        status: 'in_progress',
+        execution_status: 'completed',
+        execution_completed_at: new Date().toISOString(),
+        execution_log: result.result.output || 'Execution completed successfully.'
+      });
+
+      this.broadcast({
+        type: 'agent_execution_completed',
+        taskId: taskId,
+        result: result.result,
+        timestamp: new Date().toISOString()
+      });
+
+      this.logger.info('Claude Code execution completed successfully', {
+        taskId,
+        executionTime: result.result.executionTime
+      });
+
+    } catch (error) {
+      this.logger.error('Agent execution failed', {
+        taskId,
+        error: error.message,
+        stack: error.stack
+      });
+
+      await this.taskService.updateTask(taskId, {
+        execution_status: 'failed',
+        execution_completed_at: new Date().toISOString(),
+        execution_log: `Execution failed: ${error.message}`
+      });
+
+      this.broadcast({
+        type: 'agent_execution_failed',
+        taskId: taskId,
+        error: error.message,
+        timestamp: new Date().toISOString()
+      });
     }
   }
 

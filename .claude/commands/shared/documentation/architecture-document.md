@@ -32,7 +32,7 @@ Choose appropriate documentation framework based on requirements:
 - Project structure: !`find . -type f -name "*.json" -o -name "*.yaml" -o -name "*.toml" | head -5`
 - Documentation exists: @docs/ or @README.md (if exists)
 - Architecture files: !`find . -name "*architecture*" -o -name "*design*" -o -name "*.puml" | head -3`
-- Services/containers: @docker-compose.yml or @k8s/ (if exists)
+- Services/containers: @docker-compose.yml or @k8s/ (if exists) - using docker compose v2 syntax
 - API definitions: !`find . -name "*api*" -o -name "*openapi*" -o -name "*swagger*" | head -3`
 
 This repository uses a collaborative development approach with specialized agents and structured workflows. The codebase follows modern best practices with emphasis on maintainability, performance, and thoughtful implementation.

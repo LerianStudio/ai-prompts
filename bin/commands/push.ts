@@ -176,14 +176,46 @@ the source package location.`
     const startTime = Date.now()
 
     try {
-      const MetadataManager = require('../../tools/sync/metadata-manager')
+      const MetadataManager = require(
+        path.join(
+          __dirname,
+          '..',
+          '..',
+          '..',
+          'tools',
+          'sync',
+          'metadata-manager'
+        )
+      )
       const metadataManager = new MetadataManager()
 
       let CommandHeader: any, TerminalDetector: any
 
       try {
-        CommandHeader = require('../../lib/components/CommandHeader')
-        TerminalDetector = require('../../lib/utils/terminal')
+        CommandHeader = require(
+          path.join(
+            __dirname,
+            '..',
+            '..',
+            '..',
+            'services',
+            'lib',
+            'components',
+            'CommandHeader'
+          )
+        )
+        TerminalDetector = require(
+          path.join(
+            __dirname,
+            '..',
+            '..',
+            '..',
+            'services',
+            'lib',
+            'utils',
+            'terminal'
+          )
+        )
       } catch {
         console.log(chalk.blue('📤 Lerian Protocol Push'))
         console.log(chalk.gray('Pushing changes from target to source'))
@@ -230,9 +262,15 @@ the source package location.`
         console.log('')
       }
 
-      const PushPlanner = require('../../tools/sync/push-planner')
-      const PushExecutor = require('../../tools/sync/push-executor')
-      const FileSelector = require('../../tools/sync/file-selector')
+      const PushPlanner = require(
+        path.join(__dirname, '..', '..', '..', 'tools', 'sync', 'push-planner')
+      )
+      const PushExecutor = require(
+        path.join(__dirname, '..', '..', '..', 'tools', 'sync', 'push-executor')
+      )
+      const FileSelector = require(
+        path.join(__dirname, '..', '..', '..', 'tools', 'sync', 'file-selector')
+      )
 
       const pushPlanner: PushPlanner = new PushPlanner()
       const pushExecutor: PushExecutor = new PushExecutor()
@@ -362,7 +400,17 @@ the source package location.`
         )
 
         try {
-          const PushBaselineManager = require('../../lib/sync/push-baseline-manager')
+          const PushBaselineManager = require(
+            path.join(
+              __dirname,
+              '..',
+              '..',
+              '..',
+              'tools',
+              'sync',
+              'push-baseline-manager'
+            )
+          )
           const baselineManager = new PushBaselineManager()
 
           const pushedFiles = pushResult.operations
@@ -448,7 +496,9 @@ the source package location.`
     hasExistingMetadata = false,
     _options: PushCommandOptions = {}
   ): Promise<Record<string, any>> {
-    const FileHasher = require('../../lib/sync/file-hasher')
+    const FileHasher = require(
+      path.join(__dirname, '..', '..', '..', 'tools', 'sync', 'file-hasher')
+    )
     const fileHasher = new FileHasher({
       ignorePatterns: [
         '.git',
@@ -467,7 +517,9 @@ the source package location.`
 
     const allFiles = await fileHasher.hashDirectory(targetPath)
 
-    const PushPlanner = require('../../tools/sync/push-planner')
+    const PushPlanner = require(
+      path.join(__dirname, '..', '..', '..', 'tools', 'sync', 'push-planner')
+    )
     const pushPlanner: PushPlanner = new PushPlanner()
 
     return await pushPlanner.filterPushableFiles(

@@ -3,6 +3,8 @@ export interface TaskCreateRequest {
   description?: string
   todos?: string[]
   status?: 'pending' | 'in_progress' | 'completed' | 'failed'
+  agent_prompt?: string
+  agent_type?: 'claude-code'
 }
 
 export interface TaskUpdateRequest {
@@ -30,6 +32,12 @@ export interface Task {
   created_at: string
   updated_at: string
   todos: Todo[]
+  agent_prompt?: string
+  agent_type?: 'claude-code'
+  execution_status: 'none' | 'queued' | 'running' | 'completed' | 'failed'
+  execution_log?: string
+  execution_started_at?: string
+  execution_completed_at?: string
 }
 
 export interface Todo {
@@ -45,4 +53,17 @@ export interface CreateTaskInput {
   title: string
   description?: string
   todos?: string[]
+  agent_prompt?: string
+  agent_type?: 'claude-code'
+}
+
+export interface ExecuteAgentRequest {
+  agent_prompt?: string
+}
+
+export interface ExecutionStatusResponse {
+  execution_status: 'none' | 'queued' | 'running' | 'completed' | 'failed'
+  execution_log?: string
+  execution_started_at?: string
+  execution_completed_at?: string
 }

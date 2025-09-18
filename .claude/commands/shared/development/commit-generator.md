@@ -56,30 +56,28 @@ target_files=$(process_git_scope "$git_scope")
 ## Process
 
 1. **Git Scope Analysis** (Enhanced)
-   - Uses `get_git_files()` to analyze files in specified scope
-   - Analyzes targeted changes based on git-scope parameter
-   - Provides context about the scope of changes being committed
+    - Uses `get_git_files()` to analyze files in specified scope
+    - Analyzes targeted changes based on git-scope parameter
+    - Provides context about the scope of changes being committed
 
 2. **Change Classification**
-   - Analyzes file patterns and change types
-   - Determines appropriate commit type (feat, fix, docs, style, etc.)
-   - Automatically detects scope from file paths (api, ui, docs, etc.)
-   - Identifies potential breaking changes
+    - Analyzes file patterns and change types
+    - Determines appropriate commit type (feat, fix, docs, style, etc.)
+    - Automatically detects scope from file paths (api, ui, docs, etc.)
 
 3. **Message Generation**
-   - Creates conventional commit message following the format:
+    - Creates conventional commit message following the format:
 
-     ```
-     <type>[optional scope]: <description>
+        ```
+        <type>[optional scope]: <description>
 
-     [optional body]
+        [optional body]
 
-     [optional footer(s)]
-     ```
+        [optional footer(s)]
+        ```
 
-   - Saves the generated message to `commit-message.txt` in the project root
-   - Provides multiple suggestions when appropriate
-   - Includes guidance on breaking changes
+    - Saves the generated message to `commit-message.txt` in the project root
+    - Provides multiple suggestions when appropriate
 
 ## Supported Commit Types
 
@@ -131,19 +129,32 @@ feat(api): add user authentication endpoints
 - Include JWT token validation middleware
 ```
 
-### Breaking Change
+### Bug Fix with Scope
 
 ```
-feat!: change user API response format
+fix(api): correct user validation logic
 
-BREAKING CHANGE: user endpoint now returns user object instead of user array
+- Fix email validation regex pattern
+- Update password requirements check
 ```
 
 ## Notes
 
 - If no changes are detected, the command will prompt you to stage changes first
 - Multiple commit suggestions may be provided for complex changesets
-- Breaking changes are detected and flagged
 - The command respects conventional commit standards for consistent git history
 - Generated commit messages are saved to `commit-message.txt` for easy copying or use with `git commit -F commit-message.txt`
-  </requirements>
+
+## DO NOT
+
+**CRITICAL REQUIREMENT**: This commit generator must NEVER add "BREAKING CHANGE"
+in commit messages under any circumstances.
+
+- Do NOT include "BREAKING CHANGE:" footer text in any generated commit messages
+- Do NOT add breaking change notifications or warnings to commit body
+- Do NOT use the "!" suffix to indicate breaking changes in commit type
+- Do NOT generate breaking change examples or templates
+
+Even if breaking changes are detected in the code analysis, the commit message
+generator must NOT include any breaking change indicators in the final output.
+</requirements>

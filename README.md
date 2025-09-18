@@ -10,9 +10,9 @@ The project is still under development and future updates will be aimed at the f
 
 - [x] **Agent-Based Workflows** - 9 specialized agents with domain expertise
 - [x] **UI-First Development** - Visual validation with Playwright MCP screenshots
-- [x] **Database-Backed Task Management** - SQLite-based @task-manager system
+- [x] **Database-Backed Task Management** - PostgreSQL-based @task-manager system
 - [x] **Real-time Collaboration** - WebSocket-powered kanban board
-- [x] **MCP Server Integration** - Context7, Playwright, Fetch, Shadcn integrations
+- [x] **External Tool Integration** - Context7, Playwright, Fetch, Shadcn integrations
 - [x] **Domain-Driven Architecture** - Profile-based installation (frontend/backend/full)
 - [ ] **Enhanced Filtering** - Advanced search and project organization
 - [ ] **Team Collaboration** - User authentication and task assignment
@@ -45,9 +45,9 @@ The installer creates a complete AI-powered development environment:
 
 ### Advanced Development Tools
 
-- **MCP Server Configurations** - Context7, Playwright, Fetch, Shadcn integrations
+- **External Tool Configurations** - Context7, Playwright, Fetch, Shadcn integrations
 - **Interactive CLI Components** - Modern terminal UI components with advanced styling
-- **Database-Backed Task Management** - SQLite-based @task-manager system replacing fragile file operations
+- **Database-Backed Task Management** - PostgreSQL-based @task-manager system replacing fragile file operations
 - **Workflow Definitions** - YAML-based process automation with database integration
 - **Quality Validation** - Comprehensive standards and testing protocols
 
@@ -79,18 +79,18 @@ protocol-assets/           # Protocol Asset Organization (MAIN IMPLEMENTATION)
 │   ├── board-service/     # 🔥 Full-Stack Task Management Service
 │   │   ├── src/client/    # React TypeScript frontend (Vite + TailwindCSS)
 │   │   ├── src/server.js  # Express.js REST API + WebSocket server
-│   │   ├── migrations/    # SQLite database schema migrations
+│   │   ├── migrations/    # PostgreSQL database schema migrations
 │   │   └── public/        # Static assets and production build
-│   ├── board-mcp/         # 🔥 MCP Server Implementation (@task-manager tool)
-│   │   ├── src/           # TypeScript MCP server with full API
-│   │   └── tests/         # Jest integration tests
+│   ├── board-executor/    # 🔥 Claude Code Execution Service
+│   │   ├── src/           # Node.js execution service
+│   │   └── tests/         # Integration tests
 │   ├── installer/         # Installation system components
 │   ├── services/          # Service layer (error handling, protocol assets)
 │   ├── components/        # Interactive CLI components
 │   ├── sync/              # File synchronization system
 │   └── utils/             # Shared utilities and helpers
 ├── data/                  # 🔥 Runtime Data (CRITICAL - UNDOCUMENTED)
-│   ├── databases/         # SQLite task management database
+│   ├── databases/         # PostgreSQL task management database
 │   ├── logs/              # Service and MCP server logs
 │   ├── pids/              # Process ID files
 │   └── backups/           # Database backups
@@ -109,12 +109,11 @@ bin/                       # CLI Executables
 ├── lerian-protocol.js     # Main CLI entry point
 └── lerian-cli-wrapper.js  # CLI wrapper script
 
-.mcp.json                  # MCP Server Configuration
+.mcp.json                  # External MCP Tools Configuration
 ├── context7               # Library documentation and code examples
 ├── playwright             # Browser automation with screenshot validation
 ├── fetch                  # Web content retrieval capabilities
-├── shadcn                 # UI component generation
-└── lerian-board          # 🔥 Custom task management MCP server
+└── shadcn                 # UI component generation
 ```
 
 ## 🚀 Installing Lerian Protocol
@@ -136,7 +135,7 @@ npm install
 # -
 npm link
 
-# - 
+# -
 lerian-protocol install ./my-project
 ```
 
@@ -169,7 +168,7 @@ Add execution commands and examples that you think users will find useful. Provi
 
 - **React Frontend Application** - Complete kanban board with drag-and-drop, built with TypeScript + Vite
 - **Express.js REST API** - Full CRUD operations with WebSocket real-time synchronization
-- **SQLite Database** - Reliable task state with migrations, foreign keys, and transaction safety
+- **PostgreSQL Database** - Reliable task state with migrations, foreign keys, and transaction safety
 - **@task-manager MCP Tool** - Revolutionary MCP server implementation for agent integration
 - **Service Orchestration** - Shell script-based service management and health monitoring
 
@@ -187,7 +186,7 @@ Add execution commands and examples that you think users will find useful. Provi
 - **Asset Organization** - Protocol assets organized by domain (frontend/, backend/, shared/)
 - **Workflow Automation** - YAML workflows with database integration for complex multi-step processes
 
-#### MCP Server Ecosystem
+#### External Tool Ecosystem
 
 - **Context7** - Up-to-date library documentation and code examples
 - **Playwright** - Browser automation with screenshot validation
@@ -204,13 +203,13 @@ Add execution commands and examples that you think users will find useful. Provi
 | `.claude/hooks/`                         | Automation hooks            | Python hooks for testing, security, formatting                             |
 | **`protocol-assets/lib/board-service/`** | **🔥 Full-Stack App**       | **Complete React+Express task management system**                          |
 | `└─ src/client/`                         | React frontend              | TypeScript + Vite + TailwindCSS + Drag-and-Drop Kanban                     |
-| `└─ src/server.js`                       | Express.js API              | REST endpoints + WebSocket + SQLite integration                            |
-| `└─ migrations/`                         | Database schema             | SQLite migrations with foreign keys and constraints                        |
-| **`protocol-assets/lib/board-mcp/`**     | **🔥 MCP Server**           | **@task-manager MCP tool implementation**                                  |
-| `└─ src/`                                | TypeScript MCP server       | Full MCP protocol implementation with schemas                              |
-| `└─ tests/`                              | Integration tests           | Jest test suite with end-to-end workflows                                  |
+| `└─ src/server.js`                       | Express.js API              | REST endpoints + WebSocket + PostgreSQL integration                        |
+| `└─ migrations/`                         | Database schema             | PostgreSQL migrations with foreign keys and constraints                    |
+| **`services/board-executor/`**           | **🔥 Executor Service**     | **Claude Code execution integration**                                      |
+| `└─ src/`                                | Node.js execution service   | Claude Code integration and task execution                                 |
+| `└─ tests/`                              | Integration tests           | Execution workflow testing                                                 |
 | **`protocol-assets/data/`**              | **🔥 Runtime Data**         | **Production database, logs, process management**                          |
-| `└─ databases/`                          | SQLite database             | Task management database with backups                                      |
+| `└─ databases/`                          | PostgreSQL database         | Task management database with backups                                      |
 | `└─ logs/`                               | Service logs                | Real-time logs from all services                                           |
 | `└─ pids/`                               | Process tracking            | Process ID files for service management                                    |
 | **`protocol-assets/scripts/`**           | **🔥 Orchestration**        | **Service management and monitoring**                                      |
@@ -245,18 +244,18 @@ Add execution commands and examples that you think users will find useful. Provi
 │   │   ├── board-service/       # 🔥 Full-Stack Task Management Service
 │   │   │   ├── src/client/      # React TypeScript frontend (Vite + TailwindCSS)
 │   │   │   ├── src/server.js    # Express.js REST API + WebSocket server
-│   │   │   ├── migrations/      # SQLite database schema migrations
+│   │   │   ├── migrations/      # PostgreSQL database schema migrations
 │   │   │   └── public/          # Static assets and production build
-│   │   ├── board-mcp/           # 🔥 MCP Server Implementation
-│   │   │   ├── src/             # TypeScript MCP server with full API
-│   │   │   └── tests/           # Jest integration tests
+│   │   ├── board-executor/      # 🔥 Claude Code Execution Service
+│   │   │   ├── src/             # Node.js execution service
+│   │   │   └── tests/           # Integration tests
 │   │   ├── installer/           # Installation system components
 │   │   ├── services/            # Service layer (error handling, protocol assets)
 │   │   ├── components/          # Interactive CLI components
 │   │   ├── sync/                # File synchronization system
 │   │   └── utils/               # Shared utilities and helpers
 │   ├── data/                    # 🔥 Runtime Data (CRITICAL)
-│   │   ├── databases/           # SQLite task management database
+│   │   ├── databases/           # PostgreSQL task management database
 │   │   ├── logs/                # Service and MCP server logs
 │   │   ├── pids/                # Process ID files
 │   │   └── backups/             # Database backups
@@ -287,7 +286,7 @@ graph TD;
     B --> E[Shadcn];
     B --> F[Lerian Board MCP];
     F --> G[Task Service API];
-    G --> H[SQLite Database];
+    G --> H[PostgreSQL Database];
     G --> I[WebSocket Server];
     I --> J[React Frontend];
     A --> K[Specialized Agents];
@@ -299,9 +298,9 @@ graph TD;
 ### Real System Architecture
 
 ```
-Claude Code ←→ MCP Server (board-mcp) ←→ REST API (board-service) ←→ SQLite Database
-                     ↓                              ↓
-                MCP Protocol                   React Frontend
+Board UI ←→ REST API (board-api) ←→ Executor Service ←→ Claude Code ←→ PostgreSQL Database
+                ↓                           ↓                             ↓
+           React Frontend              HTTP/WebSocket              Command Execution
                                                     ↓
                                             WebSocket Real-time Updates
 ```

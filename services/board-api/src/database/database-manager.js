@@ -1,94 +1,116 @@
-import sqlite3 from 'sqlite3';
+import pg from 'pg';
 import { readFileSync, readdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { promisify } from 'util';
 import { createLogger, withDatabaseLogging } from '../../../lib/logger.js';
 
+const { Pool } = pg;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export class DatabaseManager {
-  constructor(dbPath) {
-    this.dbPath = dbPath;
-    this.db = null;
+  constructor(dbConfig = {}) {
+    // PostgreSQL configuration
+    this.config = {
+      host: dbConfig.host || process.env.DB_HOST || 'postgres',
+      port: dbConfig.port || process.env.DB_PORT || 5432,
+      database: dbConfig.database || process.env.DB_NAME || 'board_api',
+      user: dbConfig.user || process.env.DB_USER || 'board_user',
+      password: dbConfig.password || process.env.DB_PASSWORD || 'board_password',
+      max: dbConfig.max || 20, // Maximum number of clients in the pool
+      idleTimeoutMillis: dbConfig.idleTimeoutMillis || 30000,
+      connectionTimeoutMillis: dbConfig.connectionTimeoutMillis || 2000,
+      ...dbConfig
+    };
+
+    this.pool = null;
     this.migrationsPath = join(__dirname, '../../schemas/migrations');
     this.logger = createLogger('database-manager');
   }
 
   async initialize() {
-    if (this.db) return;
-    
-    this.logger.info('Initializing database', { path: this.dbPath });
-    
-    const dbDir = dirname(this.dbPath);
-    await import('fs').then(fs => fs.promises.mkdir(dbDir, { recursive: true }));
-    
-    return new Promise((resolve, reject) => {
-      this.db = new sqlite3.Database(this.dbPath, async (err) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        
-        try {
-          await this.run('PRAGMA foreign_keys = ON');
-          await this.run('PRAGMA journal_mode = WAL');
-          
-          await this.runMigrations();
-          
-          this.logger.info('Database initialized successfully', { 
-            path: this.dbPath,
-            features: ['foreign_keys', 'wal_mode', 'migrations']
-          });
-          resolve();
-        } catch (error) {
-          reject(error);
-        }
-      });
+    if (this.pool) return;
+
+    this.logger.info('Initializing PostgreSQL database', {
+      host: this.config.host,
+      port: this.config.port,
+      database: this.config.database,
+      user: this.config.user
     });
+
+    try {
+      this.pool = new Pool(this.config);
+
+      // Test the connection
+      const client = await this.pool.connect();
+      try {
+        await client.query('SELECT NOW()');
+        this.logger.info('Database connection established');
+      } finally {
+        client.release();
+      }
+
+      await this.runMigrations();
+
+      this.logger.info('Database initialized successfully', {
+        host: this.config.host,
+        database: this.config.database,
+        features: ['connection_pool', 'migrations']
+      });
+    } catch (error) {
+      this.logger.error('Failed to initialize database', { error: error.message });
+      throw error;
+    }
   }
 
-  run(sql, params = []) {
-    return withDatabaseLogging(this.logger, 'run', () => {
-      return new Promise((resolve, reject) => {
-        this.db.run(sql, params, function(err) {
-          if (err) reject(err);
-          else resolve({ changes: this.changes, lastID: this.lastID });
-        });
-      });
+  async run(sql, params = []) {
+    return withDatabaseLogging(this.logger, 'run', async () => {
+      const client = await this.pool.connect();
+      try {
+        const result = await client.query(sql, params);
+        return {
+          changes: result.rowCount,
+          lastID: result.rows[0]?.id || null,
+          rows: result.rows
+        };
+      } finally {
+        client.release();
+      }
     })();
   }
 
-  get(sql, params = []) {
-    return withDatabaseLogging(this.logger, 'get', () => {
-      return new Promise((resolve, reject) => {
-        this.db.get(sql, params, (err, row) => {
-          if (err) reject(err);
-          else resolve(row);
-        });
-      });
+  async get(sql, params = []) {
+    return withDatabaseLogging(this.logger, 'get', async () => {
+      const client = await this.pool.connect();
+      try {
+        const result = await client.query(sql, params);
+        return result.rows[0] || null;
+      } finally {
+        client.release();
+      }
     })();
   }
 
-  all(sql, params = []) {
-    return withDatabaseLogging(this.logger, 'all', () => {
-      return new Promise((resolve, reject) => {
-        this.db.all(sql, params, (err, rows) => {
-          if (err) reject(err);
-          else resolve(rows);
-        });
-      });
+  async all(sql, params = []) {
+    return withDatabaseLogging(this.logger, 'all', async () => {
+      const client = await this.pool.connect();
+      try {
+        const result = await client.query(sql, params);
+        return result.rows;
+      } finally {
+        client.release();
+      }
     })();
   }
 
   async runMigrations() {
     try {
+      // Create migrations table with PostgreSQL syntax
       await this.run(`
         CREATE TABLE IF NOT EXISTS migrations (
-          id          INTEGER PRIMARY KEY,
+          id          SERIAL PRIMARY KEY,
           filename    TEXT NOT NULL UNIQUE,
-          applied_at  TEXT NOT NULL DEFAULT (datetime('now', 'subsec'))
+          applied_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
         )
       `);
 
@@ -119,13 +141,18 @@ export class DatabaseManager {
           
           const sql = readFileSync(migrationPath, 'utf-8');
           
-          if (filename !== '005_add_code_review_status.sql' && this.containsDangerousSQLPatterns(sql)) {
+          if (filename !== '001_initial_schema.sql' &&
+              filename !== '002_claude_integration.sql' &&
+              filename !== '005_add_code_review_status.sql' &&
+              filename !== '007_add_agent_execution.sql' &&
+              filename !== '008_add_agent_execution_safe.sql' &&
+              this.containsDangerousSQLPatterns(sql)) {
             throw new Error(`Migration ${filename} contains potentially dangerous SQL patterns`);
           }
           
           const statements = this.parseSQL(sql);
           
-          await this.run('BEGIN TRANSACTION');
+          await this.run('BEGIN');
           try {
             for (let i = 0; i < statements.length; i++) {
               const statement = statements[i];
@@ -138,7 +165,7 @@ export class DatabaseManager {
                 }
               }
             }
-            await this.run('INSERT INTO migrations (filename) VALUES (?)', [filename]);
+            await this.run('INSERT INTO migrations (filename) VALUES ($1)', [filename]);
             await this.run('COMMIT');
             console.log(`✓ Applied migration: ${filename}`);
           } catch (error) {
@@ -156,60 +183,51 @@ export class DatabaseManager {
   }
 
   getDatabase() {
-    if (!this.db) {
+    if (!this.pool) {
       throw new Error('Database not initialized. Call initialize() first.');
     }
-    return this.db;
+    return this.pool;
   }
 
-  close() {
-    return new Promise((resolve) => {
-      if (this.db) {
-        this.db.close((err) => {
-          if (err) console.error('Error closing database:', err);
-          this.db = null;
-          resolve();
-        });
-      } else {
-        resolve();
+  async close() {
+    if (this.pool) {
+      try {
+        await this.pool.end();
+        this.logger.info('Database connection pool closed');
+        this.pool = null;
+      } catch (error) {
+        this.logger.error('Error closing database pool:', { error: error.message });
       }
-    });
+    }
   }
 
   async transaction(fn) {
-    await this.run('BEGIN TRANSACTION');
+    const client = await this.pool.connect();
     try {
-      const result = await fn();
-      await this.run('COMMIT');
+      await client.query('BEGIN');
+      const result = await fn(client);
+      await client.query('COMMIT');
       return result;
     } catch (error) {
-      await this.run('ROLLBACK');
+      await client.query('ROLLBACK');
       throw error;
+    } finally {
+      client.release();
     }
   }
 
   containsDangerousSQLPatterns(sql) {
+    // PostgreSQL-specific dangerous patterns
     const dangerousPatterns = [
-      /ATTACH\s+DATABASE/i,
-      /DETACH\s+DATABASE/i,
-      /PRAGMA\s+(?!foreign_keys|journal_mode|table_info|database_list|compile_options)/i,
-      /\.import/i,
-      /\.output/i,
-      /\.shell/i,
-      /\.system/i,
-      /\.backup/i,
-      /\.restore/i,
-      /LOAD_EXTENSION/i,
-      /sqlite_master/i,
-      /sqlite_sequence/i,
-      /sqlite_temp_master/i,
-      /load_extension\s*\(/i,
-      /char\s*\(/i,
-      /hex\s*\(/i,
-      /readfile\s*\(/i,
-      /writefile\s*\(/i,
-      /;\s*--/,
-      /;\s*\/\*/
+      /;\s*--/, // Comment injection
+      /;\s*\/\*/, // Block comment injection
+      /COPY\s+.*FROM\s+PROGRAM/i, // System command execution
+      /CREATE\s+OR\s+REPLACE\s+FUNCTION.*LANGUAGE\s+(C|plpythonu|plperlu|pltclu)/i, // Unsafe languages
+      /lo_import\s*\(/i, // Large object import
+      /lo_export\s*\(/i, // Large object export
+      /pg_read_file\s*\(/i, // File system access
+      /pg_ls_dir\s*\(/i, // Directory listing
+      /pg_stat_file\s*\(/i, // File stat access
     ];
 
     return dangerousPatterns.some(pattern => pattern.test(sql));
@@ -221,33 +239,64 @@ export class DatabaseManager {
     let inString = false;
     let stringChar = '';
     let inComment = false;
-    
+    let inDollarQuoted = false;
+    let dollarTag = '';
+
     for (let i = 0; i < sql.length; i++) {
       const char = sql[i];
       const nextChar = sql[i + 1];
+
+      // Handle dollar-quoted strings (PostgreSQL)
+      if (!inString && !inComment && char === '$') {
+        const remaining = sql.slice(i);
+        const dollarMatch = remaining.match(/^\$([^$]*)\$/);
+        if (dollarMatch) {
+          if (!inDollarQuoted) {
+            // Start of dollar-quoted string
+            inDollarQuoted = true;
+            dollarTag = dollarMatch[0];
+            current += dollarMatch[0];
+            i += dollarMatch[0].length - 1;
+            continue;
+          } else if (remaining.startsWith(dollarTag)) {
+            // End of dollar-quoted string
+            inDollarQuoted = false;
+            current += dollarTag;
+            i += dollarTag.length - 1;
+            dollarTag = '';
+            continue;
+          }
+        }
+      }
+
+      if (inDollarQuoted) {
+        current += char;
+        continue;
+      }
 
       if (!inString && char === '-' && nextChar === '-') {
         inComment = true;
         i++;
         continue;
       }
-      
+
       if (inComment && char === '\n') {
         inComment = false;
         current += char;
         continue;
       }
-      
+
       if (inComment) {
         continue;
       }
+
       if (!inString && (char === '"' || char === "'")) {
         inString = true;
         stringChar = char;
         current += char;
         continue;
       }
-      
+
       if (inString && char === stringChar) {
         if (sql[i + 1] === stringChar) {
           current += char + char;
@@ -258,6 +307,7 @@ export class DatabaseManager {
         current += char;
         continue;
       }
+
       if (!inString && char === ';') {
         const statement = current.trim();
         if (statement) {
@@ -266,14 +316,15 @@ export class DatabaseManager {
         current = '';
         continue;
       }
-      
+
       current += char;
     }
+
     const finalStatement = current.trim();
     if (finalStatement) {
       statements.push(finalStatement);
     }
-    
+
     return statements;
   }
 }

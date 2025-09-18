@@ -1,20 +1,21 @@
 {
-  "name": "@lerian-protocol/board",
+  "name": "board-mcp",
   "version": "1.0.0",
-  "description": "MCP tool interface for Lerian Protocol board management",
-  "main": "src/index.js",
   "type": "module",
+  "description": "MCP server for Claude Code task management integration",
+  "main": "src/index.js",
   "scripts": {
-    "start": "node src/server.js",
-    "cli": "node src/index.js",
-    "test": "node --test tests/*.test.js"
+    "start": "node -r dotenv/config src/index.js dotenv_config_path=../../.env.dev",
+    "dev": "node -r dotenv/config --watch src/index.js dotenv_config_path=../../.env.dev"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.10.0",
-    "node-fetch": "^3.3.2",
-    "pino": "^9.9.4",
-    "pino-pretty": "^13.1.1",
-    "winston": "^3.17.0"
+    "dotenv": "^16.4.5",
+    "uuid": "^9.0.0",
+    "ws": "^8.14.2",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0"
   },
   "engines": {
     "node": ">=18.0.0"

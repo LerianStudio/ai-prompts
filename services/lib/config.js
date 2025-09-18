@@ -42,15 +42,43 @@ const CONFIG_SCHEMA = {
     type: 'string',
     default: 'localhost'
   },
+  BOARD_EXECUTOR_HOST: {
+    type: 'string',
+    default: 'localhost'
+  },
   TASK_SERVICE_PORT: {
     type: 'number',
     default: 3020
   },
-  
-  // Database
-  DB_PATH: {
+  BOARD_EXECUTOR_HOST: {
     type: 'string',
-    default: join(__dirname, '../../infrastructure/data/databases/task-management.db')
+    default: 'localhost'
+  },
+  BOARD_EXECUTOR_PORT: {
+    type: 'number',
+    default: 3025
+  },
+  
+  // Database (PostgreSQL)
+  DB_HOST: {
+    type: 'string',
+    default: 'postgres'
+  },
+  DB_PORT: {
+    type: 'number',
+    default: 5432
+  },
+  DB_NAME: {
+    type: 'string',
+    default: 'board_api'
+  },
+  DB_USER: {
+    type: 'string',
+    default: 'board_user'
+  },
+  DB_PASSWORD: {
+    type: 'string',
+    default: 'board_password'
   },
   
   // Security
@@ -154,9 +182,23 @@ function getServiceConfig(serviceName) {
       return {
         ...config,
         serviceName: 'board-api',
-        host: config.TASK_SERVICE_HOST,
-        port: config.TASK_SERVICE_PORT,
-        dbPath: config.DB_PATH
+        host: process.env.HOST || config.TASK_SERVICE_HOST,
+        port: process.env.PORT || config.TASK_SERVICE_PORT,
+        database: {
+          host: config.DB_HOST,
+          port: config.DB_PORT,
+          database: config.DB_NAME,
+          user: config.DB_USER,
+          password: config.DB_PASSWORD
+        }
+      };
+
+    case 'board-executor':
+      return {
+        ...config,
+        serviceName: 'board-executor',
+        host: process.env.HOST || config.BOARD_EXECUTOR_HOST,
+        port: process.env.BOARD_EXECUTOR_PORT || config.BOARD_EXECUTOR_PORT
       };
       
     case 'sync-tools':

@@ -33,21 +33,31 @@
     "ora": "^5.4.1",
     "pino": "^9.9.4",
     "pino-pretty": "^13.1.1",
-    "sqlite3": "^5.1.7",
-    "winston": "^3.17.0"
+    "winston": "^3.17.0",
+    "playwright": "^1.40.0"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
   },
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",
     "build:clean": "rm -rf dist && tsc",
-    "dev": "ts-node bin/lerian-protocol.ts",
+    "dev": "node scripts/setup-dev-environment.js get > /dev/null && concurrently --names 'API,MCP,UI' --prefix '[{name}]' --prefix-colors 'blue,green,yellow' 'npm run dev:api' 'npm run dev:mcp' 'npm run dev:ui'",
+    "dev:clean": "node scripts/setup-dev-environment.js clear && npm run dev",
+    "dev:api": "cd services/board-api && npm start",
+    "dev:mcp": "cd services/board-ui && npm start",
+    "dev:ui": "cd services/board-ui && npm run dev",
+    "dev:legacy": "ts-node bin/lerian-protocol.ts",
     "dev:js": "node dist/bin/lerian-protocol.js",
     "start": "npm run build && node dist/bin/lerian-protocol.js",
     "test": "npm run build && node dist/bin/lerian-protocol.js --help",
     "test:help": "npm run build && node dist/bin/lerian-protocol.js --help",
+    "test:claude": "node test_claude_execution.js",
+    "health": "node scripts/setup-dev-environment.js health",
+    "ports": "node scripts/setup-dev-environment.js get",
+    "ports:clear": "node scripts/setup-dev-environment.js clear",
     "typecheck": "tsc --noEmit",
     "typecheck:watch": "tsc --noEmit --watch",
     "install:local": "npm run build && npm pack && echo 'Use: npm install /path/to/lerian-protocol-1.0.0.tgz in your project'",
@@ -58,11 +68,9 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky",
-    "mcp:start": "./infrastructure/scripts/start-mcp-stack.sh",
-    "mcp:stop": "./infrastructure/scripts/stop-mcp-stack.sh",
-    "mcp:status": "./infrastructure/scripts/mcp-stack-status.sh",
-    "mcp:logs:service": "tail -f ./infrastructure/data/logs/task-service.log",
-    "mcp:logs:mcp": "tail -f ./infrastructure/data/logs/board-mcp.log"
+    "docker:start": "docker compose up -d",
+    "docker:stop": "docker compose down",
+    "docker:logs": "docker compose logs -f"
   },
   "devDependencies": {
     "@types/commander": "^2.12.0",
@@ -71,9 +79,9 @@
     "@types/inquirer": "^9.0.9",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^24.3.1",
-    "@types/sqlite3": "^3.1.11",
     "@typescript-eslint/eslint-plugin": "^8.43.0",
     "@typescript-eslint/parser": "^8.43.0",
+    "concurrently": "^8.2.2",
     "eslint": "^9.33.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-node": "^11.1.0",
@@ -82,6 +90,7 @@
     "lint-staged": "^16.1.5",
     "prettier": "^3.6.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "wait-on": "^7.2.0"
   }
 }

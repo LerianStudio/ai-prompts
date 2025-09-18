@@ -6,15 +6,15 @@ export class TaskService {
     this.dbManager = databaseManager;
   }
 
-  async createTask({ title, description, todos = [] }) {
+  async createTask({ title, description, todos = [], agent_prompt, agent_type }) {
     const taskId = randomUUID();
     const now = new Date().toISOString();
 
     return this.dbManager.transaction(async () => {
       await this.dbManager.run(`
-        INSERT INTO tasks (id, title, description, status, created_at, updated_at)
-        VALUES (?, ?, ?, 'pending', ?, ?)
-      `, [taskId, title, description, now, now]);
+        INSERT INTO tasks (id, title, description, status, agent_prompt, agent_type, execution_status, created_at, updated_at)
+        VALUES ($1, $2, $3, 'pending', $4, $5, 'none', $6, $7)
+      `, [taskId, title, description, agent_prompt, agent_type, now, now]);
 
       if (todos.length > 0) {
         for (let index = 0; index < todos.length; index++) {
@@ -22,7 +22,7 @@ export class TaskService {
           const content = typeof todos[index] === 'string' ? todos[index] : todos[index].content;
           await this.dbManager.run(`
             INSERT INTO todos (id, task_id, content, status, sort_order, created_at, updated_at)
-            VALUES (?, ?, ?, 'pending', ?, ?, ?)
+            VALUES ($1, $2, $3, 'pending', $4, $5, $6)
           `, [todoId, taskId, content, index, now, now]);
         }
       }
@@ -33,7 +33,7 @@ export class TaskService {
 
   async getTask(taskId) {
     const task = await this.dbManager.get(`
-      SELECT * FROM tasks WHERE id = ?
+      SELECT * FROM tasks WHERE id = $1
     `, [taskId]);
 
     if (!task) {
@@ -41,7 +41,7 @@ export class TaskService {
     }
 
     const todos = await this.dbManager.all(`
-      SELECT * FROM todos WHERE task_id = ? ORDER BY sort_order
+      SELECT * FROM todos WHERE task_id = $1 ORDER BY sort_order
     `, [taskId]);
 
     return mapTaskForFrontend(task, todos);
@@ -49,7 +49,7 @@ export class TaskService {
 
   async listTasks(filters = {}) {
     let query = `
-      SELECT 
+      SELECT
         t.id,
         t.title,
         t.description,
@@ -57,6 +57,12 @@ export class TaskService {
         t.project_id,
         t.created_at,
         t.updated_at,
+        t.agent_prompt,
+        t.agent_type,
+        t.execution_status,
+        t.execution_log,
+        t.execution_started_at,
+        t.execution_completed_at,
         td.id as todo_id,
         td.content as todo_content,
         td.status as todo_status,
@@ -70,12 +76,12 @@ export class TaskService {
     const params = [];
 
     if (filters.status) {
-      query += ' AND t.status = ?';
+      query += ` AND t.status = $${params.length + 1}`;
       params.push(filters.status);
     }
 
     if (filters.project_id) {
-      query += ' AND t.project_id = ?';
+      query += ` AND t.project_id = $${params.length + 1}`;
       params.push(filters.project_id);
     }
 
@@ -100,7 +106,13 @@ export class TaskService {
           status: row.status,
           project_id: row.project_id,
           created_at: row.created_at,
-          updated_at: row.updated_at
+          updated_at: row.updated_at,
+          agent_prompt: row.agent_prompt,
+          agent_type: row.agent_type,
+          execution_status: row.execution_status,
+          execution_log: row.execution_log,
+          execution_started_at: row.execution_started_at,
+          execution_completed_at: row.execution_completed_at
         };
         tasksMap.set(taskId, task);
       }
@@ -142,34 +154,34 @@ export class TaskService {
           if (todo.id) {
             const newStatus = todo.completed ? 'completed' : 'pending';
             await this.dbManager.run(`
-              UPDATE todos 
-              SET status = ?, updated_at = ?
-              WHERE id = ? AND task_id = ?
+              UPDATE todos
+              SET status = $1, updated_at = $2
+              WHERE id = $3 AND task_id = $4
             `, [newStatus, now, todo.id, taskId]);
           }
         }
 
         const pendingTodos = await this.dbManager.get(`
-          SELECT COUNT(*) as count FROM todos 
-          WHERE task_id = ? AND status = 'pending'
+          SELECT COUNT(*) as count FROM todos
+          WHERE task_id = $1 AND status = 'pending'
         `, [taskId]);
 
         const completedTodos = await this.dbManager.get(`
-          SELECT COUNT(*) as count FROM todos 
-          WHERE task_id = ? AND status = 'completed'
+          SELECT COUNT(*) as count FROM todos
+          WHERE task_id = $1 AND status = 'completed'
         `, [taskId]);
 
         if (pendingTodos.count === 0 && completedTodos.count > 0) {
           await this.dbManager.run(`
-            UPDATE tasks 
-            SET status = 'completed', updated_at = ?
-            WHERE id = ?
+            UPDATE tasks
+            SET status = 'completed', updated_at = $1
+            WHERE id = $2
           `, [now, taskId]);
         } else if (completedTodos.count > 0 && pendingTodos.count > 0) {
           await this.dbManager.run(`
-            UPDATE tasks 
-            SET status = 'in_progress', updated_at = ?
-            WHERE id = ? AND status = 'pending'
+            UPDATE tasks
+            SET status = 'in_progress', updated_at = $1
+            WHERE id = $2 AND status = 'pending'
           `, [now, taskId]);
         }
 
@@ -177,13 +189,13 @@ export class TaskService {
       });
     }
 
-    const allowedUpdates = ['title', 'description', 'status'];
+    const allowedUpdates = ['title', 'description', 'status', 'execution_status', 'execution_log', 'execution_started_at', 'execution_completed_at'];
     const updateFields = [];
     const params = [];
 
     for (const [key, value] of Object.entries(updates)) {
       if (allowedUpdates.includes(key) && value !== undefined) {
-        updateFields.push(`${key} = ?`);
+        updateFields.push(`${key} = $${params.length + 1}`);
         params.push(value);
       }
     }
@@ -192,14 +204,14 @@ export class TaskService {
       return this.getTask(taskId);
     }
 
-    updateFields.push('updated_at = ?');
+    updateFields.push(`updated_at = $${params.length + 1}`);
     params.push(now);
     params.push(taskId);
 
     const query = `
-      UPDATE tasks 
-      SET ${updateFields.join(', ')} 
-      WHERE id = ?
+      UPDATE tasks
+      SET ${updateFields.join(', ')}
+      WHERE id = $${params.length}
     `;
 
     const result = await this.dbManager.run(query, params);
@@ -222,9 +234,9 @@ export class TaskService {
     const newStatus = completed ? 'completed' : 'pending';
 
     const result = await this.dbManager.run(`
-      UPDATE todos 
-      SET status = ?, updated_at = ?
-      WHERE id = ? AND task_id = ?
+      UPDATE todos
+      SET status = $1, updated_at = $2
+      WHERE id = $3 AND task_id = $4
     `, [newStatus, now, todoId, taskId]);
 
     if (result.changes === 0) {
@@ -233,8 +245,8 @@ export class TaskService {
 
     if (completed) {
       const pendingTodos = await this.dbManager.get(`
-        SELECT COUNT(*) as count FROM todos 
-        WHERE task_id = ? AND status = 'pending'
+        SELECT COUNT(*) as count FROM todos
+        WHERE task_id = $1 AND status = 'pending'
       `, [taskId]);
 
       if (pendingTodos.count === 0) {
@@ -242,7 +254,7 @@ export class TaskService {
       }
     } else {
       const task = await this.dbManager.get(`
-        SELECT status FROM tasks WHERE id = ?
+        SELECT status FROM tasks WHERE id = $1
       `, [taskId]);
       
       if (task && task.status === 'completed') {
@@ -257,9 +269,9 @@ export class TaskService {
     const now = new Date().toISOString();
 
     const result = await this.dbManager.run(`
-      UPDATE todos 
-      SET status = 'completed', updated_at = ?
-      WHERE id = ? AND task_id = ?
+      UPDATE todos
+      SET status = 'completed', updated_at = $1
+      WHERE id = $2 AND task_id = $3
     `, [now, todoId, taskId]);
 
     if (result.changes === 0) {
@@ -267,8 +279,8 @@ export class TaskService {
     }
 
     const pendingTodos = await this.dbManager.get(`
-      SELECT COUNT(*) as count FROM todos 
-      WHERE task_id = ? AND status = 'pending'
+      SELECT COUNT(*) as count FROM todos
+      WHERE task_id = $1 AND status = 'pending'
     `, [taskId]);
 
     if (pendingTodos.count === 0) {
@@ -280,8 +292,8 @@ export class TaskService {
 
   async completeTodoByContent(taskId, todoContent) {
     const todo = await this.dbManager.get(`
-      SELECT id FROM todos 
-      WHERE task_id = ? AND content = ? AND status = 'pending'
+      SELECT id FROM todos
+      WHERE task_id = $1 AND content = $2 AND status = 'pending'
       ORDER BY sort_order
       LIMIT 1
     `, [taskId, todoContent]);
@@ -296,11 +308,11 @@ export class TaskService {
   async deleteTask(taskId) {
     return this.dbManager.transaction(async () => {
       await this.dbManager.run(`
-        DELETE FROM todos WHERE task_id = ?
+        DELETE FROM todos WHERE task_id = $1
       `, [taskId]);
 
       const result = await this.dbManager.run(`
-        DELETE FROM tasks WHERE id = ?
+        DELETE FROM tasks WHERE id = $1
       `, [taskId]);
 
       if (result.changes === 0) {

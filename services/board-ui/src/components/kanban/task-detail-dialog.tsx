@@ -13,12 +13,13 @@ import { Progress } from '@/components/ui/progress'
 import { Calendar, Clock, Trash2 } from 'lucide-react'
 import { Task, Todo } from '@/types'
 import { formatDate } from '@/lib/utils'
+import { ClaudeExecutionPanel } from './claude-execution-panel'
 
 interface TaskDetailDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   task: Task | null
-  onTaskUpdate: (updates: Partial<Task>) => void
+  onTaskUpdate: (taskId: string, updates: Partial<Task>) => void
   onTaskDelete?: (taskId: string) => void
 }
 
@@ -44,11 +45,11 @@ export function TaskDetailDialog({
       todo.id === todoId ? { ...todo, completed } : todo
     )
     setTodos(updatedTodos)
-    onTaskUpdate({ todos: updatedTodos })
+    onTaskUpdate(task.id, { todos: updatedTodos })
   }
 
   const handleStatusChange = (newStatus: Task['status']) => {
-    onTaskUpdate({ status: newStatus })
+    onTaskUpdate(task.id, { status: newStatus })
   }
 
   const handleDeleteClick = () => {
@@ -74,28 +75,16 @@ export function TaskDetailDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <div className="space-y-4">
-            <div className="flex items-start justify-between gap-6">
-              <DialogTitle className="text-2xl font-bold text-zinc-900 flex-1 min-w-0">
+            <div className="space-y-2">
+              <DialogTitle className="text-2xl font-bold text-zinc-900">
                 {task.title}
               </DialogTitle>
-              {onTaskDelete && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleDeleteClick}
-                  className="text-zinc-400 hover:text-red-500 hover:bg-red-50"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              )}
-            </div>
-            <div className="flex items-center gap-2">
-              <Badge variant="secondary" className="font-mono text-xs font-semibold">
-                ID: {task.id}
-              </Badge>
+              <div className="text-sm text-zinc-500 font-mono">
+                Task ID: {task.id.slice(0, 12)}...
+              </div>
             </div>
             <div className="flex items-center gap-4">
               <span className="text-sm font-medium text-zinc-700">Status:</span>
@@ -203,6 +192,31 @@ export function TaskDetailDialog({
               </Card>
             )}
           </div>
+
+          {/* Claude Code Execution Panel */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-zinc-900">AI Execution</h3>
+            <ClaudeExecutionPanel
+              task={task}
+              onTaskUpdate={onTaskUpdate}
+            />
+          </div>
+
+          {/* Delete Action */}
+          {onTaskDelete && (
+            <div className="pt-6 border-t border-zinc-200">
+              <div className="flex justify-end">
+                <Button
+                  variant="outline"
+                  onClick={handleDeleteClick}
+                  className="text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300"
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete Task
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>

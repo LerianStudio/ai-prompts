@@ -166,4 +166,3 @@ export function withDatabaseLogging(logger, operation, fn) {
   };
 }
 
-export default { createLogger, logger, requestLogger, withDatabaseLogging };

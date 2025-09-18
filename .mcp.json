@@ -21,11 +21,13 @@
       "command": "npx",
       "args": ["shadcn@latest", "mcp"]
     },
-    "lerian-board": {
+    "board-tasks": {
       "command": "node",
-      "args": ["protocol-assets/lib/board-mcp/src/server.js"],
+      "args": ["services/board-mcp/src/index.js"],
       "env": {
-        "TASK_SERVICE_URL": "http://localhost:3020"
+        "BOARD_API_URL": "http://localhost:3001",
+        "MCP_SERVER_PORT": "3002",
+        "MCP_HOST": "localhost"
       }
     }
   }

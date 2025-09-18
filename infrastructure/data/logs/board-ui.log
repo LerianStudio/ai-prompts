@@ -2,16 +2,29 @@
 > @lerian-protocol/board-ui@1.0.0 dev
 > vite
 
+▲ [WARNING] Duplicate key "exactOptionalPropertyTypes" in object literal [duplicate-object-key]
 
-  VITE v7.1.4  ready in 129 ms
+    ../../tsconfig.json:21:4:
+      21 │     "exactOptionalPropertyTypes": true,
+         ╵     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  The original key "exactOptionalPropertyTypes" is here:
+
+    ../../tsconfig.json:10:4:
+      10 │     "exactOptionalPropertyTypes": true,
+         ╵     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+  VITE v7.1.4  ready in 162 ms
 
   ➜  Local:   http://localhost:5173/
   ➜  Network: use --host to expose
-7:26:54 PM [vite] http proxy error: /api/tasks
-AggregateError [ECONNREFUSED]: 
-    at internalConnectMultiple (node:net:1134:18)
-    at afterConnectMultiple (node:net:1715:7)
-7:26:54 PM [vite] http proxy error: /api/tasks
-AggregateError [ECONNREFUSED]: 
-    at internalConnectMultiple (node:net:1134:18)
-    at afterConnectMultiple (node:net:1715:7)
+2:59:19 PM [vite] (client) hmr update /index.css
+2:59:39 PM [vite] (client) hmr update /index.css, /components/kanban/create-task-form.tsx
+2:59:53 PM [vite] (client) hmr update /index.css, /components/kanban/create-task-form.tsx
+2:59:59 PM [vite] (client) hmr update /index.css, /components/kanban/create-task-form.tsx
+3:00:07 PM [vite] (client) hmr update /index.css, /components/kanban/create-task-form.tsx
+3:00:13 PM [vite] (client) hmr update /index.css, /components/kanban/create-task-form.tsx
+3:00:43 PM [vite] (client) hmr update /index.css, /components/kanban/create-task-form.tsx
+3:00:43 PM [vite] (client) hmr update /index.css
+3:00:45 PM [vite] (client) hmr update /index.css

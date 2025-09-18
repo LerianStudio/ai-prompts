@@ -1,0 +1,23 @@
+
+> @lerian-protocol/board-ui@1.0.0 dev
+> vite --mode development
+
+Port 3003 is in use, trying another one...
+Port 3004 is in use, trying another one...
+Port 3005 is in use, trying another one...
+Port 3006 is in use, trying another one...
+
+  VITE v7.1.4  ready in 191 ms
+
+  ➜  Local:   http://localhost:3007/
+  ➜  Network: http://192.168.1.9:3007/
+  ➜  Network: http://172.25.0.1:3007/
+  ➜  Network: http://172.18.0.1:3007/
+  ➜  Network: http://172.26.0.1:3007/
+  ➜  Network: http://172.30.0.1:3007/
+  ➜  Network: http://172.20.0.1:3007/
+  ➜  Network: http://172.28.0.1:3007/
+  ➜  Network: http://172.19.0.1:3007/
+  ➜  Network: http://172.31.0.1:3007/
+  ➜  Network: http://172.27.0.1:3007/
+  ➜  Network: http://172.29.0.1:3007/

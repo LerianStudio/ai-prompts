@@ -485,6 +485,9 @@ class Installer {
         await this.executeOperation(operation, config)
       }
 
+      // Create metadata file for sync/push commands
+      await this.createInstallMetadata(config)
+
       output.log(
         '\n' + theme.success('✅ Installation completed successfully!') + '\n'
       )
@@ -543,6 +546,24 @@ class Installer {
         })
       }
 
+      // Get root files that need to be copied
+      const rootFiles = await DEFAULTS.getRootFiles(sourceRoot)
+
+      for (const file of rootFiles) {
+        const sourcePath = path.join(sourceRoot, file)
+        const targetPath = path.join(config.directory, file)
+
+        if (await fs.pathExists(sourcePath)) {
+          operations.push({
+            type: 'create',
+            path: targetPath,
+            description: `Copy ${file}`,
+            operation: `copy:${sourcePath}:${targetPath}`,
+            retryable: true
+          })
+        }
+      }
+
       return operations
     } catch (error) {
       debug.error('Error planning installation', error)
@@ -552,8 +573,130 @@ class Installer {
     }
   }
 
-  async uninstall(_options: InstallOptions): Promise<void> {
-    throw new Error('Method not implemented')
+  async uninstall(options: { force?: boolean }): Promise<void> {
+    if (this.isProcessing) {
+      output.warning('Operation already in progress...')
+      return
+    }
+
+    this.isProcessing = true
+
+    try {
+      const cwd = process.cwd()
+      const claudeDir = path.join(cwd, '.claude')
+      const protocolAssetsDir = path.join(cwd, 'protocol-assets')
+      const mcpJsonFile = path.join(cwd, '.mcp.json')
+
+      // Check if installation exists
+      const hasClaudeDir = await fs.pathExists(claudeDir)
+      const hasProtocolAssets = await fs.pathExists(protocolAssetsDir)
+      const hasMcpJson = await fs.pathExists(mcpJsonFile)
+
+      if (!hasClaudeDir && !hasProtocolAssets && !hasMcpJson) {
+        output.warning(
+          'No Lerian Protocol installation found in current directory'
+        )
+        output.log(theme.muted('Nothing to uninstall'))
+        return
+      }
+
+      // Show what will be removed
+      const installedAgents = hasClaudeDir
+        ? await this.getInstalledAgents(cwd)
+        : []
+      const installedCommands = hasClaudeDir
+        ? await this.getInstalledCommands(cwd)
+        : []
+      const installedHooks = hasClaudeDir
+        ? await this.getInstalledHooks(cwd)
+        : []
+
+      console.log('\n' + theme.warning('🗑️  Lerian Protocol Uninstallation'))
+      console.log(theme.muted('The following will be removed:'))
+
+      if (hasClaudeDir) {
+        console.log(
+          `• .claude directory (${installedAgents.length} agents, ${installedCommands.length} commands, ${installedHooks.length} hooks)`
+        )
+      }
+
+      if (hasProtocolAssets) {
+        console.log('• protocol-assets directory')
+      }
+
+      if (hasMcpJson) {
+        console.log('• .mcp.json file')
+      }
+
+      console.log('')
+
+      // Confirm unless force flag is used
+      if (!options.force) {
+        const { confirm } = await inquirer.prompt([
+          {
+            type: 'confirm',
+            name: 'confirm',
+            message:
+              'Are you sure you want to remove the Lerian Protocol installation?',
+            default: false,
+            prefix: theme.warning('⚠️')
+          }
+        ])
+
+        if (!confirm) {
+          output.log(theme.muted('Uninstall cancelled'))
+          return
+        }
+      }
+
+      // Remove directories
+      output.log(theme.info('🗑️  Removing installation...'))
+
+      if (hasClaudeDir) {
+        await fs.remove(claudeDir)
+        debug.log('Removed .claude directory')
+      }
+
+      if (hasProtocolAssets) {
+        await fs.remove(protocolAssetsDir)
+        debug.log('Removed protocol-assets directory')
+      }
+
+      if (hasMcpJson) {
+        await fs.remove(mcpJsonFile)
+        debug.log('Removed .mcp.json file')
+      }
+
+      // Remove metadata files (if they exist)
+      const metadataFiles = [
+        path.join(cwd, '.claude', '.lerian-protocol-meta.json'),
+        path.join(cwd, '.claude', '.lerian-sync-meta.json'),
+        path.join(cwd, '.claude', '.lerian-push-meta.json')
+      ]
+
+      for (const metaFile of metadataFiles) {
+        if (await fs.pathExists(metaFile)) {
+          await fs.remove(metaFile)
+          debug.log(`Removed metadata file: ${path.basename(metaFile)}`)
+        }
+      }
+
+      output.log(
+        '\n' +
+          theme.success('✅ Lerian Protocol uninstalled successfully!') +
+          '\n'
+      )
+      output.log(
+        theme.muted(
+          'All agents, commands, hooks, protocol assets, and MCP configuration have been removed.'
+        )
+      )
+    } catch (error) {
+      output.error('Uninstall failed: ' + (error as Error).message)
+      throw error
+    } finally {
+      this.isProcessing = false
+    }
   }
 
   async update(_options: InstallOptions): Promise<void> {
@@ -688,6 +831,36 @@ class Installer {
       debug.error(`Error copying ${sourcePath} to ${targetPath}`, error)
       throw new Error(
         `Failed to copy ${sourcePath} to ${targetPath}: ${(error as Error).message}`
+      )
+    }
+  }
+
+  private async createInstallMetadata(config: InstallConfig): Promise<void> {
+    try {
+      const sourceRoot = __dirname.includes('dist')
+        ? path.resolve(__dirname, '../../..')
+        : path.dirname(path.dirname(__dirname))
+
+      const metaPath = path.join(
+        config.directory,
+        '.claude',
+        '.lerian-protocol-meta.json'
+      )
+      const metadata = {
+        version: '1.0.0',
+        sourcePath: path.resolve(sourceRoot),
+        profile: config.profile,
+        installedAt: new Date().toISOString(),
+        lastSync: null
+      }
+
+      await fs.ensureDir(path.dirname(metaPath))
+      await fs.writeJSON(metaPath, metadata, { spaces: 2 })
+      debug.log(`Created metadata file: ${metaPath}`)
+    } catch (error) {
+      debug.error('Error creating install metadata', error)
+      throw new Error(
+        `Failed to create install metadata: ${(error as Error).message}`
       )
     }
   }

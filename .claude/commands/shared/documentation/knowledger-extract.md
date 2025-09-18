@@ -182,7 +182,7 @@ fd ".env*" --type f
 ```bash
 # Find deployment and infrastructure configs
 fd "docker|k8s|kubernetes|terraform" --type d
-fd "Dockerfile|docker-compose|*.yaml|*.yml" --type f
+fd "Dockerfile|docker-compose.yml|*.yaml|*.yml" --type f
 rg "image:|port:|volume:|secret:" --type yaml
 ```
 
