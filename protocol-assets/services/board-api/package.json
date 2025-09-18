@@ -1,0 +1,31 @@
+{
+  "name": "@lerian-protocol/board-api",
+  "version": "1.0.0",
+  "description": "Board API service - REST API and WebSocket server",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node src/server.js",
+    "dev-with-db": "node src/server.js",
+    "test": "node --test tests/*.test.js",
+    "migrate": "node src/migrate.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.18.0",
+    "pg": "^8.11.3",
+    "pino": "^8.16.0",
+    "pino-pretty": "^10.2.0",
+    "uuid": "^9.0.0",
+    "ws": "^8.18.3"
+  },
+  "imports": {
+    "@lerian-protocol/shared/*": "../../shared/*",
+    "@lerian-protocol/infrastructure/*": "../../infrastructure/*"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

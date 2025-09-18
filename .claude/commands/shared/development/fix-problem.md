@@ -1,7 +1,8 @@
 ---
 allowed-tools: Bash(*), Read(*), Edit(*), Grep(*), Task(*), TodoWrite(*)
 description: Unified problem resolution with multiple sources for error messages, issue files, or descriptions
-argument-hint: --source=error|issue|description --input=<error-message-file-path-or-description> [--git-scope=<scope>]
+argument-hint: --input=<file-path-or-text> [--git-scope=<scope>]
+model: opus
 ---
 
 # /shared:development:fix-problem
@@ -17,20 +18,19 @@ Problem resolution involves systematic investigation across different input type
 
 ```bash
 # Git-focused problem resolution (recommended for active development)
-/shared:development:fix-problem --source=error --input="TypeError: Cannot read property 'id' of undefined" --git-scope=all-changes
-/shared:development:fix-problem --source=description --input="API returns 500 on user login" --git-scope=branch
-/shared:development:fix-problem --source=issue --input=issues/bug-report.md --git-scope=staged
+/shared:development:fix-problem --input="TypeError: Cannot read property 'id' of undefined" --git-scope=all-changes
+/shared:development:fix-problem --input="API returns 500 on user login" --git-scope=branch
+/shared:development:fix-problem --input=issues/bug-report.md --git-scope=staged
 
 # Traditional problem resolution
-/shared:development:fix-problem --source=error --input="TypeError: Cannot read property 'id' of undefined"
-/shared:development:fix-problem --source=issue --input=issues/bug-report.md
-/shared:development:fix-problem --source=description --input="API returns 500 on user login"
-/shared:development:fix-problem --source=error --input="Memory leak in production after 24 hours"
+/shared:development:fix-problem --input="TypeError: Cannot read property 'id' of undefined"
+/shared:development:fix-problem --input=issues/bug-report.md
+/shared:development:fix-problem --input="API returns 500 on user login"
+/shared:development:fix-problem --input="Memory leak in production after 24 hours"
 ```
 
 **Arguments:**
 
-- `--source`: Problem source type - error|issue|description (required)
 - `--input`: Error message, issue file path, or problem description (required)
 - `--git-scope`: Git scope for focusing problem analysis on specific changes - staged|unstaged|all-changes|branch|last-commit|commit-range=<range> (optional)
   </context>

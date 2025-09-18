@@ -488,6 +488,9 @@ class Installer {
       // Create metadata file for sync/push commands
       await this.createInstallMetadata(config)
 
+      // Show post-install git instructions
+      await this.showPostInstallInstructions(config)
+
       output.log(
         '\n' + theme.success('✅ Installation completed successfully!') + '\n'
       )
@@ -587,12 +590,25 @@ class Installer {
       const protocolAssetsDir = path.join(cwd, 'protocol-assets')
       const mcpJsonFile = path.join(cwd, '.mcp.json')
 
+      // Check for board management scripts
+      const stopBoardScript = path.join(cwd, 'stop-board.sh')
+      const lerianGitignore = path.join(cwd, '.lerian-gitignore')
+      const logsDir = path.join(cwd, 'logs')
+
       // Check if installation exists
       const hasClaudeDir = await fs.pathExists(claudeDir)
       const hasProtocolAssets = await fs.pathExists(protocolAssetsDir)
       const hasMcpJson = await fs.pathExists(mcpJsonFile)
+      const hasStopScript = await fs.pathExists(stopBoardScript)
+      const hasLerianGitignore = await fs.pathExists(lerianGitignore)
+      const hasLogsDir = await fs.pathExists(logsDir)
 
-      if (!hasClaudeDir && !hasProtocolAssets && !hasMcpJson) {
+      if (
+        !hasClaudeDir &&
+        !hasProtocolAssets &&
+        !hasMcpJson &&
+        !hasStopScript
+      ) {
         output.warning(
           'No Lerian Protocol installation found in current directory'
         )
@@ -621,11 +637,23 @@ class Installer {
       }
 
       if (hasProtocolAssets) {
-        console.log('• protocol-assets directory')
+        console.log('• protocol-assets directory (including board services)')
       }
 
       if (hasMcpJson) {
         console.log('• .mcp.json file')
+      }
+
+      if (hasStopScript) {
+        console.log('• stop-board.sh script')
+      }
+
+      if (hasLerianGitignore) {
+        console.log('• .lerian-gitignore file')
+      }
+
+      if (hasLogsDir) {
+        console.log('• logs directory')
       }
 
       console.log('')
@@ -665,6 +693,26 @@ class Installer {
       if (hasMcpJson) {
         await fs.remove(mcpJsonFile)
         debug.log('Removed .mcp.json file')
+      }
+
+      // Remove board management scripts
+      if (hasStartScript) {
+        await fs.remove(startBoardScript)
+      }
+
+      if (hasStopScript) {
+        await fs.remove(stopBoardScript)
+        debug.log('Removed stop-board.sh script')
+      }
+
+      if (hasLerianGitignore) {
+        await fs.remove(lerianGitignore)
+        debug.log('Removed .lerian-gitignore file')
+      }
+
+      if (hasLogsDir) {
+        await fs.remove(logsDir)
+        debug.log('Removed logs directory')
       }
 
       // Remove metadata files (if they exist)
@@ -729,13 +777,6 @@ class Installer {
 
     // Ensure we're using the correct source root
     const actualSourceRoot = sourceRoot
-
-    // Main CLAUDE.md
-    const mainClaudeMd = path.join(actualSourceRoot, '.claude', 'CLAUDE.md')
-    files.push({
-      source: mainClaudeMd,
-      target: path.join(process.cwd(), '.claude', 'CLAUDE.md')
-    })
 
     // Profile-specific CLAUDE.md files
     if (profile === 'frontend' || profile === 'full') {
@@ -819,7 +860,17 @@ class Installer {
       if (sourceStats.isDirectory()) {
         await fs.copy(sourcePath, targetPath, {
           overwrite: false,
-          errorOnExist: false
+          errorOnExist: false,
+          filter: (src) => {
+            // Exclude node_modules, .git, and other dev directories
+            const relativePath = path.relative(sourcePath, src)
+            return (
+              !relativePath.includes('node_modules') &&
+              !relativePath.includes('.git') &&
+              !relativePath.includes('dist') &&
+              !relativePath.includes('.cache')
+            )
+          }
         })
       } else {
         await fs.copy(sourcePath, targetPath, {
@@ -862,6 +913,47 @@ class Installer {
       throw new Error(
         `Failed to create install metadata: ${(error as Error).message}`
       )
+    }
+  }
+
+  private async showPostInstallInstructions(
+    config: InstallConfig
+  ): Promise<void> {
+    try {
+      // Copy git isolation template to target directory
+      const sourceRoot = __dirname.includes('dist')
+        ? path.resolve(__dirname, '../../..')
+        : path.dirname(path.dirname(__dirname))
+
+      const templatePath = path.join(
+        sourceRoot,
+        'tools',
+        'installer',
+        'git-isolation-template.txt'
+      )
+      const targetPath = path.join(config.directory, '.lerian-gitignore')
+
+      if (await fs.pathExists(templatePath)) {
+        await fs.copy(templatePath, targetPath)
+      }
+
+      console.log('\n' + theme.warning('🔒 Git Configuration Required'))
+      console.log('To prevent Lerian Protocol files from being committed:')
+      console.log('1. Add entries from .lerian-gitignore to your .gitignore')
+      console.log(
+        '2. Run: git rm --cached -r protocol-assets/ .claude/ (if already tracked)'
+      )
+      console.log('3. Commit the .gitignore changes')
+      console.log('')
+      console.log(theme.info('📋 Board Services:'))
+      console.log('• Start board: ./start-dev.sh')
+      console.log('• Stop board: ./stop-board.sh')
+      console.log(
+        '• Install dependencies: cd protocol-assets/services/[service] && npm install'
+      )
+    } catch (error) {
+      debug.error('Error showing post-install instructions', error)
+      // Don't throw error here as it's not critical
     }
   }
 }

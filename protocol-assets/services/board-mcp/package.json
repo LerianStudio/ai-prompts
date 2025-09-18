@@ -1,0 +1,23 @@
+{
+  "name": "board-mcp",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "MCP server for Claude Code task management integration",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "uuid": "^9.0.0",
+    "ws": "^8.14.2",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

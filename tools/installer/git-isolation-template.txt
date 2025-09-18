@@ -1,0 +1,21 @@
+# =====================================================
+# LERIAN PROTOCOL GITIGNORE TEMPLATE
+# =====================================================
+#
+# INSTRUCTIONS: Copy the block below (between the START
+# and END markers) to your project's .gitignore file to
+# prevent Lerian Protocol files from being committed.
+#
+# =====================================================
+
+# START LERIAN PROTOCOL GITIGNORE BLOCK
+# Lerian Protocol
+/protocol-assets/services/
+/stop-board.sh
+/logs/
+/.lerian-*
+/protocol-assets/
+/.claude/
+/.mcp.json
+# END LERIAN PROTOCOL GITIGNORE BLOCK
+

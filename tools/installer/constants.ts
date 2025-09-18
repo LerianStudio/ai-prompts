@@ -30,10 +30,25 @@ export const DEFAULTS: DefaultsType = {
   async discoverProtocolAssets(sourceRoot: string): Promise<string[]> {
     const directories: string[] = []
 
-    // Check for legacy protocol-assets directory structure
+    // Check for protocol-assets directory structure
     const protocolAssetsPath = path.join(sourceRoot, 'protocol-assets')
     if (await fs.pathExists(protocolAssetsPath)) {
       directories.push('protocol-assets')
+
+      // Add board services to protocol-assets
+      const servicesPath = path.join(protocolAssetsPath, 'services')
+      if (await fs.pathExists(servicesPath)) {
+        directories.push('protocol-assets/services')
+
+        // Add individual board services
+        const boardServices = ['board-api', 'board-executor', 'board-ui', 'lib']
+        for (const service of boardServices) {
+          const servicePath = path.join(servicesPath, service)
+          if (await fs.pathExists(servicePath)) {
+            directories.push(`protocol-assets/services/${service}`)
+          }
+        }
+      }
 
       const profiles = ['frontend', 'backend', 'shared']
       for (const profile of profiles) {
@@ -68,6 +83,24 @@ export const DEFAULTS: DefaultsType = {
     const mcpJsonPath = path.join(sourceRoot, '.mcp.json')
     if (await fs.pathExists(mcpJsonPath)) {
       files.push('.mcp.json')
+    }
+
+    // Check for board management scripts
+    const boardScripts = ['stop-board.sh']
+    for (const script of boardScripts) {
+      const scriptPath = path.join(sourceRoot, script)
+      if (await fs.pathExists(scriptPath)) {
+        files.push(script)
+      }
+    }
+
+    // Check for git isolation template
+    const gitTemplateFiles = ['.lerian-gitignore']
+    for (const templateFile of gitTemplateFiles) {
+      const templatePath = path.join(sourceRoot, templateFile)
+      if (await fs.pathExists(templatePath)) {
+        files.push(templateFile)
+      }
     }
 
     return files

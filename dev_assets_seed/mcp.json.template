@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "board-tasks": {
+      "command": "node",
+      "args": [
+        "services/board-mcp/src/index.js"
+      ],
+      "env": {
+        "BOARD_API_URL": "http://localhost:{{BOARD_API_PORT}}",
+        "MCP_SERVER_PORT": "{{MCP_SERVER_PORT}}"
+      }
+    }
+  }
+}

@@ -1,13 +1,18 @@
 const fs = require('fs-extra')
 const path = require('path')
 const BackupManager = require('./backup-manager')
+const FileLockManager = require('./file-lock-manager')
 
 class SyncExecutor {
   constructor(options = {}) {
     this.backupManager = new BackupManager(options.backup)
+    this.lockManager = new FileLockManager(options.fileLock)
     this.maxRetries = options.maxRetries || 3
     this.retryDelay = options.retryDelay || 1000
     this.dryRun = false
+
+    // Setup cleanup handlers for proper lock release
+    this.setupCleanupHandlers()
   }
 
   /**
@@ -18,7 +23,7 @@ class SyncExecutor {
    */
   async executeSyncPlan(syncPlan, options = {}) {
     this.dryRun = options.dryRun || false
-    
+
     const startTime = Date.now()
     const result = {
       planId: syncPlan.planId,
@@ -37,7 +42,12 @@ class SyncExecutor {
       await this.validateExecutionEnvironment(syncPlan)
 
       // Create backup before making changes (unless dry run)
-      if (!this.dryRun && syncPlan.operations.some(op => ['update', 'conflict'].includes(op.type))) {
+      if (
+        !this.dryRun &&
+        syncPlan.operations.some((op) =>
+          ['update', 'conflict'].includes(op.type)
+        )
+      ) {
         result.backupPath = await this.backupManager.createBackup(
           syncPlan.destPath,
           syncPlan.operations,
@@ -47,9 +57,9 @@ class SyncExecutor {
       }
 
       // Filter out conflicts if not in interactive mode
-      const operationsToExecute = options.includeConflicts 
+      const operationsToExecute = options.includeConflicts
         ? syncPlan.operations
-        : syncPlan.operations.filter(op => op.type !== 'conflict')
+        : syncPlan.operations.filter((op) => op.type !== 'conflict')
 
       // Execute operations with progress reporting
       const executedOps = await this.executeOperations(
@@ -60,14 +70,15 @@ class SyncExecutor {
       )
 
       result.operations = executedOps
-      result.success = executedOps.every(op => op.status === 'completed' || op.status === 'skipped')
+      result.success = executedOps.every(
+        (op) => op.status === 'completed' || op.status === 'skipped'
+      )
 
       const endTime = Date.now()
       result.endTime = new Date().toISOString()
       result.duration = endTime - startTime
 
       return result
-
     } catch (error) {
       result.errors.push({
         type: 'execution_error',
@@ -106,7 +117,9 @@ class SyncExecutor {
       // In a production system, you'd check actual disk space here
       // For now, we'll just log the requirement
       if (!this.dryRun) {
-        console.log(`📊 Estimated sync size: ${syncPlan.estimatedSize.humanReadable}`)
+        console.log(
+          `📊 Estimated sync size: ${syncPlan.estimatedSize.humanReadable}`
+        )
       }
     }
 
@@ -120,24 +133,22 @@ class SyncExecutor {
    * @param {string} destPath - Destination path
    */
   async checkForFileConflicts(operations, destPath) {
-    const criticalFiles = [
-      'package.json',
-      '.claude/settings.json',
-      '.mcp.json'
-    ]
+    const criticalFiles = ['package.json', '.claude/settings.json', '.mcp.json']
 
     for (const operation of operations) {
       if (['update', 'delete'].includes(operation.type)) {
         const filePath = path.join(destPath, operation.path)
-        
-        if (criticalFiles.some(cf => operation.path.endsWith(cf))) {
+
+        if (criticalFiles.some((cf) => operation.path.endsWith(cf))) {
           try {
             // Try to open file for write to check if it's locked
             const fd = await fs.open(filePath, 'r+')
             await fs.close(fd)
           } catch (error) {
             if (error.code === 'EBUSY' || error.code === 'EPERM') {
-              throw new Error(`File is in use and cannot be modified: ${operation.path}`)
+              throw new Error(
+                `File is in use and cannot be modified: ${operation.path}`
+              )
             }
           }
         }
@@ -160,13 +171,20 @@ class SyncExecutor {
 
     for (const operation of operations) {
       const startTime = Date.now()
-      
+
       if (options.onProgress) {
-        options.onProgress(`Executing: ${operation.path} (${completed + 1}/${total})`)
+        options.onProgress(
+          `Executing: ${operation.path} (${completed + 1}/${total})`
+        )
       }
 
       try {
-        const result = await this.executeOperation(operation, sourcePath, destPath, options)
+        const result = await this.executeOperation(
+          operation,
+          sourcePath,
+          destPath,
+          options
+        )
         results.push({
           ...operation,
           ...result,
@@ -206,16 +224,25 @@ class SyncExecutor {
     switch (operation.type) {
       case 'copy':
         return await this.executeCopyOperation(operation, sourcePath, destPath)
-        
+
       case 'update':
-        return await this.executeUpdateOperation(operation, sourcePath, destPath)
-        
+        return await this.executeUpdateOperation(
+          operation,
+          sourcePath,
+          destPath
+        )
+
       case 'delete':
         return await this.executeDeleteOperation(operation, destPath)
-        
+
       case 'conflict':
-        return await this.executeConflictOperation(operation, sourcePath, destPath, options)
-        
+        return await this.executeConflictOperation(
+          operation,
+          sourcePath,
+          destPath,
+          options
+        )
+
       default:
         throw new Error(`Unknown operation type: ${operation.type}`)
     }
@@ -233,17 +260,23 @@ class SyncExecutor {
     const destFilePath = path.join(destPath, operation.path)
 
     return await this.withRetry(async () => {
-      await fs.ensureDir(path.dirname(destFilePath))
-      await fs.copy(sourceFilePath, destFilePath, { 
-        preserveTimestamps: true,
-        overwrite: false
-      })
+      return await this.lockManager.withFileLock(
+        destFilePath,
+        async () => {
+          await fs.ensureDir(path.dirname(destFilePath))
+          await fs.copy(sourceFilePath, destFilePath, {
+            preserveTimestamps: true,
+            overwrite: false
+          })
 
-      return {
-        status: 'completed',
-        message: `Copied: ${operation.path}`,
-        bytesTransferred: operation.source.size
-      }
+          return {
+            status: 'completed',
+            message: `Copied: ${operation.path}`,
+            bytesTransferred: operation.source.size
+          }
+        },
+        'copy'
+      )
     }, `copy ${operation.path}`)
   }
 
@@ -259,28 +292,34 @@ class SyncExecutor {
     const destFilePath = path.join(destPath, operation.path)
 
     return await this.withRetry(async () => {
-      // Atomic update: write to temp file first, then rename
-      const tempFilePath = `${destFilePath}.tmp.${Date.now()}`
-      
-      try {
-        await fs.copy(sourceFilePath, tempFilePath, { 
-          preserveTimestamps: true,
-          overwrite: true
-        })
-        
-        await fs.move(tempFilePath, destFilePath, { overwrite: true })
+      return await this.lockManager.withFileLock(
+        destFilePath,
+        async () => {
+          // Atomic update: write to temp file first, then rename
+          const tempFilePath = `${destFilePath}.tmp.${Date.now()}`
 
-        return {
-          status: 'completed',
-          message: `Updated: ${operation.path}`,
-          bytesTransferred: operation.source.size
-        }
-      } finally {
-        // Clean up temp file if it exists
-        if (await fs.pathExists(tempFilePath)) {
-          await fs.remove(tempFilePath)
-        }
-      }
+          try {
+            await fs.copy(sourceFilePath, tempFilePath, {
+              preserveTimestamps: true,
+              overwrite: true
+            })
+
+            await fs.move(tempFilePath, destFilePath, { overwrite: true })
+
+            return {
+              status: 'completed',
+              message: `Updated: ${operation.path}`,
+              bytesTransferred: operation.source.size
+            }
+          } finally {
+            // Clean up temp file if it exists
+            if (await fs.pathExists(tempFilePath)) {
+              await fs.remove(tempFilePath)
+            }
+          }
+        },
+        'update'
+      )
     }, `update ${operation.path}`)
   }
 
@@ -294,21 +333,27 @@ class SyncExecutor {
     const destFilePath = path.join(destPath, operation.path)
 
     return await this.withRetry(async () => {
-      if (await fs.pathExists(destFilePath)) {
-        await fs.remove(destFilePath)
-        
-        return {
-          status: 'completed',
-          message: `Deleted: ${operation.path}`,
-          bytesTransferred: 0
-        }
-      } else {
-        return {
-          status: 'skipped',
-          message: `Already deleted: ${operation.path}`,
-          bytesTransferred: 0
-        }
-      }
+      return await this.lockManager.withFileLock(
+        destFilePath,
+        async () => {
+          if (await fs.pathExists(destFilePath)) {
+            await fs.remove(destFilePath)
+
+            return {
+              status: 'completed',
+              message: `Deleted: ${operation.path}`,
+              bytesTransferred: 0
+            }
+          } else {
+            return {
+              status: 'skipped',
+              message: `Already deleted: ${operation.path}`,
+              bytesTransferred: 0
+            }
+          }
+        },
+        'delete'
+      )
     }, `delete ${operation.path}`)
   }
 
@@ -320,9 +365,14 @@ class SyncExecutor {
    * @param {Object} options - Options including conflict resolution strategy
    * @returns {Promise<Object>} Result
    */
-  async executeConflictOperation(operation, sourcePath, destPath, options = {}) {
+  async executeConflictOperation(
+    operation,
+    sourcePath,
+    destPath,
+    options = {}
+  ) {
     const strategy = options.conflictStrategy || 'skip'
-    
+
     switch (strategy) {
       case 'skip':
         return {
@@ -330,18 +380,22 @@ class SyncExecutor {
           message: `Skipped conflict: ${operation.path}`,
           bytesTransferred: 0
         }
-        
+
       case 'use_source':
         // Treat as update operation
-        return await this.executeUpdateOperation(operation, sourcePath, destPath)
-        
+        return await this.executeUpdateOperation(
+          operation,
+          sourcePath,
+          destPath
+        )
+
       case 'keep_local':
         return {
           status: 'skipped',
           message: `Kept local version: ${operation.path}`,
           bytesTransferred: 0
         }
-        
+
       default:
         throw new Error(`Unknown conflict strategy: ${strategy}`)
     }
@@ -355,20 +409,23 @@ class SyncExecutor {
    */
   async withRetry(operation, operationName) {
     let lastError
-    
+
     for (let attempt = 1; attempt <= this.maxRetries; attempt++) {
       try {
         return await operation()
       } catch (error) {
         lastError = error
-        
+
         if (attempt < this.maxRetries) {
-          console.warn(`⚠️ ${operationName} failed (attempt ${attempt}/${this.maxRetries}):`, error.message)
+          console.warn(
+            `⚠️ ${operationName} failed (attempt ${attempt}/${this.maxRetries}):`,
+            error.message
+          )
           await this.sleep(this.retryDelay * attempt)
         }
       }
     }
-    
+
     throw lastError
   }
 
@@ -378,7 +435,7 @@ class SyncExecutor {
    * @returns {Promise<void>}
    */
   async sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms))
+    return new Promise((resolve) => setTimeout(resolve, ms))
   }
 
   /**
@@ -391,8 +448,8 @@ class SyncExecutor {
   async rollbackSync(projectPath, backupId, options = {}) {
     try {
       const result = await this.backupManager.restoreFromBackup(
-        projectPath, 
-        backupId, 
+        projectPath,
+        backupId,
         { overwrite: true, ...options }
       )
 
@@ -431,11 +488,37 @@ class SyncExecutor {
       stats.totalExecutionTime += op.executionTime || 0
     }
 
-    stats.averageExecutionTime = operations.length > 0 
-      ? Math.round(stats.totalExecutionTime / operations.length)
-      : 0
+    stats.averageExecutionTime =
+      operations.length > 0
+        ? Math.round(stats.totalExecutionTime / operations.length)
+        : 0
 
     return stats
+  }
+
+  /**
+   * Setup cleanup handlers to ensure locks are released
+   */
+  setupCleanupHandlers() {
+    const cleanup = async () => {
+      try {
+        await this.lockManager.cleanup()
+      } catch (error) {
+        console.error('Error during lock cleanup:', error.message)
+      }
+    }
+
+    // Handle graceful shutdown
+    process.on('SIGTERM', cleanup)
+    process.on('SIGINT', cleanup)
+    process.on('exit', cleanup)
+  }
+
+  /**
+   * Cleanup resources when executor is no longer needed
+   */
+  async destroy() {
+    await this.lockManager.cleanup()
   }
 }
 

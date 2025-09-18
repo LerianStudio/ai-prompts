@@ -208,11 +208,21 @@ async function generateEnvConfig(ports) {
 BOARD_API_PORT=${ports.boardApi}
 MCP_SERVER_PORT=${ports.mcpServer}
 FRONTEND_PORT=${ports.frontend}
+MCP_HEALTH_PORT=${ports.mcpServer + 1000}
 
 # Service URLs
 BOARD_API_URL=http://localhost:${ports.boardApi}
 MCP_SERVER_URL=http://localhost:${ports.mcpServer}
 FRONTEND_URL=http://localhost:${ports.frontend}
+
+# Service Configuration
+PORT=${ports.boardApi}
+HOST=localhost
+
+# Required Service URLs and Ports
+TASK_SERVICE_URL=http://localhost:${ports.boardApi}
+TASK_SERVICE_PORT=${ports.boardApi}
+BOARD_EXECUTOR_PORT=${ports.boardApi + 100}
 
 # Development Configuration
 NODE_ENV=development
@@ -222,13 +232,15 @@ ENABLE_CORS_LOGGING=true
 
 # Database
 DB_HOST=localhost
-DB_PORT=5432
+DB_PORT=5701
 DB_NAME=lerian_protocol
+DB_USER=midaz
+DB_PASSWORD=lerian
 
 # Generated at: ${new Date().toISOString()}
 `
 
-    const envPath = path.join(__dirname, '..', '.env.dev')
+    const envPath = path.join(__dirname, '..', 'protocol-assets', '.env.dev')
     fs.writeFileSync(envPath, envContent)
 
     if (process.argv[2] === 'get') {

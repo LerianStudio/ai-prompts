@@ -25,3 +25,10 @@ protocol-assets/**/build/
 
 # Backup directories
 .backups/
+
+ # Runtime files
+*.pid
+logs/*.pid
+logs/install-*.log
+logs/service-ports.env
+.dev-ports.json
